@@ -36,6 +36,13 @@ describe('settings', () => {
     expect(s.set('pinnedApps', 'Netflix')).toBe(false)
     expect(s.set('pinnedApps', Array(31).fill('x'))).toBe(false)
   })
+  it('proteção de tela: padrão 10 minutos; só 0, 5, 10, 15 ou 30', () => {
+    const { s } = make()
+    expect(s.get('screensaverMinutes')).toBe(10)
+    expect(s.set('screensaverMinutes', 0)).toBe(true)
+    expect(s.set('screensaverMinutes', 7)).toBe(false)
+    expect(s.set('screensaverMinutes', '5')).toBe(false)
+  })
   it('recusa chave desconhecida e valor do tipo errado', () => {
     const { s, data } = make()
     expect(s.set('hacker', 1)).toBe(false)

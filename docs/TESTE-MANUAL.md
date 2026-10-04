@@ -102,3 +102,9 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 ## Novos episódios
 - [ ] Com uma série em exibição na Minha lista, aparece a fileira "Novos episódios" com o aviso (episódio novo / data do próximo)
 - [ ] Séries sem episódio recente ou próximo não aparecem nessa fileira
+
+## Proteção de tela
+- [ ] Configurações → Proteção de tela cicla Desligada / 5 / 10 / 15 / 30 min
+- [ ] Parado pelo tempo escolhido: aparecem imagens dos filmes/séries em alta e o relógio (sem chave do TMDB: só o relógio)
+- [ ] Qualquer botão, tecla ou mexida no mouse volta, sem clicar em nada por engano
+- [ ] Com o teclado na tela ou o menu Energia abertos, a proteção não liga

@@ -8,6 +8,7 @@ import Tabs from './components/Tabs'
 import Footer from './components/Footer'
 import OnScreenKeyboard from './components/OnScreenKeyboard'
 import PowerMenu from './components/PowerMenu'
+import Screensaver from './components/Screensaver'
 import HomeScreen from './screens/HomeScreen'
 import LibraryScreen from './screens/LibraryScreen'
 import AppsScreen from './screens/AppsScreen'
@@ -21,6 +22,7 @@ import { focusMove } from './lib/focus'
 import { DEFAULT_PINNED, togglePin } from './lib/home-model'
 import { getLazy } from './lib/lazy-api'
 import { OSK_HINTS } from './lib/osk'
+import { createIdle } from './lib/screensaver'
 import { initialScreen, screenReducer, type Screen } from './lib/screen-state'
 
 const { BTN } = gamepad
@@ -44,12 +46,33 @@ export default function Page() {
   oskRef.current = oskTarget
   const oskPress = useRef<((key: string) => void) | null>(null)
   const [powerOpen, setPowerOpen] = useState(false)
+  // Proteção de tela: liga depois de N minutos parado; qualquer botão desliga (e esse aperto é ignorado)
+  const idle = useRef(createIdle())
+  const [saver, setSaver] = useState(false)
+  const saverRef = useRef(false)
+  saverRef.current = saver
+  const [saverMinutes, setSaverMinutes] = useState(10)
+  const wake = () => { idle.current.touch(); setSaver(false) }
   const powerRef = useRef(false)
   powerRef.current = powerOpen
   const closePower = () => { setPowerOpen(false); focusFirst('.ps4-icons button') }
   const closeOsk = () => { const t = oskRef.current; setOskTarget(null); t?.focus() }
 
   useEffect(() => { getLazy()?.settings.get().then((s) => { if (s.pinnedApps) setPinned(s.pinnedApps) }) }, [])
+  // Relê o tempo da proteção de tela ao sair das Configurações
+  useEffect(() => { getLazy()?.settings.get().then((s) => setSaverMinutes(s.screensaverMinutes ?? 10)) }, [state.screen])
+  useEffect(() => {
+    const t = window.setInterval(() => {
+      if (!oskRef.current && !powerRef.current && idle.current.isIdle(saverMinutes)) setSaver(true)
+    }, 5000)
+    return () => window.clearInterval(t)
+  }, [saverMinutes])
+  useEffect(() => {
+    const onActivity = (e: Event) => { if (saverRef.current) { e.preventDefault(); e.stopPropagation(); wake() } else idle.current.touch() }
+    const evs = ['keydown', 'mousedown', 'mousemove', 'wheel']
+    for (const ev of evs) window.addEventListener(ev, onActivity, true)
+    return () => { for (const ev of evs) window.removeEventListener(ev, onActivity, true) }
+  }, [])
   const onTogglePin = (label: string) => {
     const next = togglePin(pinned, label)
     setPinned(next)
@@ -69,7 +92,7 @@ export default function Page() {
   }, [state.screen])
 
   // Botão PS / atalho global: o Electron manda voltar ao Início
-  useEffect(() => { getLazy()?.onHome(() => dispatch({ type: 'goHome' })) }, [])
+  useEffect(() => { getLazy()?.onHome(() => { wake(); dispatch({ type: 'goHome' }) }) }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Avisos de arquivos de configuração corrompidos ou que não salvaram
   useEffect(() => {
@@ -92,7 +115,12 @@ export default function Page() {
   const go = (screen: Screen) => dispatch(screen === 'home' ? { type: 'goHome' } : { type: 'open', screen })
   const back = () => { sounds.click(); dispatch({ type: 'leave' }) }
 
-  const padOn = useGamepad(({ fired, dx, dy }) => {
+  const padOn = useGamepad(({ fired, dx, dy, active: touched }) => {
+    if (touched) {
+      if (saverRef.current) { wake(); return }
+      idle.current.touch()
+    }
+    if (saverRef.current) return
     const { screen } = stateRef.current
     const osk = !!oskRef.current
     const modal = powerRef.current
@@ -149,6 +177,7 @@ export default function Page() {
       {state.screen === 'ds4' && <Ds4Screen onBack={back} sounds={sounds} />}
       {state.screen === 'settings' && <SettingsScreen onBack={back} sounds={sounds} />}
       {state.screen === 'search' && <SearchScreen sounds={sounds} onActivate={activate} onBack={back} />}
+      {saver && <Screensaver />}
       {powerOpen && <PowerMenu onClose={closePower} sounds={sounds} />}
       {oskTarget && <OnScreenKeyboard target={oskTarget} onClose={closeOsk} sounds={sounds} pressRef={oskPress} />}
       <Footer screen={state.screen} hints={oskTarget ? OSK_HINTS : undefined} />

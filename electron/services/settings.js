@@ -14,10 +14,11 @@ const RULES = {
   closeDs4OnMenu: isBool,
   librarySort: (v) => v === 'asc' || v === 'desc',
   streamModes: (v) => validModes(v, streaming),
+  screensaverMinutes: (v) => [0, 5, 10, 15, 30].includes(v),
   pinnedApps: (v) => Array.isArray(v) && v.length <= 30 && v.every((x) => isText(x) && x.length > 0 && x.length <= 40),
 }
 
-const DEFAULTS = { closeDs4OnMenu: true, librarySort: 'asc', streamModes: {} }
+const DEFAULTS = { closeDs4OnMenu: true, librarySort: 'asc', streamModes: {}, screensaverMinutes: 10 }
 
 function createSettings({ read, write }) {
   const all = () => ({ ...DEFAULTS, ...read() })

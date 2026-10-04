@@ -7,6 +7,7 @@ export type Settings = {
   librarySort: 'asc' | 'desc'
   streamModes: Record<string, StreamMode>
   pinnedApps?: string[]
+  screensaverMinutes?: number
 }
 export type Ds4Data = { profiles: string[]; config: Record<string, string>; dir: string | null; cmd: string }
 export type DrmStatus = { installed: boolean; version: string; msg: string }

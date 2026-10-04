@@ -261,3 +261,11 @@ button { font: inherit; }
 .power-menu .lz-btn { text-align: left; }
 .power-menu button:focus-visible { outline: 3px solid #ffd23f; outline-offset: 2px; }
 .lz-badge { position: absolute; top: 10px; left: 10px; padding: 4px 10px; border-radius: 8px; background: #ffd23f; color: #111; font-size: 13px; font-style: normal; font-weight: 700; }
+.lz-saver { position: fixed; inset: 0; z-index: 100; background: #000; cursor: none; }
+.lz-saver-img { position: absolute; inset: 0; background: center / cover no-repeat; animation: lz-saver-in 1.6s ease-out both, lz-saver-pan 12s linear both; }
+.lz-saver-info { position: absolute; left: 5.2vw; bottom: 6vh; display: flex; flex-direction: column; gap: 6px; color: #fff; text-shadow: 0 2px 12px rgba(0,0,0,.8); }
+.lz-saver-info strong { font-size: 64px; font-weight: 300; }
+.lz-saver-info span { font-size: 22px; opacity: .85; }
+@keyframes lz-saver-in { from { opacity: 0 } to { opacity: 1 } }
+@keyframes lz-saver-pan { from { transform: scale(1.06) } to { transform: scale(1) } }
+@media (prefers-reduced-motion: reduce) { .lz-saver-img { animation: none; } }

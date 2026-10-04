@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import streaming from '../../shared/streaming'
 import ApiKeySection from '../components/ApiKeySection'
+import { nextMinutes } from '../lib/screensaver'
 import { getLazy, type DrmStatus, type StreamMode } from '../lib/lazy-api'
 import type { Sounds } from '../hooks/useSounds'
 
@@ -18,11 +19,12 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
   const [drm, setDrm] = useState<DrmStatus | null>(null)
   const [tmdbOn, setTmdbOn] = useState(false)
   const [atLogin, setAtLogin] = useState(false)
+  const [saverMin, setSaverMin] = useState(10)
   const [gridOn, setGridOn] = useState(false)
 
   useEffect(() => {
     if (!lazy) return
-    lazy.settings.get().then((s) => { setCloseDs4(s.closeDs4OnMenu); setModes(s.streamModes) })
+    lazy.settings.get().then((s) => { setCloseDs4(s.closeDs4OnMenu); setModes(s.streamModes); setSaverMin(s.screensaverMinutes ?? 10) })
     Promise.all([lazy.exe.get('edge'), lazy.exe.get('ds4windows')]).then(([edge, ds4windows]) => setPaths({ edge, ds4windows }))
     lazy.drm.status().then(setDrm)
     lazy.catalog.status().then((s) => setTmdbOn(s.configured))
@@ -39,6 +41,12 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
     setCloseDs4(v)
     lazy?.settings.set('closeDs4OnMenu', v)
     setMsg(v ? 'Ao apertar PS, o DS4Windows será fechado.' : 'O DS4Windows continuará aberto ao apertar PS.')
+  }
+  const cycleSaver = () => {
+    const m = nextMinutes(saverMin)
+    setSaverMin(m)
+    lazy?.settings.set('screensaverMinutes', m)
+    setMsg(m ? `Proteção de tela depois de ${m} minutos parado.` : 'Proteção de tela desligada.')
   }
   const toggleLogin = () => {
     const v = !atLogin
@@ -63,6 +71,7 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
       <button className="ds4-row" onClick={tap(() => choose('edge', 'Edge'))} onMouseEnter={sounds.hover}><span>Pasta do Edge</span><b>{paths.edge || 'não encontrado, toque para escolher'}</b></button>
       <button className="ds4-row" onClick={tap(() => choose('ds4windows', 'DS4Windows'))} onMouseEnter={sounds.hover}><span>Pasta do DS4Windows</span><b>{paths.ds4windows || 'não encontrado, toque para escolher'}</b></button>
       <button className="ds4-row" onClick={tap(toggleClose)} onMouseEnter={sounds.hover}><span>Fechar o DS4Windows ao apertar PS</span><b>{closeDs4 ? 'Sim' : 'Não'}</b></button>
+      <button className="ds4-row" onClick={tap(cycleSaver)} onMouseEnter={sounds.hover}><span>Proteção de tela</span><b>{saverMin ? `${saverMin} min` : 'Desligada'}</b></button>
       <button className="ds4-row" onClick={tap(toggleLogin)} onMouseEnter={sounds.hover}><span>Abrir junto com o Windows</span><b>{atLogin ? 'Sim' : 'Não'}</b></button>
       <ApiKeySection
         title="Filmes e séries (TMDB)" configured={tmdbOn} sounds={sounds}
