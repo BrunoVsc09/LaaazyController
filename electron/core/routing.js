@@ -9,11 +9,20 @@ function serviceForUrl(url, services) {
   return services.find((s) => host === s.domain || host.endsWith('.' + s.domain)) || null
 }
 
-function openMode(url, services) {
+const MODES = ['app', 'edge']
+
+// A escolha do usuário (overrides[label]) vence o padrão do catálogo
+function openMode(url, services, overrides = {}) {
   const s = serviceForUrl(url, services)
-  return s ? s.mode : 'app'
+  if (!s) return 'app'
+  return MODES.includes(overrides[s.label]) ? overrides[s.label] : s.mode
+}
+
+function validModes(modes, services) {
+  if (!modes || typeof modes !== 'object' || Array.isArray(modes)) return false
+  return Object.entries(modes).every(([label, m]) => services.some((s) => s.label === label) && MODES.includes(m))
 }
 
 const isWebUrl = (url) => typeof url === 'string' && /^https?:\/\//i.test(url) && !!hostOf(url)
 
-module.exports = { serviceForUrl, openMode, isWebUrl }
+module.exports = { serviceForUrl, openMode, validModes, isWebUrl }

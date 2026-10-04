@@ -1,11 +1,12 @@
 // Abre o que os cards pedem: sites (no app ou no Edge), navegadores e programas.
-const { openMode } = require('../core/routing')
+const { openMode, serviceForUrl } = require('../core/routing')
 
 const BROWSERS = ['chrome', 'firefox']
 const PROGRAMS = ['hydra', 'ds4windows']
 
 function createLauncher({
   services, locator, ds4, spawnDetached, openPath, openExternal, openStream, setExternalActive, edgeProfileDir,
+  streamModes = () => ({}), widevine = () => ({ installed: true }),
 }) {
   // Perfil separado do Edge: força uma janela nova em tela cheia (Alt+F4 fecha)
   async function openInEdge(url) {
@@ -14,14 +15,20 @@ function createLauncher({
     return spawnDetached(edge, ['--kiosk', url, '--edge-kiosk-type=fullscreen', '--user-data-dir=' + edgeProfileDir, '--no-first-run'])
   }
 
+  // Devolve '' quando abriu, ou a mensagem para mostrar na tela
   async function open(url, label) {
-    ds4.applyFor(label)
-    if (openMode(url, services) === 'edge') {
+    if (openMode(url, services, streamModes()) === 'edge') {
+      ds4.applyFor(label)
       setExternalActive(true)
       ds4.ensureRunning()
-      return openInEdge(url)
+      return (await openInEdge(url)) || ''
     }
+    const service = serviceForUrl(url, services)
+    const drm = widevine()
+    if (service && service.drm && !drm.installed) return drm.msg
+    ds4.applyFor(label)
     openStream(url)
+    return ''
   }
 
   // Devolve '' quando abriu, ou a mensagem de erro

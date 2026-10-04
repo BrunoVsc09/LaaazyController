@@ -85,6 +85,28 @@ describe('launcher', () => {
     expect(deps.openPath).toHaveBeenCalledWith('C:\\H\\Hydra.exe')
     expect(await l.launch('ds4windows')).toBe('Não achei o DS4Windows.')
   })
+  it('a escolha "Edge" do usuário manda a Netflix para o Edge', async () => {
+    const { l, deps } = make({ found: { edge: 'C:\\E\\msedge.exe' } })
+    deps.streamModes = () => ({ Netflix: 'edge' })
+    const l2 = launcherMod.createLauncher(deps)
+    await l2.open('https://www.netflix.com', 'Netflix')
+    expect(deps.openStream).not.toHaveBeenCalled()
+    expect(deps.spawnDetached).toHaveBeenCalled()
+  })
+  it('sem Widevine, serviço com DRM no app avisa em vez de abrir uma tela que não toca', async () => {
+    const { deps } = make()
+    deps.widevine = () => ({ installed: false, msg: 'Widevine não instalado.' })
+    const l = launcherMod.createLauncher(deps)
+    expect(await l.open('https://www.netflix.com', 'Netflix')).toBe('Widevine não instalado.')
+    expect(deps.openStream).not.toHaveBeenCalled()
+  })
+  it('sem Widevine, YouTube (sem DRM) abre normalmente', async () => {
+    const { deps } = make()
+    deps.widevine = () => ({ installed: false, msg: 'x' })
+    const l = launcherMod.createLauncher(deps)
+    expect(await l.open('https://www.youtube.com/tv', 'YouTube')).toBe('')
+    expect(deps.openStream).toHaveBeenCalled()
+  })
   it('programa desconhecido', async () => {
     expect(await make().l.launch('notepad')).toBe('Programa desconhecido.')
   })

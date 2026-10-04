@@ -9,12 +9,12 @@ function registerIpc(ipcMain, h) {
   const on = (ch, fn) => ipcMain.on(ch, (_e, ...args) => fn(...args))
   const handle = (ch, fn) => ipcMain.handle(ch, (_e, ...args) => fn(...args))
 
-  on(C.OPEN, (url, label) => { if (isWebUrl(url)) h.launcher.open(url, isText(label) ? label : '') })
   on(C.HOME, () => h.goHome())
   on(C.BACK, () => h.back())
   on(C.KEY, (key) => { if (PLAYER_KEYS.has(key)) h.sendKey(key) })
   on(C.QUIT, () => h.quit())
 
+  handle(C.OPEN, (url, label) => (isWebUrl(url) ? h.launcher.open(url, isText(label) ? label : '') : 'Endereço inválido.'))
   handle(C.LAUNCH, (name) => (isText(name) ? h.launcher.launch(name) : 'Programa desconhecido.'))
   handle(C.EXE_GET, async (key) => (isText(key) && (await h.locator.find(key))) || '')
   handle(C.EXE_CHOOSE, async (key) => (isText(key) && (await h.locator.choose(key))) || '')

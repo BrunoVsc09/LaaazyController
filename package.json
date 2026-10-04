@@ -44,11 +44,14 @@
     "electronDist": "node_modules/electron/dist",
     "files": [
       "electron/**",
+      "!electron/**/*.test.js",
+      "shared/**",
       "out/**",
       "package.json"
     ],
     "win": {
       "target": "portable"
-    }
+    },
+    "afterPack": "scripts/vmp-sign.js"
   }
 }

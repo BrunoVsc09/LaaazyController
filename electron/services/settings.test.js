@@ -22,6 +22,12 @@ describe('settings', () => {
     expect(s.set('ds4Path', 'C:\\DS4')).toBe(true)
     expect(data()).toEqual({ edgePath: 'C:\\E', ds4Path: 'C:\\DS4' })
   })
+  it('streamModes só aceita serviços do catálogo com app/edge', () => {
+    const { s } = make()
+    expect(s.set('streamModes', { Netflix: 'edge' })).toBe(true)
+    expect(s.set('streamModes', { Netflix: 'chrome' })).toBe(false)
+    expect(s.set('streamModes', { Minecraft: 'app' })).toBe(false)
+  })
   it('recusa chave desconhecida e valor do tipo errado', () => {
     const { s, data } = make()
     expect(s.set('hacker', 1)).toBe(false)

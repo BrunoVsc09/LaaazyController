@@ -1,7 +1,9 @@
 // settings.json com chaves conhecidas, padrões e validação.
+const { validModes } = require('../core/routing')
+const streaming = require('../../shared/streaming')
+
 const isText = (v) => typeof v === 'string'
 const isBool = (v) => typeof v === 'boolean'
-const isPlainObject = (v) => !!v && typeof v === 'object' && !Array.isArray(v)
 
 const RULES = {
   edgePath: isText,
@@ -11,7 +13,7 @@ const RULES = {
   ds4Path: isText,
   closeDs4OnMenu: isBool,
   librarySort: (v) => v === 'asc' || v === 'desc',
-  streamModes: isPlainObject,
+  streamModes: (v) => validModes(v, streaming),
 }
 
 const DEFAULTS = { closeDs4OnMenu: true, librarySort: 'asc', streamModes: {} }

@@ -31,11 +31,12 @@ describe('registerIpc', () => {
       if (ch !== C.GO_HOME) expect(registered.has(ch), ch).toBe(true)
     }
   })
-  it('open só aceita http(s)', () => {
-    const { h, send } = make()
-    send(C.OPEN, 'file:///C:/Windows/system32', 'X')
+  it('open só aceita http(s) e devolve o aviso do launcher', async () => {
+    const { h, invoke } = make()
+    expect(await invoke(C.OPEN, 'file:///C:/Windows/system32', 'X')).toBe('Endereço inválido.')
     expect(h.launcher.open).not.toHaveBeenCalled()
-    send(C.OPEN, 'https://www.netflix.com', 'Netflix')
+    h.launcher.open.mockResolvedValue('Widevine não instalado.')
+    expect(await invoke(C.OPEN, 'https://www.netflix.com', 'Netflix')).toBe('Widevine não instalado.')
     expect(h.launcher.open).toHaveBeenCalledWith('https://www.netflix.com', 'Netflix')
   })
   it('key só aceita as teclas do player', () => {

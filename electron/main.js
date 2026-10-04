@@ -17,6 +17,7 @@ const { createDs4 } = require('./services/ds4')
 const { createLibrary } = require('./services/library')
 const { createLauncher } = require('./services/launcher')
 const { createForeground } = require('./services/foreground')
+const { widevineStatus } = require('./core/drm')
 const { registerIpc } = require('./ipc/register')
 const { registerAppScheme, handleAppProtocol } = require('./window/app-protocol')
 const { createStreamView } = require('./window/stream-view')
@@ -86,6 +87,8 @@ const launcher = createLauncher({
   openStream: (url) => stream.open(url),
   setExternalActive: (v) => { externalActive = v },
   edgeProfileDir: userFile('edge-tv'),
+  streamModes: () => settings.get('streamModes'),
+  widevine: () => widevineStatus(components.status()),
 })
 
 // ---- Menu e botão PS ----
@@ -118,7 +121,7 @@ registerIpc(ipcMain, {
   quit: () => app.quit(),
   takeWarnings: store.takeWarnings,
   systemUser: () => ({ name: os.userInfo().username }),
-  drmStatus: () => components.status(),
+  drmStatus: () => widevineStatus(components.status()),
 })
 
 app.whenReady().then(async () => {
