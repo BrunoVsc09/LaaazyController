@@ -44,8 +44,8 @@ No DS4Windows, mapeie o botão PS para **F24** (volta ao menu) e outro botão pa
 ## DRM (Netflix e outros)
 
 Alguns serviços só tocam vídeo protegido em navegadores com assinatura VMP de
-produção, que a castlabs só libera para contas corporativas. Por isso **Netflix e
-Crunchyroll abrem no Edge em tela cheia** por padrão (Netflix dava erro E100 dentro
-do app). Os outros abrem dentro do app; se algum não tocar, mude para "No Edge" em
-Configurações. Perfil do DS4, botão PS e "fechar o que está na frente" funcionam
+produção, que a castlabs só libera para contas corporativas. Por isso **todos os
+serviços de streaming abrem no Edge em tela cheia** por padrão (Netflix dava erro
+E100 dentro do app; Alt+F4 fecha o Edge). Dá para trocar um serviço para "No app"
+em Configurações. Perfil do DS4, botão PS e "fechar o que está na frente" funcionam
 nos dois modos.

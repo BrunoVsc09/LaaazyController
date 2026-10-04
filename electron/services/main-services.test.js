@@ -50,8 +50,10 @@ describe('launcher', () => {
     return { l: launcherMod.createLauncher(deps), deps }
   }
 
-  it('Prime Video abre dentro do app com o perfil do DS4 do card', async () => {
-    const { l, deps } = make()
+  it('com a escolha "App", Prime Video abre dentro do app com o perfil do DS4 do card', async () => {
+    const { deps } = make()
+    deps.streamModes = () => ({ 'Prime Video': 'app' })
+    const l = launcherMod.createLauncher(deps)
     await l.open('https://www.primevideo.com', 'Prime Video')
     expect(deps.ds4.applyFor).toHaveBeenCalledWith('Prime Video')
     expect(deps.openStream).toHaveBeenCalledWith('https://www.primevideo.com')
@@ -91,11 +93,9 @@ describe('launcher', () => {
     expect(deps.openPath).toHaveBeenCalledWith('C:\\H\\Hydra.exe')
     expect(await l.launch('ds4windows')).toBe('Não achei o DS4Windows.')
   })
-  it('a escolha "Edge" do usuário manda o Prime Video para o Edge', async () => {
-    const { deps } = make({ found: { edge: 'C:\\E\\msedge.exe' } })
-    deps.streamModes = () => ({ 'Prime Video': 'edge' })
-    const l2 = launcherMod.createLauncher(deps)
-    await l2.open('https://www.primevideo.com', 'Prime Video')
+  it('YouTube também abre no Edge por padrão', async () => {
+    const { l, deps } = make({ found: { edge: 'C:\\E\\msedge.exe' } })
+    await l.open('https://www.youtube.com/tv', 'YouTube')
     expect(deps.openStream).not.toHaveBeenCalled()
     expect(deps.spawnDetached).toHaveBeenCalled()
   })
@@ -109,6 +109,7 @@ describe('launcher', () => {
   it('sem Widevine, serviço com DRM no app avisa em vez de abrir uma tela que não toca', async () => {
     const { deps } = make()
     deps.widevine = () => ({ installed: false, msg: 'Widevine não instalado.' })
+    deps.streamModes = () => ({ 'Prime Video': 'app' })
     const l = launcherMod.createLauncher(deps)
     expect(await l.open('https://www.primevideo.com', 'Prime Video')).toBe('Widevine não instalado.')
     expect(deps.openStream).not.toHaveBeenCalled()
@@ -116,6 +117,7 @@ describe('launcher', () => {
   it('sem Widevine, YouTube (sem DRM) abre normalmente', async () => {
     const { deps } = make()
     deps.widevine = () => ({ installed: false, msg: 'x' })
+    deps.streamModes = () => ({ YouTube: 'app' })
     const l = launcherMod.createLauncher(deps)
     expect(await l.open('https://www.youtube.com/tv', 'YouTube')).toBe('')
     expect(deps.openStream).toHaveBeenCalled()

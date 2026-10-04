@@ -15,11 +15,9 @@ describe('routing', () => {
   it('URL inválida não quebra', () => {
     expect(routing.serviceForUrl('não é url', services)).toBeNull()
   })
-  // Netflix recusa tocar sem assinatura VMP (erro E100), que exige conta corporativa na castlabs
-  it('modo padrão: Crunchyroll e Netflix no Edge, resto no app, desconhecido no app', () => {
-    expect(routing.openMode('https://www.crunchyroll.com', services)).toBe('edge')
-    expect(routing.openMode('https://www.netflix.com', services)).toBe('edge')
-    expect(routing.openMode('https://www.primevideo.com', services)).toBe('app')
+  // Sem assinatura VMP de produção (conta corporativa na castlabs), DRM dentro do app falha (Netflix: E100)
+  it('modo padrão: todos os serviços de streaming no Edge; site desconhecido no app', () => {
+    for (const s of services) expect(routing.openMode(s.url, services), s.label).toBe('edge')
     expect(routing.openMode('https://exemplo.com', services)).toBe('app')
   })
   it('isWebUrl aceita só http(s)', () => {

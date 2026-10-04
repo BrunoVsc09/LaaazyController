@@ -27,11 +27,11 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 | Serviço | Modo | `pnpm app` | `.exe` portátil | Código de erro |
 |---|---|---|---|---|
 | Netflix | Edge (padrão) | ❌ E100 no app | | E100 (DRM recusado sem VMP) |
-| Prime Video | | | | |
-| HBO Max | | | | |
-| Crunchyroll | | | | |
-| YouTube | | | | |
-| Spotify | | | | |
+| Prime Video | Edge (padrão) | | | |
+| HBO Max | Edge (padrão) | | | |
+| Crunchyroll | Edge (padrão) | | | |
+| YouTube | Edge (padrão) | | | |
+| Spotify | Edge (padrão) | | | |
 
 - [ ] Configurações mostra o status do Widevine
 - [ ] Trocar o modo de um serviço para "Edge" abre no Edge em tela cheia (Alt+F4 fecha)
