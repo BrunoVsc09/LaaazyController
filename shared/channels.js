@@ -31,4 +31,7 @@ module.exports = {
   GAMES_RECENT: 'games:recent',
   MYLIST_GET: 'mylist:get',
   MYLIST_TOGGLE: 'mylist:toggle',
+  POWER_RUN: 'power:run',
+  POWER_LOGIN_GET: 'power:loginGet',
+  POWER_LOGIN_SET: 'power:loginSet',
 }

@@ -257,3 +257,6 @@ button { font: inherit; }
 .lz-search-box { display: flex; align-items: center; gap: 14px; padding: 14px 20px; border-radius: 16px; background: rgba(0,0,0,.3); font-size: 24px; }
 .lz-search-box input { flex: 1; min-width: 0; background: transparent; border: 0; color: #fff; font: inherit; }
 .lz-search-box:focus-within { outline: 3px solid #ffd23f; outline-offset: 3px; }
+.power-menu { position: fixed; top: 110px; right: 5.2vw; z-index: 50; width: 340px; padding: 18px; border-radius: 18px; background: rgba(8, 24, 60, .97); box-shadow: 0 20px 60px rgba(0,0,0,.5); display: flex; flex-direction: column; gap: 10px; color: #fff; }
+.power-menu .lz-btn { text-align: left; }
+.power-menu button:focus-visible { outline: 3px solid #ffd23f; outline-offset: 2px; }

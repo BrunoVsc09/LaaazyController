@@ -7,6 +7,7 @@ import Header from './components/Header'
 import Tabs from './components/Tabs'
 import Footer from './components/Footer'
 import OnScreenKeyboard from './components/OnScreenKeyboard'
+import PowerMenu from './components/PowerMenu'
 import HomeScreen from './screens/HomeScreen'
 import LibraryScreen from './screens/LibraryScreen'
 import AppsScreen from './screens/AppsScreen'
@@ -42,6 +43,10 @@ export default function Page() {
   const oskRef = useRef<HTMLInputElement | null>(null)
   oskRef.current = oskTarget
   const oskPress = useRef<((key: string) => void) | null>(null)
+  const [powerOpen, setPowerOpen] = useState(false)
+  const powerRef = useRef(false)
+  powerRef.current = powerOpen
+  const closePower = () => { setPowerOpen(false); focusFirst('.ps4-icons button') }
   const closeOsk = () => { const t = oskRef.current; setOskTarget(null); t?.focus() }
 
   useEffect(() => { getLazy()?.settings.get().then((s) => { if (s.pinnedApps) setPinned(s.pinnedApps) }) }, [])
@@ -90,9 +95,10 @@ export default function Page() {
   const padOn = useGamepad(({ fired, dx, dy }) => {
     const { screen } = stateRef.current
     const osk = !!oskRef.current
+    const modal = powerRef.current
     const now = performance.now()
     if ((dx || dy) && now - lastMove.current > REPEAT_MS) {
-      focusMove(osk ? '.osk button' : FOCUSABLE, dx, dx ? 0 : dy)
+      focusMove(osk ? '.osk button' : modal ? '.power-menu button' : FOCUSABLE, dx, dx ? 0 : dy)
       lastMove.current = now
     }
     if (!dx && !dy) lastMove.current = 0
@@ -101,6 +107,11 @@ export default function Page() {
       if (fired(BTN.SQUARE)) oskPress.current?.('backspace')
       if (fired(BTN.TRIANGLE)) oskPress.current?.('space')
       if (fired(BTN.O)) closeOsk()
+      return
+    }
+    if (modal) {
+      if (fired(BTN.X)) (document.activeElement as HTMLElement | null)?.click()
+      if (fired(BTN.O)) closePower()
       return
     }
     const active = document.activeElement
@@ -128,7 +139,7 @@ export default function Page() {
     <main className={`ps4-screen ${state.anim === 'entering' ? 'library-entering' : ''} ${state.anim === 'leaving' ? 'library-leaving' : ''}`}>
       <PS4Background />
       <div className="pad-badge">{padOn ? 'Controle conectado' : 'Controle não detectado. Aperte um botão.'}</div>
-      <Header sounds={sounds} onController={() => go('ds4')} onSettings={() => go('settings')} onPower={() => getLazy()?.quit()} />
+      <Header sounds={sounds} onController={() => go('ds4')} onSettings={() => go('settings')} onPower={() => setPowerOpen(true)} />
       {['home', 'library', 'apps'].includes(state.screen) && <Tabs current={state.screen} onGo={go} sounds={sounds} />}
       {state.screen === 'home' && <HomeScreen pinned={pinned} sounds={sounds} onActivate={activate} onOpenSettings={() => go('settings')} />}
       {state.screen === 'library' && <LibraryScreen onBack={back} sounds={sounds} />}
@@ -136,6 +147,7 @@ export default function Page() {
       {state.screen === 'ds4' && <Ds4Screen onBack={back} sounds={sounds} />}
       {state.screen === 'settings' && <SettingsScreen onBack={back} sounds={sounds} />}
       {state.screen === 'search' && <SearchScreen sounds={sounds} onActivate={activate} onBack={back} />}
+      {powerOpen && <PowerMenu onClose={closePower} sounds={sounds} />}
       {oskTarget && <OnScreenKeyboard target={oskTarget} onClose={closeOsk} sounds={sounds} pressRef={oskPress} />}
       <Footer screen={state.screen} hints={oskTarget ? OSK_HINTS : undefined} />
     </main>

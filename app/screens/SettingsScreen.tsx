@@ -16,6 +16,7 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
   const [modes, setModes] = useState<Record<string, StreamMode>>({})
   const [drm, setDrm] = useState<DrmStatus | null>(null)
   const [tmdbOn, setTmdbOn] = useState(false)
+  const [atLogin, setAtLogin] = useState(false)
   const [tmdbKey, setTmdbKey] = useState('')
 
   useEffect(() => {
@@ -24,6 +25,7 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
     Promise.all([lazy.exe.get('edge'), lazy.exe.get('ds4windows')]).then(([edge, ds4windows]) => setPaths({ edge, ds4windows }))
     lazy.drm.status().then(setDrm)
     lazy.catalog.status().then((s) => setTmdbOn(s.configured))
+    lazy.power.openAtLogin().then(setAtLogin)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // A chave só passa pela tela uma vez: vai para o Electron, que testa e guarda criptografada
@@ -50,6 +52,12 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
     lazy?.settings.set('closeDs4OnMenu', v)
     setMsg(v ? 'Ao apertar PS, o DS4Windows será fechado.' : 'O DS4Windows continuará aberto ao apertar PS.')
   }
+  const toggleLogin = () => {
+    const v = !atLogin
+    setAtLogin(v)
+    lazy?.power.setOpenAtLogin(v)
+    setMsg(v ? 'O Laaazy vai abrir junto com o Windows.' : 'O Laaazy não vai mais abrir junto com o Windows.')
+  }
   const toggleMode = (label: string, current: StreamMode) => {
     const next: StreamMode = current === 'app' ? 'edge' : 'app'
     const all = { ...modes, [label]: next }
@@ -67,6 +75,7 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
       <button className="ds4-row" onClick={tap(() => choose('edge', 'Edge'))} onMouseEnter={sounds.hover}><span>Pasta do Edge</span><b>{paths.edge || 'não encontrado, toque para escolher'}</b></button>
       <button className="ds4-row" onClick={tap(() => choose('ds4windows', 'DS4Windows'))} onMouseEnter={sounds.hover}><span>Pasta do DS4Windows</span><b>{paths.ds4windows || 'não encontrado, toque para escolher'}</b></button>
       <button className="ds4-row" onClick={tap(toggleClose)} onMouseEnter={sounds.hover}><span>Fechar o DS4Windows ao apertar PS</span><b>{closeDs4 ? 'Sim' : 'Não'}</b></button>
+      <button className="ds4-row" onClick={tap(toggleLogin)} onMouseEnter={sounds.hover}><span>Abrir junto com o Windows</span><b>{atLogin ? 'Sim' : 'Não'}</b></button>
       <h2 className="ds4-help">Filmes e séries (TMDB)</h2>
       <p className="ds4-help">
         {tmdbOn ? 'Chave do TMDB configurada.' : 'Sem chave: o Início não mostra filmes e séries.'} Crie uma chave grátis em themoviedb.org → Configurações → API e cole o &quot;API Read Access Token&quot; abaixo (use o teclado).

@@ -24,6 +24,7 @@ contextBridge.exposeInMainWorld('lazy', {
   },
   system: { user: invoke(C.SYSTEM_USER) },
   myList: { get: invoke(C.MYLIST_GET), toggle: invoke(C.MYLIST_TOGGLE) },
+  power: { run: invoke(C.POWER_RUN), openAtLogin: invoke(C.POWER_LOGIN_GET), setOpenAtLogin: invoke(C.POWER_LOGIN_SET) },
   drm: { status: invoke(C.DRM_STATUS) },
   catalog: {
     status: invoke(C.CATALOG_STATUS),

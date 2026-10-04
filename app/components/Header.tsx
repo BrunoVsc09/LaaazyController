@@ -22,7 +22,7 @@ export default function Header({ sounds, onController, onSettings, onPower }: Pr
   const actions = [
     { label: 'Perfis do controle', Icon: Gamepad2, run: onController },
     { label: 'Configurações', Icon: Settings, run: onSettings },
-    { label: 'Fechar o app', Icon: Power, run: onPower },
+    { label: 'Energia', Icon: Power, run: onPower },
   ]
   return (
     <header className="ps4-header">

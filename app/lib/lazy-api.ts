@@ -33,6 +33,11 @@ export type LazyApi = {
     remove(id: string): Promise<Result>
     recent(): Promise<Game[]>
   }
+  power: {
+    run(action: 'quit' | 'suspend' | 'shutdown', confirmed?: boolean): Promise<{ ok: boolean; confirm?: boolean; msg?: string }>
+    openAtLogin(): Promise<boolean>
+    setOpenAtLogin(on: boolean): Promise<void>
+  }
   myList: { get(): Promise<Title[]>; toggle(item: Title): Promise<{ ok: boolean; added?: boolean; msg?: string }> }
   system: { user(): Promise<{ name: string }> }
   drm: { status(): Promise<DrmStatus> }

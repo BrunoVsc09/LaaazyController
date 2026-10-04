@@ -82,3 +82,9 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Abrir um jogo e voltar: ele aparece em "Continuar jogando" no Início (mais recente primeiro)
 - [ ] "＋ Minha lista" no destaque salva o título; aparece na fileira "Minha lista" e o botão vira "✓ Na Minha lista"
 - [ ] Apertar de novo tira da lista; reabrir o app mantém a lista
+
+## Energia
+- [ ] Ícone Energia abre o menu: Fechar o Laaazy, Suspender, Desligar, Cancelar
+- [ ] Suspender/Desligar pedem confirmação; Cancelar volta sem fazer nada
+- [ ] (Teste com cuidado) Suspender confirmado suspende o PC. Se a hibernação estiver ligada no Windows, ele hiberna
+- [ ] Configurações → Abrir junto com o Windows = Sim; reiniciar o PC abre o Laaazy (no .exe portátil, o .exe precisa continuar na mesma pasta)

@@ -27,6 +27,7 @@ function make() {
     },
     myList: { get: vi.fn(async () => []), toggle: vi.fn(async () => ({ ok: true, added: true })) },
     recentGames: vi.fn(async () => []),
+    power: { run: vi.fn(async () => ({ ok: true })), openAtLogin: vi.fn(() => false), setOpenAtLogin: vi.fn() },
   }
   mod.registerIpc(ipcMain, h)
   const send = (ch, ...a) => on.get(ch)({}, ...a)
@@ -69,6 +70,16 @@ describe('registerIpc', () => {
     expect(await invoke(C.EXE_GET, 'edge')).toBe('C:\\E\\msedge.exe')
     h.locator.find.mockResolvedValue(null)
     expect(await invoke(C.EXE_GET, 'edge')).toBe('')
+  })
+  it('energia: confirmação só conta se for exatamente true', async () => {
+    const { invoke, h } = make()
+    await invoke(C.POWER_RUN, 'shutdown', 'sim')
+    expect(h.power.run).toHaveBeenLastCalledWith('shutdown', false)
+    await invoke(C.POWER_RUN, 'shutdown', true)
+    expect(h.power.run).toHaveBeenLastCalledWith('shutdown', true)
+    expect(await invoke(C.POWER_RUN, 5)).toMatchObject({ ok: false })
+    await invoke(C.POWER_LOGIN_SET, 1)
+    expect(h.power.setOpenAtLogin).toHaveBeenCalledWith(true)
   })
   it('Minha lista: toggle só com objeto', async () => {
     const { invoke, h } = make()

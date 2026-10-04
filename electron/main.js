@@ -2,6 +2,7 @@
 const { app, ipcMain, components, dialog, shell, globalShortcut, safeStorage } = require('electron')
 const fs = require('fs')
 const os = require('os')
+const { execFile } = require('child_process')
 const path = require('path')
 
 const store = require('./adapters/json-store')
@@ -15,6 +16,8 @@ const { createTmdb } = require('./adapters/tmdb')
 const { createSecretStore } = require('./adapters/secret-store')
 const { createCatalog } = require('./services/catalog')
 const { createMyList } = require('./services/my-list')
+const { createPower } = require('./services/power')
+const { loginItemFor } = require('./core/power')
 const { pushRecent, recentGames } = require('./core/recent')
 const { createSettings } = require('./services/settings')
 const { createExeLocator } = require('./services/exe-locator')
@@ -108,6 +111,18 @@ const library = createLibrary({
     await store.writeJson(userFile('recent.json'), pushRecent(ids, id))
   },
 })
+// Energia. "Abrir junto com o Windows" usa o .exe real (no portátil, não a pasta temporária)
+const loginItem = () => loginItemFor({
+  isPackaged: app.isPackaged, execPath: process.execPath,
+  portableFile: process.env.PORTABLE_EXECUTABLE_FILE || '', appPath: app.getAppPath(),
+})
+const power = createPower({
+  exec: (cmd, args) => new Promise((res) => execFile(cmd, args, { windowsHide: true }, (e) => res(e ? e.message : ''))),
+  quit: () => app.quit(),
+  getLogin: () => app.getLoginItemSettings(loginItem()).openAtLogin,
+  setLogin: (openAtLogin) => { app.setLoginItemSettings({ openAtLogin, ...loginItem() }); return true },
+})
+
 const myList = createMyList({
   read: () => store.readJson(userFile('my-list.json'), []),
   write: (list) => store.writeJson(userFile('my-list.json'), list),
@@ -163,7 +178,7 @@ const foreground = createForeground({
 })
 
 registerIpc(ipcMain, {
-  launcher, locator, settings, ds4, library, catalog, myList, goHome,
+  launcher, locator, settings, ds4, library, catalog, myList, power, goHome,
   recentGames: async () => recentGames(await store.readJson(userFile('recent.json'), []), await library.list()),
   back: () => { if (!stream.back()) goHome() },
   sendKey: (key) => stream.sendKey(key),
