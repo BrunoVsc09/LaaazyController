@@ -6,7 +6,9 @@
 |---|---|
 | 0–5, 7–9 | ✅ concluídas (um commit cada) |
 | 6. Streaming e DRM | ✅ modo app/Edge por serviço e status do Widevine. Netflix: erro E100 no `pnpm app` (H2: assinatura VMP de desenvolvimento recusada). A conta castlabs EVS não aceita e-mail pessoal → assinatura VMP descartada; **Todos os streamings passam a abrir no Edge por padrão** (decisão de 2026-10-04); "No app" continua disponível por serviço em Configurações |
-| 10–11. Design / novo visual | ⏸ aguardando a decisão "outra face" (seção 5) |
+| 10. Design | ✅ protótipo "lazy." (identidade própria, estrutura Início/Biblioteca/Apps) em artifact, fora do projeto · ⏳ aprovação |
+| 13. Catálogo de filmes e séries (TMDB) | ✅ dados, chave criptografada e campo em Configurações (seção 7) · a tela de Início com filmes e séries entra na fase 11 |
+| 11. Novo visual | ⏸ depois da aprovação do protótipo e da fase 13 |
 | 12. Limpeza | ✅ dependências e código mortos removidos, README · ⏸ CSS morto (`.ps4-divider`, `.ps4-live`, `.icon-with-badge`, `.details-command-icon`) sai na fase 11; sons/ícones locais aguardam permissão para baixar |
 
 Bugs: B1–B6 corrigidos, cada um com teste de regressão. Achado na fase 6: o build
@@ -284,3 +286,25 @@ o Edge pelo mesmo motivo. Objetivo: os seis serviços tocando vídeo/música.
 ### Critério de pronto
 Os seis serviços tocam pelo caminho escolhido (app ou Edge), no `.exe` portátil, e
 o motivo de cada escolha está registrado na matriz.
+
+---
+
+## 7. Fase 13 — Catálogo de filmes e séries (TMDB)
+
+Fonte: API do TMDB (gratuita, uso pessoal não comercial). O Gemini/Google AI Studio
+foi descartado: é IA generativa, não um catálogo — inventaria títulos e serviços.
+
+- **Chave:** colada pelo usuário em Configurações; validada no TMDB antes de salvar;
+  guardada criptografada com `safeStorage` (proteção de dados do Windows). Sem
+  `safeStorage` disponível, a chave não é salva (nunca em texto puro). Nunca no código,
+  no git ou nos logs.
+- **Chamadas só no processo principal** (`adapters/tmdb.js`); a tela nunca vê a chave.
+- **Domínio independente do TMDB** (`core/catalog.js`): título, tipo, ano, sinopse,
+  imagens, serviço, popularidade. Trocar de fonte = trocar o adapter e o mapeamento.
+- **"Em alta nos seus apps":** um `discover` por serviço (Netflix, Prime Video, HBO Max,
+  Crunchyroll) com `watch_region=BR`, em português; ids dos serviços resolvidos pelo
+  nome via `/watch/providers` (não fixados no código).
+- **Cache local de 6h**; sem internet, mostra a última lista com aviso.
+- **Trailer** sob demanda (`/videos`), preferindo trailer oficial em português no YouTube.
+- **Atribuição** exigida pelo TMDB em Configurações.
+- Testes só com respostas falsas (fixtures); nunca a API real.

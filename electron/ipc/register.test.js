@@ -16,6 +16,13 @@ function make() {
     takeWarnings: vi.fn(() => []),
     systemUser: vi.fn(() => ({ name: 'ana', initial: 'A' })),
     drmStatus: vi.fn(() => ({ installed: true })),
+    catalog: {
+      status: vi.fn(() => ({ configured: true })),
+      setKey: vi.fn(async () => ({ ok: true, msg: '' })),
+      clearKey: vi.fn(async () => ({ ok: true, msg: '' })),
+      home: vi.fn(async () => ({ ok: true })),
+      trailer: vi.fn(async () => 'yt1'),
+    },
   }
   mod.registerIpc(ipcMain, h)
   const send = (ch, ...a) => on.get(ch)({}, ...a)
@@ -58,6 +65,17 @@ describe('registerIpc', () => {
     expect(await invoke(C.EXE_GET, 'edge')).toBe('C:\\E\\msedge.exe')
     h.locator.find.mockResolvedValue(null)
     expect(await invoke(C.EXE_GET, 'edge')).toBe('')
+  })
+  it('catálogo: chave e id precisam ser texto; home só repassa fresh', async () => {
+    const { invoke, h } = make()
+    expect(await invoke(C.CATALOG_SET_KEY, 123)).toMatchObject({ ok: false })
+    expect(h.catalog.setKey).not.toHaveBeenCalled()
+    await invoke(C.CATALOG_SET_KEY, 'CHAVE')
+    expect(h.catalog.setKey).toHaveBeenCalledWith('CHAVE')
+    expect(await invoke(C.CATALOG_TRAILER, {})).toBeNull()
+    expect(await invoke(C.CATALOG_TRAILER, 'tv:1')).toBe('yt1')
+    await invoke(C.CATALOG_HOME, { fresh: 'sim', x: 1 })
+    expect(h.catalog.home).toHaveBeenCalledWith({ fresh: true })
   })
   it('games:list só repassa a opção fresh', async () => {
     const { invoke, h } = make()

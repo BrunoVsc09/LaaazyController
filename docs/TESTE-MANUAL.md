@@ -57,3 +57,11 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Pasta do DS4Windows: idem com DS4Windows.exe
 - [ ] Chrome e Firefox abrem (se não achar, pergunta a pasta)
 - [ ] Loja Hydra abre
+
+## Filmes e séries (TMDB)
+- [ ] Configurações → colar uma chave errada → "O TMDB recusou essa chave" e nada é salvo
+- [ ] Colar a chave certa (API Read Access Token) → "Chave salva"; o campo esvazia
+- [ ] `%APPDATA%\lazy-ps4\secrets.json` NÃO mostra a chave em texto
+- [ ] Reabrir o app → Configurações continua dizendo "Chave do TMDB configurada"
+- [ ] "Remover a chave do TMDB" → volta para "Sem chave"
+- [ ] (fase 11) Início mostra séries e filmes em alta dos seus serviços, com prévia

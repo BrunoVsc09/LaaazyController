@@ -20,7 +20,7 @@ import { initialScreen, screenReducer } from './lib/screen-state'
 const { BTN } = gamepad
 const REPEAT_MS = 220
 const ANIM_MS = { entering: 420, leaving: 620 }
-const SCREEN_FOCUSABLE = '.library-view button, .library-view input, .ds4-view button'
+const SCREEN_FOCUSABLE = '.library-view button, .library-view input, .ds4-view button, .ds4-view input'
 const HEADER_BUTTONS = '.ps4-icons button'
 
 const focusFirst = (selector: string) => document.querySelector<HTMLElement>(selector)?.focus()

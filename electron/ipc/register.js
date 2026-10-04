@@ -30,6 +30,11 @@ function registerIpc(ipcMain, h) {
   handle(C.GAMES_REMOVE, (id) => (isText(id) ? h.library.remove(id) : { ok: false, msg: 'Jogo inválido.' }))
   handle(C.SYSTEM_USER, () => h.systemUser())
   handle(C.DRM_STATUS, () => h.drmStatus())
+  handle(C.CATALOG_STATUS, () => h.catalog.status())
+  handle(C.CATALOG_SET_KEY, (key) => (isText(key) ? h.catalog.setKey(key) : { ok: false, msg: 'Chave inválida.' }))
+  handle(C.CATALOG_CLEAR_KEY, () => h.catalog.clearKey())
+  handle(C.CATALOG_HOME, (opts) => h.catalog.home({ fresh: !!(opts && opts.fresh) }))
+  handle(C.CATALOG_TRAILER, (id) => (isText(id) ? h.catalog.trailer(id) : null))
 }
 
 module.exports = { registerIpc }

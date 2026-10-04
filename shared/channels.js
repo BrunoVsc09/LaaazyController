@@ -21,4 +21,9 @@ module.exports = {
   GAMES_REMOVE: 'games:remove',
   SYSTEM_USER: 'system:user',
   DRM_STATUS: 'drm:status',
+  CATALOG_STATUS: 'catalog:status',
+  CATALOG_SET_KEY: 'catalog:setKey',
+  CATALOG_CLEAR_KEY: 'catalog:clearKey',
+  CATALOG_HOME: 'catalog:home',
+  CATALOG_TRAILER: 'catalog:trailer',
 }

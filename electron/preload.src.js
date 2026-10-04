@@ -23,4 +23,11 @@ contextBridge.exposeInMainWorld('lazy', {
   },
   system: { user: invoke(C.SYSTEM_USER) },
   drm: { status: invoke(C.DRM_STATUS) },
+  catalog: {
+    status: invoke(C.CATALOG_STATUS),
+    setKey: invoke(C.CATALOG_SET_KEY),
+    clearKey: invoke(C.CATALOG_CLEAR_KEY),
+    home: invoke(C.CATALOG_HOME),
+    trailer: invoke(C.CATALOG_TRAILER),
+  },
 })

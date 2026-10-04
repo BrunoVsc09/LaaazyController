@@ -1,5 +1,5 @@
 // Raiz de composição: cria adapters → serviços → IPC → janela. Sem regra de negócio aqui.
-const { app, ipcMain, components, dialog, shell, globalShortcut } = require('electron')
+const { app, ipcMain, components, dialog, shell, globalShortcut, safeStorage } = require('electron')
 const fs = require('fs')
 const os = require('os')
 const path = require('path')
@@ -11,6 +11,9 @@ const { createForegroundProbe } = require('./adapters/ps-foreground')
 const { createDialogs } = require('./adapters/dialogs')
 const { createDs4Cli } = require('./adapters/ds4-cli')
 const sources = require('./adapters/game-sources')
+const { createTmdb } = require('./adapters/tmdb')
+const { createSecretStore } = require('./adapters/secret-store')
+const { createCatalog } = require('./services/catalog')
 const { createSettings } = require('./services/settings')
 const { createExeLocator } = require('./services/exe-locator')
 const { createDs4 } = require('./services/ds4')
@@ -91,6 +94,21 @@ const launcher = createLauncher({
   widevine: () => widevineStatus(components.status()),
 })
 
+// Filmes e séries (TMDB). A chave fica criptografada em secrets.json; o cache em catalog-cache.json.
+const catalog = createCatalog({
+  tmdb: createTmdb(),
+  secrets: createSecretStore({
+    safeStorage,
+    read: () => store.readJsonSync(userFile('secrets.json'), {}),
+    write: (data) => store.writeJsonSync(userFile('secrets.json'), data),
+  }),
+  readCache: async () => {
+    const c = await store.readJson(userFile('catalog-cache.json'), {})
+    return c.at ? c : null
+  },
+  writeCache: (c) => store.writeJson(userFile('catalog-cache.json'), c || {}),
+})
+
 // ---- Menu e botão PS ----
 function goHome() {
   stream.close()
@@ -115,7 +133,7 @@ const foreground = createForeground({
 })
 
 registerIpc(ipcMain, {
-  launcher, locator, settings, ds4, library, goHome,
+  launcher, locator, settings, ds4, library, catalog, goHome,
   back: () => { if (!stream.back()) goHome() },
   sendKey: (key) => stream.sendKey(key),
   quit: () => app.quit(),
