@@ -17,3 +17,7 @@ node_modules
 out/
 dist/
 *.tsbuildinfo
+
+# Gerados por scripts/build-preloads.js
+electron/preload.js
+electron/stream-preload.js

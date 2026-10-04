@@ -9,8 +9,9 @@
     "test:watch": "vitest",
     "build": "next build",
     "start": "next start",
-    "app": "next build && electron .",
-    "dist": "next build && electron-builder"
+    "app": "pnpm preloads && next build && electron .",
+    "dist": "pnpm preloads && next build && electron-builder",
+    "preloads": "node scripts/build-preloads.js"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",
@@ -45,7 +46,9 @@
     "files": [
       "electron/**",
       "!electron/**/*.test.js",
+      "!electron/**/*.src.js",
       "shared/**",
+      "!shared/**/*.test.js",
       "out/**",
       "package.json"
     ],
