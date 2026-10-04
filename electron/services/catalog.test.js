@@ -81,7 +81,7 @@ describe('catalog: chave', () => {
   })
   it('chave recusada pelo TMDB não é salva', async () => {
     const { catalog, secrets } = make({ key: '', pingOk: false })
-    expect(await catalog.setKey('ERRADA')).toEqual({ ok: false, msg: 'O TMDB recusou essa chave. Confira se copiou o "API Read Access Token".' })
+    expect(await catalog.setKey('ERRADA')).toEqual({ ok: false, msg: 'O TMDB recusou essa chave. Cole a "Chave da API" (32 letras e números) ou o "Token de Leitura da API" (texto longo que começa com eyJ), sem espaços.' })
     expect(secrets.set).not.toHaveBeenCalled()
   })
   it('chave aceita é salva (sem espaços) e o cache antigo cai', async () => {

@@ -91,7 +91,7 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
       <button className="ds4-row" onClick={tap(toggleLogin)} onMouseEnter={sounds.hover}><span>Abrir junto com o Windows</span><b>{atLogin ? 'Sim' : 'Não'}</b></button>
       <ApiKeySection
         title="Filmes e séries (TMDB)" configured={tmdbOn} sounds={sounds}
-        help='Para o Início mostrar filmes e séries. Crie uma chave grátis em themoviedb.org → Configurações → API e cole o "API Read Access Token" (X no campo abre o teclado).'
+        help='Para o Início mostrar filmes e séries. Crie uma chave grátis em themoviedb.org → Configurações → API e cole a "Chave da API" ou o "Token de Leitura da API" (X no campo abre o teclado).'
         note="Este produto usa a API do TMDB, mas não é endossado nem certificado pelo TMDB."
         onSave={(k) => lazy!.catalog.setKey(k)} onClear={() => lazy!.catalog.clearKey()}
         onResult={(m, on) => { setMsg(m); setTmdbOn(on) }}

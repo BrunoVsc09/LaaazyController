@@ -80,3 +80,26 @@ describe('tmdb: discover com filtros e recomendações', () => {
     expect(new URL(fetch.mock.calls[0][0]).pathname).toBe('/3/tv/9/recommendations')
   })
 })
+
+describe('tmdb: os dois tipos de credencial', () => {
+  const V3 = '0123456789abcdef0123456789abcdef' // "Chave da API" (32 caracteres)
+  it('Chave da API (32 caracteres) vai como api_key, sem cabeçalho Authorization', async () => {
+    const fetch = fakeFetch(200, { results: [] })
+    await mod.createTmdb({ fetch }).discover(V3, 'tv', 8)
+    const [url, opts] = fetch.mock.calls[0]
+    expect(new URL(url).searchParams.get('api_key')).toBe(V3)
+    expect(opts.headers.Authorization).toBeUndefined()
+  })
+  it('Token de Leitura (longo, eyJ...) vai como Bearer, fora da URL', async () => {
+    const fetch = fakeFetch(200, { results: [] })
+    await mod.createTmdb({ fetch }).discover('eyJhbGciOiJIUzI1NiJ9.abc.def', 'tv', 8)
+    const [url, opts] = fetch.mock.calls[0]
+    expect(url).not.toContain('eyJ')
+    expect(opts.headers.Authorization).toBe('Bearer eyJhbGciOiJIUzI1NiJ9.abc.def')
+  })
+  it('ping funciona com a Chave da API', async () => {
+    const fetch = fakeFetch(200, { success: true })
+    expect(await mod.createTmdb({ fetch }).ping(V3)).toBe(true)
+    expect(new URL(fetch.mock.calls[0][0]).searchParams.get('api_key')).toBe(V3)
+  })
+})

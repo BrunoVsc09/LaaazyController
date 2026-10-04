@@ -19,7 +19,7 @@ function createCatalog({ tmdb, secrets, readCache, writeCache, now = Date.now })
   async function setKey(raw) {
     const key = typeof raw === 'string' ? raw.trim() : ''
     if (!key) return { ok: false, msg: 'Cole a chave do TMDB (API Read Access Token).' }
-    if (!(await tmdb.ping(key))) return { ok: false, msg: 'O TMDB recusou essa chave. Confira se copiou o "API Read Access Token".' }
+    if (!(await tmdb.ping(key))) return { ok: false, msg: 'O TMDB recusou essa chave. Cole a "Chave da API" (32 letras e números) ou o "Token de Leitura da API" (texto longo que começa com eyJ), sem espaços.' }
     if (!secrets.set(SECRET, key)) return { ok: false, msg: 'Não consegui guardar a chave com segurança neste PC.' }
     await writeCache(null)
     trailers.clear()

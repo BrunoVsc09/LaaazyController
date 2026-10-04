@@ -1,13 +1,19 @@
-// Chamadas HTTP à API do TMDB (v3). A chave (API Read Access Token) vem de quem chama
-// e só vai no cabeçalho Authorization; nunca em URL ou log.
+// Chamadas HTTP à API do TMDB (v3). Aceita as duas credenciais da página do TMDB:
+// - "Chave da API" (32 caracteres): vai como api_key na URL (é assim que o TMDB exige)
+// - "Token de Leitura da API" (longo, eyJ...): vai só no cabeçalho Authorization
+// Nunca em log.
 const BASE = 'https://api.themoviedb.org/3'
 const REGION = { watch_region: 'BR', language: 'pt-BR' }
+const V3_KEY = /^[a-f0-9]{32}$/i
 
 function createTmdb({ fetch = globalThis.fetch } = {}) {
   async function get(token, path, params = {}) {
     const url = new URL(BASE + path)
     for (const [k, v] of Object.entries(params)) url.searchParams.set(k, String(v))
-    const res = await fetch(url.toString(), { headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' } })
+    const headers = { Accept: 'application/json' }
+    if (V3_KEY.test(token)) url.searchParams.set('api_key', token)
+    else headers.Authorization = `Bearer ${token}`
+    const res = await fetch(url.toString(), { headers })
     if (res.status === 401) throw new Error('O TMDB recusou a chave.')
     if (!res.ok) throw new Error(`O TMDB respondeu com erro ${res.status}.`)
     return res.json()
