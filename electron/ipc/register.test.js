@@ -27,6 +27,7 @@ function make() {
     },
     myList: { get: vi.fn(async () => []), toggle: vi.fn(async () => ({ ok: true, added: true })) },
     recentGames: vi.fn(async () => []),
+    volume: { step: vi.fn(() => true) },
     covers: { status: vi.fn(() => ({ configured: false })), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })) },
     power: { run: vi.fn(async () => ({ ok: true })), openAtLogin: vi.fn(() => false), setOpenAtLogin: vi.fn() },
   }
@@ -81,6 +82,13 @@ describe('registerIpc', () => {
     expect(await invoke(C.POWER_RUN, 5)).toMatchObject({ ok: false })
     await invoke(C.POWER_LOGIN_SET, 1)
     expect(h.power.setOpenAtLogin).toHaveBeenCalledWith(true)
+  })
+  it('volume: só up, down e mute', () => {
+    const { send, h } = make()
+    send(C.VOLUME, 'explodir')
+    expect(h.volume.step).not.toHaveBeenCalled()
+    send(C.VOLUME, 'up')
+    expect(h.volume.step).toHaveBeenCalledWith('up')
   })
   it('capas: chave precisa ser texto', async () => {
     const { invoke, h } = make()

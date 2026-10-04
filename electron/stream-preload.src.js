@@ -41,6 +41,8 @@ function tick() {
     if (fired(BTN.TRIANGLE)) ipcRenderer.send(C.KEY, 'Space') // play/pausa
     if (fired(BTN.L1)) ipcRenderer.send(C.KEY, 'Left')        // -10s
     if (fired(BTN.R1)) ipcRenderer.send(C.KEY, 'Right')       // +10s
+    if (fired(BTN.L2)) ipcRenderer.send(C.VOLUME, 'down')
+    if (fired(BTN.R2)) ipcRenderer.send(C.VOLUME, 'up')
     if (fired(BTN.OPTIONS) || fired(BTN.PS)) ipcRenderer.send(C.HOME)
   }
   requestAnimationFrame(tick)

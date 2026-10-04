@@ -3,6 +3,7 @@ const C = require('../../shared/channels')
 const { isWebUrl } = require('../core/routing')
 
 const PLAYER_KEYS = new Set(['Space', 'Left', 'Right'])
+const VOLUME_ACTIONS = new Set(['up', 'down', 'mute'])
 const isText = (v) => typeof v === 'string'
 
 function registerIpc(ipcMain, h) {
@@ -13,6 +14,7 @@ function registerIpc(ipcMain, h) {
   on(C.BACK, () => h.back())
   on(C.KEY, (key) => { if (PLAYER_KEYS.has(key)) h.sendKey(key) })
   on(C.QUIT, () => h.quit())
+  on(C.VOLUME, (action) => { if (VOLUME_ACTIONS.has(action)) h.volume.step(action) })
 
   handle(C.OPEN, (url, label) => (isWebUrl(url) ? h.launcher.open(url, isText(label) ? label : '') : 'Endereço inválido.'))
   handle(C.LAUNCH, (name) => (isText(name) ? h.launcher.launch(name) : 'Programa desconhecido.'))

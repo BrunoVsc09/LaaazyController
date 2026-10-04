@@ -93,3 +93,8 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Configurações → Capas dos jogos: chave errada é recusada; chave certa é salva
 - [ ] Biblioteca: jogos da Epic e do PC ganham capa (até 10 por vez; os outros na próxima abertura)
 - [ ] Jogos da Steam continuam com a capa da Steam
+
+## Volume
+- [ ] No Laaazy: L2 abaixa, R2 aumenta o volume do Windows
+- [ ] Ctrl+Alt+↑/↓/M funcionam mesmo com o Edge na frente
+- [ ] Com F20/F21/F22 mapeados no DS4Windows, o controle muda o volume dentro do Edge e de jogos

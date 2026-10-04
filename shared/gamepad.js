@@ -2,7 +2,7 @@
 // Usado pelo menu (tela) e pelo preload dos sites de streaming.
 
 // Mapeamento "standard" do navegador para o DualShock 4
-const BTN = { X: 0, O: 1, SQUARE: 2, TRIANGLE: 3, L1: 4, R1: 5, OPTIONS: 9, UP: 12, DOWN: 13, LEFT: 14, RIGHT: 15, PS: 16 }
+const BTN = { X: 0, O: 1, SQUARE: 2, TRIANGLE: 3, L1: 4, R1: 5, L2: 6, R2: 7, OPTIONS: 9, UP: 12, DOWN: 13, LEFT: 14, RIGHT: 15, PS: 16 }
 const DEAD_ZONE = 0.6
 
 // Detecta o instante do aperto. Todos os botões são lidos a cada quadro (antes, um

@@ -114,6 +114,8 @@ export default function Page() {
       if (fired(BTN.O)) closePower()
       return
     }
+    if (fired(BTN.L2)) getLazy()?.volume('down')
+    if (fired(BTN.R2)) getLazy()?.volume('up')
     const active = document.activeElement
     if (fired(BTN.X)) {
       if (active instanceof HTMLInputElement) setOskTarget(active)

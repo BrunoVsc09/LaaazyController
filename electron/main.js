@@ -19,6 +19,9 @@ const { createSgdb } = require('./adapters/sgdb')
 const { createCovers } = require('./services/covers')
 const { createMyList } = require('./services/my-list')
 const { createPower } = require('./services/power')
+const { createVolume } = require('./services/volume')
+const { SHORTCUTS: VOLUME_SHORTCUTS } = require('./core/volume')
+const { createKeySender } = require('./adapters/ps-keys')
 const { loginItemFor } = require('./core/power')
 const { pushRecent, recentGames } = require('./core/recent')
 const { createSettings } = require('./services/settings')
@@ -125,6 +128,10 @@ const power = createPower({
   setLogin: (openAtLogin) => { app.setLoginItemSettings({ openAtLogin, ...loginItem() }); return true },
 })
 
+// Volume do Windows (PowerShell em segundo plano apertando as teclas de volume)
+const keySender = createKeySender()
+const volume = createVolume({ send: keySender.send })
+
 const myList = createMyList({
   read: () => store.readJson(userFile('my-list.json'), []),
   write: (list) => store.writeJson(userFile('my-list.json'), list),
@@ -189,7 +196,7 @@ const foreground = createForeground({
 })
 
 registerIpc(ipcMain, {
-  launcher, locator, settings, ds4, library: libraryWithCovers, catalog, myList, power, covers, goHome,
+  launcher, locator, settings, ds4, library: libraryWithCovers, catalog, myList, power, covers, volume, goHome,
   recentGames: async () => recentGames(await store.readJson(userFile('recent.json'), []), await libraryWithCovers.list()),
   back: () => { if (!stream.back()) goHome() },
   sendKey: (key) => stream.sendKey(key),
@@ -213,8 +220,11 @@ app.whenReady().then(async () => {
   for (const key of ['F23', 'CommandOrControl+Alt+End']) {
     try { globalShortcut.register(key, () => foreground.closeCurrent()) } catch {}
   }
+  for (const { accel, action } of VOLUME_SHORTCUTS) {
+    try { globalShortcut.register(accel, () => volume.step(action)) } catch {}
+  }
   probe.warm()
 })
 
-app.on('will-quit', () => { globalShortcut.unregisterAll(); probe.dispose() })
+app.on('will-quit', () => { globalShortcut.unregisterAll(); probe.dispose(); keySender.dispose() })
 app.on('window-all-closed', () => app.quit())

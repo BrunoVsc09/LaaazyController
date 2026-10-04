@@ -20,6 +20,7 @@ export type LazyApi = {
   open(url: string, label: string): Promise<string>
   launch(name: string): Promise<string>
   quit(): void
+  volume(action: 'up' | 'down' | 'mute'): void
   onHome(cb: () => void): void
   settings: { get(): Promise<Settings>; set(key: string, value: unknown): Promise<boolean> }
   exe: { get(key: string): Promise<string>; choose(key: string): Promise<string> }
