@@ -1,5 +1,19 @@
 # Plano de refatoração — Lazy PS4
 
+## Andamento (2026-10-04)
+
+| Fase | Status |
+|---|---|
+| 0–5, 7–9 | ✅ concluídas (um commit cada) |
+| 6. Streaming e DRM | ✅ código (modo app/Edge, Widevine, assinatura VMP) · ⏳ falta: matriz de diagnóstico em `docs/TESTE-MANUAL.md` e conta castlabs EVS (você) |
+| 10–11. Design / novo visual | ⏸ aguardando a decisão "outra face" (seção 5) |
+| 12. Limpeza | ✅ dependências e código mortos removidos, README · ⏸ CSS morto (`.ps4-divider`, `.ps4-live`, `.icon-with-badge`, `.details-command-icon`) sai na fase 11; sons/ícones locais aguardam permissão para baixar |
+
+Bugs: B1–B6 corrigidos, cada um com teste de regressão. Achado na fase 6: o build
+não incluía `shared/` (o `.exe` quebraria ao abrir) — corrigido.
+
+Mantidos de propósito: `shadcn` e `tw-animate-css` (importados pelo `globals.css`).
+
 Objetivo: deixar o código limpo, testado e com os bugs conhecidos corrigidos,
 **sem mudar o que o app faz** (exceto onde está marcado como decisão).
 
