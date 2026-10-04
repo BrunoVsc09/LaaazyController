@@ -217,3 +217,32 @@ button { font: inherit; }
 
 /* Aviso e estado de carregamento da Biblioteca */
 .library-msg { margin: 10px 0 0; padding: 10px 14px; border-left: 3px solid #ffd23f; background: rgba(255,210,63,.1); color: #ffe89a; font-size: 15px; white-space: pre-line; }
+
+/* ---- Laaazy 3.0: abas, Início e Apps (visual provisório; o design final vem depois) ---- */
+.lz-tabs { position: relative; z-index: 1; display: flex; gap: 12px; padding: 4px 5.2vw 0; }
+.lz-tab { padding: 10px 22px; border-radius: 999px; border: 0; background: rgba(255,255,255,.1); color: #fff; font-size: 18px; cursor: pointer; }
+.lz-tab.active { background: #ffd23f; color: #111; font-weight: 700; }
+.lz-tabs button:focus-visible, .lz-home button:focus-visible, .lz-apps button:focus-visible { outline: 3px solid #ffd23f; outline-offset: 3px; }
+.lz-home, .lz-apps { position: relative; z-index: 1; padding: 20px 5.2vw 140px; display: flex; flex-direction: column; gap: 26px; color: #fff; }
+.lz-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 32px; align-items: end; }
+.lz-hero h1 { font-size: 44px; margin: 6px 0; line-height: 1.05; }
+.lz-hero-media { aspect-ratio: 16 / 9; border-radius: 18px; background: rgba(0,0,0,.3) center / cover no-repeat; }
+.lz-meta { color: #b7d3ff; font-size: 18px; }
+.lz-overview { font-size: 17px; line-height: 1.45; color: #dbe7ff; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.lz-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+.lz-btn { padding: 12px 22px; border-radius: 12px; border: 0; font-size: 17px; cursor: pointer; background: rgba(255,255,255,.14); color: #fff; }
+.lz-btn.primary { background: #ffd23f; color: #111; font-weight: 700; }
+.lz-row h2, .lz-heading small { font-size: 20px; font-weight: 400; color: #b7d3ff; margin: 0 0 10px; }
+.lz-heading { font-size: 34px; font-weight: 400; margin: 0; display: flex; align-items: baseline; gap: 16px; }
+.lz-strip { display: flex; gap: 16px; overflow-x: auto; scrollbar-width: none; padding: 6px 4px; }
+.lz-strip::-webkit-scrollbar { display: none; }
+.lz-app { flex: 0 0 auto; width: 110px; height: 110px; border-radius: 20px; border: 0; font-weight: 700; font-size: 13px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; cursor: pointer; }
+.lz-title { flex: 0 0 auto; width: 300px; aspect-ratio: 16 / 9; border-radius: 14px; border: 0; padding: 0; background: rgba(0,0,0,.3) center / cover no-repeat; color: #fff; position: relative; overflow: hidden; cursor: pointer; text-align: left; transition: transform .15s ease; }
+.lz-title span { position: absolute; left: 0; right: 0; bottom: 0; padding: 24px 12px 10px; font-size: 15px; background: linear-gradient(transparent, rgba(0,0,0,.85)); }
+.lz-title:focus-visible { transform: scale(1.05); }
+.lz-empty { padding: 20px 24px; border-radius: 16px; background: rgba(0,0,0,.25); font-size: 18px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.lz-apps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+.lz-app-card { display: flex; flex-direction: column; gap: 8px; }
+.lz-app-tile { height: 130px; border-radius: 16px; border: 0; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+.lz-pin { padding: 8px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,.3); background: transparent; color: #fff; cursor: pointer; font-size: 15px; }
+.lz-pin.on { background: #ffd23f; color: #111; border-color: #ffd23f; }

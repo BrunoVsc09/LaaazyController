@@ -6,21 +6,8 @@ import streaming from '../../shared/streaming'
 import DS4_KEYS from '../../shared/ds4-keys'
 
 describe('screenReducer', () => {
-  it('começa no menu com o primeiro card', () => {
-    expect(initialScreen).toEqual({ screen: 'home', selected: 0, anim: 'none' })
-  })
-  it('move entre os cards sem passar das pontas', () => {
-    let s = screenReducer(initialScreen, { type: 'move', dir: -1, count: 3 })
-    expect(s.selected).toBe(0)
-    s = screenReducer(s, { type: 'move', dir: 1, count: 3 })
-    s = screenReducer(s, { type: 'move', dir: 1, count: 3 })
-    s = screenReducer(s, { type: 'move', dir: 1, count: 3 })
-    expect(s.selected).toBe(2)
-  })
-  // B5: as setas mudavam o card selecionado mesmo com a Biblioteca aberta
-  it('B5: com outra tela aberta, mover não muda o card do menu', () => {
-    const lib = screenReducer({ ...initialScreen, selected: 1 }, { type: 'open', screen: 'library' })
-    expect(screenReducer(lib, { type: 'move', dir: 1, count: 5 }).selected).toBe(1)
+  it('começa no Início', () => {
+    expect(initialScreen).toEqual({ screen: 'home', anim: 'none' })
   })
   it('Biblioteca entra e sai com animação', () => {
     let s = screenReducer(initialScreen, { type: 'open', screen: 'library' })
@@ -32,18 +19,19 @@ describe('screenReducer', () => {
     s = screenReducer(s, { type: 'animDone' })
     expect(s).toMatchObject({ screen: 'home', anim: 'none' })
   })
-  it('outras telas abrem e fecham sem animação', () => {
-    let s = screenReducer(initialScreen, { type: 'open', screen: 'ds4' })
-    expect(s).toMatchObject({ screen: 'ds4', anim: 'none' })
-    s = screenReducer(s, { type: 'leave' })
-    expect(s.screen).toBe('home')
+  it('outras telas (Apps, Perfis, Configurações) abrem e fecham sem animação', () => {
+    for (const screen of ['apps', 'ds4', 'settings'] as const) {
+      let s = screenReducer(initialScreen, { type: 'open', screen })
+      expect(s).toMatchObject({ screen, anim: 'none' })
+      s = screenReducer(s, { type: 'leave' })
+      expect(s.screen).toBe('home')
+    }
   })
   it('goHome (botão PS) fecha qualquer tela na hora', () => {
-    const s = screenReducer({ screen: 'library', selected: 2, anim: 'leaving' }, { type: 'goHome' })
-    expect(s).toEqual({ screen: 'home', selected: 2, anim: 'none' })
+    expect(screenReducer({ screen: 'library', anim: 'leaving' }, { type: 'goHome' })).toEqual({ screen: 'home', anim: 'none' })
   })
-  it('select escolhe um card', () => {
-    expect(screenReducer(initialScreen, { type: 'select', index: 3 }).selected).toBe(3)
+  it('leave no Início não faz nada', () => {
+    expect(screenReducer(initialScreen, { type: 'leave' })).toEqual(initialScreen)
   })
 })
 

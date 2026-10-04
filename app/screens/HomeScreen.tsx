@@ -1,59 +1,95 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import { BRAND } from '@/lib/brand-icons'
+import { useEffect, useState } from 'react'
+import streaming from '../../shared/streaming'
+import AppIcon from '../components/AppIcon'
 import { CATALOG, type Card } from '../lib/catalog'
+import { buildRows, heroInfo, pinnedCards } from '../lib/home-model'
+import { getLazy, type CatalogHome, type Title } from '../lib/lazy-api'
 import type { Sounds } from '../hooks/useSounds'
 
-const START_ICON = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-cPxESVJHgzFRcqFKZmiuX06C9PDPjS.png'
+type Props = { pinned: string[]; sounds: Sounds; onActivate: (card: Card) => void; onOpenSettings: () => void }
 
-type Props = { selected: number; active: boolean; sounds: Sounds; onSelect: (i: number) => void; onActivate: (card: Card) => void }
+const urlOf = (label: string) => streaming.find((s) => s.label === label)?.url
+const bg = (t: Title) => (t.backdrop || t.poster ? { backgroundImage: `url(${t.backdrop || t.poster})` } : undefined)
 
-function TileArt({ card }: { card: Card }) {
-  if (card.brand && BRAND[card.brand]) {
-    return <svg viewBox="0 0 24 24" className="tile-icon" fill={card.fg || '#fff'} aria-hidden="true"><path d={BRAND[card.brand]} /></svg>
-  }
-  if (card.icon === 'hydra') return <img className="hydra-icon" src="/hydra-icon.png" alt="" />
-  const Icon = card.icon
-  return <Icon className="tile-icon" strokeWidth={1.35} />
-}
+export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings }: Props) {
+  const lazy = getLazy()
+  const [data, setData] = useState<CatalogHome | null>(null)
+  const [hero, setHero] = useState<Title | null>(null)
+  const [msg, setMsg] = useState('')
 
-export default function HomeScreen({ selected, active, sounds, onSelect, onActivate }: Props) {
-  const tiles = useRef<(HTMLButtonElement | null)[]>([])
-  // Foco segue o card selecionado (mas não rouba o foco do cabeçalho)
   useEffect(() => {
-    if (active && !document.querySelector('.ps4-header :focus')) tiles.current[selected]?.focus()
-  }, [selected, active])
+    lazy?.catalog.home().then((d) => { setData(d); setHero(d.series[0] ?? d.films[0] ?? null) })
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const rows = data ? buildRows(data) : []
+  const info = hero ? heroInfo(hero) : null
+
+  const watch = async () => {
+    if (!lazy || !info?.primary) return
+    const url = urlOf(info.primary)
+    if (url) setMsg((await lazy.open(url, info.primary)) || '')
+  }
+  const trailer = async () => {
+    if (!lazy || !hero) return
+    const key = await lazy.catalog.trailer(hero.id)
+    if (!key) { setMsg('Não achei trailer para este título.'); return }
+    setMsg((await lazy.open(`https://www.youtube.com/watch?v=${key}`, 'YouTube')) || '')
+  }
+  const tap = (fn: () => void) => () => { sounds.click(); fn() }
 
   return (
-    <section className="ps4-content" aria-label="Aplicativos e jogos">
-      <div className="cards-scroll w-full overflow-visible px-8 py-12 scrollbar-none" style={{ scrollbarWidth: 'none' }}>
-        <div className="ps4-tiles flex flex-row gap-[100px] overflow-x-auto pb-8 scrollbar-none" role="list" style={{ scrollbarWidth: 'none' }}>
-          {CATALOG.map((card, index) => {
-            const isSelected = index === selected
-            return (
-              <div key={card.label} className="ps4-tile-group group flex w-[150px] shrink-0 flex-col items-start focus-within:z-10 hover:z-10">
-                <button
-                  ref={(el) => { tiles.current[index] = el }}
-                  type="button" role="listitem" aria-label={card.label}
-                  className={`ps4-tile shrink-0 ${card.kind} ${isSelected ? 'is-selected' : ''}`}
-                  onClick={() => { sounds.click(); onSelect(index); onActivate(card) }}
-                  onMouseEnter={() => onSelect(index)}
-                  onFocus={sounds.hover}
-                >
-                  <div className="tile-image" style={card.bg ? { background: card.bg } : undefined}>
-                    <TileArt card={card} />
-                    <span className="tile-label" style={card.fg === '#000' ? { color: '#000' } : undefined}>{card.label}</span>
-                  </div>
-                </button>
-                <div className={`start-panel transition-opacity duration-200 ${isSelected ? 'opacity-100' : 'opacity-0'}`} aria-hidden="true">
-                  <img src={START_ICON} alt="" /><span className="start-name">{card.label}</span>
-                </div>
-              </div>
-            )
-          })}
+    <section className="lz-home" aria-label="Início">
+      {hero && info && (
+        <div className="lz-hero">
+          <div>
+            <div className="lz-meta">{info.meta}</div>
+            <h1>{hero.title}</h1>
+            {hero.overview && <p className="lz-overview">{hero.overview}</p>}
+            <div className="lz-actions">
+              {info.primary && <button type="button" className="lz-btn primary" onClick={tap(watch)} onMouseEnter={sounds.hover}>▶ Assistir na {info.primary}</button>}
+              <button type="button" className="lz-btn" onClick={tap(trailer)} onMouseEnter={sounds.hover}>Trailer</button>
+            </div>
+            {msg && <p className="lz-meta" role="status">{msg}</p>}
+          </div>
+          <div className="lz-hero-media" style={bg(hero)} aria-hidden="true" />
+        </div>
+      )}
+
+      <div className="lz-row">
+        <h2>Seus apps</h2>
+        <div className="lz-strip">
+          {pinnedCards(CATALOG, pinned).map((card) => (
+            <button key={card.label} type="button" className="lz-app" style={{ background: card.bg ?? 'rgba(255,255,255,.14)', color: card.fg ?? '#fff' }}
+              aria-label={card.label} onClick={() => { sounds.click(); onActivate(card) }} onFocus={sounds.hover}>
+              <AppIcon card={card} size={36} /><span>{card.label}</span>
+            </button>
+          ))}
         </div>
       </div>
+
+      {data && !data.configured && (
+        <div className="lz-empty">
+          Para ver filmes e séries em alta nos seus apps, configure a chave do TMDB.{' '}
+          <button type="button" className="lz-btn" onClick={tap(onOpenSettings)}>Abrir Configurações</button>
+        </div>
+      )}
+      {data && data.configured && data.msg && <div className="lz-empty" role="status">{data.msg}</div>}
+
+      {rows.map((row) => (
+        <div key={row.id} className="lz-row">
+          <h2>{row.title}</h2>
+          <div className="lz-strip">
+            {row.items.map((t) => (
+              <button key={t.id} type="button" className="lz-title" style={bg(t)} aria-label={`${t.title} (${t.kind})`}
+                onFocus={() => { setHero(t); setMsg(''); sounds.hover() }} onClick={tap(watch)}>
+                <span>{t.title}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      ))}
     </section>
   )
 }

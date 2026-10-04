@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest'
 import { formatClock, displayUser } from './header-info'
 import { visibleGames, nextSort } from './library-filter'
 import { hintsFor } from './footer-hints'
-import { nextZone } from './home-zone'
 import gamepad from '../../shared/gamepad'
 
 describe('formatClock', () => {
@@ -46,23 +45,14 @@ describe('hintsFor (rodapé só com comandos reais)', () => {
     expect(labels('library')).toEqual(['Confirmar', 'Voltar', 'Buscar'])
     expect(hintsFor('library').find((h) => h.label === 'Buscar')?.button).toBe(gamepad.BTN.SQUARE)
   })
+  it('Apps: Confirmar e Voltar', () => {
+    expect(labels('apps')).toEqual(['Confirmar', 'Voltar'])
+  })
   it('Perfis e Configurações: Confirmar e Voltar', () => {
     expect(labels('ds4')).toEqual(['Confirmar', 'Voltar'])
     expect(labels('settings')).toEqual(['Confirmar', 'Voltar'])
   })
   it('nenhuma tela mostra "Detalhes"', () => {
     for (const s of ['home', 'library', 'ds4', 'settings'] as const) expect(labels(s)).not.toContain('Detalhes')
-  })
-})
-
-describe('nextZone (menu: cards ↔ cabeçalho)', () => {
-  it('↑ nos cards sobe para o cabeçalho; ↓ no cabeçalho desce para os cards', () => {
-    expect(nextZone('tiles', -1)).toBe('header')
-    expect(nextZone('header', 1)).toBe('tiles')
-  })
-  it('sem movimento vertical, fica', () => {
-    expect(nextZone('tiles', 0)).toBe('tiles')
-    expect(nextZone('header', -1)).toBe('header')
-    expect(nextZone('tiles', 1)).toBe('tiles')
   })
 })

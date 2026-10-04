@@ -28,6 +28,14 @@ describe('settings', () => {
     expect(s.set('streamModes', { Netflix: 'chrome' })).toBe(false)
     expect(s.set('streamModes', { Minecraft: 'app' })).toBe(false)
   })
+  it('pinnedApps: lista de nomes, sem itens vazios e com limite', () => {
+    const { s } = make()
+    expect(s.set('pinnedApps', ['Netflix', 'Firefox'])).toBe(true)
+    expect(s.set('pinnedApps', [])).toBe(true)
+    expect(s.set('pinnedApps', ['Netflix', ''])).toBe(false)
+    expect(s.set('pinnedApps', 'Netflix')).toBe(false)
+    expect(s.set('pinnedApps', Array(31).fill('x'))).toBe(false)
+  })
   it('recusa chave desconhecida e valor do tipo errado', () => {
     const { s, data } = make()
     expect(s.set('hacker', 1)).toBe(false)

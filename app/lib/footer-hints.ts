@@ -14,6 +14,8 @@ const SEARCH: Hint = { label: 'Buscar', button: BTN.SQUARE, icon: `${BLOB}/image
 const BY_SCREEN: Record<Screen, Hint[]> = {
   home: [CONFIRM],
   library: [CONFIRM, BACK, SEARCH],
+  apps: [CONFIRM, BACK],
+  search: [CONFIRM, BACK],
   ds4: [CONFIRM, BACK],
   settings: [CONFIRM, BACK],
 }

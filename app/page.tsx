@@ -1,42 +1,31 @@
 'use client'
 
-import { useEffect, useReducer, useRef } from 'react'
+import { useEffect, useReducer, useRef, useState } from 'react'
 import gamepad from '../shared/gamepad'
 import PS4Background from './components/PS4Background'
 import Header from './components/Header'
+import Tabs from './components/Tabs'
 import Footer from './components/Footer'
 import HomeScreen from './screens/HomeScreen'
 import LibraryScreen from './screens/LibraryScreen'
+import AppsScreen from './screens/AppsScreen'
 import Ds4Screen from './screens/Ds4Screen'
 import SettingsScreen from './screens/SettingsScreen'
 import { useGamepad } from './hooks/useGamepad'
 import { useSounds } from './hooks/useSounds'
-import { CATALOG, type Card } from './lib/catalog'
+import type { Card } from './lib/catalog'
 import { focusMove } from './lib/focus'
-import { nextZone } from './lib/home-zone'
+import { DEFAULT_PINNED, togglePin } from './lib/home-model'
 import { getLazy } from './lib/lazy-api'
-import { initialScreen, screenReducer } from './lib/screen-state'
+import { initialScreen, screenReducer, type Screen } from './lib/screen-state'
 
 const { BTN } = gamepad
 const REPEAT_MS = 220
 const ANIM_MS = { entering: 420, leaving: 620 }
-const SCREEN_FOCUSABLE = '.library-view button, .library-view input, .ds4-view button, .ds4-view input'
-const HEADER_BUTTONS = '.ps4-icons button'
+// Tudo o que dá para focar na tela; o controle anda até o mais próximo na direção
+const FOCUSABLE = '.ps4-screen button:not(:disabled), .ps4-screen input'
 
 const focusFirst = (selector: string) => document.querySelector<HTMLElement>(selector)?.focus()
-
-// No menu: ←→ anda na fileira atual; ↑↓ troca entre cards e cabeçalho
-function homeNav(dx: number, dy: number, move: (dir: number) => void) {
-  const inHeader = !!document.querySelector('.ps4-header :focus')
-  if (dy) {
-    const zone = nextZone(inHeader ? 'header' : 'tiles', dy)
-    if (zone === 'header' && !inHeader) focusFirst(HEADER_BUTTONS)
-    if (zone === 'tiles' && inHeader) focusFirst('.ps4-tile.is-selected')
-  } else if (dx) {
-    if (inHeader) focusMove(HEADER_BUTTONS, dx, 0)
-    else move(dx)
-  }
-}
 
 export default function Page() {
   const [state, dispatch] = useReducer(screenReducer, initialScreen)
@@ -44,6 +33,14 @@ export default function Page() {
   stateRef.current = state
   const sounds = useSounds()
   const lastMove = useRef(0)
+  const [pinned, setPinned] = useState<string[]>(DEFAULT_PINNED)
+
+  useEffect(() => { getLazy()?.settings.get().then((s) => { if (s.pinnedApps) setPinned(s.pinnedApps) }) }, [])
+  const onTogglePin = (label: string) => {
+    const next = togglePin(pinned, label)
+    setPinned(next)
+    getLazy()?.settings.set('pinnedApps', next)
+  }
 
   // Animação da Biblioteca: termina sozinha depois do tempo da transição CSS
   useEffect(() => {
@@ -52,7 +49,12 @@ export default function Page() {
     return () => window.clearTimeout(t)
   }, [state.anim])
 
-  // Botão PS / atalho global: o Electron manda voltar ao menu
+  // Ao trocar de tela, o foco vai para o primeiro item dela (a Biblioteca cuida do seu)
+  useEffect(() => {
+    if (state.screen !== 'library') window.setTimeout(() => focusFirst('.lz-home button, .lz-apps button, .ds4-view button'), 0)
+  }, [state.screen])
+
+  // Botão PS / atalho global: o Electron manda voltar ao Início
   useEffect(() => { getLazy()?.onHome(() => dispatch({ type: 'goHome' })) }, [])
 
   // Avisos de arquivos de configuração corrompidos ou que não salvaram
@@ -60,67 +62,55 @@ export default function Page() {
     getLazy()?.store.warnings().then((ws) => { if (ws.length) window.alert(ws.map((w) => w.msg).join('\n\n')) })
   }, [])
 
-  // Setas do teclado (o reducer ignora fora do menu)
+  // Setas do teclado fazem o mesmo que o D-pad
   useEffect(() => {
+    const DIRS: Record<string, [number, number]> = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') dispatch({ type: 'move', dir: -1, count: CATALOG.length })
-      if (e.key === 'ArrowRight') dispatch({ type: 'move', dir: 1, count: CATALOG.length })
+      const d = DIRS[e.key]
+      if (!d || (e.target as HTMLElement)?.tagName === 'INPUT') return
+      e.preventDefault()
+      focusMove(FOCUSABLE, d[0], d[1])
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
-  // A fileira de cards não pode rolar para o lado sozinha
-  useEffect(() => {
-    const el = document.querySelector<HTMLElement>('.ps4-screen')
-    if (!el) return
-    const fix = () => { if (el.scrollLeft !== 0) el.scrollLeft = 0 }
-    el.addEventListener('scroll', fix)
-    return () => el.removeEventListener('scroll', fix)
-  }, [])
+  const go = (screen: Screen) => dispatch(screen === 'home' ? { type: 'goHome' } : { type: 'open', screen })
+  const back = () => { sounds.click(); dispatch({ type: 'leave' }) }
 
   const padOn = useGamepad(({ fired, dx, dy }) => {
     const { screen } = stateRef.current
-    const home = screen === 'home'
     const now = performance.now()
     if ((dx || dy) && now - lastMove.current > REPEAT_MS) {
-      if (!home) focusMove(SCREEN_FOCUSABLE, dx, dx ? 0 : dy)
-      else homeNav(dx, dy, (dir) => dispatch({ type: 'move', dir, count: CATALOG.length }))
+      focusMove(FOCUSABLE, dx, dx ? 0 : dy)
       lastMove.current = now
     }
     if (!dx && !dy) lastMove.current = 0
     if (fired(BTN.X)) (document.activeElement as HTMLElement | null)?.click()
-    if (fired(BTN.O) && !home) document.querySelector<HTMLElement>('.library-back')?.click()
+    if (fired(BTN.O) && screen !== 'home') back()
     if (fired(BTN.SQUARE) && screen === 'library') focusFirst('.library-search input')
   })
 
   const activate = (card: Card) => {
     const lazy = getLazy()
-    if (card.screen) return dispatch({ type: 'open', screen: card.screen })
+    if (card.screen) return go(card.screen)
     if (card.app) return void lazy?.launch(card.app).then((r) => { if (r) window.alert(r) })
     if (!card.url) return
     if (!lazy) { window.location.href = card.url; return }
     lazy.open(card.url, card.label).then((r) => { if (r) window.alert(r) })
   }
 
-  const back = () => { sounds.click(); dispatch({ type: 'leave' }) }
-
   return (
     <main className={`ps4-screen ${state.anim === 'entering' ? 'library-entering' : ''} ${state.anim === 'leaving' ? 'library-leaving' : ''}`}>
       <PS4Background />
       <div className="pad-badge">{padOn ? 'Controle conectado' : 'Controle não detectado. Aperte um botão.'}</div>
-      <Header
-        sounds={sounds}
-        onController={() => dispatch({ type: 'open', screen: 'ds4' })}
-        onSettings={() => dispatch({ type: 'open', screen: 'settings' })}
-        onPower={() => getLazy()?.quit()}
-      />
+      <Header sounds={sounds} onController={() => go('ds4')} onSettings={() => go('settings')} onPower={() => getLazy()?.quit()} />
+      {['home', 'library', 'apps'].includes(state.screen) && <Tabs current={state.screen} onGo={go} sounds={sounds} />}
+      {state.screen === 'home' && <HomeScreen pinned={pinned} sounds={sounds} onActivate={activate} onOpenSettings={() => go('settings')} />}
       {state.screen === 'library' && <LibraryScreen onBack={back} sounds={sounds} />}
+      {state.screen === 'apps' && <AppsScreen pinned={pinned} sounds={sounds} onActivate={activate} onTogglePin={onTogglePin} />}
       {state.screen === 'ds4' && <Ds4Screen onBack={back} sounds={sounds} />}
       {state.screen === 'settings' && <SettingsScreen onBack={back} sounds={sounds} />}
-      {state.screen === 'home' && (
-        <HomeScreen selected={state.selected} active sounds={sounds} onSelect={(i) => dispatch({ type: 'select', index: i })} onActivate={activate} />
-      )}
       <Footer screen={state.screen} />
     </main>
   )
