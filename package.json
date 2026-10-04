@@ -1,5 +1,6 @@
 {
-  "name": "lazy-ps4",
+  "name": "laaazy",
+  "productName": "Laaazy",
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@12.3.4",
@@ -35,8 +36,8 @@
   },
   "main": "electron/main.js",
   "build": {
-    "appId": "com.bruno.lazyps4",
-    "productName": "Lazy PS4",
+    "appId": "com.bruno.laaazy",
+    "productName": "Laaazy",
     "electronDist": "node_modules/electron/dist",
     "files": [
       "electron/**",

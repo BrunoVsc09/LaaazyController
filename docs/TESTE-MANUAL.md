@@ -7,6 +7,7 @@ Marque cada item com ✅ ou ❌ e anote o que aconteceu.
 
 ## Menu
 - [ ] App abre em tela cheia, com o DS4Windows abrindo minimizado
+- [ ] Primeira vez como Laaazy: jogos adicionados, perfis do DS4 e configurações da versão antiga continuam lá (a chave do TMDB precisa ser colada de novo)
 - [ ] D-pad/analógico ← → move entre os cards; X abre o card
 - [ ] ↑ leva ao cabeçalho; ← → entre Controle, Configurações e Energia; ↓ volta aos cards
 - [ ] Controle abre "Perfis do controle"; Configurações abre "Configurações"; Energia fecha o app

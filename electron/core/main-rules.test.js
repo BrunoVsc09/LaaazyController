@@ -38,7 +38,7 @@ describe('processes.shouldClose', () => {
     expect(processes.shouldClose({ pid: 11, name: 'x' }, ctx)).toBe(false)
   })
   it('nunca fecha Windows, Steam e DS4Windows (sem diferenciar maiúsculas)', () => {
-    for (const name of ['explorer', 'Steam', 'steamwebhelper', 'DS4Windows', 'dwm', 'Lazy PS4']) {
+    for (const name of ['explorer', 'Steam', 'steamwebhelper', 'DS4Windows', 'dwm', 'Lazy PS4', 'Laaazy']) {
       expect(processes.shouldClose({ pid: 99, name }, ctx)).toBe(false)
     }
   })

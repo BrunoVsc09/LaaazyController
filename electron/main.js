@@ -21,6 +21,7 @@ const { createLibrary } = require('./services/library')
 const { createLauncher } = require('./services/launcher')
 const { createForeground } = require('./services/foreground')
 const { widevineStatus } = require('./core/drm')
+const { planMigration } = require('./core/migration')
 const { registerIpc } = require('./ipc/register')
 const { registerAppScheme, handleAppProtocol } = require('./window/app-protocol')
 const { createStreamView } = require('./window/stream-view')
@@ -32,6 +33,24 @@ const OUT = path.join(__dirname, '..', 'out')
 const userFile = (name) => path.join(app.getPath('userData'), name)
 const exists = (p) => fs.existsSync(p)
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
+
+// O app mudou de nome (Lazy PS4 → Laaazy) e a pasta de dados mudou junto:
+// copia as configurações da pasta antiga uma vez, antes de qualquer serviço ler
+function migrateOldData() {
+  const list = (d) => { try { return fs.readdirSync(d) } catch { return [] } }
+  const newDir = app.getPath('userData')
+  const candidates = ['lazy-ps4', 'Lazy PS4']
+    .map((n) => path.join(app.getPath('appData'), n))
+    .filter((d) => d !== newDir)
+    .map((dir) => ({ dir, files: list(dir) }))
+  const plan = planMigration({ candidates, newFiles: list(newDir) })
+  if (!plan) return
+  fs.mkdirSync(newDir, { recursive: true })
+  for (const f of plan.files) {
+    try { fs.copyFileSync(path.join(plan.from, f), path.join(newDir, f)) } catch (e) { console.warn('[migração]', f, e.message) }
+  }
+}
+migrateOldData()
 
 registerAppScheme()
 

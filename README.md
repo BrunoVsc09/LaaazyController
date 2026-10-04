@@ -1,6 +1,6 @@
-# Lazy PS4
+# Laaazy
 
-Central de mídia para Windows com cara de PS4, controlada pelo DualShock 4:
+Central de mídia para Windows (antes "Lazy PS4"), controlada pelo DualShock 4:
 streaming (Netflix, Prime, HBO Max, Crunchyroll, YouTube, Spotify), biblioteca de
 jogos (Steam, Epic e jogos adicionados à mão) e troca automática de perfil do DS4Windows.
 

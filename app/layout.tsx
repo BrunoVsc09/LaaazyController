@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Playroom — Biblioteca do Bruno',
-  description: 'Um hub pessoal para jogar no conforto da cama.',
+  title: 'Laaazy',
+  description: 'Filmes, séries, jogos e apps no sofá, só com o controle.',
   generator: 'v0.app',
   icons: {
     icon: [
