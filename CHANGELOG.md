@@ -1,5 +1,18 @@
 # Novidades do Laaazy
 
+## 3.1.0 — 2026-10-04
+
+### Novo
+- **Capas para todos os jogos:** jogos da Epic e do PC ganham capa pelo SteamGridDB
+  (chave grátis, configurada em Configurações como a do TMDB).
+- **Volume pelo controle:** L2 abaixa e R2 aumenta. Com o Edge ou um jogo na frente,
+  mapeie F20 (silenciar), F21 (abaixar) e F22 (aumentar) no DS4Windows. No teclado:
+  Ctrl+Alt+↑, ↓ e M.
+- **Novos episódios:** a fileira "Novos episódios" no Início avisa quando uma série da
+  Minha lista teve episódio nos últimos 7 dias ou terá nos próximos 7.
+- **Proteção de tela:** depois de alguns minutos parado (padrão 10; dá para mudar ou
+  desligar em Configurações), mostra imagens dos filmes e séries em alta com o relógio.
+
 ## 3.0.0 — 2026-10-04
 
 O antigo **Lazy PS4** agora se chama **Laaazy**.
