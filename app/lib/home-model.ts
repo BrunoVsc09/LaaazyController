@@ -16,8 +16,9 @@ export const appsGrid = (cards: Card[]) => cards.filter((c) => c.screen !== 'lib
 
 export type TitleRow = { id: string; title: string; items: Title[] }
 
-export function buildRows({ series, films }: { series: Title[]; films: Title[] }): TitleRow[] {
+export function buildRows({ series, films, myList = [] }: { series: Title[]; films: Title[]; myList?: Title[] }): TitleRow[] {
   const rows: TitleRow[] = [
+    { id: 'mylist', title: 'Minha lista', items: myList },
     { id: 'series', title: 'Séries em alta nos seus apps', items: series },
     { id: 'films', title: 'Filmes em alta nos seus apps', items: films },
   ]

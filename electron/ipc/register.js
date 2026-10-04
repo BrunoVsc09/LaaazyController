@@ -36,6 +36,9 @@ function registerIpc(ipcMain, h) {
   handle(C.CATALOG_HOME, (opts) => h.catalog.home({ fresh: !!(opts && opts.fresh) }))
   handle(C.CATALOG_TRAILER, (id) => (isText(id) ? h.catalog.trailer(id) : null))
   handle(C.CATALOG_SEARCH, (q) => (isText(q) ? h.catalog.search(q) : { ok: false, items: [], msg: 'Busca inválida.' }))
+  handle(C.GAMES_RECENT, () => h.recentGames())
+  handle(C.MYLIST_GET, () => h.myList.get())
+  handle(C.MYLIST_TOGGLE, (item) => (item && typeof item === 'object' ? h.myList.toggle(item) : { ok: false, msg: 'Título inválido.' }))
   handle(C.CATALOG_WHERE, async (id) => (isText(id) ? h.catalog.where(id) : []))
 }
 

@@ -31,7 +31,9 @@ export type LazyApi = {
     addExe(): Promise<Result & { added: number }>
     addFolder(): Promise<Result & { added: number }>
     remove(id: string): Promise<Result>
+    recent(): Promise<Game[]>
   }
+  myList: { get(): Promise<Title[]>; toggle(item: Title): Promise<{ ok: boolean; added?: boolean; msg?: string }> }
   system: { user(): Promise<{ name: string }> }
   drm: { status(): Promise<DrmStatus> }
   catalog: {

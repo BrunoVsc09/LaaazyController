@@ -19,9 +19,11 @@ contextBridge.exposeInMainWorld('lazy', {
     launch: invoke(C.GAMES_LAUNCH),
     addExe: invoke(C.GAMES_ADD_EXE),
     addFolder: invoke(C.GAMES_ADD_FOLDER),
+    recent: invoke(C.GAMES_RECENT),
     remove: invoke(C.GAMES_REMOVE),
   },
   system: { user: invoke(C.SYSTEM_USER) },
+  myList: { get: invoke(C.MYLIST_GET), toggle: invoke(C.MYLIST_TOGGLE) },
   drm: { status: invoke(C.DRM_STATUS) },
   catalog: {
     status: invoke(C.CATALOG_STATUS),

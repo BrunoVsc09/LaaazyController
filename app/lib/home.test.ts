@@ -37,6 +37,13 @@ describe('buildRows', () => {
   })
 })
 
+describe('buildRows com Minha lista', () => {
+  it('Minha lista vem antes das fileiras em alta', () => {
+    const rows = buildRows({ series: [t('a')], films: [t('b', { kind: 'Filme' })], myList: [t('c')] })
+    expect(rows.map((r) => r.title)).toEqual(['Minha lista', 'Séries em alta nos seus apps', 'Filmes em alta nos seus apps'])
+  })
+})
+
 describe('heroInfo', () => {
   it('monta a linha de detalhes e escolhe o serviço principal', () => {
     expect(heroInfo(t('a', { kind: 'Filme', year: '2023', services: ['Prime Video', 'Netflix'] })))

@@ -8,7 +8,7 @@ const SAVE_FAILED = 'Não consegui salvar a lista de jogos.'
 
 function createLibrary({
   sources, readCustom, writeCustom, scanFolder, chooseExe, chooseDir,
-  exists, openExternal, openPath, spawnDetached, onLaunch = () => {}, now = Date.now,
+  exists, openExternal, openPath, spawnDetached, onLaunch = () => {}, onLaunched = () => {}, now = Date.now,
 }) {
   // Varrer Steam e Epic lê o disco: o resultado vale por 15s e cai quando a lista muda
   let cache = null
@@ -36,6 +36,7 @@ function createLibrary({
       try { await openExternal(value) } catch (e) {
         return { ok: false, msg: `Não consegui abrir pela ${g.platform}: ${e.message}` }
       }
+      onLaunched(g.id)
       return { ok: true, msg: '' }
     }
     if (!exists(value)) {
@@ -45,7 +46,9 @@ function createLibrary({
     onLaunch()
     // Atalho (.lnk) só abre pelo Windows; spawn não executa atalhos
     const err = /\.lnk$/i.test(value) ? await openPath(value) : await spawnDetached(value)
-    return err ? { ok: false, msg: `Não consegui abrir "${g.name}": ${err}` } : { ok: true, msg: '' }
+    if (err) return { ok: false, msg: `Não consegui abrir "${g.name}": ${err}` }
+    onLaunched(g.id)
+    return { ok: true, msg: '' }
   }
 
   async function addCustom(items) {

@@ -77,3 +77,8 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] □ no Início ou em Apps (ou a aba ⌕ Buscar) abre a busca com o campo em foco
 - [ ] Digitar "net" mostra o app Netflix; o nome de um jogo mostra o jogo
 - [ ] Com a chave do TMDB, um filme aparece em "Filmes e séries"; X abre no serviço onde ele está (ou avisa que não está nos seus)
+
+## Continuar jogando e Minha lista
+- [ ] Abrir um jogo e voltar: ele aparece em "Continuar jogando" no Início (mais recente primeiro)
+- [ ] "＋ Minha lista" no destaque salva o título; aparece na fileira "Minha lista" e o botão vira "✓ Na Minha lista"
+- [ ] Apertar de novo tira da lista; reabrir o app mantém a lista

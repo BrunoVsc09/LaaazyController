@@ -14,6 +14,8 @@ const sources = require('./adapters/game-sources')
 const { createTmdb } = require('./adapters/tmdb')
 const { createSecretStore } = require('./adapters/secret-store')
 const { createCatalog } = require('./services/catalog')
+const { createMyList } = require('./services/my-list')
+const { pushRecent, recentGames } = require('./core/recent')
 const { createSettings } = require('./services/settings')
 const { createExeLocator } = require('./services/exe-locator')
 const { createDs4 } = require('./services/ds4')
@@ -100,6 +102,15 @@ const library = createLibrary({
   openPath: (p) => shell.openPath(p),
   spawnDetached,
   onLaunch: () => ds4.ensureRunning(),
+  // Continuar jogando: guarda o jogo aberto na frente da lista
+  onLaunched: async (id) => {
+    const ids = await store.readJson(userFile('recent.json'), [])
+    await store.writeJson(userFile('recent.json'), pushRecent(ids, id))
+  },
+})
+const myList = createMyList({
+  read: () => store.readJson(userFile('my-list.json'), []),
+  write: (list) => store.writeJson(userFile('my-list.json'), list),
 })
 
 const launcher = createLauncher({
@@ -152,7 +163,8 @@ const foreground = createForeground({
 })
 
 registerIpc(ipcMain, {
-  launcher, locator, settings, ds4, library, catalog, goHome,
+  launcher, locator, settings, ds4, library, catalog, myList, goHome,
+  recentGames: async () => recentGames(await store.readJson(userFile('recent.json'), []), await library.list()),
   back: () => { if (!stream.back()) goHome() },
   sendKey: (key) => stream.sendKey(key),
   quit: () => app.quit(),

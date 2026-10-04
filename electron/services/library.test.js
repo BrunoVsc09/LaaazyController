@@ -18,6 +18,7 @@ function make({ custom = [], files = [], scanned = [], spawnError = '', chosenEx
     openPath: vi.fn(async () => ''),
     spawnDetached: vi.fn(async () => spawnError),
     onLaunch: vi.fn(),
+    onLaunched: vi.fn(),
     now: () => t,
   }
   const lib = mod.createLibrary(deps)
@@ -86,6 +87,19 @@ describe('library.launch', () => {
     const { lib, deps } = make({ custom: [lnk], files: [lnk.exe] })
     deps.openPath.mockResolvedValue('Atalho quebrado')
     expect(await lib.launch(lnk.id)).toEqual({ ok: false, msg: 'Não consegui abrir "X": Atalho quebrado' })
+  })
+})
+
+describe('library: jogos recentes', () => {
+  it('abrir com sucesso registra o jogo como recente', async () => {
+    const { lib, deps } = make()
+    await lib.launch('steam:1')
+    expect(deps.onLaunched).toHaveBeenCalledWith('steam:1')
+  })
+  it('falha ao abrir não registra', async () => {
+    const { lib, deps } = make({ custom: [hades], files: [hades.exe], spawnError: 'EACCES' })
+    await lib.launch(hades.id)
+    expect(deps.onLaunched).not.toHaveBeenCalled()
   })
 })
 

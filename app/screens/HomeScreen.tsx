@@ -5,7 +5,7 @@ import streaming from '../../shared/streaming'
 import AppIcon from '../components/AppIcon'
 import { CATALOG, type Card } from '../lib/catalog'
 import { buildRows, heroInfo, pinnedCards } from '../lib/home-model'
-import { getLazy, type CatalogHome, type Title } from '../lib/lazy-api'
+import { getLazy, type CatalogHome, type Game, type Title } from '../lib/lazy-api'
 import type { Sounds } from '../hooks/useSounds'
 
 type Props = { pinned: string[]; sounds: Sounds; onActivate: (card: Card) => void; onOpenSettings: () => void }
@@ -18,12 +18,30 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
   const [data, setData] = useState<CatalogHome | null>(null)
   const [hero, setHero] = useState<Title | null>(null)
   const [msg, setMsg] = useState('')
+  const [recent, setRecent] = useState<Game[]>([])
+  const [myList, setMyList] = useState<Title[]>([])
 
   useEffect(() => {
-    lazy?.catalog.home().then((d) => { setData(d); setHero(d.series[0] ?? d.films[0] ?? null) })
+    if (!lazy) return
+    Promise.all([lazy.catalog.home(), lazy.myList.get()]).then(([d, list]) => {
+      setData(d); setMyList(list)
+      setHero(list[0] ?? d.series[0] ?? d.films[0] ?? null)
+    })
+    lazy.games.recent().then(setRecent)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const rows = data ? buildRows(data) : []
+  const rows = data ? buildRows({ ...data, myList }) : []
+  const inList = !!hero && myList.some((x) => x.id === hero.id)
+  const toggleList = async () => {
+    if (!lazy || !hero) return
+    const r = await lazy.myList.toggle(hero)
+    if (!r.ok) { setMsg(r.msg ?? ''); return }
+    setMyList(await lazy.myList.get())
+  }
+  const play = async (g: Game) => {
+    const r = await lazy?.games.launch(g.id)
+    if (r && !r.ok) setMsg(r.msg)
+  }
   const info = hero ? heroInfo(hero) : null
 
   const watch = async () => {
@@ -50,6 +68,7 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
             <div className="lz-actions">
               {info.primary && <button type="button" className="lz-btn primary" onClick={tap(watch)} onMouseEnter={sounds.hover}>▶ Assistir na {info.primary}</button>}
               <button type="button" className="lz-btn" onClick={tap(trailer)} onMouseEnter={sounds.hover}>Trailer</button>
+              <button type="button" className="lz-btn" aria-pressed={inList} onClick={tap(toggleList)} onMouseEnter={sounds.hover}>{inList ? '✓ Na Minha lista' : '＋ Minha lista'}</button>
             </div>
             {msg && <p className="lz-meta" role="status">{msg}</p>}
           </div>
@@ -68,6 +87,18 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
           ))}
         </div>
       </div>
+
+      {recent.length > 0 && (
+        <div className="lz-row">
+          <h2>Continuar jogando</h2>
+          <div className="lz-strip">
+            {recent.map((g) => (
+              <button key={g.id} type="button" className="lz-title" style={g.cover ? { backgroundImage: `url(${g.cover})` } : undefined}
+                onClick={tap(() => play(g))} onFocus={sounds.hover}><span>{g.name}</span></button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {data && !data.configured && (
         <div className="lz-empty">

@@ -25,6 +25,8 @@ function make() {
       search: vi.fn(async () => ({ ok: true, items: [] })),
       where: vi.fn(async () => []),
     },
+    myList: { get: vi.fn(async () => []), toggle: vi.fn(async () => ({ ok: true, added: true })) },
+    recentGames: vi.fn(async () => []),
   }
   mod.registerIpc(ipcMain, h)
   const send = (ch, ...a) => on.get(ch)({}, ...a)
@@ -67,6 +69,13 @@ describe('registerIpc', () => {
     expect(await invoke(C.EXE_GET, 'edge')).toBe('C:\\E\\msedge.exe')
     h.locator.find.mockResolvedValue(null)
     expect(await invoke(C.EXE_GET, 'edge')).toBe('')
+  })
+  it('Minha lista: toggle só com objeto', async () => {
+    const { invoke, h } = make()
+    expect(await invoke(C.MYLIST_TOGGLE, 'tv:1')).toMatchObject({ ok: false })
+    expect(h.myList.toggle).not.toHaveBeenCalled()
+    await invoke(C.MYLIST_TOGGLE, { id: 'tv:1' })
+    expect(h.myList.toggle).toHaveBeenCalled()
   })
   it('busca e where: só texto', async () => {
     const { invoke, h } = make()
