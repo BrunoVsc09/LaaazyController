@@ -32,6 +32,7 @@ const { createDs4 } = require('./services/ds4')
 const { createLibrary } = require('./services/library')
 const { createLauncher } = require('./services/launcher')
 const { createForeground } = require('./services/foreground')
+const { createReturnWatch } = require('./services/return-watch')
 const { widevineStatus } = require('./core/drm')
 const { planMigration } = require('./core/migration')
 const { registerIpc } = require('./ipc/register')
@@ -66,6 +67,8 @@ migrateOldData()
 
 registerAppScheme()
 
+const probe = createForegroundProbe()
+
 // ---- Janela e camada de streaming ----
 let externalActive = false
 const stream = createStreamView({ getWin: () => windows.get(), preload: path.join(__dirname, 'stream-preload.js') })
@@ -74,6 +77,7 @@ const windows = createWindowManager({
   onResize: () => stream.fit(),
   onClosed: () => stream.forget(),
   // Voltou do Edge/navegador para o menu: volta o perfil do Menu
+  forceFocus: (hwnd) => probe.focus(hwnd),
   onFocus: () => { if (externalActive) { externalActive = false; if (!closeDs4OnMenu()) ds4.applyFor('menu') } },
 })
 
@@ -111,7 +115,7 @@ const library = createLibrary({
   openExternal: (url) => shell.openExternal(url),
   openPath: (p) => shell.openPath(p),
   spawnDetached,
-  onLaunch: () => ds4.ensureRunning(),
+  onLaunch: () => { ds4.ensureRunning(); returnWatch.start() },
   // Continuar jogando: guarda o jogo aberto na frente da lista
   onLaunched: async (id) => {
     const ids = await store.readJson(userFile('recent.json'), [])
@@ -144,7 +148,7 @@ const launcher = createLauncher({
   openPath: (p) => shell.openPath(p),
   openExternal: (url) => shell.openExternal(url),
   openStream: (url) => stream.open(url),
-  setExternalActive: (v) => { externalActive = v },
+  setExternalActive: (v) => { externalActive = v; if (v) returnWatch.start() },
   edgeProfileDir: userFile('edge-tv'),
   streamModes: () => settings.get('streamModes'),
   widevine: () => widevineStatus(components.status()),
@@ -196,7 +200,6 @@ function showMenu() {
   if (closeDs4OnMenu()) setTimeout(() => ds4.shutdown(), 500)
 }
 
-const probe = createForegroundProbe()
 const foreground = createForeground({
   fgInfo: probe.info,
   ownPids: () => app.getAppMetrics().map((m) => m.pid),
@@ -204,6 +207,15 @@ const foreground = createForeground({
   showMenu,
   kill: killTree,
 })
+
+// Jogo ou Edge fechou: o Laaazy volta sozinho para a frente, no Início
+const returnWatch = createReturnWatch({
+  fgInfo: probe.info,
+  ownPids: () => app.getAppMetrics().map((m) => m.pid),
+  selfPid: process.pid,
+  onReturn: () => showMenu(),
+})
+setInterval(() => returnWatch.tick(), 1500).unref()
 
 registerIpc(ipcMain, {
   launcher, locator, settings, ds4, library: libraryWithCovers, catalog, myList, power, covers, volume, assistant, goHome,

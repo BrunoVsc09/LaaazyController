@@ -1,8 +1,18 @@
-// Descobre qual programa está em primeiro plano. Um PowerShell fica aberto em
-// segundo plano para o atalho responder rápido.
+// PowerShell aberto em segundo plano para falar com as janelas do Windows rápido:
+// descobrir qual programa está na frente e trazer o Laaazy para a frente de verdade.
 const { spawn } = require('child_process')
+const { focusCommand } = require('../core/focus')
 
-const SETUP = "Add-Type -TypeDefinition 'using System;using System.Runtime.InteropServices;public class FG{[DllImport(\"user32.dll\")]public static extern IntPtr GetForegroundWindow();[DllImport(\"user32.dll\")]public static extern uint GetWindowThreadProcessId(IntPtr h,out uint p);}'\n"
+// Focus: o Windows bloqueia que um programa em segundo plano tome o foco. Simular o
+// aperto do Alt antes do SetForegroundWindow é o jeito aceito de liberar isso.
+const SETUP = "Add-Type -TypeDefinition 'using System;using System.Runtime.InteropServices;public class FG{" +
+  '[DllImport("user32.dll")]public static extern IntPtr GetForegroundWindow();' +
+  '[DllImport("user32.dll")]public static extern uint GetWindowThreadProcessId(IntPtr h,out uint p);' +
+  '[DllImport("user32.dll")]public static extern bool SetForegroundWindow(IntPtr h);' +
+  '[DllImport("user32.dll")]public static extern bool ShowWindow(IntPtr h,int c);' +
+  '[DllImport("user32.dll")]public static extern void keybd_event(byte k,byte s,uint f,UIntPtr e);' +
+  'public static void Focus(IntPtr h){keybd_event(0x12,0,0,UIntPtr.Zero);ShowWindow(h,5);SetForegroundWindow(h);keybd_event(0x12,0,2,UIntPtr.Zero);}' +
+  "}'\n"
 const QUERY = '$p=0;[void][FG]::GetWindowThreadProcessId([FG]::GetForegroundWindow(),[ref]$p);$n=(Get-Process -Id $p -ErrorAction SilentlyContinue).ProcessName;"FGPID:${p}:$n"\n'
 const NONE = { pid: 0, name: '' }
 
@@ -38,9 +48,17 @@ function createForegroundProbe() {
     })
   }
 
+  // Traz a janela (pelo HWND) para a frente com foco de teclado/controle
+  function focus(hwnd) {
+    const cmd = focusCommand(hwnd)
+    if (!cmd) return
+    warm()
+    if (ps) ps.stdin.write(cmd + '\n')
+  }
+
   const dispose = () => { try { ps && ps.kill() } catch {} }
 
-  return { warm, info, dispose }
+  return { warm, info, focus, dispose }
 }
 
 module.exports = { createForegroundProbe }
