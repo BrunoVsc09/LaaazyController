@@ -3,7 +3,7 @@ const fs = require('fs')
 const fsp = fs.promises
 const path = require('path')
 const { spawn, execFile } = require('child_process')
-const { readJson, writeJson } = require('./store')
+const { readJson, writeJson } = require('./adapters/json-store')
 
 const KEYS = ['menu', 'Crunchyroll', 'HBO Max', 'Prime Video', 'Netflix', 'YouTube', 'Spotify', 'Google Chrome', 'Firefox']
 

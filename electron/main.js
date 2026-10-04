@@ -15,7 +15,7 @@ const APPS = {
 const EXTERNAL = ['crunchyroll.com']
 
 // ---- Onde está o Edge (msedge.exe) ----
-const { readJsonSync, writeJsonSync, takeWarnings } = require('./store')
+const { readJsonSync, writeJsonSync, takeWarnings } = require('./adapters/json-store')
 const settingsFile = () => path.join(app.getPath('userData'), 'settings.json')
 const readSettings = () => readJsonSync(settingsFile(), {})
 const closeOnMenu = () => readSettings().closeDs4OnMenu !== false // padrão: ligado

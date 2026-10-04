@@ -3,7 +3,7 @@ const fs = require('fs')
 const fsp = fs.promises
 const path = require('path')
 const { execFile, spawn } = require('child_process')
-const { readJson, writeJson } = require('./store')
+const { readJson, writeJson } = require('./adapters/json-store')
 
 const SKIP_STEAM = /Redistributable|Steamworks|Runtime|Proton|Steam Controller|Steam Linux/i
 const BAD_EXE = /unins|setup|crash|redist|dxsetup|dotnet|updater|helper|easyanticheat|eac_|cef|benchmark|notification|report/i
