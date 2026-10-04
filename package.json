@@ -5,6 +5,8 @@
   "packageManager": "pnpm@12.3.4",
   "scripts": {
     "dev": "next dev",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "build": "next build",
     "start": "next start",
     "app": "next build && electron .",
@@ -28,11 +30,12 @@
     "@types/node": "^24",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "electron": "https://github.com/castlabs/electron-releases#v44.1.0+wvcus",
+    "electron-builder": "^26.0.0",
     "postcss": "^8.5",
     "tailwindcss": "^4.3.3",
     "typescript": "5.7.3",
-    "electron": "https://github.com/castlabs/electron-releases#v44.1.0+wvcus",
-    "electron-builder": "^26.0.0"
+    "vitest": "^5.0.3"
   },
   "main": "electron/main.js",
   "build": {

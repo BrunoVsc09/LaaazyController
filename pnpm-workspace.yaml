@@ -5,4 +5,4 @@ minimumReleaseAgeExclude:
   - next
 
 allowBuilds:
-  electron-winstaller: set this to true or false
+  electron-winstaller: false
