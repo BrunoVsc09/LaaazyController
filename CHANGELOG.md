@@ -7,6 +7,17 @@
   de 1h30, na Netflix", "algo parecido com Duna") e aperte ✨ Pedir à IA. O Gemini só
   traduz o pedido em filtros; os títulos vêm do TMDB. Chave grátis do Google AI Studio,
   colada em Configurações; modelo configurável; até 50 pedidos por dia.
+- **Perfil do controle por jogo:** na Biblioteca, △ num jogo escolhe o perfil do DS4Windows
+  daquele jogo; "Jogos (padrão)" vale para os outros. O perfil entra ao abrir o jogo.
+- **Teste do botão PS** em Perfis do controle.
+
+### Mudou
+- **Botão PS fecha o jogo** (ou o Edge) à força, fecha o DS4Windows e volta ao Início.
+  Dá para trocar para "como console" (só volta ao Início) em Configurações.
+- **O Laaazy volta sozinho** para a frente quando o jogo ou o Edge fecha, e o controle
+  funciona sem precisar clicar com o mouse.
+- **Edge sem InPrivate:** os streamings abrem em tela cheia com um perfil próprio que
+  guarda os logins.
 
 ## 3.1.0 — 2026-10-04
 

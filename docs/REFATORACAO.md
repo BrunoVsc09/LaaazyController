@@ -13,6 +13,7 @@
 | 15. Versão 3.0.0 | ✅ versão e CHANGELOG · ⏳ falta o roteiro manual no PC (`docs/TESTE-MANUAL.md`) — o app novo ainda não foi aberto de verdade |
 | 19, 21, 22, 23 | ✅ concluídas (capas SteamGridDB, volume, novos episódios, proteção de tela) — versão 3.1.0 |
 | 24. Pedir à IA (Gemini 3.8 Flash) | ✅ filtros validados por listas fechadas, títulos do TMDB, limite de 50/dia, tempo limite de 15s, chamada só ao apertar o botão; teste de fumaça do main.js (pegou um bug que travaria o app ao abrir) |
+| 26–29. Melhorias do primeiro teste real | ✅ voltar ao Laaazy (foco + volta automática), PS fecha o jogo e o DS4Windows, perfil do controle por jogo (△ na Biblioteca), Edge sem InPrivate |
 | 25. Blindagem do Electron | 📋 proposta: canais só aceitam a tela do app, CSP e janela trancada, permissões negadas nos sites |
 | 12. Limpeza | ✅ dependências e código mortos removidos, README · ⏸ CSS morto (`.ps4-divider`, `.ps4-live`, `.icon-with-badge`, `.details-command-icon`) sai na fase 11; sons/ícones locais aguardam permissão para baixar |
 
