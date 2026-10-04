@@ -67,7 +67,11 @@ function migrateOldData() {
 }
 migrateOldData()
 
-// Sem barra de menu: o truque de foco aperta Alt, e o Alt mostraria File/Edit/View
+// Laaazy abre uma vez só: abrir de novo só traz o que já está aberto para a frente
+if (!app.requestSingleInstanceLock()) app.quit()
+
+// Sem barra de menu: o truque de foco aperta Alt, e o Alt mostraria File/Edit/View.
+// De novo no 'ready' (o Electron põe o menu padrão nessa hora) e na própria janela.
 Menu.setApplicationMenu(null)
 
 registerAppScheme()
@@ -245,7 +249,10 @@ registerIpc(ipcMain, {
   drmStatus: () => widevineStatus(components.status()),
 })
 
+app.on('second-instance', () => showMenu())
+
 app.whenReady().then(async () => {
+  Menu.setApplicationMenu(null)
   await components.whenReady() // instala o Widevine (DRM)
   handleAppProtocol(OUT)
   windows.create('app://local/index.html')

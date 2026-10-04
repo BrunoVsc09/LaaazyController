@@ -10,14 +10,15 @@ const require = createRequire(import.meta.url)
 const C = require('../shared/channels')
 
 const menuCalls = []
+const appEvents = []
 
 function fakeElectron(dir) {
   const handlers = new Map()
   const noop = () => {}
   const electron = {
     app: {
-      getPath: () => dir, whenReady: () => new Promise(noop), on: noop, quit: noop, isPackaged: false,
-      getAppPath: () => dir, getAppMetrics: () => [], getLoginItemSettings: () => ({ openAtLogin: false }), setLoginItemSettings: noop,
+      getPath: () => dir, whenReady: () => new Promise(noop), on: (ev) => appEvents.push(ev), quit: noop, isPackaged: false,
+      getAppPath: () => dir, requestSingleInstanceLock: () => true, getAppMetrics: () => [], getLoginItemSettings: () => ({ openAtLogin: false }), setLoginItemSettings: noop,
     },
     ipcMain: { on: (ch, fn) => handlers.set(ch, fn), handle: (ch, fn) => handlers.set(ch, fn) },
     components: { whenReady: async () => {}, status: () => ({}) },
@@ -47,6 +48,10 @@ describe('main.js (fumaça)', () => {
   // Regressão: o truque de foco aperta Alt, e o Alt mostrava o menu File/Edit/View
   it('não tem barra de menu (o Alt do truque de foco não mostra File/Edit/View)', () => {
     expect(menuCalls).toEqual([null])
+  })
+
+  it('abre uma vez só (segundo Laaazy só traz o primeiro para a frente)', () => {
+    expect(appEvents).toContain('second-instance')
   })
 
   it('registra um handler para cada canal do contrato', () => {
