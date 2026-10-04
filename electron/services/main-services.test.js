@@ -50,11 +50,17 @@ describe('launcher', () => {
     return { l: launcherMod.createLauncher(deps), deps }
   }
 
-  it('Netflix abre dentro do app com o perfil do DS4 do card', async () => {
+  it('Prime Video abre dentro do app com o perfil do DS4 do card', async () => {
     const { l, deps } = make()
+    await l.open('https://www.primevideo.com', 'Prime Video')
+    expect(deps.ds4.applyFor).toHaveBeenCalledWith('Prime Video')
+    expect(deps.openStream).toHaveBeenCalledWith('https://www.primevideo.com')
+  })
+  it('Netflix abre no Edge por padrão', async () => {
+    const { l, deps } = make({ found: { edge: 'C:\\E\\msedge.exe' } })
     await l.open('https://www.netflix.com', 'Netflix')
-    expect(deps.ds4.applyFor).toHaveBeenCalledWith('Netflix')
-    expect(deps.openStream).toHaveBeenCalledWith('https://www.netflix.com')
+    expect(deps.openStream).not.toHaveBeenCalled()
+    expect(deps.spawnDetached).toHaveBeenCalledWith('C:\\E\\msedge.exe', expect.arrayContaining(['https://www.netflix.com']))
   })
   it('Crunchyroll abre no Edge em tela cheia com perfil próprio', async () => {
     const { l, deps } = make({ found: { edge: 'C:\\E\\msedge.exe' } })
@@ -85,19 +91,26 @@ describe('launcher', () => {
     expect(deps.openPath).toHaveBeenCalledWith('C:\\H\\Hydra.exe')
     expect(await l.launch('ds4windows')).toBe('Não achei o DS4Windows.')
   })
-  it('a escolha "Edge" do usuário manda a Netflix para o Edge', async () => {
-    const { l, deps } = make({ found: { edge: 'C:\\E\\msedge.exe' } })
-    deps.streamModes = () => ({ Netflix: 'edge' })
+  it('a escolha "Edge" do usuário manda o Prime Video para o Edge', async () => {
+    const { deps } = make({ found: { edge: 'C:\\E\\msedge.exe' } })
+    deps.streamModes = () => ({ 'Prime Video': 'edge' })
     const l2 = launcherMod.createLauncher(deps)
-    await l2.open('https://www.netflix.com', 'Netflix')
+    await l2.open('https://www.primevideo.com', 'Prime Video')
     expect(deps.openStream).not.toHaveBeenCalled()
     expect(deps.spawnDetached).toHaveBeenCalled()
+  })
+  it('a escolha "App" do usuário traz a Netflix de volta para dentro do app', async () => {
+    const { deps } = make()
+    deps.streamModes = () => ({ Netflix: 'app' })
+    const l2 = launcherMod.createLauncher(deps)
+    await l2.open('https://www.netflix.com', 'Netflix')
+    expect(deps.openStream).toHaveBeenCalledWith('https://www.netflix.com')
   })
   it('sem Widevine, serviço com DRM no app avisa em vez de abrir uma tela que não toca', async () => {
     const { deps } = make()
     deps.widevine = () => ({ installed: false, msg: 'Widevine não instalado.' })
     const l = launcherMod.createLauncher(deps)
-    expect(await l.open('https://www.netflix.com', 'Netflix')).toBe('Widevine não instalado.')
+    expect(await l.open('https://www.primevideo.com', 'Prime Video')).toBe('Widevine não instalado.')
     expect(deps.openStream).not.toHaveBeenCalled()
   })
   it('sem Widevine, YouTube (sem DRM) abre normalmente', async () => {

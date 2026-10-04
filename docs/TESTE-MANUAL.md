@@ -26,7 +26,7 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 
 | Serviço | Modo | `pnpm app` | `.exe` portátil | Código de erro |
 |---|---|---|---|---|
-| Netflix | | | | |
+| Netflix | Edge (padrão) | ❌ E100 no app | | E100 (DRM recusado sem VMP) |
 | Prime Video | | | | |
 | HBO Max | | | | |
 | Crunchyroll | | | | |

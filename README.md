@@ -11,7 +11,7 @@ jogos (Steam, Epic e jogos adicionados à mão) e troca automática de perfil do
 | `pnpm install` | instala as dependências |
 | `pnpm test` | roda os testes (vitest) |
 | `pnpm app` | gera os preloads, gera a tela e abre o app |
-| `pnpm dist` | gera o `.exe` portátil em `dist/` (com assinatura VMP, ver abaixo) |
+| `pnpm dist` | gera o `.exe` portátil em `dist/` |
 | `pnpm dev` | só a tela, no navegador (sem Electron: botões de programas não funcionam) |
 
 Depois de mudar `electron/*.src.js` ou `shared/`, rode `pnpm preloads` (o `app` e o `dist` já rodam).
@@ -41,15 +41,11 @@ O que testar à mão: [docs/TESTE-MANUAL.md](docs/TESTE-MANUAL.md).
 No DS4Windows, mapeie o botão PS para **F24** (volta ao menu) e outro botão para
 **F23** (fecha o programa da frente e volta). No teclado: Ctrl+Alt+Home e Ctrl+Alt+End.
 
-## DRM (Netflix e outros) no `.exe`
+## DRM (Netflix e outros)
 
-O `pnpm dist` assina o app com VMP (castlabs EVS) no passo `afterPack`. Uma vez, na
-máquina que gera o build:
-
-```
-pip install --upgrade castlabs-evs
-python -m castlabs_evs.account signup
-```
-
-Sem isso o build sai, mas avisa que não foi assinado; aí vídeos com DRM podem não
-tocar dentro do app. Alternativa: em Configurações, mude o serviço para "No Edge".
+Alguns serviços só tocam vídeo protegido em navegadores com assinatura VMP de
+produção, que a castlabs só libera para contas corporativas. Por isso **Netflix e
+Crunchyroll abrem no Edge em tela cheia** por padrão (Netflix dava erro E100 dentro
+do app). Os outros abrem dentro do app; se algum não tocar, mude para "No Edge" em
+Configurações. Perfil do DS4, botão PS e "fechar o que está na frente" funcionam
+nos dois modos.

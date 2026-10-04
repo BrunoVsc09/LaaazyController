@@ -9,7 +9,7 @@ describe('openMode com a escolha do usuário', () => {
     expect(routing.openMode('https://www.crunchyroll.com', services, { Crunchyroll: 'app' })).toBe('app')
   })
   it('escolha inválida é ignorada', () => {
-    expect(routing.openMode('https://www.netflix.com', services, { Netflix: 'chrome' })).toBe('app')
+    expect(routing.openMode('https://www.netflix.com', services, { Netflix: 'chrome' })).toBe('edge')
   })
   it('validModes só aceita serviços do catálogo e app/edge', () => {
     expect(routing.validModes({ Netflix: 'edge', 'Prime Video': 'app' }, services)).toBe(true)

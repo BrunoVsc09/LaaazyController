@@ -5,7 +5,7 @@
 | Fase | Status |
 |---|---|
 | 0–5, 7–9 | ✅ concluídas (um commit cada) |
-| 6. Streaming e DRM | ✅ código (modo app/Edge, Widevine, assinatura VMP) · ⏳ falta: matriz de diagnóstico em `docs/TESTE-MANUAL.md` e conta castlabs EVS (você) |
+| 6. Streaming e DRM | ✅ modo app/Edge por serviço e status do Widevine. Netflix: erro E100 no `pnpm app` (H2: assinatura VMP de desenvolvimento recusada). A conta castlabs EVS não aceita e-mail pessoal → assinatura VMP descartada; Netflix passa a abrir no Edge por padrão. ⏳ falta testar Prime Video, HBO Max e Spotify dentro do app |
 | 10–11. Design / novo visual | ⏸ aguardando a decisão "outra face" (seção 5) |
 | 12. Limpeza | ✅ dependências e código mortos removidos, README · ⏸ CSS morto (`.ps4-divider`, `.ps4-live`, `.icon-with-badge`, `.details-command-icon`) sai na fase 11; sons/ícones locais aguardam permissão para baixar |
 
