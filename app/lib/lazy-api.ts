@@ -51,6 +51,7 @@ export type LazyApi = {
     trailer(id: string): Promise<string | null>
     search(query: string): Promise<{ ok: boolean; configured?: boolean; items: Title[]; msg?: string }>
     where(id: string): Promise<string[]>
+    episodes(): Promise<{ id: string; label: string; kind: 'new' | 'soon'; date: string }[]>
   }
 }
 

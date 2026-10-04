@@ -260,3 +260,4 @@ button { font: inherit; }
 .power-menu { position: fixed; top: 110px; right: 5.2vw; z-index: 50; width: 340px; padding: 18px; border-radius: 18px; background: rgba(8, 24, 60, .97); box-shadow: 0 20px 60px rgba(0,0,0,.5); display: flex; flex-direction: column; gap: 10px; color: #fff; }
 .power-menu .lz-btn { text-align: left; }
 .power-menu button:focus-visible { outline: 3px solid #ffd23f; outline-offset: 2px; }
+.lz-badge { position: absolute; top: 10px; left: 10px; padding: 4px 10px; border-radius: 8px; background: #ffd23f; color: #111; font-size: 13px; font-style: normal; font-weight: 700; }

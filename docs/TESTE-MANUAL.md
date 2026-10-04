@@ -98,3 +98,7 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] No Laaazy: L2 abaixa, R2 aumenta o volume do Windows
 - [ ] Ctrl+Alt+↑/↓/M funcionam mesmo com o Edge na frente
 - [ ] Com F20/F21/F22 mapeados no DS4Windows, o controle muda o volume dentro do Edge e de jogos
+
+## Novos episódios
+- [ ] Com uma série em exibição na Minha lista, aparece a fileira "Novos episódios" com o aviso (episódio novo / data do próximo)
+- [ ] Séries sem episódio recente ou próximo não aparecem nessa fileira

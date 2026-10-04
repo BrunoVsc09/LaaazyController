@@ -44,6 +44,7 @@ function registerIpc(ipcMain, h) {
   handle(C.POWER_RUN, (action, confirmed) => (isText(action) ? h.power.run(action, confirmed === true) : { ok: false, msg: 'Ação desconhecida.' }))
   handle(C.POWER_LOGIN_GET, () => h.power.openAtLogin())
   handle(C.POWER_LOGIN_SET, (on) => h.power.setOpenAtLogin(!!on))
+  handle(C.CATALOG_EPISODES, async () => h.catalog.episodes(await h.myList.get()))
   handle(C.GAMES_RECENT, () => h.recentGames())
   handle(C.MYLIST_GET, () => h.myList.get())
   handle(C.MYLIST_TOGGLE, (item) => (item && typeof item === 'object' ? h.myList.toggle(item) : { ok: false, msg: 'Título inválido.' }))

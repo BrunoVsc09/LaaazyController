@@ -14,10 +14,13 @@ export const pinnedCards = (cards: Card[], pinned: string[]) =>
 // A Biblioteca virou aba; o resto dos cards aparece na tela de Apps
 export const appsGrid = (cards: Card[]) => cards.filter((c) => c.screen !== 'library')
 
-export type TitleRow = { id: string; title: string; items: Title[] }
+export type TitleRow = { id: string; title: string; items: Title[]; badges?: Record<string, string> }
+export type EpisodeNews = { id: string; label: string }
 
-export function buildRows({ series, films, myList = [] }: { series: Title[]; films: Title[]; myList?: Title[] }): TitleRow[] {
+export function buildRows({ series, films, myList = [], news = [] }: { series: Title[]; films: Title[]; myList?: Title[]; news?: EpisodeNews[] }): TitleRow[] {
+  const withNews = news.map((n) => myList.find((t) => t.id === n.id)).filter((t): t is Title => !!t)
   const rows: TitleRow[] = [
+    { id: 'news', title: 'Novos episódios', items: withNews, badges: Object.fromEntries(news.map((n) => [n.id, n.label])) },
     { id: 'mylist', title: 'Minha lista', items: myList },
     { id: 'series', title: 'Séries em alta nos seus apps', items: series },
     { id: 'films', title: 'Filmes em alta nos seus apps', items: films },

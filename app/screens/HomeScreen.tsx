@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import streaming from '../../shared/streaming'
 import AppIcon from '../components/AppIcon'
 import { CATALOG, type Card } from '../lib/catalog'
-import { buildRows, heroInfo, pinnedCards } from '../lib/home-model'
+import { buildRows, heroInfo, pinnedCards, type EpisodeNews } from '../lib/home-model'
 import { getLazy, type CatalogHome, type Game, type Title } from '../lib/lazy-api'
 import type { Sounds } from '../hooks/useSounds'
 
@@ -20,6 +20,7 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
   const [msg, setMsg] = useState('')
   const [recent, setRecent] = useState<Game[]>([])
   const [myList, setMyList] = useState<Title[]>([])
+  const [news, setNews] = useState<EpisodeNews[]>([])
 
   useEffect(() => {
     if (!lazy) return
@@ -28,9 +29,10 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
       setHero(list[0] ?? d.series[0] ?? d.films[0] ?? null)
     })
     lazy.games.recent().then(setRecent)
+    lazy.catalog.episodes().then(setNews)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const rows = data ? buildRows({ ...data, myList }) : []
+  const rows = data ? buildRows({ ...data, myList, news }) : []
   const inList = !!hero && myList.some((x) => x.id === hero.id)
   const toggleList = async () => {
     if (!lazy || !hero) return
@@ -118,6 +120,7 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
             {row.items.map((t) => (
               <button key={t.id} type="button" className="lz-title" style={bg(t)} aria-label={`${t.title} (${t.kind})`}
                 onFocus={() => { setHero(t); setMsg(''); sounds.hover() }} onClick={tap(watch)}>
+                {row.badges?.[t.id] && <em className="lz-badge">{row.badges[t.id]}</em>}
                 <span>{t.title}</span>
               </button>
             ))}

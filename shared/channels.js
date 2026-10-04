@@ -28,6 +28,7 @@ module.exports = {
   CATALOG_TRAILER: 'catalog:trailer',
   CATALOG_SEARCH: 'catalog:search',
   CATALOG_WHERE: 'catalog:where',
+  CATALOG_EPISODES: 'catalog:episodes',
   GAMES_RECENT: 'games:recent',
   MYLIST_GET: 'mylist:get',
   MYLIST_TOGGLE: 'mylist:toggle',

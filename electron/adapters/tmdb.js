@@ -39,7 +39,9 @@ function createTmdb({ fetch = globalThis.fetch } = {}) {
     return (br && br.flatrate) || []
   }
 
-  return { ping, providers, discover, videos, search, watchProviders }
+  const tvDetails = (token, id) => get(token, `/tv/${id}`, { language: 'pt-BR' })
+
+  return { ping, providers, discover, videos, search, watchProviders, tvDetails }
 }
 
 module.exports = { createTmdb }

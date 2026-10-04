@@ -1,13 +1,17 @@
 // Filmes e séries em alta nos serviços do usuário (fonte: TMDB), com cache de 6 horas.
 const { resolveProviders, mergeLists, searchItems, servicesFrom, pickTrailer, parseItemId } = require('../core/catalog')
 
+const { episodeNews } = require('../core/episodes')
+
 const CACHE_MS = 6 * 3600 * 1000
+const MAX_SERIES = 20
 const SECRET = 'tmdb'
 const KINDS = ['tv', 'movie']
 
 function createCatalog({ tmdb, secrets, readCache, writeCache, now = Date.now }) {
   const trailers = new Map()
   const places = new Map()
+  const details = new Map() // série → { at, data }, por 6 horas
   const token = () => secrets.get(SECRET)
 
   const status = () => ({ configured: !!token() })
@@ -90,7 +94,31 @@ function createCatalog({ tmdb, secrets, readCache, writeCache, now = Date.now })
     } catch { return [] }
   }
 
-  return { status, setKey, clearKey, home, trailer, search, where }
+  // Data de hoje no fuso do PC, no formato AAAA-MM-DD
+  const today = () => {
+    const d = new Date(now())
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  }
+
+  // Séries da Minha lista com episódio novo ou chegando
+  async function episodes(list) {
+    const key = token()
+    if (!key) return []
+    const out = []
+    for (const item of (list || []).filter((x) => parseItemId(x.id)?.kind === 'tv').slice(0, MAX_SERIES)) {
+      const { id } = parseItemId(item.id)
+      let cached = details.get(item.id)
+      if (!cached || now() - cached.at > CACHE_MS) {
+        try { cached = { at: now(), data: await tmdb.tvDetails(key, id) } } catch { continue }
+        details.set(item.id, cached)
+      }
+      const news = episodeNews(cached.data, today())
+      if (news) out.push({ id: item.id, ...news })
+    }
+    return out
+  }
+
+  return { status, setKey, clearKey, home, trailer, search, where, episodes }
 }
 
 module.exports = { createCatalog }

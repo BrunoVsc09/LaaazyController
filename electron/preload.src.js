@@ -36,5 +36,6 @@ contextBridge.exposeInMainWorld('lazy', {
     trailer: invoke(C.CATALOG_TRAILER),
     search: invoke(C.CATALOG_SEARCH),
     where: invoke(C.CATALOG_WHERE),
+    episodes: invoke(C.CATALOG_EPISODES),
   },
 })

@@ -54,3 +54,13 @@ describe('tmdb: busca e onde assistir', () => {
     expect(await mod.createTmdb({ fetch: fakeFetch(200, { results: {} }) }).watchProviders('T', 'tv', 5)).toEqual([])
   })
 })
+
+describe('tmdb: detalhes da série', () => {
+  it('tvDetails em pt-BR', async () => {
+    const fetch = fakeFetch(200, { id: 5, next_episode_to_air: null })
+    expect(await mod.createTmdb({ fetch }).tvDetails('T', 5)).toEqual({ id: 5, next_episode_to_air: null })
+    const u = new URL(fetch.mock.calls[0][0])
+    expect(u.pathname).toBe('/3/tv/5')
+    expect(u.searchParams.get('language')).toBe('pt-BR')
+  })
+})

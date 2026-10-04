@@ -44,6 +44,14 @@ describe('buildRows com Minha lista', () => {
   })
 })
 
+describe('buildRows com novos episódios', () => {
+  it('fileira "Novos episódios" vem primeiro, com o aviso de cada série', () => {
+    const rows = buildRows({ series: [], films: [], myList: [t('tv:1'), t('tv:2')], news: [{ id: 'tv:2', label: 'Episódio novo: T1E1' }] })
+    expect(rows[0]).toMatchObject({ id: 'news', title: 'Novos episódios', badges: { 'tv:2': 'Episódio novo: T1E1' } })
+    expect(rows[0].items.map((x) => x.id)).toEqual(['tv:2'])
+  })
+})
+
 describe('heroInfo', () => {
   it('monta a linha de detalhes e escolhe o serviço principal', () => {
     expect(heroInfo(t('a', { kind: 'Filme', year: '2023', services: ['Prime Video', 'Netflix'] })))

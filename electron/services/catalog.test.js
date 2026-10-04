@@ -153,3 +153,32 @@ describe('catalog.search e where', () => {
     expect(await catalog.where('lixo')).toEqual([])
   })
 })
+
+describe('catalog.episodes', () => {
+  const serie = (id) => ({ id, kind: 'Série', title: id, services: [] })
+  function withDetails(details, opts) {
+    const m = make(opts)
+    m.tmdb.tvDetails = vi.fn(async (_k, id) => details[id] || {})
+    return m
+  }
+  it('só séries da lista com novidade, e a data de hoje vem do relógio', async () => {
+    // now() = 10h de 1/1/1970 → hoje = 1970-01-01
+    const { catalog, tmdb } = withDetails({ 1: { last_episode_to_air: { air_date: '1970-01-01', season_number: 1, episode_number: 2 } }, 2: {} })
+    const r = await catalog.episodes([serie('tv:1'), serie('tv:2'), { id: 'movie:3', kind: 'Filme', title: 'F' }])
+    expect(r).toEqual([{ id: 'tv:1', label: 'Episódio novo: T1E2', kind: 'new', date: '1970-01-01' }])
+    expect(tmdb.tvDetails).toHaveBeenCalledTimes(2)
+  })
+  it('guarda por 6 horas', async () => {
+    const { catalog, tmdb, advance } = withDetails({})
+    await catalog.episodes([serie('tv:1')]); await catalog.episodes([serie('tv:1')])
+    expect(tmdb.tvDetails).toHaveBeenCalledTimes(1)
+    advance(6 * HOUR + 1); await catalog.episodes([serie('tv:1')])
+    expect(tmdb.tvDetails).toHaveBeenCalledTimes(2)
+  })
+  it('sem chave ou com erro: lista vazia', async () => {
+    expect(await withDetails({}, { key: '' }).catalog.episodes([serie('tv:1')])).toEqual([])
+    const { catalog, tmdb } = withDetails({})
+    tmdb.tvDetails.mockRejectedValue(new Error('x'))
+    expect(await catalog.episodes([serie('tv:1')])).toEqual([])
+  })
+})

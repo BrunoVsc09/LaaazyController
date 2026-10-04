@@ -24,6 +24,7 @@ function make() {
       trailer: vi.fn(async () => 'yt1'),
       search: vi.fn(async () => ({ ok: true, items: [] })),
       where: vi.fn(async () => []),
+      episodes: vi.fn(async () => []),
     },
     myList: { get: vi.fn(async () => []), toggle: vi.fn(async () => ({ ok: true, added: true })) },
     recentGames: vi.fn(async () => []),
@@ -82,6 +83,12 @@ describe('registerIpc', () => {
     expect(await invoke(C.POWER_RUN, 5)).toMatchObject({ ok: false })
     await invoke(C.POWER_LOGIN_SET, 1)
     expect(h.power.setOpenAtLogin).toHaveBeenCalledWith(true)
+  })
+  it('novos episódios usa a Minha lista', async () => {
+    const { invoke, h } = make()
+    h.myList.get.mockResolvedValue([{ id: 'tv:1' }])
+    await invoke(C.CATALOG_EPISODES)
+    expect(h.catalog.episodes).toHaveBeenCalledWith([{ id: 'tv:1' }])
   })
   it('volume: só up, down e mute', () => {
     const { send, h } = make()
