@@ -62,7 +62,7 @@ describe('launcher', () => {
     const { l, deps } = make({ found: { edge: 'C:\\E\\msedge.exe' } })
     await l.open('https://www.netflix.com', 'Netflix')
     expect(deps.openStream).not.toHaveBeenCalled()
-    expect(deps.spawnDetached).toHaveBeenCalledWith('C:\\E\\msedge.exe', expect.arrayContaining(['https://www.netflix.com']))
+    expect(deps.spawnDetached).toHaveBeenCalledWith('C:\\E\\msedge.exe', expect.arrayContaining(['--app=https://www.netflix.com']))
   })
   it('Crunchyroll abre no Edge em tela cheia com perfil próprio', async () => {
     const { l, deps } = make({ found: { edge: 'C:\\E\\msedge.exe' } })
