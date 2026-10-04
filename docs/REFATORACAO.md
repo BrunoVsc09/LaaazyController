@@ -6,9 +6,10 @@
 |---|---|
 | 0–5, 7–9 | ✅ concluídas (um commit cada) |
 | 6. Streaming e DRM | ✅ modo app/Edge por serviço e status do Widevine. Netflix: erro E100 no `pnpm app` (H2: assinatura VMP de desenvolvimento recusada). A conta castlabs EVS não aceita e-mail pessoal → assinatura VMP descartada; **Todos os streamings passam a abrir no Edge por padrão** (decisão de 2026-10-04); "No app" continua disponível por serviço em Configurações |
-| 10. Design | ✅ protótipo "lazy." (identidade própria, estrutura Início/Biblioteca/Apps) em artifact, fora do projeto · ⏳ aprovação |
+| 10. Design | 🟡 protótipo "lazy." (identidade própria, estrutura Início/Biblioteca/Apps) em artifact, fora do projeto · **o design será ajustado futuramente** (decisão de 2026-10-04): não está aprovado e não é a versão final |
 | 13. Catálogo de filmes e séries (TMDB) | ✅ dados, chave criptografada e campo em Configurações (seção 7) · a tela de Início com filmes e séries entra na fase 11 |
-| 11. Novo visual | ⏸ depois da aprovação do protótipo e da fase 13 |
+| 11. Novo visual | ⏸ depois do ajuste e da aprovação do design |
+| 14–23 | 📋 planejadas — ver seção 8 (roadmap 3.0 / 3.1) |
 | 12. Limpeza | ✅ dependências e código mortos removidos, README · ⏸ CSS morto (`.ps4-divider`, `.ps4-live`, `.icon-with-badge`, `.details-command-icon`) sai na fase 11; sons/ícones locais aguardam permissão para baixar |
 
 Bugs: B1–B6 corrigidos, cada um com teste de regressão. Achado na fase 6: o build
@@ -308,3 +309,42 @@ foi descartado: é IA generativa, não um catálogo — inventaria títulos e se
 - **Trailer** sob demanda (`/videos`), preferindo trailer oficial em português no YouTube.
 - **Atribuição** exigida pelo TMDB em Configurações.
 - Testes só com respostas falsas (fixtures); nunca a API real.
+
+---
+
+## 8. Roadmap 3.0 / 3.1 (planejado em 2026-10-04)
+
+Critério das features: tudo o que deixa o app melhor de usar **do sofá, só com o
+controle**. Todas seguem o mesmo método (TDD, um commit por fase, nada de API real
+nos testes, chaves de API sempre configuradas no app e guardadas criptografadas).
+
+### Versão 3.0 (proposta)
+
+| Fase | O que entra | Depende de | Esforço |
+|---|---|---|---|
+| **11. Novo visual + Início com filmes e séries** | aplicar o design (depois de ajustado) em Início, Biblioteca, Apps, Perfis e Configurações; fileiras do TMDB com prévia/trailer; Apps com "fixar no Início"; remover CSS morto. Pode ser dividida em 11a (Início + TMDB) e 11b (demais telas) | 10 (design ajustado e aprovado), 13 | grande |
+| **14. Nome novo** | trocar nome, ícone e textos. Mudar o `appId` (`com.bruno.lazyps4`) muda a pasta de dados: a fase migra configurações, chave do TMDB, jogos e perfis para a pasta nova | ⏳ confirmar o nome ("Laaazy"?) | pequeno |
+| **16. Teclado na tela** | digitar com o controle (busca, chave de API, nomes); abre ao focar um campo | — | médio |
+| **17. Busca unificada (□)** | uma busca para filmes/séries (TMDB), jogos e apps | 16, 13 | médio |
+| **18. Continuar jogando + Minha lista** | jogos abertos recentemente no Início (registrados localmente ao abrir); "Minha lista" de filmes e séries salva no PC, sem conta | 13 | pequeno |
+| **20. Energia de verdade** | menu do botão Energia: fechar o app, suspender ou desligar o PC, sempre com confirmação; opção "abrir junto com o Windows" | — | pequeno |
+| **15. Lançamento 3.0** | versão 3.0.0 (hoje `0.1.0`), roteiro manual completo, `.exe` portátil final, lista de novidades | todas as acima | pequeno |
+
+### Versão 3.1 (proposta)
+
+| Fase | O que entra | Esforço |
+|---|---|---|
+| **19. Capas para todos os jogos** | capas para jogos da Epic e do PC via SteamGridDB (API gratuita, chave configurada no app como a do TMDB) | médio |
+| **21. Volume pelo controle** | aumentar, diminuir e silenciar por atalho global, inclusive com o Edge na frente | pequeno |
+| **22. Novos episódios** | aviso no Início quando sai episódio novo de uma série da "Minha lista" (TMDB) | médio |
+| **23. Proteção de tela** | após alguns minutos parado, mostra imagens de fundo dos filmes em alta | pequeno |
+
+### Fora do roadmap (de propósito)
+- **Perfis da família** (lista e apps por pessoa): mexe em quase todas as telas; candidato à 4.0.
+- **Controle pelo celular**: exige servidor na rede local e cuidado de segurança; projeto à parte.
+- **Bateria do controle**: nem a Gamepad API nem o DS4Windows expõem isso de forma simples.
+- **Atualização automática**: o `.exe` portátil não se atualiza sozinho; exigiria trocar para instalador.
+
+### Pendências pequenas (podem entrar na fase 11)
+- Perfil "PC" do DS4Windows como padrão para todos os streamings (no Edge o controle precisa dele).
+- Sons e ícones dos comandos guardados dentro do app (precisa de permissão para baixar).
