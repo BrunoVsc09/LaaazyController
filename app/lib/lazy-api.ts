@@ -6,6 +6,7 @@ export type Settings = {
   closeDs4OnMenu: boolean
   psClosesApp?: boolean
   trailerPreview?: boolean
+  trailerSound?: boolean
   librarySort: 'asc' | 'desc'
   streamModes: Record<string, StreamMode>
   pinnedApps?: string[]
