@@ -50,7 +50,7 @@ export default function Ds4Screen({ onBack, sounds }: Props) {
       {data && data.profiles.length === 0 && <p className="ds4-help">Não achei perfis. Confira a pasta do DS4Windows em Configurações, salve pelo menos um perfil no DS4Windows e volte aqui.</p>}
       {DS4_KEYS.map((k: string) => (
         <button key={k} className="ds4-row" onClick={tap(() => cycle(k))} onMouseEnter={sounds.hover}>
-          <span>{k === 'menu' ? 'Menu (ao abrir o app e ao voltar)' : k}</span><b>{data?.config[k] || 'não mudar'}</b>
+          <span>{k === 'menu' ? 'Menu (ao abrir o app e ao voltar)' : k === 'games' ? 'Jogos (padrão; cada jogo pode ter o seu com △ na Biblioteca)' : k}</span><b>{data?.config[k] || 'não mudar'}</b>
         </button>
       ))}
     </section>

@@ -116,7 +116,8 @@ const library = createLibrary({
   openExternal: (url) => shell.openExternal(url),
   openPath: (p) => shell.openPath(p),
   spawnDetached,
-  onLaunch: () => { ds4.ensureRunning(); returnWatch.start() },
+  // Antes de abrir o jogo: DS4Windows aberto com o perfil do jogo (ou o padrão dos jogos)
+  onLaunch: (id) => { ds4.ensureRunning(); ds4.applyForGame(id); returnWatch.start() },
   // Continuar jogando: guarda o jogo aberto na frente da lista
   onLaunched: async (id) => {
     const ids = await store.readJson(userFile('recent.json'), [])

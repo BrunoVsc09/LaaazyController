@@ -128,3 +128,9 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Com um jogo aberto, PS fecha o jogo À FORÇA, fecha o DS4Windows (some da barra de tarefas) e volta ao Início, com o controle funcionando sem clicar
 - [ ] Com um streaming no Edge, PS fecha o Edge e volta ao Início
 - [ ] Configurações → Botão PS fecha o jogo = Não: PS só volta ao Início com o jogo aberto
+
+## Perfil do controle por jogo
+- [ ] Biblioteca: △ num jogo abre a lista de perfis do DS4Windows; escolher mostra 🎮 <perfil> no card
+- [ ] Abrir esse jogo aplica o perfil escolhido (confira no DS4Windows)
+- [ ] Perfis do controle → "Jogos (padrão)": jogos sem perfil próprio usam esse
+- [ ] O fecha a lista sem mudar nada; o foco volta ao card

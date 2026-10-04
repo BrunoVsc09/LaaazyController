@@ -53,7 +53,7 @@ describe('library.launch', () => {
     const { lib, deps } = make()
     expect(await lib.launch('steam:1')).toEqual({ ok: true, msg: '' })
     expect(deps.openExternal).toHaveBeenCalledWith('steam://rungameid/1')
-    expect(deps.onLaunch).toHaveBeenCalled()
+    expect(deps.onLaunch).toHaveBeenCalledWith('steam:1') // para aplicar o perfil do controle do jogo
   })
   it('recusa URL que não é da Steam nem da Epic', async () => {
     const { lib, deps } = make()

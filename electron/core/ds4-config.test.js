@@ -17,6 +17,20 @@ describe('ds4-config', () => {
   it('recusa card desconhecido', () => {
     expect(validateChange('Minecraft', 'TV', ['TV']).ok).toBe(false)
   })
+  it('perfil por jogo (game:<id>) e padrão dos jogos (games)', () => {
+    expect(validateChange('games', 'PC', ['PC'])).toEqual({ ok: true })
+    expect(validateChange('game:steam:620', 'PC', ['PC'])).toEqual({ ok: true })
+    expect(validateChange('game:pc:c:\\jogos\\hades.exe', '', ['PC'])).toEqual({ ok: true })
+    expect(validateChange('game:', 'PC', ['PC']).ok).toBe(false)
+    expect(validateChange('game:x\u0000y', 'PC', ['PC']).ok).toBe(false)
+    expect(validateChange('game:' + 'x'.repeat(400), 'PC', ['PC']).ok).toBe(false)
+  })
+  it('gameProfileFor: o do jogo, senão o padrão dos jogos, senão nenhum', () => {
+    expect(mod.gameProfileFor({ games: 'PC', 'game:steam:1': 'Corrida' }, 'steam:1')).toBe('Corrida')
+    expect(mod.gameProfileFor({ games: 'PC', 'game:steam:1': '' }, 'steam:1')).toBe('PC')
+    expect(mod.gameProfileFor({ games: 'PC' }, 'epic:x')).toBe('PC')
+    expect(mod.gameProfileFor({}, 'epic:x')).toBe('')
+  })
   // B6: um perfil que não existe era salvo mesmo devolvendo erro
   it('B6: recusa perfil que não existe na pasta', () => {
     expect(validateChange('Netflix', 'Fantasma', ['TV'])).toEqual({ ok: false, msg: 'Perfil "Fantasma" não encontrado na pasta de perfis.' })

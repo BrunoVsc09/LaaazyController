@@ -58,6 +58,21 @@ describe('ds4.apply', () => {
   })
 })
 
+describe('ds4.applyForGame', () => {
+  it('aplica o perfil do jogo ou o padrão dos jogos', async () => {
+    const { ds4, cli } = make({ saved: { games: 'PC', 'game:steam:1': 'TV' } })
+    await ds4.applyForGame('steam:1')
+    expect(cli.loadProfile).toHaveBeenLastCalledWith(expect.anything(), 'TV')
+    await ds4.applyForGame('epic:x')
+    expect(cli.loadProfile).toHaveBeenLastCalledWith(expect.anything(), 'PC')
+  })
+  it('perfil por jogo é salvo pelo set', async () => {
+    const { ds4, cfg } = make()
+    expect((await ds4.set('game:steam:1', 'TV')).ok).toBe(true)
+    expect(cfg()['game:steam:1']).toBe('TV')
+  })
+})
+
 describe('ds4.set / get', () => {
   it('salva e já aplica', async () => {
     const { ds4, cfg } = make()

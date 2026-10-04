@@ -41,8 +41,9 @@ describe('hintsFor (rodapé só com comandos reais)', () => {
   it('Início: Confirmar e Buscar (□)', () => {
     expect(labels('home')).toEqual(['Confirmar', 'Buscar'])
   })
-  it('Biblioteca: Confirmar, Voltar e Buscar (□)', () => {
-    expect(labels('library')).toEqual(['Confirmar', 'Voltar', 'Buscar'])
+  it('Biblioteca: Confirmar, Voltar, Buscar (□) e Perfil do controle (△)', () => {
+    expect(labels('library')).toEqual(['Confirmar', 'Voltar', 'Buscar', 'Perfil do controle'])
+    expect(hintsFor('library').find((h) => h.label === 'Perfil do controle')?.button).toBe(gamepad.BTN.TRIANGLE)
     expect(hintsFor('library').find((h) => h.label === 'Buscar')?.button).toBe(gamepad.BTN.SQUARE)
   })
   it('Apps: Confirmar, Voltar e Buscar (□)', () => {

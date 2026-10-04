@@ -1,7 +1,7 @@
 // Troca o perfil do DS4Windows por card, abre e fecha o DS4Windows.
 // Tudo passa por uma fila: duas trocas nunca rodam ao mesmo tempo.
 const { createQueue } = require('../core/queue')
-const { mergeConfig, validateChange, profileMissing } = require('../core/ds4-config')
+const { mergeConfig, validateChange, gameProfileFor, profileMissing } = require('../core/ds4-config')
 
 const NOT_FOUND = 'Não achei o DS4Windows. Escolha a pasta dele em Configurações.'
 const HINT = 'Se nada mudou, veja se o controle 1 está conectado e se o DS4Windows não está rodando como administrador.'
@@ -35,6 +35,7 @@ function createDs4({ cli, getExe, readCfg, writeCfg, sleep }) {
 
   const apply = (name) => queue.run(() => load(name))
   const applyFor = async (key) => apply((await config())[key])
+  const applyForGame = async (gameId) => apply(gameProfileFor(await config(), gameId))
 
   async function get() {
     const exe = await getExe()
@@ -64,7 +65,7 @@ function createDs4({ cli, getExe, readCfg, writeCfg, sleep }) {
     if (await cli.isRunning()) await cli.kill()
   }).catch(() => {})
 
-  return { apply, applyFor, get, set, ensureRunning, shutdown }
+  return { apply, applyFor, applyForGame, get, set, ensureRunning, shutdown }
 }
 
 module.exports = { createDs4 }

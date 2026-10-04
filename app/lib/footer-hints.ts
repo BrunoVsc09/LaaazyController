@@ -18,10 +18,11 @@ export const HINT_ICONS: Record<'cross' | 'circle' | 'square' | 'triangle', Hint
 const CONFIRM: Hint = { ...HINT_ICONS.cross, label: 'Confirmar' }
 const BACK: Hint = { ...HINT_ICONS.circle, label: 'Voltar' }
 const SEARCH: Hint = { ...HINT_ICONS.square, label: 'Buscar' }
+const PROFILE: Hint = { ...HINT_ICONS.triangle, label: 'Perfil do controle' }
 
 const BY_SCREEN: Record<Screen, Hint[]> = {
   home: [CONFIRM, SEARCH],
-  library: [CONFIRM, BACK, SEARCH],
+  library: [CONFIRM, BACK, SEARCH, PROFILE],
   apps: [CONFIRM, BACK, SEARCH],
   search: [CONFIRM, BACK],
   ds4: [CONFIRM, BACK],

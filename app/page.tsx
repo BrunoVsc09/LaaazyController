@@ -124,9 +124,11 @@ export default function Page() {
     const { screen } = stateRef.current
     const osk = !!oskRef.current
     const modal = powerRef.current
+    // Janelinhas dentro das telas (ex.: escolher perfil do jogo) marcadas com data-modal
+    const inner = !!document.querySelector('[data-modal]')
     const now = performance.now()
     if ((dx || dy) && now - lastMove.current > REPEAT_MS) {
-      focusMove(osk ? '.osk button' : modal ? '.power-menu button' : FOCUSABLE, dx, dx ? 0 : dy)
+      focusMove(osk ? '.osk button' : modal ? '.power-menu button' : inner ? '[data-modal] button' : FOCUSABLE, dx, dx ? 0 : dy)
       lastMove.current = now
     }
     if (!dx && !dy) lastMove.current = 0
@@ -135,6 +137,11 @@ export default function Page() {
       if (fired(BTN.SQUARE)) oskPress.current?.('backspace')
       if (fired(BTN.TRIANGLE)) oskPress.current?.('space')
       if (fired(BTN.O)) closeOsk()
+      return
+    }
+    if (inner && !modal) {
+      if (fired(BTN.X)) (document.activeElement as HTMLElement | null)?.click()
+      if (fired(BTN.O)) window.dispatchEvent(new Event('lz:close-modal'))
       return
     }
     if (modal) {
@@ -150,6 +157,7 @@ export default function Page() {
       else (active as HTMLElement | null)?.click()
     }
     if (fired(BTN.O) && screen !== 'home') back()
+    if (fired(BTN.TRIANGLE) && screen === 'library') window.dispatchEvent(new Event('lz:triangle'))
     if (fired(BTN.SQUARE)) {
       if (screen === 'library') focusFirst('.library-search input')
       else if (screen === 'home' || screen === 'apps') go('search')

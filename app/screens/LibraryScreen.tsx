@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { getLazy, type Game } from '../lib/lazy-api'
+import { useEffect, useRef, useState } from 'react'
+import { getLazy, type Ds4Data, type Game } from '../lib/lazy-api'
 import { nextSort, visibleGames, type Sort } from '../lib/library-filter'
 import type { Sounds } from '../hooks/useSounds'
 
@@ -15,9 +15,40 @@ export default function LibraryScreen({ onBack, sounds }: Props) {
   const [platform, setPlatform] = useState('Todos')
   const [query, setQuery] = useState('')
   const [games, setGames] = useState<Game[]>([])
+  const gamesRef = useRef<Game[]>([])
+  gamesRef.current = games
   const [busy, setBusy] = useState('')
   const [msg, setMsg] = useState('')
   const [sort, setSort] = useState<Sort>('asc')
+  // Perfil do controle por jogo: △ no jogo abre a lista de perfis do DS4Windows
+  const [ds4, setDs4] = useState<Ds4Data | null>(null)
+  const [picker, setPicker] = useState<Game | null>(null)
+  const loadDs4 = () => lazy?.ds4.get().then(setDs4)
+  const profileOf = (g: Game) => ds4?.config[`game:${g.id}`] || ''
+  const closePicker = (g: Game | null = picker) => {
+    setPicker(null)
+    if (g) window.setTimeout(() => document.querySelector<HTMLElement>(`.library-card[data-id="${CSS.escape(g.id)}"]`)?.focus(), 0)
+  }
+  const choose = async (g: Game, profile: string) => {
+    if (!lazy) return
+    const r = await lazy.ds4.set(`game:${g.id}`, profile)
+    setMsg(r.ok ? `${g.name}: ${profile ? `perfil "${profile}"` : 'usa o padrão dos jogos'}.` : r.msg)
+    await loadDs4()
+    closePicker(g)
+  }
+  useEffect(() => {
+    loadDs4()
+    const onTriangle = () => {
+      const id = (document.activeElement as HTMLElement | null)?.closest<HTMLElement>('.library-card')?.dataset.id
+      const g = id && gamesRef.current.find((x) => x.id === id)
+      if (g) setPicker(g)
+    }
+    const onClose = () => closePicker()
+    window.addEventListener('lz:triangle', onTriangle)
+    window.addEventListener('lz:close-modal', onClose)
+    return () => { window.removeEventListener('lz:triangle', onTriangle); window.removeEventListener('lz:close-modal', onClose) }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (picker) document.querySelector<HTMLElement>('.lz-picker button')?.focus() }, [picker])
 
   const toggleSort = () => {
     const next = nextSort(sort)
@@ -97,17 +128,30 @@ export default function LibraryScreen({ onBack, sounds }: Props) {
         <div className="library-grid">
           {shown.length === 0 && <p style={{ gridColumn: '1 / -1', opacity: 0.75, fontSize: 18 }}>Nenhum jogo encontrado. Use &quot;Adicionar jogo&quot; ou &quot;Adicionar pasta&quot;.</p>}
           {shown.map((g) => (
-            <button key={g.id} className="library-card" onClick={tap(() => launch(g))} onContextMenu={(e) => { e.preventDefault(); remove(g) }} onMouseEnter={sounds.hover}>
+            <button key={g.id} className="library-card" data-id={g.id} onClick={tap(() => launch(g))} onContextMenu={(e) => { e.preventDefault(); remove(g) }} onMouseEnter={sounds.hover}>
               <div className={`library-cover ${g.cover ? 'has-cover' : ''}`}>
                 <span>{g.name}</span>
                 {g.cover && <img src={g.cover} alt="" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement?.classList.remove('has-cover') }} />}
                 <small>▶</small>
               </div>
               <strong>{g.name}</strong>
+              {profileOf(g) && <em className="lz-badge" style={{ position: 'static', alignSelf: 'flex-start' }}>🎮 {profileOf(g)}</em>}
             </button>
           ))}
         </div>
       </div>
+      {picker && (
+        <div className="lz-picker power-menu" data-modal role="dialog" aria-label={`Perfil do controle: ${picker.name}`}>
+          <p><strong>Perfil do controle</strong><br />{picker.name}</p>
+          {['', ...(ds4?.profiles ?? [])].map((p) => (
+            <button key={p || '(padrão)'} type="button" className="lz-btn" onClick={tap(() => choose(picker, p))}>
+              {profileOf(picker) === p ? '✓ ' : ''}{p || `Padrão dos jogos${ds4?.config.games ? ` (${ds4.config.games})` : ' (não mudar)'}`}
+            </button>
+          ))}
+          {ds4 && ds4.profiles.length === 0 && <p>Nenhum perfil achado. Confira a pasta do DS4Windows em Configurações.</p>}
+          <button type="button" className="lz-btn" onClick={tap(() => closePicker())}>Cancelar</button>
+        </div>
+      )}
     </section>
   )
 }

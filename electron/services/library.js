@@ -8,6 +8,7 @@ const SAVE_FAILED = 'Não consegui salvar a lista de jogos.'
 
 function createLibrary({
   sources, readCustom, writeCustom, scanFolder, chooseExe, chooseDir,
+  // onLaunch(id): antes de abrir (DS4Windows e perfil do jogo); onLaunched(id): abriu
   exists, openExternal, openPath, spawnDetached, onLaunch = () => {}, onLaunched = () => {}, now = Date.now,
 }) {
   // Varrer Steam e Epic lê o disco: o resultado vale por 15s e cai quando a lista muda
@@ -32,7 +33,7 @@ function createLibrary({
     const { type, value } = g.launch
     if (type === 'url') {
       if (!GAME_URL.test(value)) return { ok: false, msg: 'Endereço de abertura inválido para este jogo.' }
-      onLaunch()
+      onLaunch(g.id)
       try { await openExternal(value) } catch (e) {
         return { ok: false, msg: `Não consegui abrir pela ${g.platform}: ${e.message}` }
       }
@@ -43,7 +44,7 @@ function createLibrary({
       dropCache()
       return { ok: false, msg: `O arquivo do jogo não existe mais:\n${value}` }
     }
-    onLaunch()
+    onLaunch(g.id)
     // Atalho (.lnk) só abre pelo Windows; spawn não executa atalhos
     const err = /\.lnk$/i.test(value) ? await openPath(value) : await spawnDetached(value)
     if (err) return { ok: false, msg: `Não consegui abrir "${g.name}": ${err}` }
