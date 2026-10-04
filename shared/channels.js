@@ -1,0 +1,24 @@
+// Nomes de todos os canais IPC (processo principal ↔ telas). Um lugar só.
+module.exports = {
+  OPEN: 'open',
+  HOME: 'home',
+  BACK: 'back',
+  KEY: 'key',
+  QUIT: 'quit',
+  GO_HOME: 'go-home', // principal → tela
+  LAUNCH: 'launch',
+  EXE_GET: 'exe:get',
+  EXE_CHOOSE: 'exe:choose',
+  SETTINGS_GET: 'settings:get',
+  SETTINGS_SET: 'settings:set',
+  DS4_GET: 'ds4:get',
+  DS4_SET: 'ds4:set',
+  STORE_WARNINGS: 'store:warnings',
+  GAMES_LIST: 'games:list',
+  GAMES_LAUNCH: 'games:launch',
+  GAMES_ADD_EXE: 'games:addExe',
+  GAMES_ADD_FOLDER: 'games:addFolder',
+  GAMES_REMOVE: 'games:remove',
+  SYSTEM_USER: 'system:user',
+  DRM_STATUS: 'drm:status',
+}

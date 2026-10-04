@@ -1,4 +1,6 @@
 const { contextBridge, ipcRenderer } = require('electron')
+
+// Mesmos nomes de shared/channels.js (o preload roda em sandbox e não pode importar arquivos)
 contextBridge.exposeInMainWorld('lazy', {
   open: (url, label) => ipcRenderer.send('open', url, label),
   launch: (name) => ipcRenderer.invoke('launch', name),
@@ -9,8 +11,8 @@ contextBridge.exposeInMainWorld('lazy', {
     set: (key, val) => ipcRenderer.invoke('settings:set', key, val),
   },
   edge: {
-    get: () => ipcRenderer.invoke('edge:get'),
-    choose: () => ipcRenderer.invoke('edge:choose'),
+    get: () => ipcRenderer.invoke('exe:get', 'edge'),
+    choose: () => ipcRenderer.invoke('exe:choose', 'edge'),
   },
   ds4: {
     get: () => ipcRenderer.invoke('ds4:get'),

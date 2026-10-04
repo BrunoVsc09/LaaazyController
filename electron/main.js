@@ -1,344 +1,142 @@
-const { app, BrowserWindow, WebContentsView, ipcMain, protocol, net, components, dialog, shell, globalShortcut } = require('electron')
-const path = require('path')
+// Raiz de composição: cria adapters → serviços → IPC → janela. Sem regra de negócio aqui.
+const { app, ipcMain, components, dialog, shell, globalShortcut } = require('electron')
 const fs = require('fs')
-const { pathToFileURL } = require('url')
-const { spawn, execFile } = require('child_process')
-
-// >>> AJUSTE AQUI: caminhos dos programas do seu PC <<<
 const os = require('os')
-const APPS = {
-  hydra: path.join(process.env.LOCALAPPDATA || '', 'Programs', 'Hydra', 'Hydra.exe'),
-  ds4windows: 'C:\\Users\\bruno\\Downloads\\win-x64\\DS4Windows.exe',
-}
+const path = require('path')
 
-// Sites que dão erro de DRM no app abrem no Edge em tela cheia (Alt+F4 fecha)
-const EXTERNAL = ['crunchyroll.com']
-
-// ---- Onde está o Edge (msedge.exe) ----
-const { readJsonSync, writeJsonSync, takeWarnings } = require('./adapters/json-store')
-const settingsFile = () => path.join(app.getPath('userData'), 'settings.json')
-const readSettings = () => readJsonSync(settingsFile(), {})
-const closeOnMenu = () => readSettings().closeDs4OnMenu !== false // padrão: ligado
-const writeSettings = (patch) => writeJsonSync(settingsFile(), { ...readSettings(), ...patch })
-
-// Aceita a pasta do Edge (ou o próprio msedge.exe) e devolve o caminho do msedge.exe
-function resolveEdgeExe(p) {
-  if (!p) return null
-  if (/\.exe$/i.test(p)) return fs.existsSync(p) ? p : null
-  for (const d of [p, path.join(p, 'Application'), path.join(p, '..')]) {
-    const exe = path.join(d, 'msedge.exe')
-    if (fs.existsSync(exe)) return exe
-  }
-  return null
-}
-
-function regEdgePath() {
-  return new Promise((res) =>
-    execFile('reg', ['query', 'HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\msedge.exe', '/ve'],
-      { windowsHide: true }, (e, out) => { const m = !e && String(out).match(/REG_SZ\s+(.+)/); res(m ? m[1].trim() : null) }))
-}
-
-async function findEdge() {
-  const saved = resolveEdgeExe(readSettings().edgePath)
-  if (saved) return saved
-  const cands = [
-    'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
-    'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
-    await regEdgePath(),
-  ]
-  return cands.find((c) => c && fs.existsSync(c)) || null
-}
-
-async function chooseEdge() {
-  const r = await dialog.showOpenDialog(alive() ? win : null, {
-    title: 'Escolha a pasta do Edge (onde fica o msedge.exe)',
-    properties: ['openDirectory'],
-  })
-  if (r.canceled || !r.filePaths[0]) return null
-  const exe = resolveEdgeExe(r.filePaths[0])
-  if (!exe) {
-    dialog.showErrorBox('Edge não encontrado', 'Não achei o msedge.exe nessa pasta. Escolha a pasta que contém o msedge.exe (normalmente ...\\Microsoft\\Edge\\Application).')
-    return null
-  }
-  writeSettings({ edgePath: r.filePaths[0] })
-  return exe
-}
-
-async function openInEdge(url) {
-  let edge = await findEdge()
-  if (!edge) edge = await chooseEdge() // não achou: pergunta a pasta
-  if (!edge) return shell.openExternal(url)
-  // Perfil separado do Edge (força uma janela nova em tela cheia). Você entra na conta uma vez.
-  const profile = path.join(app.getPath('userData'), 'edge-tv')
-  const c = spawn(edge, ['--kiosk', url, '--edge-kiosk-type=fullscreen', '--user-data-dir=' + profile, '--no-first-run'], { detached: true, stdio: 'ignore' })
-  c.on('error', () => {})
-  c.unref()
-}
-
-const ds4 = require('./ds4')({ ipcMain, app, shell, exe: APPS.ds4windows })
-let externalActive = false
-
-// ---- Chrome e Firefox (abrem como navegador normal) ----
-const BROWSERS = {
-  chrome: {
-    label: 'Google Chrome', exe: 'chrome.exe', setting: 'chromePath',
-    defaults: [
-      'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-      'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
-      path.join(process.env.LOCALAPPDATA || '', 'Google', 'Chrome', 'Application', 'chrome.exe'),
-    ],
-  },
-  firefox: {
-    label: 'Firefox', exe: 'firefox.exe', setting: 'firefoxPath',
-    defaults: [
-      'C:\\Program Files\\Mozilla Firefox\\firefox.exe',
-      'C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe',
-    ],
-  },
-}
-
-function resolveExeIn(p, exeName) {
-  if (!p) return null
-  if (/\.exe$/i.test(p)) return fs.existsSync(p) ? p : null
-  for (const d of [p, path.join(p, 'Application'), path.join(p, '..')]) {
-    const exe = path.join(d, exeName)
-    if (fs.existsSync(exe)) return exe
-  }
-  return null
-}
-
-function regAppPath(exeName) {
-  return new Promise((res) =>
-    execFile('reg', ['query', `HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\${exeName}`, '/ve'],
-      { windowsHide: true }, (e, out) => { const m = !e && String(out).match(/REG_SZ\s+(.+)/); res(m ? m[1].trim() : null) }))
-}
-
-async function findBrowser(key) {
-  const b = BROWSERS[key]
-  const saved = resolveExeIn(readSettings()[b.setting], b.exe)
-  if (saved) return saved
-  const cands = [...b.defaults, await regAppPath(b.exe)]
-  return cands.find((c) => c && fs.existsSync(c)) || null
-}
-
-async function chooseBrowser(key) {
-  const b = BROWSERS[key]
-  const r = await dialog.showOpenDialog(alive() ? win : null, { title: `Escolha a pasta do ${b.label} (onde fica o ${b.exe})`, properties: ['openDirectory'] })
-  if (r.canceled || !r.filePaths[0]) return null
-  const exe = resolveExeIn(r.filePaths[0], b.exe)
-  if (!exe) { dialog.showErrorBox(`${b.label} não encontrado`, `Não achei o ${b.exe} nessa pasta.`); return null }
-  writeSettings({ [b.setting]: r.filePaths[0] })
-  return exe
-}
-
-async function launchBrowser(key) {
-  const b = BROWSERS[key]
-  const exe = (await findBrowser(key)) || (await chooseBrowser(key))
-  if (!exe) return `Não achei o ${b.label}.`
-  externalActive = true
-  ds4.ensureRunning()   // navegador precisa do perfil de mouse do DS4Windows
-  ds4.applyFor(b.label)
-  const c = spawn(exe, [], { cwd: path.dirname(exe), detached: true, stdio: 'ignore' })
-  c.on('error', () => {})
-  c.unref()
-  return ''
-}
+const store = require('./adapters/json-store')
+const { regAppPath, regValue } = require('./adapters/registry')
+const { spawnDetached, killTree } = require('./adapters/process')
+const { createForegroundProbe } = require('./adapters/ps-foreground')
+const { createDialogs } = require('./adapters/dialogs')
+const { createDs4Cli } = require('./adapters/ds4-cli')
+const sources = require('./adapters/game-sources')
+const { createSettings } = require('./services/settings')
+const { createExeLocator } = require('./services/exe-locator')
+const { createDs4 } = require('./services/ds4')
+const { createLibrary } = require('./services/library')
+const { createLauncher } = require('./services/launcher')
+const { createForeground } = require('./services/foreground')
+const { registerIpc } = require('./ipc/register')
+const { registerAppScheme, handleAppProtocol } = require('./window/app-protocol')
+const { createStreamView } = require('./window/stream-view')
+const { createWindowManager } = require('./window/window-manager')
+const C = require('../shared/channels')
+const streaming = require('../shared/streaming')
 
 const OUT = path.join(__dirname, '..', 'out')
-let win = null
-let view = null
+const userFile = (name) => path.join(app.getPath('userData'), name)
+const exists = (p) => fs.existsSync(p)
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
-// Verdadeiro só quando dá para mexer na janela. Depois que ela é fechada, o
-// objeto continua existindo mas qualquer método dele lança exceção.
-const alive = () => !!win && !win.isDestroyed()
+registerAppScheme()
 
-// Traz o menu para a frente (funciona por cima de jogos e do Edge)
-function showMenu() {
-  if (!alive()) return
-  goHome()
-  win.webContents.send('go-home') // fecha Biblioteca / tela de perfis
-  if (win.isMinimized()) win.restore()
-  win.setAlwaysOnTop(true)
-  win.show()
-  win.moveTop()
-  win.focus()
-  win.setFullScreen(true)
-  // Se o Steam (ou outro app) roubar o foco logo depois, pega de volta
-  for (const ms of [350, 900]) {
-    setTimeout(() => {
-      if (alive() && !win.isFocused()) { win.setAlwaysOnTop(true); win.show(); win.focus(); win.setAlwaysOnTop(false) }
-    }, ms)
-  }
-  setTimeout(() => alive() && win.setAlwaysOnTop(false), 1200)
-  // Botão PS: fecha o DS4Windows (dá tempo de o F24 chegar antes)
-  if (closeOnMenu()) setTimeout(() => ds4.shutdown(), 500)
+// ---- Janela e camada de streaming ----
+let externalActive = false
+const stream = createStreamView({ getWin: () => windows.get(), preload: path.join(__dirname, 'stream-preload.js') })
+const windows = createWindowManager({
+  preload: path.join(__dirname, 'preload.js'),
+  onResize: () => stream.fit(),
+  onClosed: () => stream.forget(),
+  // Voltou do Edge/navegador para o menu: volta o perfil do Menu
+  onFocus: () => { if (externalActive) { externalActive = false; if (!closeDs4OnMenu()) ds4.applyFor('menu') } },
+})
+
+// ---- Serviços ----
+const settings = createSettings({
+  read: () => store.readJsonSync(userFile('settings.json'), {}),
+  write: (data) => store.writeJsonSync(userFile('settings.json'), data),
+})
+const closeDs4OnMenu = () => settings.get('closeDs4OnMenu') !== false
+const dialogs = createDialogs({ dialog, getWin: () => windows.get() })
+const locator = createExeLocator({ settings, exists, regAppPath, chooseDir: dialogs.chooseDir, showError: dialogs.showError })
+const ds4 = createDs4({
+  cli: createDs4Cli({ openPath: (p) => shell.openPath(p) }),
+  getExe: () => locator.find('ds4windows'),
+  readCfg: () => store.readJson(userFile('ds4-profiles.json'), {}),
+  writeCfg: (cfg) => store.writeJson(userFile('ds4-profiles.json'), cfg),
+  sleep,
+})
+
+async function steamRoot() {
+  const saved = await regValue('HKCU\\Software\\Valve\\Steam', 'SteamPath')
+  const cands = [saved, 'C:\\Program Files (x86)\\Steam', 'C:\\Program Files\\Steam']
+  return cands.find((c) => c && exists(path.join(c, 'steamapps'))) || null
 }
+const epicManifests = path.join(process.env.ProgramData || 'C:\\ProgramData', 'Epic', 'EpicGamesLauncher', 'Data', 'Manifests')
 
-// ---- Fechar o que está na frente (jogo / app / Edge) e voltar ao menu ----
-// Um PowerShell fica aberto em segundo plano só para descobrir qual programa está em primeiro plano.
-let ps = null
-function startPs() {
-  if (ps) return
-  try {
-    ps = spawn('powershell.exe', ['-NoLogo', '-NoProfile', '-NonInteractive', '-Command', '-'], { windowsHide: true })
-    ps.stdout.setEncoding('utf8')
-    ps.on('error', () => { ps = null })
-    ps.on('exit', () => { ps = null })
-    ps.stdin.write("Add-Type -TypeDefinition 'using System;using System.Runtime.InteropServices;public class FG{[DllImport(\"user32.dll\")]public static extern IntPtr GetForegroundWindow();[DllImport(\"user32.dll\")]public static extern uint GetWindowThreadProcessId(IntPtr h,out uint p);}'\n")
-  } catch { ps = null }
-}
+const library = createLibrary({
+  sources: [() => sources.scanSteam({ steamRoot }), () => sources.scanEpic(epicManifests)],
+  readCustom: () => store.readJson(userFile('games.json'), []),
+  writeCustom: (list) => store.writeJson(userFile('games.json'), list),
+  scanFolder: sources.scanFolder,
+  chooseExe: dialogs.chooseExe,
+  chooseDir: () => dialogs.chooseDir('Escolha a pasta dos jogos'),
+  exists,
+  openExternal: (url) => shell.openExternal(url),
+  openPath: (p) => shell.openPath(p),
+  spawnDetached,
+  onLaunch: () => ds4.ensureRunning(),
+})
 
-function fgInfo() {
-  return new Promise((resolve) => {
-    startPs()
-    if (!ps) return resolve({ pid: 0, name: '' })
-    let buf = ''
-    const done = (v) => { clearTimeout(tm); if (ps) ps.stdout.off('data', onData); resolve(v) }
-    const onData = (d) => {
-      buf += d
-      const m = buf.match(/FGPID:(\d+):(\S*)\r?\n/)
-      if (m) done({ pid: Number(m[1]), name: m[2] })
-    }
-    const tm = setTimeout(() => done({ pid: 0, name: '' }), 3000)
-    ps.stdout.on('data', onData)
-    ps.stdin.write('$p=0;[void][FG]::GetWindowThreadProcessId([FG]::GetForegroundWindow(),[ref]$p);$n=(Get-Process -Id $p -ErrorAction SilentlyContinue).ProcessName;"FGPID:${p}:$n"\n')
-  })
-}
+const launcher = createLauncher({
+  services: streaming, locator, ds4, spawnDetached,
+  openPath: (p) => shell.openPath(p),
+  openExternal: (url) => shell.openExternal(url),
+  openStream: (url) => stream.open(url),
+  setExternalActive: (v) => { externalActive = v },
+  edgeProfileDir: userFile('edge-tv'),
+})
 
-// Nunca fecha estes (o próprio app, o Windows, o Steam e o DS4Windows)
-const PROTECTED = new Set(['explorer', 'steam', 'steamwebhelper', 'ds4windows', 'dwm', 'csrss', 'winlogon',
-  'searchhost', 'searchapp', 'shellexperiencehost', 'startmenuexperiencehost', 'applicationframehost',
-  'textinputhost', 'lockapp', 'sihost', 'electron', 'lazy-ps4', 'lazy ps4'])
-
-async function closeCurrent() {
-  const { pid, name } = await fgInfo() // descobrir ANTES de trazer o menu para a frente
-  const own = app.getAppMetrics().map((m) => m.pid)
-  showMenu()
-  if (!pid || pid === process.pid || own.includes(pid) || PROTECTED.has(name.toLowerCase())) return
-  // 1) pede para fechar normalmente (dá chance de salvar)  2) se travar, força depois de 6 segundos
-  execFile('taskkill', ['/PID', String(pid), '/T'], { windowsHide: true }, () => {})
-  setTimeout(() => execFile('taskkill', ['/PID', String(pid), '/T', '/F'], { windowsHide: true }, () => {}), 6000)
-}
-
+// ---- Menu e botão PS ----
 function goHome() {
-  closeStream()
-  if (!closeOnMenu()) ds4.applyFor('menu')
+  stream.close()
+  if (!closeDs4OnMenu()) ds4.applyFor('menu')
 }
 
-protocol.registerSchemesAsPrivileged([
-  { scheme: 'app', privileges: { standard: true, secure: true, supportFetchAPI: true } },
-])
-
-function fitView() {
-  if (!alive() || !view) return
-  const [width, height] = win.getContentSize()
-  view.setBounds({ x: 0, y: 0, width, height })
+function showMenu() {
+  goHome()
+  windows.send(C.GO_HOME) // fecha Biblioteca / telas de configuração
+  windows.bringToFront()
+  // Botão PS: fecha o DS4Windows (dá tempo de o F24 chegar antes)
+  if (closeDs4OnMenu()) setTimeout(() => ds4.shutdown(), 500)
 }
 
-function closeStream() {
-  if (!view) return
-  const v = view
-  view = null // zera antes, para um segundo closeStream não mexer no mesmo view
-  try {
-    if (alive()) win.contentView.removeChildView(v)
-    v.webContents.close()
-  } catch {}
-  if (alive()) win.webContents.focus()
-}
+const probe = createForegroundProbe()
+const foreground = createForeground({
+  fgInfo: probe.info,
+  ownPids: () => app.getAppMetrics().map((m) => m.pid),
+  selfPid: process.pid,
+  showMenu,
+  kill: killTree,
+})
 
-function openStream(url) {
-  if (!alive()) return
-  closeStream()
-  view = new WebContentsView({
-    webPreferences: {
-      partition: 'persist:streaming', // mantém seus logins
-      preload: path.join(__dirname, 'stream-preload.js'),
-    },
-  })
-  const wc = view.webContents
-  wc.setUserAgent(wc.getUserAgent().replace(/ ?(Electron|lazy-ps4)\/\S+/g, ''))
-  wc.setWindowOpenHandler(({ url: u }) => { wc.loadURL(u); return { action: 'deny' } })
-  win.contentView.addChildView(view)
-  fitView()
-  wc.loadURL(url)
-  wc.focus()
-}
+registerIpc(ipcMain, {
+  launcher, locator, settings, ds4, library, goHome,
+  back: () => { if (!stream.back()) goHome() },
+  sendKey: (key) => stream.sendKey(key),
+  quit: () => app.quit(),
+  takeWarnings: store.takeWarnings,
+  systemUser: () => ({ name: os.userInfo().username }),
+  drmStatus: () => components.status(),
+})
 
 app.whenReady().then(async () => {
   await components.whenReady() // instala o Widevine (DRM)
-
-  protocol.handle('app', (req) => {
-    let p = decodeURIComponent(new URL(req.url).pathname)
-    if (p === '/') p = '/index.html'
-    const file = path.normalize(path.join(OUT, p))
-    // Sem o separador, "out-outra-coisa" passaria no teste por começar com "out"
-    if (file !== OUT && !file.startsWith(OUT + path.sep)) return new Response('not found', { status: 404 })
-    return net.fetch(pathToFileURL(file).toString())
-  })
-
-  win = new BrowserWindow({
-    fullscreen: true,
-    autoHideMenuBar: true,
-    backgroundColor: '#0b3f9d',
-    webPreferences: { preload: path.join(__dirname, 'preload.js') },
-  })
-  win.setMenuBarVisibility(false)
-  win.on('resize', fitView)
-  win.on('enter-full-screen', fitView)
-  win.on('leave-full-screen', fitView)
-  // Sem isto, `win` continua apontando para uma janela destruída e todo
-  // showMenu()/fitView() posterior lança exceção
-  win.on('closed', () => { win = null; view = null })
-  win.on('focus', () => { if (externalActive) { externalActive = false; if (!closeOnMenu()) ds4.applyFor('menu') } })
-  win.loadURL('app://local/index.html')
+  handleAppProtocol(OUT)
+  windows.create('app://local/index.html')
   ds4.ensureRunning()  // abre o DS4Windows em segundo plano
-  ds4.applyFor('menu') // e carrega o perfil do Menu (padrão: Brunera)
+  ds4.applyFor('menu') // e carrega o perfil do Menu
 
-  ipcMain.on('open', (_e, url, label) => {
-    ds4.applyFor(label)
-    try {
-      const h = new URL(url).hostname
-      if (EXTERNAL.some((d) => h === d || h.endsWith('.' + d))) { externalActive = true; ds4.ensureRunning(); return openInEdge(url) }
-    } catch {}
-    openStream(url)
-  })
-  ipcMain.on('home', goHome)
-  ipcMain.on('back', () => {
-    const h = view && view.webContents.navigationHistory
-    if (h && h.canGoBack()) h.goBack()
-    else goHome()
-  })
-  ipcMain.on('key', (_e, keyCode) => {
-    if (!view) return
-    view.webContents.sendInputEvent({ type: 'keyDown', keyCode })
-    view.webContents.sendInputEvent({ type: 'keyUp', keyCode })
-  })
-  ipcMain.on('quit', () => app.quit())
-  ipcMain.handle('edge:get', async () => (await findEdge()) || '')
-  ipcMain.handle('edge:choose', async () => (await chooseEdge()) || '')
-  require('./games')({ ipcMain, app, dialog, shell, getWin: () => (alive() ? win : null), onLaunch: () => ds4.ensureRunning() })
-  // A tela pergunta por avisos (arquivo corrompido, falha ao salvar) ao abrir
-  ipcMain.handle('store:warnings', () => takeWarnings())
-  ipcMain.handle('settings:get', () => ({ closeDs4OnMenu: closeOnMenu() }))
-  ipcMain.handle('settings:set', (_e, key, val) => { if (key === 'closeDs4OnMenu') writeSettings({ closeDs4OnMenu: !!val }); return true })
-  ipcMain.handle('launch', async (_e, name) => {
-    if (BROWSERS[name]) return launchBrowser(name)
-    const exe = APPS[name]
-    if (!exe) return 'Programa desconhecido.'
-    if (!fs.existsSync(exe)) return 'Não achei o arquivo: ' + exe
-    return (await shell.openPath(exe)) || '' // vazio = abriu
-  })
-
-  // Atalhos globais: no DS4Windows, mapeie o botão PS para uma dessas teclas
+  // No DS4Windows, mapeie o botão PS para F24 (menu) e outro botão para F23 (fechar o da frente)
   for (const key of ['F24', 'CommandOrControl+Alt+Home']) {
     try { globalShortcut.register(key, showMenu) } catch {}
   }
-  // Fechar o que está na frente e voltar ao menu
   for (const key of ['F23', 'CommandOrControl+Alt+End']) {
-    try { globalShortcut.register(key, closeCurrent) } catch {}
+    try { globalShortcut.register(key, () => foreground.closeCurrent()) } catch {}
   }
-  startPs() // aquece o PowerShell para o atalho responder rápido
+  probe.warm()
 })
 
-app.on('will-quit', () => { globalShortcut.unregisterAll(); try { ps && ps.kill() } catch {} })
+app.on('will-quit', () => { globalShortcut.unregisterAll(); probe.dispose() })
 app.on('window-all-closed', () => app.quit())
