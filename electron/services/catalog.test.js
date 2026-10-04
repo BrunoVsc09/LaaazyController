@@ -12,7 +12,7 @@ function make({ key = 'TOKEN', cache = null, pingOk = true, fail = false, secret
   let saved = key
   let stored = cache
   const tmdb = {
-    ping: vi.fn(async () => pingOk),
+    ping: vi.fn(async () => (pingOk === true ? { ok: true } : pingOk === false ? { ok: false, reason: 'refused' } : pingOk)),
     providers: vi.fn(async () => { if (fail) throw new Error('offline'); return providers }),
     discover: vi.fn(async (_t, kind, pid) => [{ id: pid, name: `S${pid}`, title: `F${pid}`, popularity: pid }]),
     videos: vi.fn(async () => [{ site: 'YouTube', type: 'Trailer', key: 'yt1', official: true }]),
@@ -84,9 +84,17 @@ describe('catalog: chave', () => {
     expect(await catalog.setKey('ERRADA')).toEqual({ ok: false, msg: 'O TMDB recusou essa chave. Cole a "Chave da API" (32 letras e números) ou o "Token de Leitura da API" (texto longo que começa com eyJ), sem espaços.' })
     expect(secrets.set).not.toHaveBeenCalled()
   })
-  it('chave aceita é salva (sem espaços) e o cache antigo cai', async () => {
+  it('sem conexão com o TMDB não diz que a chave foi recusada', async () => {
+    const { catalog, secrets } = make({ key: '', pingOk: { ok: false, reason: 'offline', detail: 'fetch failed' } })
+    const r = await catalog.setKey('BOA')
+    expect(r.ok).toBe(false)
+    expect(r.msg).toMatch(/Não consegui falar com o TMDB/)
+    expect(r.msg).not.toMatch(/recusou/)
+    expect(secrets.set).not.toHaveBeenCalled()
+  })
+  it('chave aceita é salva (sem espaços nem quebras, inclusive no meio) e o cache antigo cai', async () => {
     const { catalog, secrets, stored } = make({ key: '', cache: { at: 0, series: [], films: [] } })
-    expect((await catalog.setKey('  BOA  ')).ok).toBe(true)
+    expect((await catalog.setKey('  BO\nA  ')).ok).toBe(true)
     expect(secrets.set).toHaveBeenCalledWith('tmdb', 'BOA')
     expect(stored()).toBeNull()
   })

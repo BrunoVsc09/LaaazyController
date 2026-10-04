@@ -27,9 +27,12 @@ describe('tmdb adapter', () => {
     expect(new URL(fetch.mock.calls[0][0]).pathname).toBe('/3/watch/providers/movie')
     expect(new URL(fetch.mock.calls[1][0]).pathname).toBe('/3/movie/42/videos')
   })
-  it('ping: true com chave aceita, false com chave recusada', async () => {
-    expect(await mod.createTmdb({ fetch: fakeFetch(200, { success: true }) }).ping('T')).toBe(true)
-    expect(await mod.createTmdb({ fetch: fakeFetch(401, {}) }).ping('T')).toBe(false)
+  it('ping diz se a chave foi aceita, recusada ou se não deu para falar com o TMDB', async () => {
+    expect(await mod.createTmdb({ fetch: fakeFetch(200, { success: true }) }).ping('T')).toEqual({ ok: true })
+    expect(await mod.createTmdb({ fetch: fakeFetch(401, {}) }).ping('T')).toEqual({ ok: false, reason: 'refused' })
+    const offline = vi.fn(async () => { throw new Error('fetch failed') })
+    expect(await mod.createTmdb({ fetch: offline }).ping('T')).toEqual({ ok: false, reason: 'offline', detail: 'fetch failed' })
+    expect(await mod.createTmdb({ fetch: fakeFetch(503, {}) }).ping('T')).toEqual({ ok: false, reason: 'offline', detail: 'O TMDB respondeu com erro 503.' })
   })
   it('erro HTTP vira exceção com mensagem clara', async () => {
     await expect(mod.createTmdb({ fetch: fakeFetch(401) }).discover('T', 'tv', 8)).rejects.toThrow(/recusou a chave/)
@@ -99,7 +102,7 @@ describe('tmdb: os dois tipos de credencial', () => {
   })
   it('ping funciona com a Chave da API', async () => {
     const fetch = fakeFetch(200, { success: true })
-    expect(await mod.createTmdb({ fetch }).ping(V3)).toBe(true)
+    expect(await mod.createTmdb({ fetch }).ping(V3)).toEqual({ ok: true })
     expect(new URL(fetch.mock.calls[0][0]).searchParams.get('api_key')).toBe(V3)
   })
 })

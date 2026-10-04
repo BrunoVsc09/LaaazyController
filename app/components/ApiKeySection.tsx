@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import type { Result } from '../lib/lazy-api'
+import { getLazy, type Result } from '../lib/lazy-api'
 import type { Sounds } from '../hooks/useSounds'
 
 type Props = {
@@ -26,6 +26,12 @@ export default function ApiKeySection({ title, help, configured, note, sounds, o
     onResult(r.msg, r.ok || configured)
   }
   const clear = async () => onResult((await onClear()).msg, false)
+  // Sem mouse: cola o que está copiado (já sem espaços)
+  const paste = async () => {
+    const text = await getLazy()?.clipboard.read()
+    if (text) { setKey(text); onResult('Chave colada. Agora aperte "Salvar e testar a chave".', configured) }
+    else onResult('Não há nada copiado. Copie a chave (Ctrl+C) e tente de novo.', configured)
+  }
 
   return (
     <>
@@ -37,6 +43,7 @@ export default function ApiKeySection({ title, help, configured, note, sounds, o
           placeholder={configured ? 'colar outra chave para trocar' : 'colar aqui'} aria-label={`Chave do ${title}`}
           style={{ flex: 1, marginLeft: 24, background: 'transparent', border: 0, color: 'inherit', font: 'inherit', textAlign: 'right' }} />
       </label>
+      <button className="ds4-row" onClick={() => { sounds.click(); paste() }} onMouseEnter={sounds.hover}><span>📋 Colar a chave copiada</span><b>▶</b></button>
       <button className="ds4-row" onClick={() => { sounds.click(); save() }} onMouseEnter={sounds.hover} disabled={!key.trim()}><span>Salvar e testar a chave</span><b>▶</b></button>
       {configured && <button className="ds4-row" onClick={() => { sounds.click(); clear() }} onMouseEnter={sounds.hover}><span>Remover a chave</span><b>✕</b></button>}
       {note && <p className="ds4-help" style={{ fontSize: '0.85em', opacity: 0.8 }}>{note}</p>}

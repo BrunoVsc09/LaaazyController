@@ -19,8 +19,14 @@ function createTmdb({ fetch = globalThis.fetch } = {}) {
     return res.json()
   }
 
+  // { ok } | { ok: false, reason: 'refused' } | { ok: false, reason: 'offline', detail }
   async function ping(token) {
-    try { return !!(await get(token, '/authentication')).success } catch { return false }
+    try {
+      return (await get(token, '/authentication')).success ? { ok: true } : { ok: false, reason: 'refused' }
+    } catch (e) {
+      if (/recusou a chave/.test(e.message)) return { ok: false, reason: 'refused' }
+      return { ok: false, reason: 'offline', detail: e.message }
+    }
   }
 
   const providers = async (token, kind) => (await get(token, `/watch/providers/${kind}`, REGION)).results || []

@@ -9,6 +9,7 @@ contextBridge.exposeInMainWorld('lazy', {
   open: invoke(C.OPEN),
   launch: invoke(C.LAUNCH),
   quit: () => ipcRenderer.send(C.QUIT),
+  clipboard: { read: invoke(C.CLIPBOARD_READ) },
   volume: (action) => ipcRenderer.send(C.VOLUME, action),
   ps: {
     startTest: invoke(C.PS_TEST_START),

@@ -23,6 +23,7 @@ function fakeElectron(dir) {
     shell: { openPath: async () => '', openExternal: async () => {} },
     globalShortcut: { register: noop, unregisterAll: noop },
     safeStorage: { isEncryptionAvailable: () => false },
+    clipboard: { readText: () => ' abc ' },
     protocol: { registerSchemesAsPrivileged: noop, handle: noop },
     net: { fetch: async () => ({}) },
     BrowserWindow: class {},
@@ -46,7 +47,7 @@ describe('main.js (fumaça)', () => {
 
   it('os canais de leitura respondem (todos os serviços foram ligados)', async () => {
     const call = (ch, ...a) => handlers.get(ch)({}, ...a)
-    for (const ch of [C.SETTINGS_GET, C.STORE_WARNINGS, C.CATALOG_STATUS, C.COVERS_STATUS, C.AI_STATUS, C.POWER_LOGIN_GET, C.MYLIST_GET, C.DRM_STATUS, C.SYSTEM_USER]) {
+    for (const ch of [C.SETTINGS_GET, C.STORE_WARNINGS, C.CATALOG_STATUS, C.COVERS_STATUS, C.AI_STATUS, C.POWER_LOGIN_GET, C.MYLIST_GET, C.DRM_STATUS, C.SYSTEM_USER, C.CLIPBOARD_READ]) {
       await expect(Promise.resolve(call(ch)), ch).resolves.toBeDefined()
     }
     expect(await call(C.AI_STATUS)).toMatchObject({ configured: false, model: 'gemini-3.8-flash', left: 50 })

@@ -109,7 +109,7 @@ describe('assistant: chave', () => {
     expect((await a.setKey('X')).ok).toBe(false)
     expect(secrets.set).not.toHaveBeenCalled()
     gemini.ping.mockResolvedValue(true)
-    expect((await a.setKey(' BOA ')).ok).toBe(true)
+    expect((await a.setKey(' BO	A ')).ok).toBe(true)
     expect(secrets.set).toHaveBeenCalledWith('gemini', 'BOA')
   })
 })

@@ -1,5 +1,5 @@
 // Raiz de composição: cria adapters → serviços → IPC → janela. Sem regra de negócio aqui.
-const { app, ipcMain, components, dialog, shell, globalShortcut, safeStorage } = require('electron')
+const { app, ipcMain, components, dialog, shell, globalShortcut, safeStorage, clipboard } = require('electron')
 const fs = require('fs')
 const os = require('os')
 const { execFile } = require('child_process')
@@ -36,6 +36,7 @@ const { createReturnWatch } = require('./services/return-watch')
 const { createPsButton } = require('./services/ps-button')
 const { widevineStatus } = require('./core/drm')
 const { planMigration } = require('./core/migration')
+const { cleanKey } = require('./core/keys')
 const { registerIpc } = require('./ipc/register')
 const { registerAppScheme, handleAppProtocol } = require('./window/app-protocol')
 const { createStreamView } = require('./window/stream-view')
@@ -230,6 +231,8 @@ setInterval(() => returnWatch.tick(), 1500).unref()
 
 registerIpc(ipcMain, {
   launcher, locator, settings, ds4, library: libraryWithCovers, catalog, myList, power, covers, volume, assistant, psButton, goHome,
+  // Botão Colar das chaves: texto copiado, já limpo de espaços (só quando você aperta)
+  readClipboard: () => cleanKey(clipboard.readText()).slice(0, 500),
   recentGames: async () => recentGames(await store.readJson(userFile('recent.json'), []), await libraryWithCovers.list()),
   back: () => { if (!stream.back()) goHome() },
   sendKey: (key) => stream.sendKey(key),

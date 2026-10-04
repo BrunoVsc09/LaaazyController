@@ -38,6 +38,7 @@ module.exports = {
   POWER_LOGIN_GET: 'power:loginGet',
   POWER_LOGIN_SET: 'power:loginSet',
   VOLUME: 'volume',
+  CLIPBOARD_READ: 'clipboard:read',
   AI_STATUS: 'ai:status',
   AI_SET_KEY: 'ai:setKey',
   AI_CLEAR_KEY: 'ai:clearKey',

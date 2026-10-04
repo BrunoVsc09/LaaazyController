@@ -23,6 +23,7 @@ export type LazyApi = {
   open(url: string, label: string): Promise<string>
   launch(name: string): Promise<string>
   quit(): void
+  clipboard: { read(): Promise<string> }
   volume(action: 'up' | 'down' | 'mute'): void
   onHome(cb: () => void): void
   ps: { startTest(): Promise<boolean>; onTested(cb: () => void): void }

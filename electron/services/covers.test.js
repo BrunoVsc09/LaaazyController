@@ -55,7 +55,7 @@ describe('covers: chave', () => {
   })
   it('chave aceita é salva e o "não achou" antigo é esquecido', async () => {
     const { covers, secrets, stored } = make({ key: '', cache: { 'pc:x': { url: null, at: 1 } } })
-    expect((await covers.setKey(' BOA ')).ok).toBe(true)
+    expect((await covers.setKey(' BO A\n')).ok).toBe(true)
     expect(secrets.set).toHaveBeenCalledWith('steamgriddb', 'BOA')
     expect(stored()).toEqual({})
   })

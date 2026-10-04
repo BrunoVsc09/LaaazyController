@@ -2,6 +2,7 @@
 const { resolveProviders, mergeLists, searchItems, servicesFrom, pickTrailer, parseItemId } = require('../core/catalog')
 
 const { episodeNews } = require('../core/episodes')
+const { cleanKey } = require('../core/keys')
 
 const CACHE_MS = 6 * 3600 * 1000
 const MAX_SERIES = 20
@@ -17,9 +18,11 @@ function createCatalog({ tmdb, secrets, readCache, writeCache, now = Date.now })
   const status = () => ({ configured: !!token() })
 
   async function setKey(raw) {
-    const key = typeof raw === 'string' ? raw.trim() : ''
+    const key = cleanKey(raw)
     if (!key) return { ok: false, msg: 'Cole a chave do TMDB (API Read Access Token).' }
-    if (!(await tmdb.ping(key))) return { ok: false, msg: 'O TMDB recusou essa chave. Cole a "Chave da API" (32 letras e números) ou o "Token de Leitura da API" (texto longo que começa com eyJ), sem espaços.' }
+    const check = await tmdb.ping(key)
+    if (check.reason === 'offline') return { ok: false, msg: `Não consegui falar com o TMDB para testar a chave (${check.detail}). Confira a internet e tente de novo.` }
+    if (!check.ok) return { ok: false, msg: 'O TMDB recusou essa chave. Cole a "Chave da API" (32 letras e números) ou o "Token de Leitura da API" (texto longo que começa com eyJ), sem espaços.' }
     if (!secrets.set(SECRET, key)) return { ok: false, msg: 'Não consegui guardar a chave com segurança neste PC.' }
     await writeCache(null)
     trailers.clear()
