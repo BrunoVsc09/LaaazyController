@@ -66,3 +66,9 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Reabrir o app → Configurações continua dizendo "Chave do TMDB configurada"
 - [ ] "Remover a chave do TMDB" → volta para "Sem chave"
 - [ ] (fase 11) Início mostra séries e filmes em alta dos seus serviços, com prévia
+
+## Teclado na tela
+- [ ] X num campo de texto (busca da Biblioteca, chave do TMDB) abre o teclado
+- [ ] Letras entram no campo; ⇧ deixa a próxima maiúscula; □ apaga; △ dá espaço
+- [ ] Campo de senha mostra bolinhas no teclado
+- [ ] ✓ Pronto ou O fecha e o foco volta ao campo

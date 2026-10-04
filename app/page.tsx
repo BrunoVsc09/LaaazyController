@@ -6,6 +6,7 @@ import PS4Background from './components/PS4Background'
 import Header from './components/Header'
 import Tabs from './components/Tabs'
 import Footer from './components/Footer'
+import OnScreenKeyboard from './components/OnScreenKeyboard'
 import HomeScreen from './screens/HomeScreen'
 import LibraryScreen from './screens/LibraryScreen'
 import AppsScreen from './screens/AppsScreen'
@@ -17,6 +18,7 @@ import type { Card } from './lib/catalog'
 import { focusMove } from './lib/focus'
 import { DEFAULT_PINNED, togglePin } from './lib/home-model'
 import { getLazy } from './lib/lazy-api'
+import { OSK_HINTS } from './lib/osk'
 import { initialScreen, screenReducer, type Screen } from './lib/screen-state'
 
 const { BTN } = gamepad
@@ -34,6 +36,12 @@ export default function Page() {
   const sounds = useSounds()
   const lastMove = useRef(0)
   const [pinned, setPinned] = useState<string[]>(DEFAULT_PINNED)
+  // Teclado na tela: aberto para um campo de texto (X do controle num campo)
+  const [oskTarget, setOskTarget] = useState<HTMLInputElement | null>(null)
+  const oskRef = useRef<HTMLInputElement | null>(null)
+  oskRef.current = oskTarget
+  const oskPress = useRef<((key: string) => void) | null>(null)
+  const closeOsk = () => { const t = oskRef.current; setOskTarget(null); t?.focus() }
 
   useEffect(() => { getLazy()?.settings.get().then((s) => { if (s.pinnedApps) setPinned(s.pinnedApps) }) }, [])
   const onTogglePin = (label: string) => {
@@ -80,13 +88,25 @@ export default function Page() {
 
   const padOn = useGamepad(({ fired, dx, dy }) => {
     const { screen } = stateRef.current
+    const osk = !!oskRef.current
     const now = performance.now()
     if ((dx || dy) && now - lastMove.current > REPEAT_MS) {
-      focusMove(FOCUSABLE, dx, dx ? 0 : dy)
+      focusMove(osk ? '.osk button' : FOCUSABLE, dx, dx ? 0 : dy)
       lastMove.current = now
     }
     if (!dx && !dy) lastMove.current = 0
-    if (fired(BTN.X)) (document.activeElement as HTMLElement | null)?.click()
+    if (osk) {
+      if (fired(BTN.X)) (document.activeElement as HTMLElement | null)?.click()
+      if (fired(BTN.SQUARE)) oskPress.current?.('backspace')
+      if (fired(BTN.TRIANGLE)) oskPress.current?.('space')
+      if (fired(BTN.O)) closeOsk()
+      return
+    }
+    const active = document.activeElement
+    if (fired(BTN.X)) {
+      if (active instanceof HTMLInputElement) setOskTarget(active)
+      else (active as HTMLElement | null)?.click()
+    }
     if (fired(BTN.O) && screen !== 'home') back()
     if (fired(BTN.SQUARE) && screen === 'library') focusFirst('.library-search input')
   })
@@ -111,7 +131,8 @@ export default function Page() {
       {state.screen === 'apps' && <AppsScreen pinned={pinned} sounds={sounds} onActivate={activate} onTogglePin={onTogglePin} />}
       {state.screen === 'ds4' && <Ds4Screen onBack={back} sounds={sounds} />}
       {state.screen === 'settings' && <SettingsScreen onBack={back} sounds={sounds} />}
-      <Footer screen={state.screen} />
+      {oskTarget && <OnScreenKeyboard target={oskTarget} onClose={closeOsk} sounds={sounds} pressRef={oskPress} />}
+      <Footer screen={state.screen} hints={oskTarget ? OSK_HINTS : undefined} />
     </main>
   )
 }

@@ -7,9 +7,17 @@ const { BTN } = gamepad
 
 export type Hint = { label: string; button: number; icon: string; cls: string }
 
-const CONFIRM: Hint = { label: 'Confirmar', button: BTN.X, icon: `${BLOB}/image-RmsaVZFRGft3ZQ23np6JD9Ct1RZztJ.png`, cls: 'confirm-command-icon' }
-const BACK: Hint = { label: 'Voltar', button: BTN.O, icon: `${BLOB}/image-efPFMsWuBwJacjHRT3XAlB7m1bJ8gX.png`, cls: 'back-command-icon' }
-const SEARCH: Hint = { label: 'Buscar', button: BTN.SQUARE, icon: `${BLOB}/image-GXcI3yAQ20XUtdiI4nztFeFYyfwOai.png`, cls: 'search-command-icon' }
+// Ícone de cada botão do controle (o texto muda conforme a tela)
+export const HINT_ICONS: Record<'cross' | 'circle' | 'square' | 'triangle', Hint> = {
+  cross: { label: '', button: BTN.X, icon: `${BLOB}/image-RmsaVZFRGft3ZQ23np6JD9Ct1RZztJ.png`, cls: 'confirm-command-icon' },
+  circle: { label: '', button: BTN.O, icon: `${BLOB}/image-efPFMsWuBwJacjHRT3XAlB7m1bJ8gX.png`, cls: 'back-command-icon' },
+  square: { label: '', button: BTN.SQUARE, icon: `${BLOB}/image-GXcI3yAQ20XUtdiI4nztFeFYyfwOai.png`, cls: 'search-command-icon' },
+  triangle: { label: '', button: BTN.TRIANGLE, icon: `${BLOB}/image-fbLU9pFFvFFk5kDdTWVlmaNWxKsSDw.png`, cls: 'details-command-icon' },
+}
+
+const CONFIRM: Hint = { ...HINT_ICONS.cross, label: 'Confirmar' }
+const BACK: Hint = { ...HINT_ICONS.circle, label: 'Voltar' }
+const SEARCH: Hint = { ...HINT_ICONS.square, label: 'Buscar' }
 
 const BY_SCREEN: Record<Screen, Hint[]> = {
   home: [CONFIRM],

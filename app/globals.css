@@ -246,3 +246,11 @@ button { font: inherit; }
 .lz-app-tile { height: 130px; border-radius: 16px; border: 0; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
 .lz-pin { padding: 8px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,.3); background: transparent; color: #fff; cursor: pointer; font-size: 15px; }
 .lz-pin.on { background: #ffd23f; color: #111; border-color: #ffd23f; }
+.osk { position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%); z-index: 50; width: min(1100px, 94vw); padding: 20px; border-radius: 22px; background: rgba(8, 24, 60, .97); box-shadow: 0 20px 60px rgba(0,0,0,.5); display: flex; flex-direction: column; gap: 10px; color: #fff; }
+.osk-value { min-height: 52px; padding: 12px 18px; border-radius: 12px; background: rgba(255,255,255,.1); font-size: 24px; overflow-wrap: anywhere; }
+.osk-placeholder { opacity: .6; }
+.osk-row { display: flex; gap: 8px; justify-content: center; }
+.osk-key { flex: 1 1 0; min-width: 0; height: 56px; border-radius: 10px; border: 0; background: rgba(255,255,255,.14); color: #fff; font-size: 22px; cursor: pointer; }
+.osk-key.wide { flex: 2 1 0; font-size: 18px; }
+.osk-key.on { background: #ffd23f; color: #111; }
+.osk-key:focus-visible { outline: 3px solid #ffd23f; outline-offset: 2px; background: rgba(255,255,255,.28); }
