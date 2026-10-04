@@ -70,7 +70,11 @@ describe('launcher', () => {
     expect(deps.openStream).not.toHaveBeenCalled()
     expect(deps.setExternalActive).toHaveBeenCalledWith(true)
     expect(deps.ds4.ensureRunning).toHaveBeenCalled()
-    expect(deps.spawnDetached).toHaveBeenCalledWith('C:\\E\\msedge.exe', ['--kiosk', 'https://www.crunchyroll.com', '--edge-kiosk-type=fullscreen', '--user-data-dir=C:\\data\\edge-tv', '--no-first-run'])
+    // Sem --kiosk: o modo quiosque do Edge é sempre InPrivate e não guarda os logins
+    const args = deps.spawnDetached.mock.calls[0][1]
+    expect(deps.spawnDetached.mock.calls[0][0]).toBe('C:\\E\\msedge.exe')
+    expect(args).toEqual(['--user-data-dir=C:\\data\\edge-tv', '--no-first-run', '--start-fullscreen', '--app=https://www.crunchyroll.com'])
+    expect(args.join(' ')).not.toMatch(/kiosk|inprivate/i)
   })
   it('sem Edge, abre no navegador padrão', async () => {
     const { l, deps } = make()

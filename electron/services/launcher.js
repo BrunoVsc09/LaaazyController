@@ -8,11 +8,12 @@ function createLauncher({
   services, locator, ds4, spawnDetached, openPath, openExternal, openStream, setExternalActive, edgeProfileDir,
   streamModes = () => ({}), widevine = () => ({ installed: true }),
 }) {
-  // Perfil separado do Edge: força uma janela nova em tela cheia (Alt+F4 fecha)
+  // Perfil próprio do Laaazy (guarda os logins), janela de app em tela cheia (Alt+F4 fecha).
+  // Sem --kiosk: o modo quiosque do Edge é sempre InPrivate e esquece os logins.
   async function openInEdge(url) {
     const edge = await locator.findOrChoose('edge')
     if (!edge) return openExternal(url)
-    return spawnDetached(edge, ['--kiosk', url, '--edge-kiosk-type=fullscreen', '--user-data-dir=' + edgeProfileDir, '--no-first-run'])
+    return spawnDetached(edge, ['--user-data-dir=' + edgeProfileDir, '--no-first-run', '--start-fullscreen', '--app=' + url])
   }
 
   // Devolve '' quando abriu, ou a mensagem para mostrar na tela
