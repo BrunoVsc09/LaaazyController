@@ -88,3 +88,8 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Suspender/Desligar pedem confirmação; Cancelar volta sem fazer nada
 - [ ] (Teste com cuidado) Suspender confirmado suspende o PC. Se a hibernação estiver ligada no Windows, ele hiberna
 - [ ] Configurações → Abrir junto com o Windows = Sim; reiniciar o PC abre o Laaazy (no .exe portátil, o .exe precisa continuar na mesma pasta)
+
+## Capas dos jogos (SteamGridDB)
+- [ ] Configurações → Capas dos jogos: chave errada é recusada; chave certa é salva
+- [ ] Biblioteca: jogos da Epic e do PC ganham capa (até 10 por vez; os outros na próxima abertura)
+- [ ] Jogos da Steam continuam com a capa da Steam

@@ -15,6 +15,8 @@ const sources = require('./adapters/game-sources')
 const { createTmdb } = require('./adapters/tmdb')
 const { createSecretStore } = require('./adapters/secret-store')
 const { createCatalog } = require('./services/catalog')
+const { createSgdb } = require('./adapters/sgdb')
+const { createCovers } = require('./services/covers')
 const { createMyList } = require('./services/my-list')
 const { createPower } = require('./services/power')
 const { loginItemFor } = require('./core/power')
@@ -139,14 +141,23 @@ const launcher = createLauncher({
   widevine: () => widevineStatus(components.status()),
 })
 
+// Capas do SteamGridDB para jogos da Epic e do PC (chave em secrets.json, cache em covers.json)
+const secretStore = createSecretStore({
+  safeStorage,
+  read: () => store.readJsonSync(userFile('secrets.json'), {}),
+  write: (data) => store.writeJsonSync(userFile('secrets.json'), data),
+})
+const covers = createCovers({
+  sgdb: createSgdb(), secrets: secretStore,
+  readCache: () => store.readJson(userFile('covers.json'), {}),
+  writeCache: (c) => store.writeJson(userFile('covers.json'), c),
+})
+const libraryWithCovers = { ...library, list: async (opts) => covers.fill(await library.list(opts)) }
+
 // Filmes e séries (TMDB). A chave fica criptografada em secrets.json; o cache em catalog-cache.json.
 const catalog = createCatalog({
   tmdb: createTmdb(),
-  secrets: createSecretStore({
-    safeStorage,
-    read: () => store.readJsonSync(userFile('secrets.json'), {}),
-    write: (data) => store.writeJsonSync(userFile('secrets.json'), data),
-  }),
+  secrets: secretStore,
   readCache: async () => {
     const c = await store.readJson(userFile('catalog-cache.json'), {})
     return c.at ? c : null
@@ -178,8 +189,8 @@ const foreground = createForeground({
 })
 
 registerIpc(ipcMain, {
-  launcher, locator, settings, ds4, library, catalog, myList, power, goHome,
-  recentGames: async () => recentGames(await store.readJson(userFile('recent.json'), []), await library.list()),
+  launcher, locator, settings, ds4, library: libraryWithCovers, catalog, myList, power, covers, goHome,
+  recentGames: async () => recentGames(await store.readJson(userFile('recent.json'), []), await libraryWithCovers.list()),
   back: () => { if (!stream.back()) goHome() },
   sendKey: (key) => stream.sendKey(key),
   quit: () => app.quit(),

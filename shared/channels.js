@@ -34,4 +34,7 @@ module.exports = {
   POWER_RUN: 'power:run',
   POWER_LOGIN_GET: 'power:loginGet',
   POWER_LOGIN_SET: 'power:loginSet',
+  COVERS_STATUS: 'covers:status',
+  COVERS_SET_KEY: 'covers:setKey',
+  COVERS_CLEAR_KEY: 'covers:clearKey',
 }

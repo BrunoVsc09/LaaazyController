@@ -27,6 +27,7 @@ function make() {
     },
     myList: { get: vi.fn(async () => []), toggle: vi.fn(async () => ({ ok: true, added: true })) },
     recentGames: vi.fn(async () => []),
+    covers: { status: vi.fn(() => ({ configured: false })), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })) },
     power: { run: vi.fn(async () => ({ ok: true })), openAtLogin: vi.fn(() => false), setOpenAtLogin: vi.fn() },
   }
   mod.registerIpc(ipcMain, h)
@@ -80,6 +81,11 @@ describe('registerIpc', () => {
     expect(await invoke(C.POWER_RUN, 5)).toMatchObject({ ok: false })
     await invoke(C.POWER_LOGIN_SET, 1)
     expect(h.power.setOpenAtLogin).toHaveBeenCalledWith(true)
+  })
+  it('capas: chave precisa ser texto', async () => {
+    const { invoke, h } = make()
+    expect(await invoke(C.COVERS_SET_KEY, {})).toMatchObject({ ok: false })
+    expect(h.covers.setKey).not.toHaveBeenCalled()
   })
   it('Minha lista: toggle só com objeto', async () => {
     const { invoke, h } = make()

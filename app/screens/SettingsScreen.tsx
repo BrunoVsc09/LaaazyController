@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import streaming from '../../shared/streaming'
+import ApiKeySection from '../components/ApiKeySection'
 import { getLazy, type DrmStatus, type StreamMode } from '../lib/lazy-api'
 import type { Sounds } from '../hooks/useSounds'
 
@@ -17,7 +18,7 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
   const [drm, setDrm] = useState<DrmStatus | null>(null)
   const [tmdbOn, setTmdbOn] = useState(false)
   const [atLogin, setAtLogin] = useState(false)
-  const [tmdbKey, setTmdbKey] = useState('')
+  const [gridOn, setGridOn] = useState(false)
 
   useEffect(() => {
     if (!lazy) return
@@ -25,22 +26,9 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
     Promise.all([lazy.exe.get('edge'), lazy.exe.get('ds4windows')]).then(([edge, ds4windows]) => setPaths({ edge, ds4windows }))
     lazy.drm.status().then(setDrm)
     lazy.catalog.status().then((s) => setTmdbOn(s.configured))
+    lazy.covers.status().then((s) => setGridOn(s.configured))
     lazy.power.openAtLogin().then(setAtLogin)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  // A chave só passa pela tela uma vez: vai para o Electron, que testa e guarda criptografada
-  const saveTmdb = async () => {
-    if (!lazy) return
-    setMsg('Testando a chave no TMDB...')
-    const r = await lazy.catalog.setKey(tmdbKey)
-    setMsg(r.msg)
-    if (r.ok) { setTmdbKey(''); setTmdbOn(true) }
-  }
-  const clearTmdb = async () => {
-    if (!lazy) return
-    setMsg((await lazy.catalog.clearKey()).msg)
-    setTmdbOn(false)
-  }
 
   const choose = async (key: 'edge' | 'ds4windows', label: string) => {
     const p = await lazy?.exe.choose(key)
@@ -76,22 +64,19 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
       <button className="ds4-row" onClick={tap(() => choose('ds4windows', 'DS4Windows'))} onMouseEnter={sounds.hover}><span>Pasta do DS4Windows</span><b>{paths.ds4windows || 'não encontrado, toque para escolher'}</b></button>
       <button className="ds4-row" onClick={tap(toggleClose)} onMouseEnter={sounds.hover}><span>Fechar o DS4Windows ao apertar PS</span><b>{closeDs4 ? 'Sim' : 'Não'}</b></button>
       <button className="ds4-row" onClick={tap(toggleLogin)} onMouseEnter={sounds.hover}><span>Abrir junto com o Windows</span><b>{atLogin ? 'Sim' : 'Não'}</b></button>
-      <h2 className="ds4-help">Filmes e séries (TMDB)</h2>
-      <p className="ds4-help">
-        {tmdbOn ? 'Chave do TMDB configurada.' : 'Sem chave: o Início não mostra filmes e séries.'} Crie uma chave grátis em themoviedb.org → Configurações → API e cole o &quot;API Read Access Token&quot; abaixo (use o teclado).
-      </p>
-      <label className="ds4-row" style={{ cursor: 'text' }}>
-        <span>Chave do TMDB</span>
-        <input
-          type="password" autoComplete="off" spellCheck={false} value={tmdbKey}
-          onChange={(e) => setTmdbKey(e.target.value)}
-          placeholder={tmdbOn ? 'colar outra chave para trocar' : 'colar aqui'}
-          style={{ flex: 1, marginLeft: 24, background: 'transparent', border: 0, color: 'inherit', font: 'inherit', textAlign: 'right' }}
-        />
-      </label>
-      <button className="ds4-row" onClick={tap(saveTmdb)} onMouseEnter={sounds.hover} disabled={!tmdbKey.trim()}><span>Salvar e testar a chave</span><b>▶</b></button>
-      {tmdbOn && <button className="ds4-row" onClick={tap(clearTmdb)} onMouseEnter={sounds.hover}><span>Remover a chave do TMDB</span><b>✕</b></button>}
-      <p className="ds4-help" style={{ fontSize: '0.85em', opacity: 0.8 }}>Este produto usa a API do TMDB, mas não é endossado nem certificado pelo TMDB.</p>
+      <ApiKeySection
+        title="Filmes e séries (TMDB)" configured={tmdbOn} sounds={sounds}
+        help='Para o Início mostrar filmes e séries. Crie uma chave grátis em themoviedb.org → Configurações → API e cole o "API Read Access Token" (X no campo abre o teclado).'
+        note="Este produto usa a API do TMDB, mas não é endossado nem certificado pelo TMDB."
+        onSave={(k) => lazy!.catalog.setKey(k)} onClear={() => lazy!.catalog.clearKey()}
+        onResult={(m, on) => { setMsg(m); setTmdbOn(on) }}
+      />
+      <ApiKeySection
+        title="Capas dos jogos (SteamGridDB)" configured={gridOn} sounds={sounds}
+        help="Para jogos da Epic e do PC ganharem capa. Crie uma chave grátis em steamgriddb.com → Preferências → API e cole aqui."
+        onSave={(k) => lazy!.covers.setKey(k)} onClear={() => lazy!.covers.clearKey()}
+        onResult={(m, on) => { setMsg(m); setGridOn(on) }}
+      />
       <h2 className="ds4-help">Onde abrir cada serviço</h2>
       <p className="ds4-help">{drm ? drm.msg : 'Verificando o Widevine (DRM)...'} Se um vídeo não tocar dentro do app, troque o serviço para o Edge.</p>
       {streaming.map((s) => {
