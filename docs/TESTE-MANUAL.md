@@ -141,3 +141,6 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Se aparecer erro do YouTube no quadro (ex.: 153), me avise e desligue em Configurações → Prévia do trailer
 - [ ] "Trailer com som" abre o trailer completo no Edge
 - [ ] Continuar jogando e Seus apps ficam mais abaixo
+- [ ] "🔇 Trailer sem som" / "🔊 Trailer com som" liga e desliga o som da prévia na hora, sem abrir o Edge; a escolha vale para as próximas prévias
+- [ ] Quando o trailer acaba, a prévia passa sozinha para o próximo título (e o foco vai junto)
+- [ ] "Assistir na <serviço>" abre o serviço no Edge

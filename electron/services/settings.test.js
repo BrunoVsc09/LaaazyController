@@ -62,6 +62,12 @@ describe('settings', () => {
     expect(s.set('trailerPreview', false)).toBe(true)
     expect(s.set('trailerPreview', 'sim')).toBe(false)
   })
+  it('trailerSound: prévia começa sem som por padrão', () => {
+    const { s } = make()
+    expect(s.get('trailerSound')).toBe(false)
+    expect(s.set('trailerSound', true)).toBe(true)
+    expect(s.set('trailerSound', 1)).toBe(false)
+  })
   it('recusa chave desconhecida e valor do tipo errado', () => {
     const { s, data } = make()
     expect(s.set('hacker', 1)).toBe(false)

@@ -1,11 +1,15 @@
 import { describe, it, expect } from 'vitest'
-import { trailerEmbedUrl, homeSections, PREVIEW_DELAY_MS } from './trailer'
+import { trailerEmbedUrl, homeSections, PREVIEW_DELAY_MS, playerEvent, playerCommand, nextTitleId, YT_ORIGIN } from './trailer'
 
 describe('trailerEmbedUrl', () => {
-  it('player do YouTube sem som, sem controles, em loop', () => {
+  it('player do YouTube sem controles, aceitando comandos e avisando quando acaba (sem repetir)', () => {
     const u = new URL(trailerEmbedUrl('dQw4w9WgXcQ')!)
     expect(u.origin + u.pathname).toBe('https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ')
-    expect(Object.fromEntries(u.searchParams)).toMatchObject({ autoplay: '1', mute: '1', controls: '0', loop: '1', playlist: 'dQw4w9WgXcQ', playsinline: '1' })
+    expect(Object.fromEntries(u.searchParams)).toMatchObject({ autoplay: '1', mute: '1', controls: '0', enablejsapi: '1', playsinline: '1' })
+    expect(u.searchParams.get('loop')).toBeNull()
+  })
+  it('com som: começa sem mudo', () => {
+    expect(new URL(trailerEmbedUrl('dQw4w9WgXcQ', { sound: true })!).searchParams.get('mute')).toBe('0')
   })
   it('chave estranha não vira URL', () => {
     expect(trailerEmbedUrl('../../x')).toBeNull()
@@ -14,6 +18,36 @@ describe('trailerEmbedUrl', () => {
   })
   it('espera um pouco parado no título antes de tocar', () => {
     expect(PREVIEW_DELAY_MS).toBeGreaterThanOrEqual(800)
+  })
+})
+
+describe('conversa com o player do YouTube', () => {
+  it('reconhece o fim do vídeo (dos dois jeitos que o player avisa)', () => {
+    expect(playerEvent(YT_ORIGIN, JSON.stringify({ event: 'onStateChange', info: 0 }))).toBe('ended')
+    expect(playerEvent(YT_ORIGIN, JSON.stringify({ event: 'infoDelivery', info: { playerState: 0 } }))).toBe('ended')
+    expect(playerEvent(YT_ORIGIN, JSON.stringify({ event: 'onStateChange', info: 1 }))).toBeNull()
+  })
+  it('ignora mensagens de outras origens e lixo', () => {
+    expect(playerEvent('https://evil.com', JSON.stringify({ event: 'onStateChange', info: 0 }))).toBeNull()
+    expect(playerEvent(YT_ORIGIN, '{quebrado')).toBeNull()
+    expect(playerEvent(YT_ORIGIN, { event: 'onStateChange', info: 0 })).toBe('ended')
+  })
+  it('comandos para ligar/desligar o som e para escutar os eventos', () => {
+    expect(JSON.parse(playerCommand('unMute'))).toEqual({ event: 'command', func: 'unMute', args: [] })
+    expect(JSON.parse(playerCommand('listening'))).toEqual({ event: 'listening', id: 1, channel: 'widget' })
+  })
+})
+
+describe('nextTitleId (passar para o próximo quando o trailer acaba)', () => {
+  const rows = [{ items: [{ id: 'a' }, { id: 'b' }] }, { items: [{ id: 'c' }] }]
+  it('próximo da mesma fileira; no fim, o primeiro da fileira seguinte; no fim de tudo, o primeiro', () => {
+    expect(nextTitleId(rows, 'a')).toBe('b')
+    expect(nextTitleId(rows, 'b')).toBe('c')
+    expect(nextTitleId(rows, 'c')).toBe('a')
+  })
+  it('título que não está nas fileiras: o primeiro; sem títulos: null', () => {
+    expect(nextTitleId(rows, 'x')).toBe('a')
+    expect(nextTitleId([], 'x')).toBeNull()
   })
 })
 

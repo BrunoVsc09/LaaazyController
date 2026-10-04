@@ -14,7 +14,8 @@ function createWindowManager({ preload, onFocus, onResize, onClosed, forceFocus 
       fullscreen: true,
       autoHideMenuBar: true,
       backgroundColor: '#0b3f9d',
-      webPreferences: { preload },
+      // Prévia do trailer com som no Início sem precisar de um clique antes
+      webPreferences: { preload, autoplayPolicy: 'no-user-gesture-required' },
     })
     win.setMenuBarVisibility(false)
     win.removeMenu() // o Alt do truque de foco não pode mostrar menu nenhum
