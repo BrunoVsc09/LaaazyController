@@ -40,6 +40,8 @@ export type LazyApi = {
     clearKey(): Promise<Result>
     home(opts?: { fresh: boolean }): Promise<CatalogHome>
     trailer(id: string): Promise<string | null>
+    search(query: string): Promise<{ ok: boolean; configured?: boolean; items: Title[]; msg?: string }>
+    where(id: string): Promise<string[]>
   }
 }
 

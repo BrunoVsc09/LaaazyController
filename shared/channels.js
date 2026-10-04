@@ -26,4 +26,6 @@ module.exports = {
   CATALOG_CLEAR_KEY: 'catalog:clearKey',
   CATALOG_HOME: 'catalog:home',
   CATALOG_TRAILER: 'catalog:trailer',
+  CATALOG_SEARCH: 'catalog:search',
+  CATALOG_WHERE: 'catalog:where',
 }

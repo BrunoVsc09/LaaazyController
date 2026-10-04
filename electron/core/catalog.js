@@ -38,7 +38,7 @@ function toItem(raw, kind, service) {
     poster: raw.poster_path ? IMG + 'w342' + raw.poster_path : '',
     backdrop: raw.backdrop_path ? IMG + 'w1280' + raw.backdrop_path : '',
     popularity: raw.popularity || 0,
-    services: [service],
+    services: service ? [service] : [],
   }
 }
 
@@ -56,6 +56,26 @@ function mergeLists(lists, kind, limit = 20) {
   return [...byId.values()].sort((a, b) => b.popularity - a.popularity).slice(0, limit)
 }
 
+// Resultado de /search/multi: só séries e filmes (sem pessoas), do mais popular ao menos
+function searchItems(results) {
+  return (results || [])
+    .filter((r) => r.media_type === 'tv' || r.media_type === 'movie')
+    .map((r) => toItem(r, r.media_type))
+    .filter(Boolean)
+    .sort((a, b) => b.popularity - a.popularity)
+}
+
+// Provedores de assinatura no Brasil → serviços do app, na ordem do TMDB
+function servicesFrom(providers) {
+  const out = []
+  for (const p of providers || []) {
+    const name = String(p.provider_name || '').toLowerCase()
+    const hit = Object.entries(SERVICE_NAMES).find(([, names]) => names.includes(name))
+    if (hit && !out.includes(hit[0])) out.push(hit[0])
+  }
+  return out
+}
+
 // Trailer oficial do YouTube > qualquer trailer do YouTube > teaser do YouTube
 function pickTrailer(videos) {
   const yt = (videos || []).filter((v) => v.site === 'YouTube')
@@ -68,4 +88,4 @@ function parseItemId(id) {
   return m ? { kind: m[1], id: Number(m[2]) } : null
 }
 
-module.exports = { SERVICE_NAMES, resolveProviders, toItem, mergeLists, pickTrailer, parseItemId }
+module.exports = { SERVICE_NAMES, resolveProviders, toItem, mergeLists, searchItems, servicesFrom, pickTrailer, parseItemId }

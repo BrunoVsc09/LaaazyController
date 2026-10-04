@@ -30,7 +30,16 @@ function createTmdb({ fetch = globalThis.fetch } = {}) {
   const videos = async (token, kind, id) =>
     (await get(token, `/${kind}/${id}/videos`, { language: 'pt-BR', include_video_language: 'pt,en' })).results || []
 
-  return { ping, providers, discover, videos }
+  const search = async (token, query) =>
+    (await get(token, '/search/multi', { query, language: 'pt-BR', include_adult: false, page: 1 })).results || []
+
+  // Só os de assinatura (flatrate) no Brasil
+  const watchProviders = async (token, kind, id) => {
+    const br = ((await get(token, `/${kind}/${id}/watch/providers`)).results || {}).BR
+    return (br && br.flatrate) || []
+  }
+
+  return { ping, providers, discover, videos, search, watchProviders }
 }
 
 module.exports = { createTmdb }

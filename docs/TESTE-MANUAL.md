@@ -72,3 +72,8 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Letras entram no campo; ⇧ deixa a próxima maiúscula; □ apaga; △ dá espaço
 - [ ] Campo de senha mostra bolinhas no teclado
 - [ ] ✓ Pronto ou O fecha e o foco volta ao campo
+
+## Busca
+- [ ] □ no Início ou em Apps (ou a aba ⌕ Buscar) abre a busca com o campo em foco
+- [ ] Digitar "net" mostra o app Netflix; o nome de um jogo mostra o jogo
+- [ ] Com a chave do TMDB, um filme aparece em "Filmes e séries"; X abre no serviço onde ele está (ou avisa que não está nos seus)

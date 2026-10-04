@@ -1,5 +1,5 @@
 // Filmes e séries em alta nos serviços do usuário (fonte: TMDB), com cache de 6 horas.
-const { resolveProviders, mergeLists, pickTrailer, parseItemId } = require('../core/catalog')
+const { resolveProviders, mergeLists, searchItems, servicesFrom, pickTrailer, parseItemId } = require('../core/catalog')
 
 const CACHE_MS = 6 * 3600 * 1000
 const SECRET = 'tmdb'
@@ -7,6 +7,7 @@ const KINDS = ['tv', 'movie']
 
 function createCatalog({ tmdb, secrets, readCache, writeCache, now = Date.now }) {
   const trailers = new Map()
+  const places = new Map()
   const token = () => secrets.get(SECRET)
 
   const status = () => ({ configured: !!token() })
@@ -64,7 +65,32 @@ function createCatalog({ tmdb, secrets, readCache, writeCache, now = Date.now })
     } catch { return null }
   }
 
-  return { status, setKey, clearKey, home, trailer }
+  async function search(raw) {
+    const query = typeof raw === 'string' ? raw.trim() : ''
+    const key = token()
+    if (!key) return { ok: false, configured: false, items: [], msg: 'Configure a chave do TMDB para buscar filmes e séries.' }
+    if (query.length < 2) return { ok: true, configured: true, items: [] }
+    try {
+      return { ok: true, configured: true, items: searchItems(await tmdb.search(key, query)).slice(0, 20) }
+    } catch (e) {
+      return { ok: false, configured: true, items: [], msg: 'Não consegui buscar no TMDB: ' + e.message }
+    }
+  }
+
+  // Em quais serviços do app (no Brasil) o título está
+  async function where(itemId) {
+    const ref = parseItemId(itemId)
+    const key = token()
+    if (!ref || !key) return []
+    if (places.has(itemId)) return places.get(itemId)
+    try {
+      const list = servicesFrom(await tmdb.watchProviders(key, ref.kind, ref.id))
+      places.set(itemId, list)
+      return list
+    } catch { return [] }
+  }
+
+  return { status, setKey, clearKey, home, trailer, search, where }
 }
 
 module.exports = { createCatalog }

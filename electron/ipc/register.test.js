@@ -22,6 +22,8 @@ function make() {
       clearKey: vi.fn(async () => ({ ok: true, msg: '' })),
       home: vi.fn(async () => ({ ok: true })),
       trailer: vi.fn(async () => 'yt1'),
+      search: vi.fn(async () => ({ ok: true, items: [] })),
+      where: vi.fn(async () => []),
     },
   }
   mod.registerIpc(ipcMain, h)
@@ -65,6 +67,13 @@ describe('registerIpc', () => {
     expect(await invoke(C.EXE_GET, 'edge')).toBe('C:\\E\\msedge.exe')
     h.locator.find.mockResolvedValue(null)
     expect(await invoke(C.EXE_GET, 'edge')).toBe('')
+  })
+  it('busca e where: só texto', async () => {
+    const { invoke, h } = make()
+    expect(await invoke(C.CATALOG_SEARCH, 5)).toMatchObject({ ok: false, items: [] })
+    expect(await invoke(C.CATALOG_WHERE, null)).toEqual([])
+    await invoke(C.CATALOG_SEARCH, 'duna')
+    expect(h.catalog.search).toHaveBeenCalledWith('duna')
   })
   it('catálogo: chave e id precisam ser texto; home só repassa fresh', async () => {
     const { invoke, h } = make()

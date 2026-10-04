@@ -29,5 +29,7 @@ contextBridge.exposeInMainWorld('lazy', {
     clearKey: invoke(C.CATALOG_CLEAR_KEY),
     home: invoke(C.CATALOG_HOME),
     trailer: invoke(C.CATALOG_TRAILER),
+    search: invoke(C.CATALOG_SEARCH),
+    where: invoke(C.CATALOG_WHERE),
   },
 })

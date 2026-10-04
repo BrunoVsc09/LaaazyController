@@ -118,3 +118,38 @@ describe('catalog.trailer', () => {
     expect(await catalog.trailer('tv:1')).toBeNull()
   })
 })
+
+describe('catalog.search e where', () => {
+  function withSearch(opts) {
+    const m = make(opts)
+    m.tmdb.search = vi.fn(async () => [{ id: 9, media_type: 'movie', title: 'Duna', popularity: 3 }])
+    m.tmdb.watchProviders = vi.fn(async () => [{ provider_name: 'HBO Max' }])
+    return m
+  }
+  it('busca títulos', async () => {
+    const { catalog, tmdb } = withSearch()
+    const r = await catalog.search('  duna ')
+    expect(r).toMatchObject({ ok: true, items: [{ id: 'movie:9', title: 'Duna' }] })
+    expect(tmdb.search).toHaveBeenCalledWith('TOKEN', 'duna')
+  })
+  it('busca curta não chama o TMDB', async () => {
+    const { catalog, tmdb } = withSearch()
+    expect(await catalog.search('d')).toEqual({ ok: true, configured: true, items: [] })
+    expect(tmdb.search).not.toHaveBeenCalled()
+  })
+  it('sem chave avisa', async () => {
+    expect(await withSearch({ key: '' }).catalog.search('duna')).toMatchObject({ ok: false, configured: false, items: [] })
+  })
+  it('erro vira mensagem', async () => {
+    const { catalog, tmdb } = withSearch()
+    tmdb.search.mockRejectedValue(new Error('offline'))
+    expect((await catalog.search('duna')).msg).toMatch(/Não consegui buscar/)
+  })
+  it('where diz em quais serviços do app o título está, com memória', async () => {
+    const { catalog, tmdb } = withSearch()
+    expect(await catalog.where('movie:9')).toEqual(['HBO Max'])
+    expect(await catalog.where('movie:9')).toEqual(['HBO Max'])
+    expect(tmdb.watchProviders).toHaveBeenCalledTimes(1)
+    expect(await catalog.where('lixo')).toEqual([])
+  })
+})

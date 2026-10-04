@@ -17,6 +17,7 @@ export default function Tabs({ current, onGo, sounds }: { current: Screen; onGo:
           {t.label}
         </button>
       ))}
+      <button type="button" className="lz-tab" onClick={() => { sounds.click(); onGo('search') }} onMouseEnter={sounds.hover}>⌕ Buscar</button>
     </nav>
   )
 }

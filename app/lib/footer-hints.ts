@@ -20,9 +20,9 @@ const BACK: Hint = { ...HINT_ICONS.circle, label: 'Voltar' }
 const SEARCH: Hint = { ...HINT_ICONS.square, label: 'Buscar' }
 
 const BY_SCREEN: Record<Screen, Hint[]> = {
-  home: [CONFIRM],
+  home: [CONFIRM, SEARCH],
   library: [CONFIRM, BACK, SEARCH],
-  apps: [CONFIRM, BACK],
+  apps: [CONFIRM, BACK, SEARCH],
   search: [CONFIRM, BACK],
   ds4: [CONFIRM, BACK],
   settings: [CONFIRM, BACK],

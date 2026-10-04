@@ -35,6 +35,8 @@ function registerIpc(ipcMain, h) {
   handle(C.CATALOG_CLEAR_KEY, () => h.catalog.clearKey())
   handle(C.CATALOG_HOME, (opts) => h.catalog.home({ fresh: !!(opts && opts.fresh) }))
   handle(C.CATALOG_TRAILER, (id) => (isText(id) ? h.catalog.trailer(id) : null))
+  handle(C.CATALOG_SEARCH, (q) => (isText(q) ? h.catalog.search(q) : { ok: false, items: [], msg: 'Busca inválida.' }))
+  handle(C.CATALOG_WHERE, async (id) => (isText(id) ? h.catalog.where(id) : []))
 }
 
 module.exports = { registerIpc }

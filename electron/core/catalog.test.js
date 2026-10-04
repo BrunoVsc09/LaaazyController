@@ -78,3 +78,19 @@ describe('parseItemId', () => {
     for (const bad of ['tv:abc', 'game:1', '1', '', null, 'tv:1/../x']) expect(cat.parseItemId(bad)).toBeNull()
   })
 })
+
+describe('busca (TMDB /search/multi)', () => {
+  it('searchItems fica só com séries e filmes, sem serviço ainda', () => {
+    const r = cat.searchItems([
+      { id: 1, media_type: 'tv', name: 'Série', popularity: 1 },
+      { id: 2, media_type: 'person', name: 'Ator' },
+      { id: 3, media_type: 'movie', title: 'Filme', popularity: 5 },
+    ])
+    expect(r.map((x) => [x.id, x.services])).toEqual([['movie:3', []], ['tv:1', []]])
+  })
+  it('servicesFrom traduz os provedores do Brasil para os serviços do app', () => {
+    expect(cat.servicesFrom([{ provider_name: 'Amazon Prime Video' }, { provider_name: 'Globoplay' }, { provider_name: 'Netflix' }]))
+      .toEqual(['Prime Video', 'Netflix'])
+    expect(cat.servicesFrom(undefined)).toEqual([])
+  })
+})

@@ -254,3 +254,6 @@ button { font: inherit; }
 .osk-key.wide { flex: 2 1 0; font-size: 18px; }
 .osk-key.on { background: #ffd23f; color: #111; }
 .osk-key:focus-visible { outline: 3px solid #ffd23f; outline-offset: 2px; background: rgba(255,255,255,.28); }
+.lz-search-box { display: flex; align-items: center; gap: 14px; padding: 14px 20px; border-radius: 16px; background: rgba(0,0,0,.3); font-size: 24px; }
+.lz-search-box input { flex: 1; min-width: 0; background: transparent; border: 0; color: #fff; font: inherit; }
+.lz-search-box:focus-within { outline: 3px solid #ffd23f; outline-offset: 3px; }

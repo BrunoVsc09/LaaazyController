@@ -38,15 +38,15 @@ describe('ordenação da biblioteca', () => {
 
 describe('hintsFor (rodapé só com comandos reais)', () => {
   const labels = (s: Parameters<typeof hintsFor>[0]) => hintsFor(s).map((h) => h.label)
-  it('menu: só Confirmar', () => {
-    expect(labels('home')).toEqual(['Confirmar'])
+  it('Início: Confirmar e Buscar (□)', () => {
+    expect(labels('home')).toEqual(['Confirmar', 'Buscar'])
   })
   it('Biblioteca: Confirmar, Voltar e Buscar (□)', () => {
     expect(labels('library')).toEqual(['Confirmar', 'Voltar', 'Buscar'])
     expect(hintsFor('library').find((h) => h.label === 'Buscar')?.button).toBe(gamepad.BTN.SQUARE)
   })
-  it('Apps: Confirmar e Voltar', () => {
-    expect(labels('apps')).toEqual(['Confirmar', 'Voltar'])
+  it('Apps: Confirmar, Voltar e Buscar (□)', () => {
+    expect(labels('apps')).toEqual(['Confirmar', 'Voltar', 'Buscar'])
   })
   it('Perfis e Configurações: Confirmar e Voltar', () => {
     expect(labels('ds4')).toEqual(['Confirmar', 'Voltar'])

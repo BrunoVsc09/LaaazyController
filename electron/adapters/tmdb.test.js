@@ -36,3 +36,21 @@ describe('tmdb adapter', () => {
     await expect(mod.createTmdb({ fetch: fakeFetch(503) }).discover('T', 'tv', 8)).rejects.toThrow(/503/)
   })
 })
+
+describe('tmdb: busca e onde assistir', () => {
+  it('search usa /search/multi em pt-BR sem conteúdo adulto', async () => {
+    const fetch = fakeFetch(200, { results: [{ id: 1 }] })
+    expect(await mod.createTmdb({ fetch }).search('T', 'duna')).toEqual([{ id: 1 }])
+    const u = new URL(fetch.mock.calls[0][0])
+    expect(u.pathname).toBe('/3/search/multi')
+    expect(Object.fromEntries(u.searchParams)).toMatchObject({ query: 'duna', language: 'pt-BR', include_adult: 'false' })
+  })
+  it('watchProviders devolve os de assinatura no Brasil', async () => {
+    const fetch = fakeFetch(200, { results: { BR: { flatrate: [{ provider_name: 'Netflix' }] }, US: { flatrate: [] } } })
+    expect(await mod.createTmdb({ fetch }).watchProviders('T', 'tv', 5)).toEqual([{ provider_name: 'Netflix' }])
+    expect(new URL(fetch.mock.calls[0][0]).pathname).toBe('/3/tv/5/watch/providers')
+  })
+  it('watchProviders sem Brasil devolve lista vazia', async () => {
+    expect(await mod.createTmdb({ fetch: fakeFetch(200, { results: {} }) }).watchProviders('T', 'tv', 5)).toEqual([])
+  })
+})

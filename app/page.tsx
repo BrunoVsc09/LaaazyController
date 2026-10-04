@@ -12,6 +12,7 @@ import LibraryScreen from './screens/LibraryScreen'
 import AppsScreen from './screens/AppsScreen'
 import Ds4Screen from './screens/Ds4Screen'
 import SettingsScreen from './screens/SettingsScreen'
+import SearchScreen from './screens/SearchScreen'
 import { useGamepad } from './hooks/useGamepad'
 import { useSounds } from './hooks/useSounds'
 import type { Card } from './lib/catalog'
@@ -59,7 +60,7 @@ export default function Page() {
 
   // Ao trocar de tela, o foco vai para o primeiro item dela (a Biblioteca cuida do seu)
   useEffect(() => {
-    if (state.screen !== 'library') window.setTimeout(() => focusFirst('.lz-home button, .lz-apps button, .ds4-view button'), 0)
+    if (state.screen !== 'library') window.setTimeout(() => { if (!document.querySelector('.lz-search')) focusFirst('.lz-home button, .lz-apps button, .ds4-view button') }, 0)
   }, [state.screen])
 
   // Botão PS / atalho global: o Electron manda voltar ao Início
@@ -108,7 +109,10 @@ export default function Page() {
       else (active as HTMLElement | null)?.click()
     }
     if (fired(BTN.O) && screen !== 'home') back()
-    if (fired(BTN.SQUARE) && screen === 'library') focusFirst('.library-search input')
+    if (fired(BTN.SQUARE)) {
+      if (screen === 'library') focusFirst('.library-search input')
+      else if (screen === 'home' || screen === 'apps') go('search')
+    }
   })
 
   const activate = (card: Card) => {
@@ -131,6 +135,7 @@ export default function Page() {
       {state.screen === 'apps' && <AppsScreen pinned={pinned} sounds={sounds} onActivate={activate} onTogglePin={onTogglePin} />}
       {state.screen === 'ds4' && <Ds4Screen onBack={back} sounds={sounds} />}
       {state.screen === 'settings' && <SettingsScreen onBack={back} sounds={sounds} />}
+      {state.screen === 'search' && <SearchScreen sounds={sounds} onActivate={activate} onBack={back} />}
       {oskTarget && <OnScreenKeyboard target={oskTarget} onClose={closeOsk} sounds={sounds} pressRef={oskPress} />}
       <Footer screen={state.screen} hints={oskTarget ? OSK_HINTS : undefined} />
     </main>
