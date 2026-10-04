@@ -1,5 +1,5 @@
 // Raiz de composição: cria adapters → serviços → IPC → janela. Sem regra de negócio aqui.
-const { app, ipcMain, components, dialog, shell, globalShortcut, safeStorage, clipboard } = require('electron')
+const { app, ipcMain, components, dialog, shell, globalShortcut, safeStorage, clipboard, Menu } = require('electron')
 const fs = require('fs')
 const os = require('os')
 const { execFile } = require('child_process')
@@ -66,6 +66,9 @@ function migrateOldData() {
   }
 }
 migrateOldData()
+
+// Sem barra de menu: o truque de foco aperta Alt, e o Alt mostraria File/Edit/View
+Menu.setApplicationMenu(null)
 
 registerAppScheme()
 

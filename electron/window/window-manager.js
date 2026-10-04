@@ -17,6 +17,7 @@ function createWindowManager({ preload, onFocus, onResize, onClosed, forceFocus 
       webPreferences: { preload },
     })
     win.setMenuBarVisibility(false)
+    win.removeMenu() // o Alt do truque de foco não pode mostrar menu nenhum
     for (const ev of ['resize', 'enter-full-screen', 'leave-full-screen']) win.on(ev, onResize)
     win.on('closed', () => { win = null; onClosed() })
     win.on('focus', onFocus)

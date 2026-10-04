@@ -9,6 +9,8 @@ import path from 'node:path'
 const require = createRequire(import.meta.url)
 const C = require('../shared/channels')
 
+const menuCalls = []
+
 function fakeElectron(dir) {
   const handlers = new Map()
   const noop = () => {}
@@ -24,6 +26,7 @@ function fakeElectron(dir) {
     globalShortcut: { register: noop, unregisterAll: noop },
     safeStorage: { isEncryptionAvailable: () => false },
     clipboard: { readText: () => ' abc ' },
+    Menu: { setApplicationMenu: (m) => { menuCalls.push(m) } },
     protocol: { registerSchemesAsPrivileged: noop, handle: noop },
     net: { fetch: async () => ({}) },
     BrowserWindow: class {},
@@ -39,6 +42,11 @@ describe('main.js (fumaça)', () => {
 
   it('carrega sem erro (nenhum serviço usado antes de ser criado)', () => {
     expect(() => require('./main.js')).not.toThrow()
+  })
+
+  // Regressão: o truque de foco aperta Alt, e o Alt mostrava o menu File/Edit/View
+  it('não tem barra de menu (o Alt do truque de foco não mostra File/Edit/View)', () => {
+    expect(menuCalls).toEqual([null])
   })
 
   it('registra um handler para cada canal do contrato', () => {
