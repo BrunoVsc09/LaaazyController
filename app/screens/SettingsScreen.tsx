@@ -19,6 +19,7 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
   const [drm, setDrm] = useState<DrmStatus | null>(null)
   const [tmdbOn, setTmdbOn] = useState(false)
   const [atLogin, setAtLogin] = useState(false)
+  const [psCloses, setPsCloses] = useState(true)
   const [saverMin, setSaverMin] = useState(10)
   const [gridOn, setGridOn] = useState(false)
   const [aiOn, setAiOn] = useState(false)
@@ -27,7 +28,7 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
 
   useEffect(() => {
     if (!lazy) return
-    lazy.settings.get().then((s) => { setCloseDs4(s.closeDs4OnMenu); setModes(s.streamModes); setSaverMin(s.screensaverMinutes ?? 10) })
+    lazy.settings.get().then((s) => { setCloseDs4(s.closeDs4OnMenu); setModes(s.streamModes); setSaverMin(s.screensaverMinutes ?? 10); setPsCloses(s.psClosesApp !== false) })
     Promise.all([lazy.exe.get('edge'), lazy.exe.get('ds4windows')]).then(([edge, ds4windows]) => setPaths({ edge, ds4windows }))
     lazy.drm.status().then(setDrm)
     lazy.catalog.status().then((s) => setTmdbOn(s.configured))
@@ -49,6 +50,12 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
   const saveModel = async () => {
     const ok = await lazy?.settings.set('geminiModel', aiModel.trim())
     setMsg(ok ? `Modelo do Gemini: ${aiModel.trim()}.` : 'Nome de modelo inválido. Use o nome da API, por exemplo gemini-3.8-flash.')
+  }
+  const togglePs = () => {
+    const v = !psCloses
+    setPsCloses(v)
+    lazy?.settings.set('psClosesApp', v)
+    setMsg(v ? 'O PS fecha o jogo (ou o que estiver na frente) e volta ao Início.' : 'O PS só volta ao Início; o jogo continua aberto.')
   }
   const cycleSaver = () => {
     const m = nextMinutes(saverMin)
@@ -79,6 +86,7 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
       <button className="ds4-row" onClick={tap(() => choose('edge', 'Edge'))} onMouseEnter={sounds.hover}><span>Pasta do Edge</span><b>{paths.edge || 'não encontrado, toque para escolher'}</b></button>
       <button className="ds4-row" onClick={tap(() => choose('ds4windows', 'DS4Windows'))} onMouseEnter={sounds.hover}><span>Pasta do DS4Windows</span><b>{paths.ds4windows || 'não encontrado, toque para escolher'}</b></button>
       <button className="ds4-row" onClick={tap(toggleClose)} onMouseEnter={sounds.hover}><span>Fechar o DS4Windows ao apertar PS</span><b>{closeDs4 ? 'Sim' : 'Não'}</b></button>
+      <button className="ds4-row" onClick={tap(togglePs)} onMouseEnter={sounds.hover}><span>Botão PS fecha o jogo</span><b>{psCloses ? 'Sim (fecha à força)' : 'Não (como console)'}</b></button>
       <button className="ds4-row" onClick={tap(cycleSaver)} onMouseEnter={sounds.hover}><span>Proteção de tela</span><b>{saverMin ? `${saverMin} min` : 'Desligada'}</b></button>
       <button className="ds4-row" onClick={tap(toggleLogin)} onMouseEnter={sounds.hover}><span>Abrir junto com o Windows</span><b>{atLogin ? 'Sim' : 'Não'}</b></button>
       <ApiKeySection

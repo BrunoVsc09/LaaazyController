@@ -50,6 +50,12 @@ describe('settings', () => {
     expect(s.set('geminiModel', '../../x')).toBe(false)
     expect(s.set('geminiModel', 'Gemini 3.8 Flash')).toBe(false)
   })
+  it('psClosesApp: padrão fechar o jogo; só sim/não', () => {
+    const { s } = make()
+    expect(s.get('psClosesApp')).toBe(true)
+    expect(s.set('psClosesApp', false)).toBe(true)
+    expect(s.set('psClosesApp', 'nao')).toBe(false)
+  })
   it('recusa chave desconhecida e valor do tipo errado', () => {
     const { s, data } = make()
     expect(s.set('hacker', 1)).toBe(false)

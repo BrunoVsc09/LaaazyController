@@ -4,6 +4,7 @@ export type Result = { ok: boolean; msg: string }
 export type StreamMode = 'app' | 'edge'
 export type Settings = {
   closeDs4OnMenu: boolean
+  psClosesApp?: boolean
   librarySort: 'asc' | 'desc'
   streamModes: Record<string, StreamMode>
   pinnedApps?: string[]
@@ -24,6 +25,7 @@ export type LazyApi = {
   quit(): void
   volume(action: 'up' | 'down' | 'mute'): void
   onHome(cb: () => void): void
+  ps: { startTest(): Promise<boolean>; onTested(cb: () => void): void }
   settings: { get(): Promise<Settings>; set(key: string, value: unknown): Promise<boolean> }
   exe: { get(key: string): Promise<string>; choose(key: string): Promise<string> }
   ds4: { get(): Promise<Ds4Data>; set(key: string, value: string): Promise<Result> }

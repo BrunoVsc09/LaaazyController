@@ -41,7 +41,7 @@ describe('main.js (fumaça)', () => {
   })
 
   it('registra um handler para cada canal do contrato', () => {
-    for (const ch of Object.values(C)) if (ch !== C.GO_HOME) expect(handlers.has(ch), ch).toBe(true)
+    for (const ch of Object.values(C)) if (![C.GO_HOME, C.PS_TESTED].includes(ch)) expect(handlers.has(ch), ch).toBe(true)
   })
 
   it('os canais de leitura respondem (todos os serviços foram ligados)', async () => {

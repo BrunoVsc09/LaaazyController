@@ -11,7 +11,16 @@ function createForeground({ fgInfo, ownPids, selfPid, showMenu, kill, later = se
     later(() => kill(info.pid, true), 6000)
     return true
   }
-  return { closeCurrent }
+  // Botão PS: mata na hora (sem esperar o jogo salvar) e volta ao Início
+  async function closeAndHome() {
+    const info = await fgInfo() // descobrir ANTES de trazer o menu para a frente
+    showMenu()
+    if (!shouldClose(info, { selfPid, ownPids: ownPids() })) return false
+    kill(info.pid, true)
+    return true
+  }
+
+  return { closeCurrent, closeAndHome }
 }
 
 module.exports = { createForeground }

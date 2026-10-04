@@ -121,3 +121,10 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Abrir um jogo e fechá-lo (pelo próprio jogo): o Laaazy volta sozinho para a frente, no Início, e o controle funciona SEM clicar com o mouse
 - [ ] Abrir um streaming no Edge e fechar com Alt+F4: idem
 - [ ] Enquanto o Steam ainda está abrindo o jogo, o Laaazy NÃO puxa o foco de volta
+
+## Botão PS
+- [ ] Perfis do controle → Testar o botão PS → apertar PS em 15s mostra "✓ O PS está funcionando"
+- [ ] Sem o F24 mapeado, depois de 15s aparece a explicação do que mapear no DS4Windows
+- [ ] Com um jogo aberto, PS fecha o jogo À FORÇA, fecha o DS4Windows (some da barra de tarefas) e volta ao Início, com o controle funcionando sem clicar
+- [ ] Com um streaming no Edge, PS fecha o Edge e volta ao Início
+- [ ] Configurações → Botão PS fecha o jogo = Não: PS só volta ao Início com o jogo aberto

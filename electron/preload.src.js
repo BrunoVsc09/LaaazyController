@@ -10,6 +10,10 @@ contextBridge.exposeInMainWorld('lazy', {
   launch: invoke(C.LAUNCH),
   quit: () => ipcRenderer.send(C.QUIT),
   volume: (action) => ipcRenderer.send(C.VOLUME, action),
+  ps: {
+    startTest: invoke(C.PS_TEST_START),
+    onTested: (cb) => { ipcRenderer.removeAllListeners(C.PS_TESTED); ipcRenderer.on(C.PS_TESTED, () => cb()) },
+  },
   onHome: (cb) => { ipcRenderer.removeAllListeners(C.GO_HOME); ipcRenderer.on(C.GO_HOME, () => cb()) },
   settings: { get: invoke(C.SETTINGS_GET), set: invoke(C.SETTINGS_SET) },
   exe: { get: invoke(C.EXE_GET), choose: invoke(C.EXE_CHOOSE) },

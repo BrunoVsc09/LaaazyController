@@ -33,6 +33,7 @@ const { createLibrary } = require('./services/library')
 const { createLauncher } = require('./services/launcher')
 const { createForeground } = require('./services/foreground')
 const { createReturnWatch } = require('./services/return-watch')
+const { createPsButton } = require('./services/ps-button')
 const { widevineStatus } = require('./core/drm')
 const { planMigration } = require('./core/migration')
 const { registerIpc } = require('./ipc/register')
@@ -208,6 +209,15 @@ const foreground = createForeground({
   kill: killTree,
 })
 
+// Botão PS: mata o que está na frente, fecha o DS4Windows (showMenu) e volta ao Início
+const psButton = createPsButton({
+  foreground,
+  home: () => showMenu(),
+  psClosesApp: () => settings.get('psClosesApp') !== false,
+  ensureDs4: () => ds4.ensureRunning(),
+  notifyTested: () => windows.send(C.PS_TESTED),
+})
+
 // Jogo ou Edge fechou: o Laaazy volta sozinho para a frente, no Início
 const returnWatch = createReturnWatch({
   fgInfo: probe.info,
@@ -218,7 +228,7 @@ const returnWatch = createReturnWatch({
 setInterval(() => returnWatch.tick(), 1500).unref()
 
 registerIpc(ipcMain, {
-  launcher, locator, settings, ds4, library: libraryWithCovers, catalog, myList, power, covers, volume, assistant, goHome,
+  launcher, locator, settings, ds4, library: libraryWithCovers, catalog, myList, power, covers, volume, assistant, psButton, goHome,
   recentGames: async () => recentGames(await store.readJson(userFile('recent.json'), []), await libraryWithCovers.list()),
   back: () => { if (!stream.back()) goHome() },
   sendKey: (key) => stream.sendKey(key),
@@ -237,7 +247,7 @@ app.whenReady().then(async () => {
 
   // No DS4Windows, mapeie o botão PS para F24 (menu) e outro botão para F23 (fechar o da frente)
   for (const key of ['F24', 'CommandOrControl+Alt+Home']) {
-    try { globalShortcut.register(key, showMenu) } catch {}
+    try { globalShortcut.register(key, () => psButton.press()) } catch {}
   }
   for (const key of ['F23', 'CommandOrControl+Alt+End']) {
     try { globalShortcut.register(key, () => foreground.closeCurrent()) } catch {}

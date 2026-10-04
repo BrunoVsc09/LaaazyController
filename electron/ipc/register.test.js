@@ -28,6 +28,7 @@ function make() {
     },
     myList: { get: vi.fn(async () => []), toggle: vi.fn(async () => ({ ok: true, added: true })) },
     recentGames: vi.fn(async () => []),
+    psButton: { startTest: vi.fn(() => true) },
     assistant: { status: vi.fn(async () => ({})), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })), ask: vi.fn(async () => ({ ok: true, items: [] })) },
     volume: { step: vi.fn(() => true) },
     covers: { status: vi.fn(() => ({ configured: false })), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })) },
@@ -44,7 +45,7 @@ describe('registerIpc', () => {
     const { on, handle } = make()
     const registered = new Set([...on.keys(), ...handle.keys()])
     for (const ch of Object.values(C)) {
-      if (ch !== C.GO_HOME) expect(registered.has(ch), ch).toBe(true)
+      if (![C.GO_HOME, C.PS_TESTED].includes(ch)) expect(registered.has(ch), ch).toBe(true)
     }
   })
   it('open só aceita http(s) e devolve o aviso do launcher', async () => {

@@ -22,6 +22,19 @@ describe('foreground.closeCurrent', () => {
     expect(deps.kill.mock.calls).toEqual([[99, false], [99, true]])
     expect(deps.later).toHaveBeenCalledWith(expect.any(Function), 6000)
   })
+  it('closeAndHome (botão PS): descobre a janela antes, volta ao Início e mata na hora, sem esperar', async () => {
+    const { fg, deps } = make({ pid: 99, name: 'Hades' })
+    expect(await fg.closeAndHome()).toBe(true)
+    expect(deps.fgInfo.mock.invocationCallOrder[0]).toBeLessThan(deps.showMenu.mock.invocationCallOrder[0])
+    expect(deps.kill.mock.calls).toEqual([[99, true]])
+    expect(deps.later).not.toHaveBeenCalled()
+  })
+  it('closeAndHome com processo protegido (Steam, Explorer): só volta ao Início', async () => {
+    const { fg, deps } = make({ pid: 99, name: 'explorer' })
+    expect(await fg.closeAndHome()).toBe(false)
+    expect(deps.showMenu).toHaveBeenCalled()
+    expect(deps.kill).not.toHaveBeenCalled()
+  })
   it('processo protegido: só traz o menu', async () => {
     const { fg, deps } = make({ pid: 99, name: 'steam' })
     expect(await fg.closeCurrent()).toBe(false)

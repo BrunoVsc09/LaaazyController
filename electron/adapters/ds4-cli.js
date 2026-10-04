@@ -61,7 +61,7 @@ function createDs4Cli({ openPath }) {
   }
 
   const shutdown = (exe) => (exe ? runCommand(exe, 'shutdown') : Promise.resolve(''))
-  const kill = () => new Promise((res) => execFile('taskkill', ['/IM', 'DS4Windows.exe', '/T'], { windowsHide: true }, () => res()))
+  const kill = () => new Promise((res) => execFile('taskkill', ['/IM', 'DS4Windows.exe', '/T', '/F'], { windowsHide: true }, () => res()))
   const cmdName = (exe) => (exe ? path.basename(cmdExe(exe)) : '')
 
   return { listProfiles, isRunning, start, loadProfile, queryProfile, shutdown, kill, cmdName }
