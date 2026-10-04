@@ -17,7 +17,6 @@ export type LazyApi = {
   onHome(cb: () => void): void
   settings: { get(): Promise<Settings>; set(key: string, value: unknown): Promise<boolean> }
   exe: { get(key: string): Promise<string>; choose(key: string): Promise<string> }
-  edge: { get(): Promise<string>; choose(): Promise<string> }
   ds4: { get(): Promise<Ds4Data>; set(key: string, value: string): Promise<Result> }
   store: { warnings(): Promise<{ at: number; msg: string }[]> }
   games: {

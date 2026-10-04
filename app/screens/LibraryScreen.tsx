@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { getLazy, type Game } from '../lib/lazy-api'
-import { visibleGames } from '../lib/library-filter'
+import { nextSort, visibleGames, type Sort } from '../lib/library-filter'
 import type { Sounds } from '../hooks/useSounds'
 
 const PLATFORMS = ['Todos', 'Steam', 'Epic Games', 'Meu PC']
@@ -17,6 +17,13 @@ export default function LibraryScreen({ onBack, sounds }: Props) {
   const [games, setGames] = useState<Game[]>([])
   const [busy, setBusy] = useState('')
   const [msg, setMsg] = useState('')
+  const [sort, setSort] = useState<Sort>('asc')
+
+  const toggleSort = () => {
+    const next = nextSort(sort)
+    setSort(next)
+    lazy?.settings.set('librarySort', next)
+  }
 
   const refresh = async (fresh = false) => { if (lazy) setGames(await lazy.games.list(fresh ? { fresh: true } : undefined)) }
 
@@ -43,14 +50,17 @@ export default function LibraryScreen({ onBack, sounds }: Props) {
     lazy?.games.remove(g.id).then(() => refresh(true))
   }
 
-  useEffect(() => { refresh() }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    refresh()
+    lazy?.settings.get().then((s) => setSort(s.librarySort))
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (document.querySelector('.library-view :focus')) return
     const first = document.querySelector<HTMLElement>('.library-card') ?? document.querySelector<HTMLElement>('.find-games-button')
     first?.focus()
   }, [games.length])
 
-  const shown = visibleGames(games, { platform, query })
+  const shown = visibleGames(games, { platform, query, sort })
   const tap = (fn: () => void) => () => { sounds.click(); fn() }
 
   return (
@@ -80,7 +90,7 @@ export default function LibraryScreen({ onBack, sounds }: Props) {
         </div>
       </aside>
       <div className="library-main">
-        <div className="library-top"><h1>Biblioteca</h1><button className="sort-button">Nome: A a Z　⌄</button></div>
+        <div className="library-top"><h1>Biblioteca</h1><button className="sort-button" onClick={tap(toggleSort)} onMouseEnter={sounds.hover}>{sort === 'asc' ? 'Nome: A a Z' : 'Nome: Z a A'}　⌄</button></div>
         <div className="library-status">{platform === 'Todos' ? 'Jogos encontrados neste computador' : `Jogos da ${platform}`} <span>{shown.length}</span></div>
         {busy && <p className="library-msg" role="status">{busy}</p>}
         {msg && !busy && <p className="library-msg" role="status">{msg}</p>}

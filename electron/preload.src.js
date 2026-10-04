@@ -12,7 +12,6 @@ contextBridge.exposeInMainWorld('lazy', {
   onHome: (cb) => { ipcRenderer.removeAllListeners(C.GO_HOME); ipcRenderer.on(C.GO_HOME, () => cb()) },
   settings: { get: invoke(C.SETTINGS_GET), set: invoke(C.SETTINGS_SET) },
   exe: { get: invoke(C.EXE_GET), choose: invoke(C.EXE_CHOOSE) },
-  edge: { get: () => ipcRenderer.invoke(C.EXE_GET, 'edge'), choose: () => ipcRenderer.invoke(C.EXE_CHOOSE, 'edge') },
   ds4: { get: invoke(C.DS4_GET), set: invoke(C.DS4_SET) },
   store: { warnings: invoke(C.STORE_WARNINGS) },
   games: {
