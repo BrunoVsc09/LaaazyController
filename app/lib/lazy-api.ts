@@ -8,6 +8,7 @@ export type Settings = {
   streamModes: Record<string, StreamMode>
   pinnedApps?: string[]
   screensaverMinutes?: number
+  geminiModel?: string
 }
 export type Ds4Data = { profiles: string[]; config: Record<string, string>; dir: string | null; cmd: string }
 export type DrmStatus = { installed: boolean; version: string; msg: string }
@@ -34,6 +35,12 @@ export type LazyApi = {
     addFolder(): Promise<Result & { added: number }>
     remove(id: string): Promise<Result>
     recent(): Promise<Game[]>
+  }
+  ai: {
+    status(): Promise<{ configured: boolean; model: string; left: number }>
+    setKey(key: string): Promise<Result>
+    clearKey(): Promise<Result>
+    ask(query: string): Promise<{ ok: boolean; items: Title[]; explanation?: string; msg?: string }>
   }
   covers: { status(): Promise<{ configured: boolean }>; setKey(key: string): Promise<Result>; clearKey(): Promise<Result> }
   power: {

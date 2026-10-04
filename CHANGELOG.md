@@ -1,5 +1,13 @@
 # Novidades do Laaazy
 
+## Próxima versão (ainda não lançada)
+
+### Novo
+- **Pedir à IA (Gemini 3.8 Flash):** na busca, escreva o que quer ver ("comédia leve, menos
+  de 1h30, na Netflix", "algo parecido com Duna") e aperte ✨ Pedir à IA. O Gemini só
+  traduz o pedido em filtros; os títulos vêm do TMDB. Chave grátis do Google AI Studio,
+  colada em Configurações; modelo configurável; até 50 pedidos por dia.
+
 ## 3.1.0 — 2026-10-04
 
 ### Novo

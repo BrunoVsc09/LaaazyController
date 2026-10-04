@@ -43,6 +43,13 @@ describe('settings', () => {
     expect(s.set('screensaverMinutes', 7)).toBe(false)
     expect(s.set('screensaverMinutes', '5')).toBe(false)
   })
+  it('geminiModel: padrão gemini-3.8-flash; só nomes de modelo válidos', () => {
+    const { s } = make()
+    expect(s.get('geminiModel')).toBe('gemini-3.8-flash')
+    expect(s.set('geminiModel', 'gemini-3.5-flash')).toBe(true)
+    expect(s.set('geminiModel', '../../x')).toBe(false)
+    expect(s.set('geminiModel', 'Gemini 3.8 Flash')).toBe(false)
+  })
   it('recusa chave desconhecida e valor do tipo errado', () => {
     const { s, data } = make()
     expect(s.set('hacker', 1)).toBe(false)

@@ -28,6 +28,7 @@ function make() {
     },
     myList: { get: vi.fn(async () => []), toggle: vi.fn(async () => ({ ok: true, added: true })) },
     recentGames: vi.fn(async () => []),
+    assistant: { status: vi.fn(async () => ({})), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })), ask: vi.fn(async () => ({ ok: true, items: [] })) },
     volume: { step: vi.fn(() => true) },
     covers: { status: vi.fn(() => ({ configured: false })), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })) },
     power: { run: vi.fn(async () => ({ ok: true })), openAtLogin: vi.fn(() => false), setOpenAtLogin: vi.fn() },
@@ -89,6 +90,14 @@ describe('registerIpc', () => {
     h.myList.get.mockResolvedValue([{ id: 'tv:1' }])
     await invoke(C.CATALOG_EPISODES)
     expect(h.catalog.episodes).toHaveBeenCalledWith([{ id: 'tv:1' }])
+  })
+  it('IA: pedido e chave só como texto', async () => {
+    const { invoke, h } = make()
+    expect(await invoke(C.AI_ASK, { texto: 1 })).toMatchObject({ ok: false, items: [] })
+    expect(await invoke(C.AI_SET_KEY, 5)).toMatchObject({ ok: false })
+    expect(h.assistant.ask).not.toHaveBeenCalled()
+    await invoke(C.AI_ASK, 'comédia')
+    expect(h.assistant.ask).toHaveBeenCalledWith('comédia')
   })
   it('volume: só up, down e mute', () => {
     const { send, h } = make()

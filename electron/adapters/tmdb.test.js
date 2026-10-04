@@ -64,3 +64,19 @@ describe('tmdb: detalhes da série', () => {
     expect(u.searchParams.get('language')).toBe('pt-BR')
   })
 })
+
+describe('tmdb: discover com filtros e recomendações', () => {
+  it('discoverWith repassa os parâmetros', async () => {
+    const fetch = fakeFetch(200, { results: [{ id: 1 }] })
+    expect(await mod.createTmdb({ fetch }).discoverWith('T', 'movie', { with_genres: '35', 'with_runtime.lte': 90 })).toEqual([{ id: 1 }])
+    const u = new URL(fetch.mock.calls[0][0])
+    expect(u.pathname).toBe('/3/discover/movie')
+    expect(u.searchParams.get('with_genres')).toBe('35')
+    expect(u.searchParams.get('with_runtime.lte')).toBe('90')
+  })
+  it('recommendations em pt-BR', async () => {
+    const fetch = fakeFetch(200, { results: [{ id: 2 }] })
+    expect(await mod.createTmdb({ fetch }).recommendations('T', 'tv', 9)).toEqual([{ id: 2 }])
+    expect(new URL(fetch.mock.calls[0][0]).pathname).toBe('/3/tv/9/recommendations')
+  })
+})

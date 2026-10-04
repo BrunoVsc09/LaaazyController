@@ -41,7 +41,13 @@ function createTmdb({ fetch = globalThis.fetch } = {}) {
 
   const tvDetails = (token, id) => get(token, `/tv/${id}`, { language: 'pt-BR' })
 
-  return { ping, providers, discover, videos, search, watchProviders, tvDetails }
+  // Discover com filtros livres (já montados e validados por core/ai-filters)
+  const discoverWith = async (token, kind, params) => (await get(token, `/discover/${kind}`, params)).results || []
+
+  const recommendations = async (token, kind, id) =>
+    (await get(token, `/${kind}/${id}/recommendations`, { language: 'pt-BR', page: 1 })).results || []
+
+  return { ping, providers, discover, discoverWith, videos, search, watchProviders, tvDetails, recommendations }
 }
 
 module.exports = { createTmdb }

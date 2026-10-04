@@ -21,6 +21,9 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
   const [atLogin, setAtLogin] = useState(false)
   const [saverMin, setSaverMin] = useState(10)
   const [gridOn, setGridOn] = useState(false)
+  const [aiOn, setAiOn] = useState(false)
+  const [aiLeft, setAiLeft] = useState(0)
+  const [aiModel, setAiModel] = useState('')
 
   useEffect(() => {
     if (!lazy) return
@@ -29,6 +32,7 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
     lazy.drm.status().then(setDrm)
     lazy.catalog.status().then((s) => setTmdbOn(s.configured))
     lazy.covers.status().then((s) => setGridOn(s.configured))
+    lazy.ai.status().then((s) => { setAiOn(s.configured); setAiLeft(s.left); setAiModel(s.model) })
     lazy.power.openAtLogin().then(setAtLogin)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -41,6 +45,10 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
     setCloseDs4(v)
     lazy?.settings.set('closeDs4OnMenu', v)
     setMsg(v ? 'Ao apertar PS, o DS4Windows será fechado.' : 'O DS4Windows continuará aberto ao apertar PS.')
+  }
+  const saveModel = async () => {
+    const ok = await lazy?.settings.set('geminiModel', aiModel.trim())
+    setMsg(ok ? `Modelo do Gemini: ${aiModel.trim()}.` : 'Nome de modelo inválido. Use o nome da API, por exemplo gemini-3.8-flash.')
   }
   const cycleSaver = () => {
     const m = nextMinutes(saverMin)
@@ -80,6 +88,19 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
         onSave={(k) => lazy!.catalog.setKey(k)} onClear={() => lazy!.catalog.clearKey()}
         onResult={(m, on) => { setMsg(m); setTmdbOn(on) }}
       />
+      <ApiKeySection
+        title="Pedir à IA (Gemini)" configured={aiOn} sounds={sounds}
+        help={`Entende pedidos como "comédia leve, menos de 1h30, na Netflix". Chave grátis em aistudio.google.com → Get API key. ${aiOn ? `Restam ${aiLeft} de 50 pedidos hoje.` : ''}`}
+        note="A IA só traduz o pedido em filtros; os títulos vêm do TMDB."
+        onSave={(k) => lazy!.ai.setKey(k)} onClear={() => lazy!.ai.clearKey()}
+        onResult={(m, on) => { setMsg(m); setAiOn(on) }}
+      />
+      <label className="ds4-row" style={{ cursor: 'text' }}>
+        <span>Modelo do Gemini</span>
+        <input value={aiModel} onChange={(e) => setAiModel(e.target.value)} spellCheck={false} aria-label="Modelo do Gemini"
+          style={{ flex: 1, marginLeft: 24, background: 'transparent', border: 0, color: 'inherit', font: 'inherit', textAlign: 'right' }} />
+      </label>
+      <button className="ds4-row" onClick={tap(saveModel)} onMouseEnter={sounds.hover}><span>Salvar modelo</span><b>▶</b></button>
       <ApiKeySection
         title="Capas dos jogos (SteamGridDB)" configured={gridOn} sounds={sounds}
         help="Para jogos da Epic e do PC ganharem capa. Crie uma chave grátis em steamgriddb.com → Preferências → API e cole aqui."

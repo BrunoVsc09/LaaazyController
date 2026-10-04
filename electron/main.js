@@ -18,6 +18,8 @@ const { createCatalog } = require('./services/catalog')
 const { createSgdb } = require('./adapters/sgdb')
 const { createCovers } = require('./services/covers')
 const { createMyList } = require('./services/my-list')
+const { createGemini } = require('./adapters/gemini')
+const { createAssistant } = require('./services/assistant')
 const { createPower } = require('./services/power')
 const { createVolume } = require('./services/volume')
 const { SHORTCUTS: VOLUME_SHORTCUTS } = require('./core/volume')
@@ -172,6 +174,14 @@ const catalog = createCatalog({
   writeCache: (c) => store.writeJson(userFile('catalog-cache.json'), c || {}),
 })
 
+// Pedir à IA (Gemini interpreta, TMDB acha os títulos). Uso do dia em ai-usage.json
+const assistant = createAssistant({
+  gemini: createGemini(), tmdb: createTmdb(), catalog, secrets: secretStore,
+  model: () => settings.get('geminiModel'),
+  readUsage: () => store.readJson(userFile('ai-usage.json'), {}),
+  writeUsage: (u) => store.writeJson(userFile('ai-usage.json'), u),
+})
+
 // ---- Menu e botão PS ----
 function goHome() {
   stream.close()
@@ -196,7 +206,7 @@ const foreground = createForeground({
 })
 
 registerIpc(ipcMain, {
-  launcher, locator, settings, ds4, library: libraryWithCovers, catalog, myList, power, covers, volume, goHome,
+  launcher, locator, settings, ds4, library: libraryWithCovers, catalog, myList, power, covers, volume, assistant, goHome,
   recentGames: async () => recentGames(await store.readJson(userFile('recent.json'), []), await libraryWithCovers.list()),
   back: () => { if (!stream.back()) goHome() },
   sendKey: (key) => stream.sendKey(key),
