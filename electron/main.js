@@ -1,5 +1,5 @@
 // Raiz de composição: cria adapters → serviços → IPC → janela. Sem regra de negócio aqui.
-const { app, ipcMain, components, dialog, shell, globalShortcut, safeStorage, clipboard, Menu } = require('electron')
+const { app, ipcMain, components, dialog, shell, globalShortcut, safeStorage, clipboard, Menu, session } = require('electron')
 const fs = require('fs')
 const os = require('os')
 const { execFile } = require('child_process')
@@ -37,6 +37,7 @@ const { createPsButton } = require('./services/ps-button')
 const { widevineStatus } = require('./core/drm')
 const { planMigration } = require('./core/migration')
 const { cleanKey } = require('./core/keys')
+const { EMBED_URLS, refererFor } = require('./core/youtube')
 const { registerIpc } = require('./ipc/register')
 const { registerAppScheme, handleAppProtocol } = require('./window/app-protocol')
 const { createStreamView } = require('./window/stream-view')
@@ -253,6 +254,12 @@ app.on('second-instance', () => showMenu())
 
 app.whenReady().then(async () => {
   Menu.setApplicationMenu(null)
+  // Prévia de trailer no Início: o player do YouTube precisa saber de qual app vem
+  session.defaultSession.webRequest.onBeforeSendHeaders({ urls: EMBED_URLS }, (d, cb) => {
+    const referer = refererFor(d.url)
+    if (referer) d.requestHeaders.Referer = referer
+    cb({ requestHeaders: d.requestHeaders })
+  })
   await components.whenReady() // instala o Widevine (DRM)
   handleAppProtocol(OUT)
   windows.create('app://local/index.html')

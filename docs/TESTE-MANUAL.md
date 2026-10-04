@@ -134,3 +134,10 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Abrir esse jogo aplica o perfil escolhido (confira no DS4Windows)
 - [ ] Perfis do controle → "Jogos (padrão)": jogos sem perfil próprio usam esse
 - [ ] O fecha a lista sem mudar nada; o foco volta ao card
+
+## Início: filmes no topo e prévia
+- [ ] Ao abrir, o foco já está no primeiro filme/série; as fileiras de títulos vêm logo abaixo do destaque
+- [ ] Parado num título ~1s, o trailer toca sem som no quadro do destaque; passar para o próximo troca a prévia
+- [ ] Se aparecer erro do YouTube no quadro (ex.: 153), me avise e desligue em Configurações → Prévia do trailer
+- [ ] "Trailer com som" abre o trailer completo no Edge
+- [ ] Continuar jogando e Seus apps ficam mais abaixo

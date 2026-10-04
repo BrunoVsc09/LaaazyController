@@ -13,6 +13,7 @@ const RULES = {
   ds4Path: isText,
   closeDs4OnMenu: isBool,
   psClosesApp: isBool,
+  trailerPreview: isBool,
   librarySort: (v) => v === 'asc' || v === 'desc',
   streamModes: (v) => validModes(v, streaming),
   screensaverMinutes: (v) => [0, 5, 10, 15, 30].includes(v),
@@ -20,7 +21,7 @@ const RULES = {
   pinnedApps: (v) => Array.isArray(v) && v.length <= 30 && v.every((x) => isText(x) && x.length > 0 && x.length <= 40),
 }
 
-const DEFAULTS = { closeDs4OnMenu: true, psClosesApp: true, librarySort: 'asc', streamModes: {}, screensaverMinutes: 10, geminiModel: 'gemini-3.8-flash' }
+const DEFAULTS = { closeDs4OnMenu: true, psClosesApp: true, trailerPreview: true, librarySort: 'asc', streamModes: {}, screensaverMinutes: 10, geminiModel: 'gemini-3.8-flash' }
 
 function createSettings({ read, write }) {
   const all = () => ({ ...DEFAULTS, ...read() })

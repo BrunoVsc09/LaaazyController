@@ -1,11 +1,12 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import streaming from '../../shared/streaming'
 import AppIcon from '../components/AppIcon'
 import { CATALOG, type Card } from '../lib/catalog'
 import { buildRows, heroInfo, pinnedCards, type EpisodeNews } from '../lib/home-model'
 import { getLazy, type CatalogHome, type Game, type Title } from '../lib/lazy-api'
+import { PREVIEW_DELAY_MS, trailerEmbedUrl } from '../lib/trailer'
 import type { Sounds } from '../hooks/useSounds'
 
 type Props = { pinned: string[]; sounds: Sounds; onActivate: (card: Card) => void; onOpenSettings: () => void }
@@ -21,16 +22,37 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
   const [recent, setRecent] = useState<Game[]>([])
   const [myList, setMyList] = useState<Title[]>([])
   const [news, setNews] = useState<EpisodeNews[]>([])
+  // Prévia: parado num título, o trailer toca sem som no destaque
+  const [previewOn, setPreviewOn] = useState(true)
+  const [preview, setPreview] = useState<string | null>(null)
+  const heroId = useRef<string | null>(null)
+  heroId.current = hero?.id ?? null
 
   useEffect(() => {
     if (!lazy) return
     Promise.all([lazy.catalog.home(), lazy.myList.get()]).then(([d, list]) => {
       setData(d); setMyList(list)
       setHero(list[0] ?? d.series[0] ?? d.films[0] ?? null)
+      // Começa nos filmes e séries, para já ir passando e vendo as prévias
+      window.setTimeout(() => {
+        if (!document.querySelector('.lz-home :focus')) document.querySelector<HTMLElement>('.lz-home .lz-title')?.focus()
+      }, 0)
     })
     lazy.games.recent().then(setRecent)
     lazy.catalog.episodes().then(setNews)
+    lazy.settings.get().then((s) => setPreviewOn(s.trailerPreview !== false))
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    setPreview(null)
+    if (!lazy || !hero || !previewOn) return
+    const id = hero.id
+    const t = window.setTimeout(async () => {
+      const key = await lazy.catalog.trailer(id)
+      if (heroId.current === id) setPreview(trailerEmbedUrl(key))
+    }, PREVIEW_DELAY_MS)
+    return () => window.clearTimeout(t)
+  }, [hero?.id, previewOn]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const rows = data ? buildRows({ ...data, myList, news }) : []
   const inList = !!hero && myList.some((x) => x.id === hero.id)
@@ -72,35 +94,13 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
             {hero.overview && <p className="lz-overview">{hero.overview}</p>}
             <div className="lz-actions">
               <button type="button" className="lz-btn primary" onClick={tap(watch)} onMouseEnter={sounds.hover}>▶ {info.primary ? `Assistir na ${info.primary}` : 'Onde assistir'}</button>
-              <button type="button" className="lz-btn" onClick={tap(trailer)} onMouseEnter={sounds.hover}>Trailer</button>
+              <button type="button" className="lz-btn" onClick={tap(trailer)} onMouseEnter={sounds.hover}>Trailer com som</button>
               <button type="button" className="lz-btn" aria-pressed={inList} onClick={tap(toggleList)} onMouseEnter={sounds.hover}>{inList ? '✓ Na Minha lista' : '＋ Minha lista'}</button>
             </div>
             {msg && <p className="lz-meta" role="status">{msg}</p>}
           </div>
-          <div className="lz-hero-media" style={bg(hero)} aria-hidden="true" />
-        </div>
-      )}
-
-      <div className="lz-row">
-        <h2>Seus apps</h2>
-        <div className="lz-strip">
-          {pinnedCards(CATALOG, pinned).map((card) => (
-            <button key={card.label} type="button" className="lz-app" style={{ background: card.bg ?? 'rgba(255,255,255,.14)', color: card.fg ?? '#fff' }}
-              aria-label={card.label} onClick={() => { sounds.click(); onActivate(card) }} onFocus={sounds.hover}>
-              <AppIcon card={card} size={36} /><span>{card.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {recent.length > 0 && (
-        <div className="lz-row">
-          <h2>Continuar jogando</h2>
-          <div className="lz-strip">
-            {recent.map((g) => (
-              <button key={g.id} type="button" className="lz-title" style={g.cover ? { backgroundImage: `url(${g.cover})` } : undefined}
-                onClick={tap(() => play(g))} onFocus={sounds.hover}><span>{g.name}</span></button>
-            ))}
+          <div className="lz-hero-media" style={bg(hero)} aria-hidden="true">
+            {preview && <iframe key={preview} src={preview} title="Prévia do trailer" tabIndex={-1} allow="autoplay; encrypted-media" />}
           </div>
         </div>
       )}
@@ -127,6 +127,30 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
           </div>
         </div>
       ))}
+
+      {recent.length > 0 && (
+        <div className="lz-row">
+          <h2>Continuar jogando</h2>
+          <div className="lz-strip">
+            {recent.map((g) => (
+              <button key={g.id} type="button" className="lz-title" style={g.cover ? { backgroundImage: `url(${g.cover})` } : undefined}
+                onClick={tap(() => play(g))} onFocus={sounds.hover}><span>{g.name}</span></button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="lz-row">
+        <h2>Seus apps</h2>
+        <div className="lz-strip">
+          {pinnedCards(CATALOG, pinned).map((card) => (
+            <button key={card.label} type="button" className="lz-app" style={{ background: card.bg ?? 'rgba(255,255,255,.14)', color: card.fg ?? '#fff' }}
+              aria-label={card.label} onClick={() => { sounds.click(); onActivate(card) }} onFocus={sounds.hover}>
+              <AppIcon card={card} size={36} /><span>{card.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
     </section>
   )
 }

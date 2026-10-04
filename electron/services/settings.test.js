@@ -56,6 +56,12 @@ describe('settings', () => {
     expect(s.set('psClosesApp', false)).toBe(true)
     expect(s.set('psClosesApp', 'nao')).toBe(false)
   })
+  it('trailerPreview: prévia do trailer no Início ligada por padrão', () => {
+    const { s } = make()
+    expect(s.get('trailerPreview')).toBe(true)
+    expect(s.set('trailerPreview', false)).toBe(true)
+    expect(s.set('trailerPreview', 'sim')).toBe(false)
+  })
   it('recusa chave desconhecida e valor do tipo errado', () => {
     const { s, data } = make()
     expect(s.set('hacker', 1)).toBe(false)

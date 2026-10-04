@@ -5,6 +5,7 @@ export type StreamMode = 'app' | 'edge'
 export type Settings = {
   closeDs4OnMenu: boolean
   psClosesApp?: boolean
+  trailerPreview?: boolean
   librarySort: 'asc' | 'desc'
   streamModes: Record<string, StreamMode>
   pinnedApps?: string[]
