@@ -44,10 +44,13 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
   }
   const info = hero ? heroInfo(hero) : null
 
+  // Título salvo pela busca não tem serviço: pergunta ao TMDB onde ele está
   const watch = async () => {
-    if (!lazy || !info?.primary) return
-    const url = urlOf(info.primary)
-    if (url) setMsg((await lazy.open(url, info.primary)) || '')
+    if (!lazy || !hero) return
+    const service = info?.primary ?? (await lazy.catalog.where(hero.id))[0]
+    const url = service && urlOf(service)
+    if (!url) { setMsg(`"${hero.title}" não está nos seus serviços de streaming no Brasil.`); return }
+    setMsg((await lazy.open(url, service)) || '')
   }
   const trailer = async () => {
     if (!lazy || !hero) return
@@ -66,7 +69,7 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
             <h1>{hero.title}</h1>
             {hero.overview && <p className="lz-overview">{hero.overview}</p>}
             <div className="lz-actions">
-              {info.primary && <button type="button" className="lz-btn primary" onClick={tap(watch)} onMouseEnter={sounds.hover}>▶ Assistir na {info.primary}</button>}
+              <button type="button" className="lz-btn primary" onClick={tap(watch)} onMouseEnter={sounds.hover}>▶ {info.primary ? `Assistir na ${info.primary}` : 'Onde assistir'}</button>
               <button type="button" className="lz-btn" onClick={tap(trailer)} onMouseEnter={sounds.hover}>Trailer</button>
               <button type="button" className="lz-btn" aria-pressed={inList} onClick={tap(toggleList)} onMouseEnter={sounds.hover}>{inList ? '✓ Na Minha lista' : '＋ Minha lista'}</button>
             </div>
