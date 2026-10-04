@@ -1,8 +1,11 @@
 # Laaazy
 
 Central de mídia para Windows (antes "Lazy PS4"), controlada pelo DualShock 4:
-streaming (Netflix, Prime, HBO Max, Crunchyroll, YouTube, Spotify), biblioteca de
-jogos (Steam, Epic e jogos adicionados à mão) e troca automática de perfil do DS4Windows.
+filmes e séries em alta nos seus serviços (via TMDB), streaming (Netflix, Prime, HBO Max,
+Crunchyroll, YouTube, Spotify), biblioteca de jogos (Steam, Epic e jogos adicionados à mão),
+busca unificada, teclado na tela e troca automática de perfil do DS4Windows.
+
+Novidades: [CHANGELOG.md](CHANGELOG.md).
 
 ## Comandos
 

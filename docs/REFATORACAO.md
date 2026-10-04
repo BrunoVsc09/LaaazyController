@@ -8,8 +8,10 @@
 | 6. Streaming e DRM | ✅ modo app/Edge por serviço e status do Widevine. Netflix: erro E100 no `pnpm app` (H2: assinatura VMP de desenvolvimento recusada). A conta castlabs EVS não aceita e-mail pessoal → assinatura VMP descartada; **Todos os streamings passam a abrir no Edge por padrão** (decisão de 2026-10-04); "No app" continua disponível por serviço em Configurações |
 | 10. Design | 🟡 protótipo "lazy." (identidade própria, estrutura Início/Biblioteca/Apps) em artifact, fora do projeto · **o design será ajustado futuramente** (decisão de 2026-10-04): não está aprovado e não é a versão final |
 | 13. Catálogo de filmes e séries (TMDB) | ✅ dados, chave criptografada e campo em Configurações (seção 7) · a tela de Início com filmes e séries entra na fase 11 |
-| 11. Novo visual | ⏸ depois do ajuste e da aprovação do design |
-| 14–23 | 📋 planejadas — ver seção 8 (roadmap 3.0 / 3.1) |
+| 11. Telas novas | ✅ funcional (Início com TMDB, Apps, abas, navegação espacial) no visual provisório · ⏸ aplicar o design final quando ele for ajustado e aprovado |
+| 14, 16, 17, 18, 20 | ✅ concluídas (Laaazy, teclado na tela, busca, continuar jogando + Minha lista, energia) |
+| 15. Versão 3.0.0 | ✅ versão e CHANGELOG · ⏳ falta o roteiro manual no PC (`docs/TESTE-MANUAL.md`) — o app novo ainda não foi aberto de verdade |
+| 19, 21–23 | 📋 3.1 — ver seção 8 |
 | 12. Limpeza | ✅ dependências e código mortos removidos, README · ⏸ CSS morto (`.ps4-divider`, `.ps4-live`, `.icon-with-badge`, `.details-command-icon`) sai na fase 11; sons/ícones locais aguardam permissão para baixar |
 
 Bugs: B1–B6 corrigidos, cada um com teste de regressão. Achado na fase 6: o build
