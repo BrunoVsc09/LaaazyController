@@ -32,11 +32,31 @@ describe('Gemini adapter', () => {
       .rejects.toThrow(/incompleta/)
   })
   it('erros HTTP com mensagem clara', async () => {
-    const call = (s) => mod.createGemini({ fetch: fakeFetch(s) }).generate('K', 'm', { system: '', user: 'x', schema: {} })
+    const call = (s) => mod.createGemini({ fetch: fakeFetch(s), sleep: async () => {} }).generate('K', 'm', { system: '', user: 'x', schema: {} })
     await expect(call(429)).rejects.toThrow(/limite/)
     await expect(call(403)).rejects.toThrow(/recusou a chave/)
     await expect(call(404)).rejects.toThrow(/Modelo não encontrado/)
     await expect(call(500)).rejects.toThrow(/500/)
+  })
+  it('sobrecarregado (503) tenta de novo até 2 vezes, esperando cada vez mais', async () => {
+    const responses = [503, 503, 200]
+    const fetch = vi.fn(async () => { const s = responses.shift(); return { ok: s === 200, status: s, json: async () => ok('{"a":1}') } })
+    const sleep = vi.fn(async () => {})
+    expect(await mod.createGemini({ fetch, sleep }).generate('K', 'm', { system: '', user: 'x', schema: {} })).toBe('{"a":1}')
+    expect(fetch).toHaveBeenCalledTimes(3)
+    expect(sleep.mock.calls.map((c) => c[0])).toEqual([800, 1600])
+  })
+  it('sobrecarregado sempre: erro marcado como "overloaded" com mensagem clara', async () => {
+    const fetch = fakeFetch(503)
+    const err = await mod.createGemini({ fetch, sleep: async () => {} }).generate('K', 'm', { system: '', user: 'x', schema: {} }).catch((e) => e)
+    expect(err.code).toBe('overloaded')
+    expect(err.message).toMatch(/sobrecarregado/)
+    expect(fetch).toHaveBeenCalledTimes(3)
+  })
+  it('erro de chave (403) não tenta de novo', async () => {
+    const fetch = fakeFetch(403)
+    await expect(mod.createGemini({ fetch, sleep: async () => {} }).generate('K', 'm', { system: '', user: 'x', schema: {} })).rejects.toThrow()
+    expect(fetch).toHaveBeenCalledTimes(1)
   })
   it('ping confere se a chave enxerga o modelo', async () => {
     expect(await mod.createGemini({ fetch: fakeFetch(200, { name: 'models/m' }) }).ping('K', 'm')).toBe(true)

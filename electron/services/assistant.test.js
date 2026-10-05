@@ -59,6 +59,20 @@ describe('assistant.ask', () => {
     expect(r).toMatchObject({ ok: true, items: [{ title: 'Busca normal' }] })
     expect(r.msg).toMatch(/busca normal/)
   })
+  it('modelo sobrecarregado: tenta uma vez com o modelo reserva (gemini-flash-latest)', async () => {
+    const { a, gemini } = make()
+    const busy = Object.assign(new Error('O Gemini está sobrecarregado agora.'), { code: 'overloaded' })
+    gemini.generate.mockRejectedValueOnce(busy).mockResolvedValueOnce(answer())
+    const r = await a.ask('comédia')
+    expect(r.ok).toBe(true)
+    expect(r.items.length).toBeGreaterThan(0)
+    expect(gemini.generate.mock.calls.map((c) => c[1])).toEqual(['gemini-3.8-flash', 'gemini-flash-latest'])
+  })
+  it('erro da IA não gasta pedido do dia', async () => {
+    const { a, usage } = make({ reply: new Error('O Gemini está sobrecarregado agora.'), usage: { day: 10, count: 5 } })
+    await a.ask('comédia')
+    expect(usage()).toEqual({ day: 10, count: 5 })
+  })
   it('erro da IA (ex.: limite do Google): cai na busca normal com a mensagem', async () => {
     const r = await make({ reply: new Error('Você passou do limite de uso do Gemini por hoje.') }).a.ask('comédia')
     expect(r.ok).toBe(true)

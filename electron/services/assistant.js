@@ -5,6 +5,7 @@ const { resolveProviders, toItem, searchItems, parseItemId } = require('../core/
 const { cleanKey } = require('../core/keys')
 
 const LIMIT = 50
+const FALLBACK_MODEL = 'gemini-flash-latest' // reserva quando o modelo escolhido está sobrecarregado
 const DAY = 24 * 3600 * 1000
 const MAX_ITEMS = 20
 
@@ -69,14 +70,17 @@ function createAssistant({ gemini, tmdb, catalog, secrets, model, readUsage, wri
     if (!tk) return { ok: false, items: [], msg: 'Configure a chave do TMDB em Configurações: é ele que acha os títulos.' }
     const used = await usedToday()
     if (used >= LIMIT) return { ok: false, items: [], msg: `Você já fez os ${LIMIT} pedidos à IA de hoje. Amanhã libera de novo; a busca normal continua funcionando.` }
-    await writeUsage({ day: today(), count: used + 1 })
-
-    let filters
+    const req = { system: ai.SYSTEM_PROMPT, user: query, schema: ai.responseSchema() }
+    let reply
     try {
-      filters = ai.parseAiResponse(await gemini.generate(gk, model(), { system: ai.SYSTEM_PROMPT, user: query, schema: ai.responseSchema() }))
+      reply = await gemini.generate(gk, model(), req)
     } catch (e) {
-      return fallback(query, e.message)
+      if (e.code !== 'overloaded' || model() === FALLBACK_MODEL) return fallback(query, e.message)
+      try { reply = await gemini.generate(gk, FALLBACK_MODEL, req) } catch (e2) { return fallback(query, e2.message) }
     }
+    // Só conta no limite do dia quando o Gemini respondeu
+    await writeUsage({ day: today(), count: used + 1 })
+    const filters = ai.parseAiResponse(reply)
     if (!filters) return fallback(query, 'A IA não respondeu num formato válido.')
     if (filters.offTopic) return { ok: false, items: [], msg: 'Esse pedido não parece ser sobre filmes ou séries.' }
     try {
