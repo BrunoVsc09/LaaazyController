@@ -221,3 +221,8 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Perfil PC: mirar com o analógico e clicar (R2/touchpad): a tela não rola nem a seleção pula; o clique abre o que está embaixo do cursor.
 - [ ] Perfil Brunera (analógico não é mouse): o analógico navega entre os cards.
 
+## Aceleração de vídeo no Edge
+- [ ] Crunchyroll (aceleração desligada por padrão): abre, pede login uma vez e o vídeo aparece (sem tela preta).
+- [ ] Configurações → Aceleração de vídeo no Edge → Crunchyroll: Ligada volta ao perfil normal do Edge.
+- [ ] Netflix e os outros continuam abrindo no perfil normal (com os logins de antes).
+

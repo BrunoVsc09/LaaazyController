@@ -74,6 +74,13 @@ describe('settings', () => {
     expect(s.set('lockCursor', false)).toBe(true)
     expect(s.set('lockCursor', 'não')).toBe(false)
   })
+  it('edgeNoGpu: streamings que abrem no Edge sem aceleração de vídeo; Crunchyroll por padrão', () => {
+    const { s } = make()
+    expect(s.get('edgeNoGpu')).toEqual(['Crunchyroll'])
+    expect(s.set('edgeNoGpu', ['Crunchyroll', 'Netflix'])).toBe(true)
+    expect(s.set('edgeNoGpu', ['Fantasma'])).toBe(false)
+    expect(s.set('edgeNoGpu', 'Crunchyroll')).toBe(false)
+  })
   it('recusa chave desconhecida e valor do tipo errado', () => {
     const { s, data } = make()
     expect(s.set('hacker', 1)).toBe(false)

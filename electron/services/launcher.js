@@ -6,14 +6,18 @@ const PROGRAMS = ['hydra', 'ds4windows']
 
 function createLauncher({
   services, locator, ds4, spawnDetached, openPath, openExternal, openStream, setExternalActive, edgeProfileDir,
-  streamModes = () => ({}), widevine = () => ({ installed: true }),
+  streamModes = () => ({}), widevine = () => ({ installed: true }), edgeNoGpu = () => [],
 }) {
   // Perfil próprio do Laaazy (guarda os logins), janela de app em tela cheia (Alt+F4 fecha).
   // Sem --kiosk: o modo quiosque do Edge é sempre InPrivate e esquece os logins.
-  async function openInEdge(url) {
+  // Aceleração de vídeo desligada (tela preta em alguns serviços): Edge sem GPU. O Edge só lê
+  // --disable-gpu ao abrir, então esses serviços usam outro perfil (outro processo do Edge).
+  async function openInEdge(url, label) {
     const edge = await locator.findOrChoose('edge')
     if (!edge) return openExternal(url)
-    return spawnDetached(edge, ['--user-data-dir=' + edgeProfileDir, '--no-first-run', '--start-fullscreen', '--app=' + url])
+    const noGpu = edgeNoGpu().includes(label)
+    const profile = ['--user-data-dir=' + edgeProfileDir + (noGpu ? '-sem-aceleracao' : '')]
+    return spawnDetached(edge, [...profile, ...(noGpu ? ['--disable-gpu'] : []), '--no-first-run', '--start-fullscreen', '--app=' + url])
   }
 
   // Devolve '' quando abriu, ou a mensagem para mostrar na tela
@@ -22,7 +26,7 @@ function createLauncher({
       ds4.applyFor(label)
       setExternalActive(true)
       ds4.ensureRunning()
-      return (await openInEdge(url)) || ''
+      return (await openInEdge(url, label)) || ''
     }
     const service = serviceForUrl(url, services)
     const drm = widevine()

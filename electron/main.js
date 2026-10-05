@@ -196,6 +196,7 @@ const launcher = createLauncher({
   setExternalActive: (v) => { externalActive = v; if (v) returnWatch.start() },
   edgeProfileDir: userFile('edge-tv'),
   streamModes: () => settings.get('streamModes'),
+  edgeNoGpu: () => settings.get('edgeNoGpu') || [],
   widevine: () => widevineStatus(components.status()),
 })
 

@@ -89,6 +89,18 @@ describe('launcher', () => {
     expect(args).toEqual(['--user-data-dir=C:\\data\\edge-tv', '--no-first-run', '--start-fullscreen', '--app=https://www.crunchyroll.com'])
     expect(args.join(' ')).not.toMatch(/kiosk|inprivate/i)
   })
+  it('streaming com a aceleração de vídeo desligada (tela preta): Edge sem GPU, num perfil separado', async () => {
+    const { deps } = make({ found: { edge: 'C:\\E\\msedge.exe' } })
+    deps.edgeNoGpu = () => ['Crunchyroll']
+    const l = launcherMod.createLauncher(deps)
+    await l.open('https://www.crunchyroll.com', 'Crunchyroll')
+    // o Edge só lê --disable-gpu ao abrir: perfil separado para não pegar um Edge já aberto com GPU
+    expect(deps.spawnDetached.mock.calls[0][1]).toEqual([
+      '--user-data-dir=C:\\data\\edge-tv-sem-aceleracao', '--disable-gpu', '--no-first-run', '--start-fullscreen', '--app=https://www.crunchyroll.com',
+    ])
+    await l.open('https://www.netflix.com', 'Netflix') // os outros continuam com aceleração
+    expect(deps.spawnDetached.mock.calls[1][1][0]).toBe('--user-data-dir=C:\\data\\edge-tv')
+  })
   it('sem Edge, abre no navegador padrão', async () => {
     const { l, deps } = make()
     await l.open('https://www.crunchyroll.com', 'Crunchyroll')

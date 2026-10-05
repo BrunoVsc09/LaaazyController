@@ -10,6 +10,7 @@ export type Settings = {
   trailerPreview?: boolean
   trailerSound?: boolean
   lockCursor?: boolean
+  edgeNoGpu?: string[]
   librarySort: 'asc' | 'desc'
   streamModes: Record<string, StreamMode>
   pinnedApps?: string[]

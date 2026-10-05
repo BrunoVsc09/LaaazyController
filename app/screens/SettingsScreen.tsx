@@ -22,6 +22,7 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
   const [psCloses, setPsCloses] = useState(true)
   const [trailerOn, setTrailerOn] = useState(true)
   const [lockOn, setLockOn] = useState(true)
+  const [noGpu, setNoGpu] = useState<string[]>([])
   const [saverMin, setSaverMin] = useState(10)
   const [gridOn, setGridOn] = useState(false)
   const [ytOn, setYtOn] = useState(false)
@@ -32,7 +33,7 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
 
   useEffect(() => {
     if (!lazy) return
-    lazy.settings.get().then((s) => { setCloseDs4(s.closeDs4OnMenu); setModes(s.streamModes); setSaverMin(s.screensaverMinutes ?? 10); setPsCloses(s.psClosesApp !== false); setTrailerOn(s.trailerPreview !== false); setLockOn(s.lockCursor !== false) })
+    lazy.settings.get().then((s) => { setCloseDs4(s.closeDs4OnMenu); setModes(s.streamModes); setSaverMin(s.screensaverMinutes ?? 10); setPsCloses(s.psClosesApp !== false); setTrailerOn(s.trailerPreview !== false); setLockOn(s.lockCursor !== false); setNoGpu(s.edgeNoGpu ?? []) })
     Promise.all([lazy.exe.get('edge'), lazy.exe.get('ds4windows')]).then(([edge, ds4windows]) => setPaths({ edge, ds4windows }))
     lazy.drm.status().then(setDrm)
     lazy.catalog.status().then((s) => setTmdbOn(s.configured))
@@ -55,6 +56,14 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
   const saveModel = async () => {
     const ok = await lazy?.settings.set('geminiModel', aiModel.trim())
     setMsg(ok ? `Modelo do Gemini: ${aiModel.trim()}.` : 'Nome de modelo inválido. Use o nome da API, por exemplo gemini-3.8-flash.')
+  }
+  // Aceleração de vídeo no Edge por serviço (desligada = Edge sem GPU, para tela preta)
+  const toggleGpu = (label: string) => {
+    const off = noGpu.includes(label)
+    const next = off ? noGpu.filter((x) => x !== label) : [...noGpu, label]
+    setNoGpu(next)
+    lazy?.settings.set('edgeNoGpu', next)
+    setMsg(off ? `${label}: aceleração de vídeo ligada no Edge.` : `${label}: aceleração desligada no Edge (para tela preta). Feche o Edge e abra de novo; entre na conta uma vez nesse modo.`)
   }
   const toggleLock = () => {
     const v = !lockOn
@@ -151,6 +160,13 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
           </button>
         )
       })}
+      <h2 className="ds4-help">Aceleração de vídeo no Edge</h2>
+      <p className="ds4-help">Se um serviço abrir com tela preta no Edge, desligue a aceleração dele. Ele passa a abrir num perfil separado do Edge (entre na conta uma vez).</p>
+      {streaming.map((s) => (
+        <button key={`gpu-${s.label}`} className="ds4-row" onClick={tap(() => toggleGpu(s.label))} onMouseEnter={sounds.hover}>
+          <span>{s.label}</span><b>{noGpu.includes(s.label) ? 'Desligada' : 'Ligada'}</b>
+        </button>
+      ))}
     </section>
   )
 }

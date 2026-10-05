@@ -33,6 +33,9 @@
   fica com a busca normal e o Explorar sem digitar.
 
 ### Corrigido
+- **Crunchyroll com tela preta no Edge:** nova opção "Aceleração de vídeo no Edge" por serviço
+  (Configurações). Desligada, o Edge abre sem GPU num perfil separado; já vem desligada para a
+  Crunchyroll (entre na conta uma vez nesse modo).
 - **Trailer tocando atrás do Edge:** apertar 2x (ou "Assistir") abre o streaming e para a
   prévia; o Laaazy sair da frente (Edge, jogo, Área de trabalho) também para.
 - **X do controle no perfil PC:** o DS4Windows transforma o X em clique do mouse, e o
