@@ -7,6 +7,12 @@
   com o Laaazy fechado; mostra a hora) e cancelar o desligamento. Tudo que mexe no PC
   pergunta "Você tem certeza?" com Sim / Não.
 
+- **Trailers dublados e legendados (YouTube):** com uma chave grátis da YouTube Data API em
+  Configurações, o Início procura "‹título› trailer dublado/legendado" no YouTube, fica só com
+  vídeos que são mesmo o trailer do título (sem reações nem análises), prefere dublado e
+  canais oficiais do Brasil, e mostra o selo "🇧🇷 Trailer dublado" na prévia. Cada título é
+  buscado uma vez e guardado por 30 dias; até 90 buscas por dia.
+
 ### Mudou
 - **Prévia do trailer só quando você aperta:** no Início, parar num título só mostra as
   informações dele. 1º aperto (X ou clique) toca a prévia; 2º aperto no mesmo título abre
@@ -17,13 +23,6 @@
 ### Removido
 - **"Pedir à IA" da Busca.** O Gemini continua no "Parecido com este" (△ no Início); a Busca
   fica com a busca normal e o Explorar sem digitar.
-
-### Novo
-- **Trailers dublados e legendados (YouTube):** com uma chave grátis da YouTube Data API em
-  Configurações, o Início procura "‹título› trailer dublado/legendado" no YouTube, fica só com
-  vídeos que são mesmo o trailer do título (sem reações nem análises), prefere dublado e
-  canais oficiais do Brasil, e mostra o selo "🇧🇷 Trailer dublado" na prévia. Cada título é
-  buscado uma vez e guardado por 30 dias; até 90 buscas por dia.
 
 ### Corrigido
 - **Trailer indisponível:** o Início tenta até 5 trailers de cada título (português primeiro);
