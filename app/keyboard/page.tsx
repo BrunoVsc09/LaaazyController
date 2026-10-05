@@ -7,7 +7,7 @@ import gamepad from '../../shared/gamepad'
 import OnScreenKeyboard from '../components/OnScreenKeyboard'
 import { useGamepad } from '../hooks/useGamepad'
 import { useSounds } from '../hooks/useSounds'
-import { focusMove } from '../lib/focus'
+import { focusMove, hoverTarget, keepsFocusOnPress } from '../lib/focus'
 import { getLazy } from '../lib/lazy-api'
 
 const { BTN } = gamepad
@@ -34,6 +34,18 @@ export default function KeyboardOverlay() {
 
   const submit = () => { void getLazy()?.oskOverlay.submit(input.current?.value ?? '') }
   const cancel = () => { void getLazy()?.oskOverlay.cancel() }
+
+  // Cursor do analógico: a borda acompanha o cursor e clicar no fundo não a apaga
+  useEffect(() => {
+    const onOver = (e: MouseEvent) => {
+      const el = hoverTarget(e.target as HTMLElement, document.activeElement as HTMLElement | null, NAV) as HTMLElement | null
+      el?.focus({ preventScroll: true })
+    }
+    const onDown = (e: MouseEvent) => { if (keepsFocusOnPress(e.target as HTMLElement)) e.preventDefault() }
+    window.addEventListener('mouseover', onOver)
+    window.addEventListener('mousedown', onDown)
+    return () => { window.removeEventListener('mouseover', onOver); window.removeEventListener('mousedown', onDown) }
+  }, [])
 
   useGamepad(({ fired, dx, dy }) => {
     const now = performance.now()
