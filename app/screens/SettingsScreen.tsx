@@ -21,6 +21,7 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
   const [atLogin, setAtLogin] = useState(false)
   const [psCloses, setPsCloses] = useState(true)
   const [trailerOn, setTrailerOn] = useState(true)
+  const [lockOn, setLockOn] = useState(true)
   const [saverMin, setSaverMin] = useState(10)
   const [gridOn, setGridOn] = useState(false)
   const [ytOn, setYtOn] = useState(false)
@@ -31,7 +32,7 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
 
   useEffect(() => {
     if (!lazy) return
-    lazy.settings.get().then((s) => { setCloseDs4(s.closeDs4OnMenu); setModes(s.streamModes); setSaverMin(s.screensaverMinutes ?? 10); setPsCloses(s.psClosesApp !== false); setTrailerOn(s.trailerPreview !== false) })
+    lazy.settings.get().then((s) => { setCloseDs4(s.closeDs4OnMenu); setModes(s.streamModes); setSaverMin(s.screensaverMinutes ?? 10); setPsCloses(s.psClosesApp !== false); setTrailerOn(s.trailerPreview !== false); setLockOn(s.lockCursor !== false) })
     Promise.all([lazy.exe.get('edge'), lazy.exe.get('ds4windows')]).then(([edge, ds4windows]) => setPaths({ edge, ds4windows }))
     lazy.drm.status().then(setDrm)
     lazy.catalog.status().then((s) => setTmdbOn(s.configured))
@@ -54,6 +55,12 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
   const saveModel = async () => {
     const ok = await lazy?.settings.set('geminiModel', aiModel.trim())
     setMsg(ok ? `Modelo do Gemini: ${aiModel.trim()}.` : 'Nome de modelo inválido. Use o nome da API, por exemplo gemini-3.8-flash.')
+  }
+  const toggleLock = () => {
+    const v = !lockOn
+    setLockOn(v)
+    lazy?.settings.set('lockCursor', v)
+    setMsg(v ? 'O cursor do mouse fica preso na tela do Laaazy.' : 'O cursor do mouse pode sair da tela do Laaazy.')
   }
   const toggleTrailer = () => {
     const v = !trailerOn
@@ -96,6 +103,7 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
       <button className="ds4-row" onClick={tap(() => choose('edge', 'Edge'))} onMouseEnter={sounds.hover}><span>Pasta do Edge</span><b>{paths.edge || 'não encontrado, toque para escolher'}</b></button>
       <button className="ds4-row" onClick={tap(() => choose('ds4windows', 'DS4Windows'))} onMouseEnter={sounds.hover}><span>Pasta do DS4Windows</span><b>{paths.ds4windows || 'não encontrado, toque para escolher'}</b></button>
       <button className="ds4-row" onClick={tap(toggleClose)} onMouseEnter={sounds.hover}><span>Fechar o DS4Windows ao apertar PS</span><b>{closeDs4 ? 'Sim' : 'Não'}</b></button>
+      <button className="ds4-row" onClick={tap(toggleLock)} onMouseEnter={sounds.hover}><span>Prender o mouse na tela do Laaazy</span><b>{lockOn ? 'Sim' : 'Não'}</b></button>
       <button className="ds4-row" onClick={tap(toggleTrailer)} onMouseEnter={sounds.hover}><span>Prévia do trailer no Início</span><b>{trailerOn ? 'Ligada' : 'Desligada'}</b></button>
       <button className="ds4-row" onClick={tap(togglePs)} onMouseEnter={sounds.hover}><span>Botão PS fecha o jogo</span><b>{psCloses ? 'Sim (fecha à força)' : 'Não (como console)'}</b></button>
       <button className="ds4-row" onClick={tap(cycleSaver)} onMouseEnter={sounds.hover}><span>Proteção de tela</span><b>{saverMin ? `${saverMin} min` : 'Desligada'}</b></button>

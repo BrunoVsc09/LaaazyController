@@ -9,6 +9,7 @@ export type Settings = {
   psClosesApp?: boolean
   trailerPreview?: boolean
   trailerSound?: boolean
+  lockCursor?: boolean
   librarySort: 'asc' | 'desc'
   streamModes: Record<string, StreamMode>
   pinnedApps?: string[]

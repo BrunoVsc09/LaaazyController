@@ -212,3 +212,9 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Desligar daqui a 3 horas depois de já ter agendado 2 horas: troca para o novo horário (sem erro).
 - [ ] Desligar o PC e Suspender o PC: "Você tem certeza?" com Sim / Não; Não volta ao menu.
 
+## Mouse preso e controle/mouse juntos
+- [ ] Com dois monitores: o cursor não sai da tela do Laaazy. Abrir o Edge ou a Área de trabalho: o cursor sai normalmente.
+- [ ] Configurações → Prender o mouse na tela do Laaazy → Não: em até 2 s o cursor fica livre.
+- [ ] Navegar com o D-pad até as últimas fileiras: o cursor some e a borda não pula para onde o cursor parou.
+- [ ] Mexer o mouse/analógico (perfil PC): o cursor aparece e a borda segue o cursor.
+

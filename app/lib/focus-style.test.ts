@@ -41,3 +41,9 @@ describe('Início: destaque com trailer sempre à vista', () => {
     expect(css).toMatch(/html:has\(\.lz-home\) \{ scroll-padding-top: calc\(var\(--lz-hero-h\) \+ 16px\); scroll-padding-bottom: 120px; \}/)
   })
 })
+
+describe('cursor no modo controle', () => {
+  it('usando o controle o cursor some; mexendo o mouse ele volta (classe no <html>)', () => {
+    expect(css).toMatch(/html\.lz-pad, html\.lz-pad \* \{ cursor: none !important; \}/)
+  })
+})

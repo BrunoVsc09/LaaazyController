@@ -7,7 +7,8 @@ import gamepad from '../../shared/gamepad'
 import OnScreenKeyboard from '../components/OnScreenKeyboard'
 import { useGamepad } from '../hooks/useGamepad'
 import { useSounds } from '../hooks/useSounds'
-import { focusMove, hoverTarget, keepsFocusOnPress } from '../lib/focus'
+import { focusMove } from '../lib/focus'
+import { useMouseFocus } from '../hooks/useMouseFocus'
 import { getLazy } from '../lib/lazy-api'
 
 const { BTN } = gamepad
@@ -35,19 +36,11 @@ export default function KeyboardOverlay() {
   const submit = () => { void getLazy()?.oskOverlay.submit(input.current?.value ?? '') }
   const cancel = () => { void getLazy()?.oskOverlay.cancel() }
 
-  // Cursor do analógico: a borda acompanha o cursor e clicar no fundo não a apaga
-  useEffect(() => {
-    const onOver = (e: MouseEvent) => {
-      const el = hoverTarget(e.target as HTMLElement, document.activeElement as HTMLElement | null, NAV) as HTMLElement | null
-      el?.focus({ preventScroll: true })
-    }
-    const onDown = (e: MouseEvent) => { if (keepsFocusOnPress(e.target as HTMLElement)) e.preventDefault() }
-    window.addEventListener('mouseover', onOver)
-    window.addEventListener('mousedown', onDown)
-    return () => { window.removeEventListener('mouseover', onOver); window.removeEventListener('mousedown', onDown) }
-  }, [])
+  // Mouse e controle sem brigar: a borda só segue o mouse quando ele anda de verdade
+  const padUsed = useMouseFocus(() => NAV)
 
-  useGamepad(({ fired, dx, dy }) => {
+  useGamepad(({ fired, dx, dy, active }) => {
+    if (active) padUsed()
     const now = performance.now()
     if ((dx || dy) && now - lastMove.current > REPEAT_MS) { focusMove(NAV, dx, dx ? 0 : dy); lastMove.current = now }
     if (!dx && !dy) lastMove.current = 0

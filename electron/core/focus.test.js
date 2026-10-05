@@ -1,6 +1,22 @@
 import { describe, it, expect } from 'vitest'
 import mod from './focus.js'
 
+describe('clipCommand: prender o cursor na janela do Laaazy', () => {
+  it('retângulo da janela em pixels de tela', () => {
+    expect(mod.clipCommand({ x: 0, y: 0, width: 1920, height: 1080 })).toBe('[FG]::Clip(0,0,1920,1080)')
+    expect(mod.clipCommand({ x: -1920, y: 0, width: 1920, height: 1080 })).toBe('[FG]::Clip(-1920,0,0,1080)') // monitor à esquerda
+  })
+  it('valores quebrados ou estranhos: não prende (nada de texto vindo de fora no PowerShell)', () => {
+    expect(mod.clipCommand({ x: 0, y: 0, width: 0, height: 1080 })).toBeNull()
+    expect(mod.clipCommand({ x: '0; rm', y: 0, width: 10, height: 10 })).toBeNull()
+    expect(mod.clipCommand({ x: 0.5, y: 0, width: 10, height: 10 })).toBeNull()
+    expect(mod.clipCommand(null)).toBeNull()
+  })
+  it('soltar', () => {
+    expect(mod.UNCLIP).toBe('[FG]::Unclip()')
+  })
+})
+
 describe('hwndFrom e focusCommand', () => {
   it('lê o identificador da janela (HWND) do buffer do Electron', () => {
     const b = Buffer.alloc(8)

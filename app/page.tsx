@@ -18,7 +18,8 @@ import SearchScreen from './screens/SearchScreen'
 import { useGamepad } from './hooks/useGamepad'
 import { useSounds } from './hooks/useSounds'
 import type { Card } from './lib/catalog'
-import { focusMove, hoverTarget, keepsFocusOnPress } from './lib/focus'
+import { focusMove } from './lib/focus'
+import { useMouseFocus } from './hooks/useMouseFocus'
 import { DEFAULT_PINNED, togglePin } from './lib/home-model'
 import { getLazy } from './lib/lazy-api'
 import { OSK_HINTS } from './lib/osk'
@@ -115,24 +116,16 @@ export default function Page() {
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
-  // Cursor do analógico: a borda de seleção acompanha o cursor e clicar no fundo não a apaga
-  useEffect(() => {
-    const onOver = (e: MouseEvent) => {
-      const sel = navSelector(!!oskRef.current, powerRef.current, !!document.querySelector('[data-modal]'))
-      const el = hoverTarget(e.target as HTMLElement, document.activeElement as HTMLElement | null, sel) as HTMLElement | null
-      el?.focus({ preventScroll: true })
-    }
-    const onDown = (e: MouseEvent) => { if (keepsFocusOnPress(e.target as HTMLElement)) e.preventDefault() }
-    window.addEventListener('mouseover', onOver)
-    window.addEventListener('mousedown', onDown)
-    return () => { window.removeEventListener('mouseover', onOver); window.removeEventListener('mousedown', onDown) }
-  }, [])
+  // Mouse e controle sem brigar: a borda só segue o mouse quando ele anda de verdade;
+  // com o controle, o cursor some. Clicar no fundo não tira a borda.
+  const padUsed = useMouseFocus(() => navSelector(!!oskRef.current, powerRef.current, !!document.querySelector('[data-modal]')))
 
   const go = (screen: Screen) => dispatch(screen === 'home' ? { type: 'goHome' } : { type: 'open', screen })
   const back = () => { sounds.click(); dispatch({ type: 'leave' }) }
 
   const padOn = useGamepad(({ fired, dx, dy, active: touched }) => {
     if (touched) {
+      padUsed()
       if (saverRef.current) { wake(); return }
       idle.current.touch()
     }

@@ -1,5 +1,5 @@
 // Raiz de composição: cria adapters → serviços → IPC → janela. Sem regra de negócio aqui.
-const { app, ipcMain, components, dialog, shell, globalShortcut, safeStorage, clipboard, Menu, session } = require('electron')
+const { app, ipcMain, components, dialog, shell, globalShortcut, safeStorage, clipboard, Menu, session, screen } = require('electron')
 const fs = require('fs')
 const os = require('os')
 const { execFile } = require('child_process')
@@ -32,6 +32,7 @@ const { createSettings } = require('./services/settings')
 const { createExeLocator } = require('./services/exe-locator')
 const { createDs4 } = require('./services/ds4')
 const { createDesktop } = require('./services/desktop')
+const { createCursorLock } = require('./services/cursor-lock')
 const { createLibrary } = require('./services/library')
 const { createLauncher } = require('./services/launcher')
 const { createForeground } = require('./services/foreground')
@@ -96,8 +97,24 @@ const windows = createWindowManager({
   onClosed: () => stream.forget(),
   // Voltou do Edge/navegador para o menu: volta o perfil do Menu
   forceFocus: (hwnd) => probe.focus(hwnd),
-  onFocus: () => { desktop.leave(); if (externalActive) { externalActive = false; if (!closeDs4OnMenu()) ds4.applyFor('menu') } },
+  // Laaazy na frente: cursor preso nele; saiu da frente: cursor solto
+  onBlur: () => cursorLock.unlock(),
+  onFocus: () => { cursorLock.lock(); desktop.leave(); if (externalActive) { externalActive = false; if (!closeDs4OnMenu()) ds4.applyFor('menu') } },
 })
+
+// Cursor preso na janela do Laaazy enquanto ele está na frente (Configurações: lockCursor)
+const cursorLock = createCursorLock({
+  send: (cmd) => probe.run(cmd),
+  bounds: () => {
+    const w = windows.get()
+    if (!w) return null
+    const r = screen.dipToScreenRect(w, w.getBounds()) // pixels de tela (com a escala do Windows)
+    return { x: Math.round(r.x), y: Math.round(r.y), width: Math.round(r.width), height: Math.round(r.height) }
+  },
+  enabled: () => settings.get('lockCursor') !== false,
+})
+// O Windows solta o cursor em algumas trocas de janela: reaplica enquanto o Laaazy está na frente
+setInterval(() => { const w = windows.get(); if (w && w.isFocused()) cursorLock.lock() }, 2000).unref()
 
 // Tira o Laaazy da frente (jogo aberto ou Área de trabalho); bringToFront traz de volta
 function hideLaaazy() {
@@ -329,5 +346,6 @@ app.whenReady().then(async () => {
   probe.warm()
 })
 
+app.on('before-quit', () => cursorLock.unlock())
 app.on('will-quit', () => { globalShortcut.unregisterAll(); probe.dispose(); keySender.dispose() })
 app.on('window-all-closed', () => app.quit())

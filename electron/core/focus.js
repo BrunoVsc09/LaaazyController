@@ -9,6 +9,15 @@ function hwndFrom(buf) {
 // Linha para o PowerShell residente; só aceita número (nada de texto vindo de fora)
 const focusCommand = (hwnd) => (/^\d+$/.test(String(hwnd || '')) ? `[FG]::Focus([IntPtr]${hwnd})` : null)
 
+// Prender o cursor no retângulo da janela (pixels de tela). Só números inteiros vão para o PowerShell.
+const UNCLIP = '[FG]::Unclip()'
+function clipCommand(r) {
+  if (!r) return null
+  const v = [r.x, r.y, r.width, r.height]
+  if (!v.every(Number.isInteger) || r.width <= 0 || r.height <= 0) return null
+  return `[FG]::Clip(${r.x},${r.y},${r.x + r.width},${r.y + r.height})`
+}
+
 // O que conta como "voltou para casa": área de trabalho, launchers e o próprio Laaazy
 const HOME = new Set(['', 'explorer', 'steam', 'steamwebhelper', 'epicgameslauncher', 'laaazy', 'electron'])
 const GIVE_UP_MS = 90 * 1000
@@ -34,4 +43,4 @@ function watchStep(state, info, ctx, now) {
   return idle
 }
 
-module.exports = { hwndFrom, focusCommand, startWatch, watchStep }
+module.exports = { hwndFrom, focusCommand, clipCommand, UNCLIP, startWatch, watchStep }

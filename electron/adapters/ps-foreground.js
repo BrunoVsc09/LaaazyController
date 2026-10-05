@@ -12,6 +12,12 @@ const SETUP = "Add-Type -TypeDefinition 'using System;using System.Runtime.Inter
   '[DllImport("user32.dll")]public static extern bool ShowWindow(IntPtr h,int c);' +
   '[DllImport("user32.dll")]public static extern void keybd_event(byte k,byte s,uint f,UIntPtr e);' +
   'public static void Focus(IntPtr h){keybd_event(0x12,0,0,UIntPtr.Zero);ShowWindow(h,5);SetForegroundWindow(h);keybd_event(0x12,0,2,UIntPtr.Zero);}' +
+  // Cursor preso no retângulo da janela do Laaazy (Clip) e solto de novo (Unclip)
+  '[StructLayout(LayoutKind.Sequential)]public struct R{public int l,t,r,b;}' +
+  '[DllImport("user32.dll")]public static extern bool ClipCursor(ref R r);' +
+  '[DllImport("user32.dll",EntryPoint="ClipCursor")]public static extern bool ClipNone(IntPtr p);' +
+  'public static void Clip(int l,int t,int r,int b){R x;x.l=l;x.t=t;x.r=r;x.b=b;ClipCursor(ref x);}' +
+  'public static void Unclip(){ClipNone(IntPtr.Zero);}' +
   "}'\n"
 const QUERY = '$p=0;[void][FG]::GetWindowThreadProcessId([FG]::GetForegroundWindow(),[ref]$p);$n=(Get-Process -Id $p -ErrorAction SilentlyContinue).ProcessName;"FGPID:${p}:$n"\n'
 const QUERY_HWND = '"FGHWND:" + [FG]::GetForegroundWindow().ToInt64()\n'
@@ -76,9 +82,15 @@ function createForegroundProbe() {
     if (ps) ps.stdin.write(cmd + '\n')
   }
 
+  // Comando já montado e validado pelo core (ex.: clipCommand / UNCLIP)
+  function run(line) {
+    warm()
+    if (ps) ps.stdin.write(line + '\n')
+  }
+
   const dispose = () => { try { ps && ps.kill() } catch {} }
 
-  return { warm, info, hwnd, focus, dispose }
+  return { warm, info, hwnd, focus, run, dispose }
 }
 
 module.exports = { createForegroundProbe }

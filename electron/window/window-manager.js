@@ -10,7 +10,7 @@ function lockWindow(win) {
 }
 
 // forceFocus(hwnd): passa pelo bloqueio de foco do Windows (ver adapters/ps-foreground)
-function createWindowManager({ preload, onFocus, onResize, onClosed, forceFocus = () => {} }) {
+function createWindowManager({ preload, onFocus, onBlur = () => {}, onResize, onClosed, forceFocus = () => {} }) {
   let win = null
   // Depois de fechada, a janela continua existindo mas todo método lança exceção
   const alive = () => !!win && !win.isDestroyed()
@@ -30,6 +30,7 @@ function createWindowManager({ preload, onFocus, onResize, onClosed, forceFocus 
     for (const ev of ['resize', 'enter-full-screen', 'leave-full-screen']) win.on(ev, onResize)
     win.on('closed', () => { win = null; onClosed() })
     win.on('focus', onFocus)
+    for (const ev of ['blur', 'minimize', 'hide']) win.on(ev, onBlur)
     lockWindow(win)
     win.loadURL(url)
     return win

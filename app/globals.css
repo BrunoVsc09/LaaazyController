@@ -319,3 +319,6 @@ html:has(.lz-home) { scroll-padding-top: calc(var(--lz-hero-h) + 16px); scroll-p
 
 /* Selo "Trailer dublado/legendado" (achado no YouTube) sobre a prévia */
 .lz-trailer-label { position: absolute; left: 12px; top: 12px; z-index: 1; padding: 4px 10px; border-radius: 999px; background: rgba(0, 0, 0, .65); color: #ffd23f; font-size: 14px; font-weight: 700; }
+
+/* Usando o controle (ou as setas) o cursor some; mexendo o mouse de verdade ele volta */
+html.lz-pad, html.lz-pad * { cursor: none !important; }

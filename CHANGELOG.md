@@ -14,6 +14,11 @@
   buscado uma vez e guardado por 30 dias; até 90 buscas por dia.
 
 ### Mudou
+- **Mouse preso na tela do Laaazy** enquanto ele está na frente (não escapa para outro monitor);
+  solta ao abrir o Edge, um jogo ou a Área de trabalho. Desligável em Configurações.
+- **Controle e mouse sem brigar:** a borda só segue o mouse quando ele anda de verdade (a tela
+  rolar embaixo do cursor parado não rouba mais o foco). Usando o controle o cursor some;
+  mexendo o mouse ele volta.
 - **Prévia do trailer só quando você aperta:** no Início, parar num título só mostra as
   informações dele. 1º aperto (X ou clique) toca a prévia; 2º aperto no mesmo título abre
   onde assistir. Passar por cima de outros títulos (mouse, analógico, D-pad) não cancela a
