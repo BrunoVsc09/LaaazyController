@@ -217,4 +217,6 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Configurações → Prender o mouse na tela do Laaazy → Não: em até 2 s o cursor fica livre.
 - [ ] Navegar com o D-pad até as últimas fileiras: o cursor some e a borda não pula para onde o cursor parou.
 - [ ] Mexer o mouse/analógico (perfil PC): o cursor aparece e a borda segue o cursor.
+- [ ] Perfil PC: mirar com o analógico e clicar (R2/touchpad): a tela não rola nem a seleção pula; o clique abre o que está embaixo do cursor.
+- [ ] Perfil Brunera (analógico não é mouse): o analógico navega entre os cards.
 

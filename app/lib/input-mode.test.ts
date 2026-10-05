@@ -37,4 +37,19 @@ describe('createInputMode: controle e mouse sem brigar', () => {
     t = 400; m.padUsed()
     expect(m.mode()).toBe('pad') // controle sozinho depois de um tempo troca
   })
+  it('analógico só navega se o mouse estiver parado há 1 s e o analógico ficar inclinado por 150 ms', () => {
+    let t = 0
+    const m = createInputMode(() => t)
+    expect(m.stickAllowed(true)).toBe(false) // acabou de inclinar
+    t = 160
+    expect(m.stickAllowed(true)).toBe(true)
+    expect(m.stickAllowed(false)).toBe(false) // soltou
+    // perfil PC: o mesmo analógico move o cursor -> não navega
+    m.mouseMoved(500, 300); t = 200; m.mouseMoved(540, 300)
+    t = 400; m.stickAllowed(true); t = 600
+    expect(m.stickAllowed(true)).toBe(false)
+    t = 1300 // mouse parado há mais de 1 s
+    expect(m.stickAllowed(true)).toBe(true)
+  })
 })
+

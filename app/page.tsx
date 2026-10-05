@@ -123,9 +123,9 @@ export default function Page() {
   const go = (screen: Screen) => dispatch(screen === 'home' ? { type: 'goHome' } : { type: 'open', screen })
   const back = () => { sounds.click(); dispatch({ type: 'leave' }) }
 
-  const padOn = useGamepad(({ fired, dx, dy, active: touched }) => {
+  const padOn = useGamepad(({ fired, dx, dy, active: touched, buttons }) => {
     if (touched) {
-      padUsed()
+      if (buttons || dx || dy) padUsed() // analógico virando mouse não esconde o cursor
       if (saverRef.current) { wake(); return }
       idle.current.touch()
     }

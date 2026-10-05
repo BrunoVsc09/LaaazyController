@@ -39,8 +39,8 @@ export default function KeyboardOverlay() {
   // Mouse e controle sem brigar: a borda só segue o mouse quando ele anda de verdade
   const padUsed = useMouseFocus(() => NAV)
 
-  useGamepad(({ fired, dx, dy, active }) => {
-    if (active) padUsed()
+  useGamepad(({ fired, dx, dy, buttons }) => {
+    if (buttons || dx || dy) padUsed()
     const now = performance.now()
     if ((dx || dy) && now - lastMove.current > REPEAT_MS) { focusMove(NAV, dx, dx ? 0 : dy); lastMove.current = now }
     if (!dx && !dy) lastMove.current = 0

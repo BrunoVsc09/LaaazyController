@@ -41,6 +41,21 @@ describe('direction', () => {
   })
 })
 
+describe('dpadDirection e stickDirection (separados: o analógico pode estar virando mouse)', () => {
+  it('D-pad sozinho', () => {
+    expect(gp.dpadDirection(pad([15]))).toEqual({ dx: 1, dy: 0 })
+    expect(gp.dpadDirection(pad([], [0.9, 0]))).toEqual({ dx: 0, dy: 0 })
+  })
+  it('analógico sozinho', () => {
+    expect(gp.stickDirection(pad([], [0, 0.9]))).toEqual({ dx: 0, dy: 1 })
+    expect(gp.stickDirection(pad([15]))).toEqual({ dx: 0, dy: 0 })
+  })
+  it('algum botão apertado (inclui D-pad; analógico não conta)', () => {
+    expect(gp.anyButton(pad([0]))).toBe(true)
+    expect(gp.anyButton(pad([], [1, 1]))).toBe(false)
+  })
+})
+
 describe('pickNext (navegação espacial)', () => {
   // grade 2x2 de 100x100 com 20px de espaço
   const r = (left, top) => ({ left, top, width: 100, height: 100 })

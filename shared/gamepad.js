@@ -32,6 +32,19 @@ function direction(pad) {
   return { dx, dy }
 }
 
+// Separados: no perfil PC do DS4Windows o analógico vira mouse, e aí ele não pode navegar
+function dpadDirection(pad) {
+  const dx = isDown(pad, BTN.RIGHT) ? 1 : isDown(pad, BTN.LEFT) ? -1 : 0
+  const dy = isDown(pad, BTN.DOWN) ? 1 : isDown(pad, BTN.UP) ? -1 : 0
+  return { dx, dy }
+}
+function stickDirection(pad) {
+  const x = pad.axes[0] || 0
+  const y = pad.axes[1] || 0
+  return { dx: x > DEAD_ZONE ? 1 : x < -DEAD_ZONE ? -1 : 0, dy: y > DEAD_ZONE ? 1 : y < -DEAD_ZONE ? -1 : 0 }
+}
+const anyButton = (pad) => (pad.buttons || []).some((b) => b && b.pressed)
+
 // Próximo elemento na direção pedida (índice em rects). Pesa mais o desvio lateral,
 // para preferir o que está alinhado. Sem nada na direção, fica onde está.
 function pickNext(rects, current, dx, dy) {
@@ -53,4 +66,4 @@ function pickNext(rects, current, dx, dy) {
   return best
 }
 
-module.exports = { BTN, createEdges, direction, pickNext }
+module.exports = { BTN, createEdges, direction, dpadDirection, stickDirection, anyButton, pickNext }

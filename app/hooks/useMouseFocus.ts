@@ -5,10 +5,10 @@
 // Clicar no fundo da tela não tira o foco de onde ele está.
 import { useCallback, useEffect, useRef } from 'react'
 import { hoverTarget, keepsFocusOnPress } from '../lib/focus'
-import { createInputMode } from '../lib/input-mode'
+import { inputMode } from '../lib/input-mode'
 
 export function useMouseFocus(selector: () => string) {
-  const mode = useRef(createInputMode())
+  const mode = useRef(inputMode)
   const sel = useRef(selector)
   sel.current = selector
 

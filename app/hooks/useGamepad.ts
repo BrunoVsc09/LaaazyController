@@ -3,8 +3,11 @@
 import { useEffect, useRef, useState } from 'react'
 import gamepad from '../../shared/gamepad'
 import { padActive } from '../lib/screensaver'
+import { inputMode } from '../lib/input-mode'
 
-export type PadFrame = { fired: (button: number) => boolean; dx: number; dy: number; active: boolean }
+// buttons: algum botão apertado (D-pad incluso). dx/dy: D-pad, ou o analógico quando ele não está
+// fazendo o papel de mouse (perfil PC do DS4Windows)
+export type PadFrame = { fired: (button: number) => boolean; dx: number; dy: number; active: boolean; buttons: boolean }
 
 // Lê o controle a cada quadro e chama onFrame. Devolve se há controle conectado.
 export function useGamepad(onFrame: (frame: PadFrame) => void): boolean {
@@ -19,7 +22,13 @@ export function useGamepad(onFrame: (frame: PadFrame) => void): boolean {
     const tick = () => {
       const pad = Array.from(navigator.getGamepads?.() ?? []).find(Boolean)
       if (seen !== !!pad) { seen = !!pad; setPadOn(seen) }
-      if (pad) handler.current({ fired: edges(pad), ...gamepad.direction(pad), active: padActive(pad) })
+      if (pad) {
+        const dpad = gamepad.dpadDirection(pad)
+        const stick = gamepad.stickDirection(pad)
+        const stickOn = inputMode.stickAllowed(!!(stick.dx || stick.dy))
+        const dir = dpad.dx || dpad.dy ? dpad : stickOn ? stick : { dx: 0, dy: 0 }
+        handler.current({ fired: edges(pad), ...dir, active: padActive(pad), buttons: gamepad.anyButton(pad) })
+      }
       raf = requestAnimationFrame(tick)
     }
     raf = requestAnimationFrame(tick)
