@@ -295,3 +295,11 @@ button { font: inherit; }
 /* Anel de foco que vale SEMPRE (controle, teclado ou mouse). Não usar :focus-visible:
    o Chrome esconde depois que o mouse é usado, e a borda sumia ao navegar com o controle. */
 :is(.ps4-screen, .kb-overlay) :is(button, input, a, [tabindex]):focus { outline: 3px solid #ffd23f; outline-offset: 3px; }
+
+/* Sem barras de rolagem do Windows: tudo rola pelo controle (o foco leva a tela junto) */
+html, body, :is(.ps4-screen, .kb-overlay) * { scrollbar-width: none; }
+::-webkit-scrollbar { display: none; width: 0; height: 0; }
+/* Grade da Biblioteca: só rola para baixo; folga para a capa em foco (que cresce) não ser cortada */
+.library-grid { overflow-x: hidden; overflow-y: auto; padding: 10px 12px 16px; }
+/* Rodapé preso no fim da janela */
+.ps4-footer { position: fixed; }

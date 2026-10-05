@@ -14,3 +14,17 @@ describe('anel de foco', () => {
     expect(css).not.toMatch(/:focus(-visible)? \{ outline: none; \}/)
   })
 })
+
+// Barras de rolagem do Windows apareciam na Biblioteca (horizontal e vertical) e empurravam o rodapé
+describe('sem barras de rolagem', () => {
+  it('nenhuma barra de rolagem visível no app', () => {
+    expect(css).toMatch(/html, body, :is\(\.ps4-screen, \.kb-overlay\) \* \{ scrollbar-width: none; \}/)
+    expect(css).toMatch(/::-webkit-scrollbar \{ display: none; width: 0; height: 0; \}/)
+  })
+  it('a grade da Biblioteca não rola para o lado', () => {
+    expect(css).toMatch(/\.library-grid \{ overflow-x: hidden; overflow-y: auto;/)
+  })
+  it('o rodapé fica preso no fim da janela (não sobe junto com a rolagem)', () => {
+    expect(css).toMatch(/\.ps4-footer \{ position: fixed;/)
+  })
+})
