@@ -63,6 +63,31 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
   const rowsRef = useRef(rows)
   rowsRef.current = rows
 
+  // "Parecido com este" (△ num título): fileira no topo com o mesmo clima, pela IA
+  const [similar, setSimilar] = useState<{ source: Title; mood: string; items: Title[]; loading: boolean } | null>(null)
+  const similarRef = useRef(similar)
+  similarRef.current = similar
+  useEffect(() => {
+    const onTriangle = async () => {
+      if (!lazy) return
+      const id = (document.activeElement as HTMLElement | null)?.closest<HTMLElement>('.lz-title')?.dataset.id
+      const all = [...(similarRef.current?.items ?? []), ...rowsRef.current.flatMap((r) => r.items)]
+      const source = id && all.find((t) => t.id === id)
+      if (!source) return
+      setSimilar({ source, mood: '', items: [], loading: true })
+      const r = await lazy.ai.similar(source)
+      if (!r.ok || !r.items.length) { setSimilar(null); setMsg(r.msg || `Não achei títulos parecidos com "${source.title}".`); return }
+      setSimilar({ source, mood: r.mood ?? '', items: r.items, loading: false })
+      window.setTimeout(() => {
+        const first = document.querySelector<HTMLElement>('.lz-similar .lz-title')
+        first?.focus()
+        first?.scrollIntoView({ block: 'center', inline: 'nearest' })
+      }, 0)
+    }
+    window.addEventListener('lz:triangle', onTriangle)
+    return () => window.removeEventListener('lz:triangle', onTriangle)
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   // Trailer acabou: passa para o próximo título (o foco vai junto se estiver nas fileiras)
   useEffect(() => {
     const onMessage = (e: MessageEvent) => {
@@ -136,6 +161,23 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
         </div>
       )}
       {data && data.configured && data.msg && <div className="lz-empty" role="status">{data.msg}</div>}
+
+      {similar && (
+        <div className="lz-row lz-similar">
+          <h2>
+            {similar.loading ? `Procurando títulos com o clima de ${similar.source.title}...` : `Parecido com ${similar.source.title}`}
+            {similar.mood && <small> · {similar.mood}</small>}
+          </h2>
+          <div className="lz-strip">
+            {similar.items.map((t) => (
+              <button key={t.id} type="button" className="lz-title" data-id={t.id} style={bg(t)} aria-label={`${t.title} (${t.kind})`}
+                onFocus={() => { setHero(t); setMsg(''); sounds.hover() }} onClick={tap(watch)}>
+                <span>{t.title}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {rows.map((row) => (
         <div key={row.id} className="lz-row">

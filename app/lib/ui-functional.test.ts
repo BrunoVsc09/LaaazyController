@@ -38,8 +38,9 @@ describe('ordenação da biblioteca', () => {
 
 describe('hintsFor (rodapé só com comandos reais)', () => {
   const labels = (s: Parameters<typeof hintsFor>[0]) => hintsFor(s).map((h) => h.label)
-  it('Início: Confirmar e Buscar (□)', () => {
-    expect(labels('home')).toEqual(['Confirmar', 'Buscar'])
+  it('Início: Confirmar, Buscar (□) e Parecidos (△)', () => {
+    expect(labels('home')).toEqual(['Confirmar', 'Buscar', 'Parecidos'])
+    expect(hintsFor('home').find((h) => h.label === 'Parecidos')?.button).toBe(gamepad.BTN.TRIANGLE)
   })
   it('Biblioteca: Confirmar, Voltar, Buscar (□) e Perfil do controle (△)', () => {
     expect(labels('library')).toEqual(['Confirmar', 'Voltar', 'Buscar', 'Perfil do controle'])

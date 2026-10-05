@@ -52,6 +52,8 @@ export type LazyApi = {
     setKey(key: string): Promise<Result>
     clearKey(): Promise<Result>
     ask(query: string): Promise<{ ok: boolean; items: Title[]; explanation?: string; msg?: string }>
+    // "Parecido com este": clima do título (pela IA) e títulos com o mesmo clima
+    similar(title: Title): Promise<{ ok: boolean; items: Title[]; mood?: string; ai?: boolean; msg?: string }>
   }
   covers: { status(): Promise<{ configured: boolean }>; setKey(key: string): Promise<Result>; clearKey(): Promise<Result> }
   power: {

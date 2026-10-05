@@ -5,6 +5,7 @@ const { isWebUrl } = require('../core/routing')
 const PLAYER_KEYS = new Set(['Space', 'Left', 'Right'])
 const VOLUME_ACTIONS = new Set(['up', 'down', 'mute'])
 const isText = (v) => typeof v === 'string'
+const str = (v) => (isText(v) ? v : '')
 
 function registerIpc(ipcMain, h) {
   const on = (ch, fn) => ipcMain.on(ch, (_e, ...args) => fn(...args))
@@ -49,6 +50,9 @@ function registerIpc(ipcMain, h) {
   handle(C.AI_STATUS, () => h.assistant.status())
   handle(C.AI_SET_KEY, (key) => (isText(key) ? h.assistant.setKey(key) : { ok: false, msg: 'Chave inválida.' }))
   handle(C.AI_CLEAR_KEY, () => h.assistant.clearKey())
+  handle(C.AI_SIMILAR, (t) => (t && isText(t.id) && isText(t.title)
+    ? h.assistant.similarMood({ id: t.id, title: t.title, kind: str(t.kind), year: str(t.year), overview: str(t.overview) })
+    : { ok: false, items: [], msg: 'Título inválido.' }))
   handle(C.AI_ASK, (q) => (isText(q) ? h.assistant.ask(q) : { ok: false, items: [], msg: 'Pedido inválido.' }))
   handle(C.COVERS_STATUS, () => h.covers.status())
   handle(C.COVERS_SET_KEY, (key) => (isText(key) ? h.covers.setKey(key) : { ok: false, msg: 'Chave inválida.' }))

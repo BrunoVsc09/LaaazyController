@@ -33,7 +33,7 @@ function make() {
     textEntry: { submit: vi.fn(async () => true), cancel: vi.fn() },
     readClipboard: vi.fn(() => 'abc'),
     psButton: { startTest: vi.fn(() => true) },
-    assistant: { status: vi.fn(async () => ({})), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })), ask: vi.fn(async () => ({ ok: true, items: [] })) },
+    assistant: { status: vi.fn(async () => ({})), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })), ask: vi.fn(async () => ({ ok: true, items: [] })), similarMood: vi.fn(async () => ({ ok: true, items: [] })) },
     volume: { step: vi.fn(() => true) },
     covers: { status: vi.fn(() => ({ configured: false })), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })) },
     power: { run: vi.fn(async () => ({ ok: true })), openAtLogin: vi.fn(() => false), setOpenAtLogin: vi.fn() },
@@ -120,6 +120,14 @@ describe('registerIpc', () => {
     expect(h.assistant.ask).not.toHaveBeenCalled()
     await invoke(C.AI_ASK, 'comédia')
     expect(h.assistant.ask).toHaveBeenCalledWith('comédia')
+  })
+  it('IA "Parecido com este": só objeto com id e título em texto; repassa só os campos conhecidos', async () => {
+    const { invoke, h } = make()
+    expect(await invoke(C.AI_SIMILAR, 'tv:1')).toMatchObject({ ok: false, items: [] })
+    expect(await invoke(C.AI_SIMILAR, { id: 1, title: 'Dark' })).toMatchObject({ ok: false, items: [] })
+    expect(h.assistant.similarMood).not.toHaveBeenCalled()
+    await invoke(C.AI_SIMILAR, { id: 'tv:1', title: 'Dark', kind: 'Série', year: '2017', overview: 'x', poster: 'p', extra: { a: 1 } })
+    expect(h.assistant.similarMood).toHaveBeenCalledWith({ id: 'tv:1', title: 'Dark', kind: 'Série', year: '2017', overview: 'x' })
   })
   it('volume: só up, down e mute', () => {
     const { send, h } = make()

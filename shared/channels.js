@@ -50,6 +50,7 @@ module.exports = {
   AI_SET_KEY: 'ai:setKey',
   AI_CLEAR_KEY: 'ai:clearKey',
   AI_ASK: 'ai:ask',
+  AI_SIMILAR: 'ai:similar',
   COVERS_STATUS: 'covers:status',
   COVERS_SET_KEY: 'covers:setKey',
   COVERS_CLEAR_KEY: 'covers:clearKey',

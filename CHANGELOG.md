@@ -3,6 +3,9 @@
 ## Próxima versão (ainda não lançada)
 
 ### Novo
+- **Parecido com este (△ no Início):** num filme ou série, aperte △ e aparece no topo uma
+  fileira com o mesmo clima ("suspense lento e frio"), não só o mesmo gênero. O Gemini
+  sugere, o TMDB confere cada título. Sem a chave do Gemini, usa as recomendações do TMDB.
 - **Pedir à IA (Gemini 3.8 Flash):** na busca, escreva o que quer ver ("comédia leve, menos
   de 1h30, na Netflix", "algo parecido com Duna") e aperte ✨ Pedir à IA. O Gemini só
   traduz o pedido em filtros; os títulos vêm do TMDB. Chave grátis do Google AI Studio,

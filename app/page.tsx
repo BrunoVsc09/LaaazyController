@@ -173,7 +173,7 @@ export default function Page() {
       else (active as HTMLElement | null)?.click()
     }
     if (fired(BTN.O) && screen !== 'home') back()
-    if (fired(BTN.TRIANGLE) && screen === 'library') window.dispatchEvent(new Event('lz:triangle'))
+    if (fired(BTN.TRIANGLE) && (screen === 'library' || screen === 'home')) window.dispatchEvent(new Event('lz:triangle'))
     if (fired(BTN.SQUARE)) {
       if (screen === 'library') focusFirst('.library-search input')
       else if (screen === 'home' || screen === 'apps') go('search')

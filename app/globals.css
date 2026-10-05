@@ -303,3 +303,6 @@ html, body, :is(.ps4-screen, .kb-overlay) * { scrollbar-width: none; }
 .library-grid { overflow-x: hidden; overflow-y: auto; padding: 10px 12px 16px; }
 /* Rodapé preso no fim da janela */
 .ps4-footer { position: fixed; }
+
+/* Fileira "Parecido com este" (△ num título do Início) */
+.lz-similar h2 small { font-size: .8em; font-weight: 400; color: #ffd23f; }
