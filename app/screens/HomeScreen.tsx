@@ -6,7 +6,7 @@ import AppIcon from '../components/AppIcon'
 import { CATALOG, type Card } from '../lib/catalog'
 import { buildRows, heroInfo, pinnedCards, shuffled, type EpisodeNews } from '../lib/home-model'
 import { getLazy, type CatalogHome, type Game, type Title } from '../lib/lazy-api'
-import { YT_ORIGIN, nextTitleId, playerCommand, playerEvent, titleFocus, titlePress, trailerEmbedUrl } from '../lib/trailer'
+import { YT_ORIGIN, nextTitleId, playerCommand, playerEvent, previewStep, titleFocus, trailerEmbedUrl } from '../lib/trailer'
 import type { Sounds } from '../hooks/useSounds'
 
 type Props = { pinned: string[]; sounds: Sounds; onActivate: (card: Card) => void; onOpenSettings: () => void }
@@ -167,11 +167,25 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
   }
   // 1º aperto num título: prévia. 2º aperto no mesmo: abre onde assistir.
   const pressTitle = (t: Title) => {
-    if (titlePress(playingRef.current, t.id, previewOn) === 'open') { void watch(t); return }
+    const r = previewStep({ playingId: playingRef.current }, { type: 'press', id: t.id, previewOn })
+    setPlayingId(r.state.playingId)
+    if (r.open) { void watch(t); return }
     setHero(t)
     setMsg('')
-    setPlayingId(t.id)
   }
+  // Botão "Assistir" do destaque: abre e para a prévia
+  const watchHero = () => {
+    setPlayingId(previewStep({ playingId: playingRef.current }, { type: 'watch' }).state.playingId)
+    void watch()
+  }
+  // Laaazy saiu da frente (Edge, jogo, Área de trabalho): a prévia para
+  useEffect(() => {
+    const leave = () => setPlayingId(previewStep({ playingId: playingRef.current }, { type: 'leave' }).state.playingId)
+    const onVisibility = () => { if (document.hidden) leave() }
+    window.addEventListener('blur', leave)
+    document.addEventListener('visibilitychange', onVisibility)
+    return () => { window.removeEventListener('blur', leave); document.removeEventListener('visibilitychange', onVisibility) }
+  }, [])
   const focusTitle = (t: Title) => {
     sounds.hover()
     // Só trava o destaque enquanto a prévia está tocando de verdade (título sem trailer não trava)
@@ -196,7 +210,7 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
             <h1>{hero.title}</h1>
             {hero.overview && <p className="lz-overview">{hero.overview}</p>}
             <div className="lz-actions">
-              <button type="button" className="lz-btn primary" onClick={tap(() => watch())} onMouseEnter={sounds.hover}>▶ {info.primary ? `Assistir na ${info.primary}` : 'Onde assistir'}</button>
+              <button type="button" className="lz-btn primary" onClick={tap(watchHero)} onMouseEnter={sounds.hover}>▶ {info.primary ? `Assistir na ${info.primary}` : 'Onde assistir'}</button>
               {previewOn && <button type="button" className="lz-btn" aria-pressed={sound} onClick={tap(toggleSound)} onMouseEnter={sounds.hover}>{sound ? '🔊 Trailer com som' : '🔇 Trailer sem som'}</button>}
               <button type="button" className="lz-btn" aria-pressed={inList} onClick={tap(toggleList)} onMouseEnter={sounds.hover}>{inList ? '✓ Na Minha lista' : '＋ Minha lista'}</button>
               <button type="button" className="lz-btn" onClick={tap(() => reshuffle())} onMouseEnter={sounds.hover}>↻ Outros títulos</button>

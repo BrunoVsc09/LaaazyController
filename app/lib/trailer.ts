@@ -57,3 +57,18 @@ export function titlePress(previewingId: string | null, id: string, previewOn: b
 // continua nele ('keep'); só um aperto troca. Sem prévia, mostra o título em foco ('show').
 export const titleFocus = (playingId: string | null, id: string): 'show' | 'keep' =>
   playingId && playingId !== id ? 'keep' : 'show'
+
+// Estado da prévia: qual título está tocando. Abrir onde assistir ou o Laaazy sair da frente
+// para a prévia (senão ela seguia tocando, com som, atrás do Edge).
+export type PreviewState = { playingId: string | null }
+export type PreviewEvent =
+  | { type: 'press'; id: string; previewOn: boolean }
+  | { type: 'watch' }
+  | { type: 'leave' }
+
+export function previewStep(state: PreviewState, ev: PreviewEvent): { state: PreviewState; open: boolean } {
+  if (ev.type === 'leave') return { state: { playingId: null }, open: false }
+  if (ev.type === 'watch' || titlePress(state.playingId, ev.id, ev.previewOn) === 'open') return { state: { playingId: null }, open: true }
+  return { state: { playingId: ev.id }, open: false }
+}
+

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { trailerEmbedUrl, homeSections, playerEvent, playerCommand, nextTitleId, YT_ORIGIN, titlePress, titleFocus } from './trailer'
+import { trailerEmbedUrl, homeSections, playerEvent, playerCommand, nextTitleId, YT_ORIGIN, titlePress, titleFocus, previewStep } from './trailer'
 
 describe('trailerEmbedUrl', () => {
   it('player do YouTube sem controles, aceitando comandos e avisando quando acaba (sem repetir)', () => {
@@ -86,5 +86,20 @@ describe('titleFocus: passar por cima (mouse, analógico, D-pad) não cancela a 
   })
   it('voltar ao título que está tocando: segue mostrando ele', () => {
     expect(titleFocus('tv:1', 'tv:1')).toBe('show')
+  })
+})
+
+describe('previewStep: quando a prévia toca e quando para', () => {
+  it('1º aperto: toca a prévia do título', () => {
+    expect(previewStep({ playingId: null }, { type: 'press', id: 'tv:1', previewOn: true })).toEqual({ state: { playingId: 'tv:1' }, open: false })
+  })
+  it('2º aperto: abre onde assistir e PARA a prévia (não fica tocando atrás do Edge)', () => {
+    expect(previewStep({ playingId: 'tv:1' }, { type: 'press', id: 'tv:1', previewOn: true })).toEqual({ state: { playingId: null }, open: true })
+  })
+  it('Laaazy saiu da frente (Edge, jogo, Área de trabalho): para a prévia', () => {
+    expect(previewStep({ playingId: 'tv:1' }, { type: 'leave' })).toEqual({ state: { playingId: null }, open: false })
+  })
+  it('botão "Assistir" do destaque: abre e para a prévia', () => {
+    expect(previewStep({ playingId: 'tv:1' }, { type: 'watch' })).toEqual({ state: { playingId: null }, open: true })
   })
 })

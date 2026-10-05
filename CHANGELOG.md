@@ -33,6 +33,8 @@
   fica com a busca normal e o Explorar sem digitar.
 
 ### Corrigido
+- **Trailer tocando atrás do Edge:** apertar 2x (ou "Assistir") abre o streaming e para a
+  prévia; o Laaazy sair da frente (Edge, jogo, Área de trabalho) também para.
 - **X do controle no perfil PC:** o DS4Windows transforma o X em clique do mouse, e o
   Laaazy também lia o X — um aperto virava dois cliques (liga/desliga voltava ao que era,
   título abria direto). Agora, usando o controle, só o X aperta o item com a borda (cliques
