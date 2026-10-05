@@ -21,3 +21,37 @@ dist/
 # Gerados por scripts/build-preloads.js
 electron/preload.js
 electron/stream-preload.js
+
+# Segredos: nunca versionar (o Laaazy guarda as chaves criptografadas em %APPDATA%\Laaazy)
+.env
+.env.*
+!.env.example
+secrets.json
+*.pem
+*.key
+*.pfx
+*.p12
+credentials*.json
+service-account*.json
+
+# Dados do usuário que o Laaazy grava (caso alguém copie a pasta de dados para cá)
+settings.json
+ds4-profiles.json
+catalog-cache.json
+yt-trailers.json
+yt-usage.json
+ai-usage.json
+covers.json
+recent.json
+
+# Sistema, editores e logs
+Thumbs.db
+desktop.ini
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+coverage/
+
