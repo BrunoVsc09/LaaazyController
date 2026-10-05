@@ -38,6 +38,7 @@ function registerIpc(ipcMain, h) {
   handle(C.CATALOG_HOME, (opts) => h.catalog.home({ fresh: !!(opts && opts.fresh) }))
   handle(C.CATALOG_TRAILER, (id) => (isText(id) ? h.catalog.trailer(id) : null))
   handle(C.CATALOG_SEARCH, (q) => (isText(q) ? h.catalog.search(q) : { ok: false, items: [], msg: 'Busca inválida.' }))
+  handle(C.CATALOG_EXPLORE, (sel) => (sel && typeof sel === 'object' && !Array.isArray(sel) ? h.catalog.explore(sel) : { ok: false, items: [], msg: 'Escolha inválida.' }))
   handle(C.OSK_SUBMIT, (text) => (isText(text) ? h.textEntry.submit(text) : false))
   handle(C.OSK_CANCEL, () => h.textEntry.cancel())
   handle(C.CLIPBOARD_READ, () => h.readClipboard())

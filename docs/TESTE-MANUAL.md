@@ -152,3 +152,10 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Campo de senha: 🙈 Ocultar mostra bolinhas no teclado; a senha é digitada certinha
 - [ ] Texto com acento (ç, ã, é) sai certo; o que estava copiado antes continua copiado depois
 - [ ] O cancela sem digitar nada
+
+## Explorar sem digitar (Busca)
+- [ ] Busca → Explorar sem digitar: escolher Tipo, Categoria, Duração e Ordenar só com o controle
+- [ ] Os resultados mudam a cada escolha e são só dos seus serviços
+- [ ] Categoria Terror com Tipo Tudo: só filmes (o TMDB não tem terror para séries)
+- [ ] Mais recentes: nenhum título que ainda vai lançar
+- [ ] X num título abre no serviço onde ele está

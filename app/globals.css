@@ -277,3 +277,10 @@ button { font: inherit; }
 .kb-bar span { opacity: .75; flex: 1; }
 .kb-bar button:focus-visible { outline: 3px solid #ffd23f; outline-offset: 2px; }
 .kb-overlay .osk { position: static; transform: none; width: auto; margin: 0 24px 24px; box-shadow: none; }
+/* Explorar sem digitar (Busca) */
+.lz-explore { display: flex; flex-direction: column; gap: 14px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,.15); }
+.lz-explore h2 { font-size: 24px; font-weight: 400; margin: 0; }
+.lz-explore h3 { font-size: 16px; font-weight: 400; color: #b7d3ff; margin: 0 0 6px; }
+.lz-chip { flex: 0 0 auto; padding: 10px 18px; border-radius: 999px; border: 0; background: rgba(255,255,255,.12); color: #fff; font-size: 16px; cursor: pointer; }
+.lz-chip.on { background: #ffd23f; color: #111; font-weight: 700; }
+.lz-chip:focus-visible { outline: 3px solid #ffd23f; outline-offset: 3px; }

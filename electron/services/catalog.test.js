@@ -198,3 +198,39 @@ describe('catalog.episodes', () => {
     expect(await catalog.episodes([serie('tv:1')])).toEqual([])
   })
 })
+
+describe('catalog.explore (sem digitar)', () => {
+  function withExplore(results, opts) {
+    const m = make(opts)
+    m.tmdb.discoverWith = vi.fn(async (_k, kind) => results[kind] || [])
+    return m
+  }
+  it('filmes e séries dos seus serviços, populares primeiro', async () => {
+    const { catalog, tmdb } = withExplore({
+      movie: [{ id: 1, title: 'F1', popularity: 5, release_date: '2020-01-01' }],
+      tv: [{ id: 2, name: 'S2', popularity: 9, first_air_date: '2021-01-01' }],
+    })
+    const r = await catalog.explore({ sort: 'popular' })
+    expect(r.ok).toBe(true)
+    expect(r.items.map((x) => x.title)).toEqual(['S2', 'F1'])
+    expect(tmdb.discoverWith.mock.calls[0][2].with_watch_providers).toBe('8|119')
+  })
+  it('mais recentes: ordena pela data de lançamento', async () => {
+    const { catalog } = withExplore({
+      movie: [{ id: 1, title: 'Velho', popularity: 99, release_date: '2010-01-01' }],
+      tv: [{ id: 2, name: 'Novo', popularity: 1, first_air_date: '2026-09-01' }],
+    })
+    expect((await catalog.explore({ sort: 'recent' })).items.map((x) => x.title)).toEqual(['Novo', 'Velho'])
+  })
+  it('categoria só de filmes não busca séries', async () => {
+    const { catalog, tmdb } = withExplore({ movie: [] })
+    await catalog.explore({ genre: 'terror' })
+    expect(tmdb.discoverWith.mock.calls.map((c) => c[1])).toEqual(['movie'])
+  })
+  it('sem chave avisa; erro vira mensagem', async () => {
+    expect(await withExplore({}, { key: '' }).catalog.explore({})).toMatchObject({ ok: false, configured: false, items: [] })
+    const { catalog, tmdb } = withExplore({})
+    tmdb.discoverWith.mockRejectedValue(new Error('offline'))
+    expect((await catalog.explore({})).msg).toMatch(/Não consegui buscar/)
+  })
+})

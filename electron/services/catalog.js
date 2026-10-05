@@ -1,8 +1,9 @@
 // Filmes e séries em alta nos serviços do usuário (fonte: TMDB), com cache de 6 horas.
-const { resolveProviders, mergeLists, searchItems, servicesFrom, pickTrailer, parseItemId } = require('../core/catalog')
+const { resolveProviders, mergeLists, searchItems, servicesFrom, pickTrailer, parseItemId, toItem } = require('../core/catalog')
 
 const { episodeNews } = require('../core/episodes')
 const { cleanKey } = require('../core/keys')
+const explorer = require('../core/explore')
 
 const CACHE_MS = 6 * 3600 * 1000
 const CACHE_VERSION = 2
@@ -124,7 +125,30 @@ function createCatalog({ tmdb, secrets, readCache, writeCache, now = Date.now })
     return out
   }
 
-  return { status, setKey, clearKey, home, trailer, search, where, episodes }
+  // Explorar sem digitar: tipo, categoria, duração e ordem, só nos serviços do usuário
+  async function explore(raw) {
+    const key = token()
+    if (!key) return { ok: false, configured: false, items: [], msg: 'Configure a chave do TMDB em Configurações para explorar.' }
+    const sel = explorer.toSelection(raw)
+    try {
+      const found = []
+      for (const kind of explorer.kindsFor(sel)) {
+        const pids = Object.values(resolveProviders(await tmdb.providers(key, kind)))
+        const params = explorer.exploreParams(sel, kind, pids, today())
+        if (!params) continue
+        for (const r of await tmdb.discoverWith(key, kind, params)) {
+          const item = toItem(r, kind)
+          if (item) found.push({ item, date: r.release_date || r.first_air_date || '', rating: r.vote_average || 0 })
+        }
+      }
+      const by = { recent: (a, b) => b.date.localeCompare(a.date), rated: (a, b) => b.rating - a.rating, popular: (a, b) => b.item.popularity - a.item.popularity }
+      return { ok: true, configured: true, items: found.sort(by[sel.sort]).slice(0, 40).map((f) => f.item) }
+    } catch (e) {
+      return { ok: false, configured: true, items: [], msg: 'Não consegui buscar no TMDB: ' + e.message }
+    }
+  }
+
+  return { status, setKey, clearKey, home, trailer, search, where, episodes, explore }
 }
 
 module.exports = { createCatalog }

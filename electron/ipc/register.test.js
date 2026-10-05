@@ -25,6 +25,7 @@ function make() {
       search: vi.fn(async () => ({ ok: true, items: [] })),
       where: vi.fn(async () => []),
       episodes: vi.fn(async () => []),
+      explore: vi.fn(async () => ({ ok: true, items: [] })),
     },
     myList: { get: vi.fn(async () => []), toggle: vi.fn(async () => ({ ok: true, added: true })) },
     recentGames: vi.fn(async () => []),
@@ -93,6 +94,13 @@ describe('registerIpc', () => {
     h.myList.get.mockResolvedValue([{ id: 'tv:1' }])
     await invoke(C.CATALOG_EPISODES)
     expect(h.catalog.episodes).toHaveBeenCalledWith([{ id: 'tv:1' }])
+  })
+  it('explorar: só aceita objeto de escolhas', async () => {
+    const { invoke, h } = make()
+    expect(await invoke(C.CATALOG_EXPLORE, 'terror')).toMatchObject({ ok: false, items: [] })
+    expect(h.catalog.explore).not.toHaveBeenCalled()
+    await invoke(C.CATALOG_EXPLORE, { genre: 'terror' })
+    expect(h.catalog.explore).toHaveBeenCalledWith({ genre: 'terror' })
   })
   it('IA: pedido e chave só como texto', async () => {
     const { invoke, h } = make()

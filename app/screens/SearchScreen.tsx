@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import streaming from '../../shared/streaming'
 import AppIcon from '../components/AppIcon'
+import ExplorePanel from '../components/ExplorePanel'
 import { CATALOG, type Card } from '../lib/catalog'
 import { getLazy, type Game, type Title } from '../lib/lazy-api'
 import { searchLocal } from '../lib/search'
@@ -117,6 +118,7 @@ export default function SearchScreen({ sounds, onActivate, onBack }: Props) {
           </div>
         </div>
       )}
+      <ExplorePanel sounds={sounds} onPick={watch} />
       <button type="button" className="lz-btn" onClick={onBack}>‹ Voltar</button>
     </section>
   )
