@@ -45,6 +45,7 @@ const { cleanKey } = require('./core/keys')
 const { EMBED_URLS, refererFor } = require('./core/youtube')
 const { registerIpc } = require('./ipc/register')
 const { registerAppScheme, handleAppProtocol } = require('./window/app-protocol')
+const { allowPermission } = require('./core/security')
 const { createStreamView } = require('./window/stream-view')
 const { createWindowManager } = require('./window/window-manager')
 const C = require('../shared/channels')
@@ -291,6 +292,9 @@ app.whenReady().then(async () => {
     if (referer) d.requestHeaders.Referer = referer
     cb({ requestHeaders: d.requestHeaders })
   })
+  // Sites e a tela só recebem tela cheia e DRM; câmera, microfone, localização etc. ficam negados
+  session.defaultSession.setPermissionRequestHandler((_wc, permission, cb) => cb(allowPermission(permission)))
+  session.defaultSession.setPermissionCheckHandler((_wc, permission) => allowPermission(permission))
   await components.whenReady() // instala o Widevine (DRM)
   handleAppProtocol(OUT)
   windows.create('app://local/index.html')

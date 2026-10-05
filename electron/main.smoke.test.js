@@ -59,7 +59,7 @@ describe('main.js (fumaça)', () => {
   })
 
   it('os canais de leitura respondem (todos os serviços foram ligados)', async () => {
-    const call = (ch, ...a) => handlers.get(ch)({}, ...a)
+    const call = (ch, ...a) => handlers.get(ch)({ senderFrame: { url: 'app://local/' } }, ...a)
     for (const ch of [C.SETTINGS_GET, C.STORE_WARNINGS, C.CATALOG_STATUS, C.COVERS_STATUS, C.AI_STATUS, C.POWER_LOGIN_GET, C.MYLIST_GET, C.DRM_STATUS, C.SYSTEM_USER, C.CLIPBOARD_READ]) {
       await expect(Promise.resolve(call(ch)), ch).resolves.toBeDefined()
     }

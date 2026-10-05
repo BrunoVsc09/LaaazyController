@@ -28,6 +28,11 @@
 - **Edge sem InPrivate:** os streamings abrem em tela cheia com um perfil próprio que
   guarda os logins.
 
+### Segurança
+- Os canais internos só atendem a tela do Laaazy e o teclado por cima; sites de streaming só
+  mandam os comandos do controle. A tela tem política de conteúdo (CSP), não navega para fora
+  e não abre janelas. Câmera, microfone, localização e afins ficam negados.
+
 ### Corrigido
 - **Jogos da Steam que não abriam:** o Laaazy sai da frente ao abrir um jogo (o Windows deixava
   o jogo abrir atrás dele) e volta sozinho quando o jogo fecha, ou depois de 90 s se ele não

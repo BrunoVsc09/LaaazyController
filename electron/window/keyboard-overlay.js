@@ -2,6 +2,7 @@
 // Fica na metade de baixo da tela, sempre por cima, fora da barra de tarefas.
 const { BrowserWindow, screen } = require('electron')
 const C = require('../../shared/channels')
+const { lockWindow } = require('./window-manager')
 
 function createKeyboardOverlay({ preload, url }) {
   let win = null
@@ -17,6 +18,7 @@ function createKeyboardOverlay({ preload, url }) {
     })
     win.setAlwaysOnTop(true, 'screen-saver') // por cima até de programas em tela cheia
     win.removeMenu()
+    lockWindow(win)
     win.loadURL(url)
     return win
   }

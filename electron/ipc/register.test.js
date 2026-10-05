@@ -40,9 +40,11 @@ function make() {
     power: { run: vi.fn(async () => ({ ok: true })), openAtLogin: vi.fn(() => false), setOpenAtLogin: vi.fn() },
   }
   mod.registerIpc(ipcMain, h)
-  const send = (ch, ...a) => on.get(ch)({}, ...a)
-  const invoke = (ch, ...a) => handle.get(ch)({}, ...a)
-  return { h, send, invoke, on, handle }
+  const APP_EVENT = { senderFrame: { url: 'app://local/' } }
+  const send = (ch, ...a) => on.get(ch)(APP_EVENT, ...a)
+  const invoke = (ch, ...a) => handle.get(ch)(APP_EVENT, ...a)
+  const from = (url) => ({ senderFrame: { url } })
+  return { h, send, invoke, on, handle, from }
 }
 
 describe('registerIpc', () => {
@@ -134,6 +136,18 @@ describe('registerIpc', () => {
     const { invoke, h } = make()
     expect(await invoke(C.DESKTOP_ENTER, 'qualquer')).toEqual({ ok: true, msg: '' })
     expect(h.desktop.enter).toHaveBeenCalledWith()
+  })
+  it('blindagem: canal pedido por origem estranha é recusado sem chamar o serviço', async () => {
+    const { h, handle, on, from } = make()
+    expect(await handle.get(C.GAMES_LAUNCH)(from('https://evil.com/'), 'steam:1')).toBeUndefined()
+    expect(await handle.get(C.AI_SET_KEY)(from('https://www.netflix.com/'), 'k')).toBeUndefined()
+    expect(await handle.get(C.SETTINGS_GET)({}, 'x')).toBeUndefined() // sem frame
+    expect(h.library.launch).not.toHaveBeenCalled()
+    expect(h.assistant.setKey).not.toHaveBeenCalled()
+    on.get(C.VOLUME)(from('https://www.netflix.com/'), 'up') // streaming pode usar o volume
+    expect(h.volume.step).toHaveBeenCalledWith('up')
+    on.get(C.QUIT)(from('https://www.netflix.com/'))
+    expect(h.quit).not.toHaveBeenCalled()
   })
   it('volume: só up, down e mute', () => {
     const { send, h } = make()

@@ -1,6 +1,7 @@
 // Liga cada canal IPC ao serviço certo, recusando argumentos de tipo errado.
 const C = require('../../shared/channels')
 const { isWebUrl } = require('../core/routing')
+const { trustedSender } = require('../core/security')
 
 const PLAYER_KEYS = new Set(['Space', 'Left', 'Right'])
 const VOLUME_ACTIONS = new Set(['up', 'down', 'mute'])
@@ -8,8 +9,10 @@ const isText = (v) => typeof v === 'string'
 const str = (v) => (isText(v) ? v : '')
 
 function registerIpc(ipcMain, h) {
-  const on = (ch, fn) => ipcMain.on(ch, (_e, ...args) => fn(...args))
-  const handle = (ch, fn) => ipcMain.handle(ch, (_e, ...args) => fn(...args))
+  // Só a tela do app (e, para os comandos do controle, os sites de streaming) são atendidos
+  const from = (e, ch) => trustedSender(e && e.senderFrame && e.senderFrame.url, ch)
+  const on = (ch, fn) => ipcMain.on(ch, (e, ...args) => { if (from(e, ch)) fn(...args) })
+  const handle = (ch, fn) => ipcMain.handle(ch, (e, ...args) => (from(e, ch) ? fn(...args) : undefined))
 
   on(C.HOME, () => h.goHome())
   on(C.BACK, () => h.back())

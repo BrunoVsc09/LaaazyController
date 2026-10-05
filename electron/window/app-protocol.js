@@ -2,6 +2,7 @@
 const { protocol, net } = require('electron')
 const { pathToFileURL } = require('url')
 const { appFileFor } = require('../core/app-path')
+const { cspHeaderFor } = require('../core/security')
 
 // Precisa ser chamado antes do app ficar pronto
 function registerAppScheme() {
@@ -11,10 +12,15 @@ function registerAppScheme() {
 }
 
 function handleAppProtocol(root) {
-  protocol.handle('app', (req) => {
+  protocol.handle('app', async (req) => {
     const file = appFileFor(new URL(req.url).pathname, root)
     if (!file) return new Response('not found', { status: 404 })
-    return net.fetch(pathToFileURL(file).toString())
+    const res = await net.fetch(pathToFileURL(file).toString())
+    const extra = cspHeaderFor(file)
+    if (!Object.keys(extra).length) return res
+    const headers = new Headers(res.headers)
+    for (const [k, v] of Object.entries(extra)) headers.set(k, v)
+    return new Response(res.body, { status: res.status, headers })
   })
 }
 

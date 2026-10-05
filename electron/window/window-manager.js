@@ -1,6 +1,13 @@
 // Janela principal: tela cheia e "trazer o menu para a frente" (por cima de jogos e do Edge).
 const { BrowserWindow } = require('electron')
 const { hwndFrom } = require('../core/focus')
+const { allowNavigation } = require('../core/security')
+
+// A janela do app não navega para fora dele nem abre janelas novas
+function lockWindow(win) {
+  win.webContents.on('will-navigate', (e, url) => { if (!allowNavigation(url)) e.preventDefault() })
+  win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }))
+}
 
 // forceFocus(hwnd): passa pelo bloqueio de foco do Windows (ver adapters/ps-foreground)
 function createWindowManager({ preload, onFocus, onResize, onClosed, forceFocus = () => {} }) {
@@ -23,6 +30,7 @@ function createWindowManager({ preload, onFocus, onResize, onClosed, forceFocus 
     for (const ev of ['resize', 'enter-full-screen', 'leave-full-screen']) win.on(ev, onResize)
     win.on('closed', () => { win = null; onClosed() })
     win.on('focus', onFocus)
+    lockWindow(win)
     win.loadURL(url)
     return win
   }
@@ -55,4 +63,4 @@ function createWindowManager({ preload, onFocus, onResize, onClosed, forceFocus 
   return { create, get, bringToFront, send }
 }
 
-module.exports = { createWindowManager }
+module.exports = { createWindowManager, lockWindow }
