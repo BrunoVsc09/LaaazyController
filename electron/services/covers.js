@@ -1,6 +1,6 @@
 // Capas do SteamGridDB para jogos da Epic e do PC. Sem chave, a biblioteca fica como está.
 const { applyCovers, toLookup, pickGrid } = require('../core/covers')
-const { cleanKey } = require('../core/keys')
+const { cleanKey, wrongKeyMsg } = require('../core/keys')
 
 const SECRET = 'steamgriddb'
 
@@ -29,6 +29,7 @@ function createCovers({ sgdb, secrets, readCache, writeCache, now = Date.now }) 
   async function setKey(raw) {
     const key = cleanKey(raw)
     if (!key) return { ok: false, msg: 'Cole a chave do SteamGridDB.' }
+    if (wrongKeyMsg(key, 'steamgriddb')) return { ok: false, msg: wrongKeyMsg(key, 'steamgriddb') }
     if (!(await sgdb.ping(key))) return { ok: false, msg: 'O SteamGridDB recusou essa chave.' }
     if (!secrets.set(SECRET, key)) return { ok: false, msg: 'Não consegui guardar a chave com segurança neste PC.' }
     // Esquece os "não achou" antigos: com a chave nova, vale tentar de novo

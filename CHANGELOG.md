@@ -28,6 +28,11 @@
 - **Edge sem InPrivate:** os streamings abrem em tela cheia com um perfil próprio que
   guarda os logins.
 
+### Pequenas melhorias
+- Netflix, Prime Video, HBO Max, YouTube e Spotify usam o perfil **PC** do DS4Windows por
+  padrão (no Edge o controle precisa de mouse). Quem já escolheu outro perfil continua com ele.
+- Colar a chave no campo errado (ex.: a do Gemini no campo do TMDB) agora avisa qual chave é.
+
 ### Segurança
 - Os canais internos só atendem a tela do Laaazy e o teclado por cima; sites de streaming só
   mandam os comandos do controle. A tela tem política de conteúdo (CSP), não navega para fora

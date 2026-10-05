@@ -3,7 +3,7 @@
 const ai = require('../core/ai-filters')
 const aiMood = require('../core/ai-mood')
 const { resolveProviders, toItem, searchItems, parseItemId } = require('../core/catalog')
-const { cleanKey } = require('../core/keys')
+const { cleanKey, wrongKeyMsg } = require('../core/keys')
 
 const LIMIT = 50
 const FALLBACK_MODEL = 'gemini-flash-latest' // reserva quando o modelo escolhido está sobrecarregado
@@ -25,6 +25,7 @@ function createAssistant({ gemini, tmdb, catalog, secrets, model, readUsage, wri
   async function setKey(raw) {
     const key = cleanKey(raw)
     if (!key) return { ok: false, msg: 'Cole a chave do Gemini.' }
+    if (wrongKeyMsg(key, 'gemini')) return { ok: false, msg: wrongKeyMsg(key, 'gemini') }
     if (!(await gemini.ping(key, model()))) return { ok: false, msg: `O Gemini recusou essa chave (ou o modelo ${model()} não está liberado para ela).` }
     if (!secrets.set('gemini', key)) return { ok: false, msg: 'Não consegui guardar a chave com segurança neste PC.' }
     return { ok: true, msg: 'Chave do Gemini salva. Use "Pedir à IA" na busca.' }

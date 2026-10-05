@@ -89,6 +89,12 @@ describe('catalog: chave', () => {
     expect((await catalog.setKey('   ')).ok).toBe(false)
     expect(secrets.set).not.toHaveBeenCalled()
   })
+  it('chave do Gemini colada aqui: avisa sem perguntar ao TMDB', async () => {
+    const { catalog, secrets, tmdb } = make({ key: '' })
+    expect((await catalog.setKey('AIza' + 'x'.repeat(35))).msg).toMatch(/chave do Gemini/)
+    expect(tmdb.ping).not.toHaveBeenCalled()
+    expect(secrets.set).not.toHaveBeenCalled()
+  })
   it('chave recusada pelo TMDB não é salva', async () => {
     const { catalog, secrets } = make({ key: '', pingOk: false })
     expect(await catalog.setKey('ERRADA')).toEqual({ ok: false, msg: 'O TMDB recusou essa chave. Cole a "Chave da API" (32 letras e números) ou o "Token de Leitura da API" (texto longo que começa com eyJ), sem espaços.' })

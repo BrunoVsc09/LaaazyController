@@ -2,7 +2,7 @@
 const { resolveProviders, mergeLists, searchItems, servicesFrom, pickTrailer, parseItemId, toItem } = require('../core/catalog')
 
 const { episodeNews } = require('../core/episodes')
-const { cleanKey } = require('../core/keys')
+const { cleanKey, wrongKeyMsg } = require('../core/keys')
 const explorer = require('../core/explore')
 
 const CACHE_MS = 6 * 3600 * 1000
@@ -24,6 +24,7 @@ function createCatalog({ tmdb, secrets, readCache, writeCache, now = Date.now })
   async function setKey(raw) {
     const key = cleanKey(raw)
     if (!key) return { ok: false, msg: 'Cole a chave do TMDB (API Read Access Token).' }
+    if (wrongKeyMsg(key, 'tmdb')) return { ok: false, msg: wrongKeyMsg(key, 'tmdb') }
     const check = await tmdb.ping(key)
     if (check.reason === 'offline') return { ok: false, msg: `Não consegui falar com o TMDB para testar a chave (${check.detail}). Confira a internet e tente de novo.` }
     if (!check.ok) return { ok: false, msg: 'O TMDB recusou essa chave. Cole a "Chave da API" (32 letras e números) ou o "Token de Leitura da API" (texto longo que começa com eyJ), sem espaços.' }

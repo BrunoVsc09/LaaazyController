@@ -48,6 +48,12 @@ describe('covers.fill', () => {
 })
 
 describe('covers: chave', () => {
+  it('chave do Gemini colada aqui: avisa sem perguntar ao SteamGridDB', async () => {
+    const { covers, secrets, sgdb } = make({ key: '' })
+    expect((await covers.setKey('AIza' + 'x'.repeat(35))).msg).toMatch(/chave do Gemini/)
+    expect(sgdb.ping).not.toHaveBeenCalled()
+    expect(secrets.set).not.toHaveBeenCalled()
+  })
   it('chave recusada não é salva', async () => {
     const { covers, secrets } = make({ key: '', pingOk: false })
     expect((await covers.setKey('X')).ok).toBe(false)
