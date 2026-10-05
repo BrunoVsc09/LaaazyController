@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/assets/banner.svg" alt="Laaazy — seu PC com cara de console" width="100%">
+<img src="docs/assets/laaazy-banner.svg" alt="Laaazy — seu PC com cara de console" width="100%">
 
 <br>
 
@@ -9,7 +9,7 @@
 ![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white)
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
 [![Testes](https://github.com/BrunoVsc09/LaaazyController/actions/workflows/ci.yml/badge.svg)](https://github.com/BrunoVsc09/LaaazyController/actions/workflows/ci.yml)
-![Testes](https://img.shields.io/badge/testes-552%20passando-2ea44f?logo=vitest&logoColor=white)
+![Testes](https://img.shields.io/badge/testes-557%20passando-2ea44f?logo=vitest&logoColor=white)
 ![TDD](https://img.shields.io/badge/feito%20com-TDD-ffd23f)
 ![Licença](https://img.shields.io/badge/licen%C3%A7a-MIT-blue)
 
@@ -18,7 +18,7 @@ numa tela só, com cara de console e controlada inteira pelo **DualShock 4**.
 
 [Recursos](#-recursos) · [Telas](#-telas) · [Controle](#-no-controle) · [Como rodar](#-como-rodar) · [Arquitetura](#-arquitetura) · [Qualidade](#-qualidade)
 
-<sub>🇺🇸 <i>Laaazy is a couch-first media hub for Windows: movies, shows, anime, games and apps in one console-like screen, driven entirely by a PS4 controller. Built test-first (552 tests), hexagonal Electron core, Gemini-powered "more like this", dubbed trailers from YouTube.</i></sub>
+<sub>🇺🇸 <i>Laaazy is a couch-first media hub for Windows: movies, shows, anime, games and apps in one console-like screen, driven entirely by a PS4 controller. Built test-first (557 tests), hexagonal Electron core, Gemini-powered "more like this", dubbed trailers from YouTube.</i></sub>
 
 </div>
 
@@ -111,7 +111,7 @@ pnpm app        # gera a tela e abre o Laaazy
 
 | Comando | O que faz |
 |---|---|
-| `pnpm test` | roda os 552 testes (Vitest) |
+| `pnpm test` | roda os 557 testes (Vitest) |
 | `pnpm dev` | só a tela, no navegador |
 | `pnpm dist` | gera o `.exe` portátil em `dist/` e confere o pacote |
 
@@ -160,7 +160,7 @@ flowchart LR
 
 ## ✅ Qualidade
 
-- **TDD do começo ao fim** — cada recurso nasceu de um teste vermelho: **552 testes** em 64 arquivos
+- **TDD do começo ao fim** — cada recurso nasceu de um teste vermelho: **557 testes** em 65 arquivos
 - **Nenhuma API real nos testes**: TMDB, Gemini, YouTube e Windows entram como *fakes*
 - **Segurança**: chaves criptografadas, IPC só aceita a tela do app, CSP, janela trancada, permissões negadas
 - **Pacote conferido**: `pnpm dist` verifica o `app.asar` (nada de testes, segredos ou `node_modules`)
