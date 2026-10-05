@@ -1,0 +1,11 @@
+name: 💡 Ideia
+description: Sugira um recurso
+labels: [ideia]
+body:
+  - type: textarea
+    id: ideia
+    attributes:
+      label: Qual a ideia?
+      description: O que você quer fazer no sofá que hoje não dá?
+    validations:
+      required: true

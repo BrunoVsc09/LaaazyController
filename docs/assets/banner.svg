@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 400" width="1280" height="400" role="img" aria-label="Laaazy — seu PC vira console">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#062a6e"/>
+      <stop offset="0.55" stop-color="#0b3f9d"/>
+      <stop offset="1" stop-color="#1760b6"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.78" cy="0.35" r="0.55">
+      <stop offset="0" stop-color="#84d3ff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#84d3ff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="wave" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="400" rx="28" fill="url(#bg)"/>
+  <rect width="1280" height="400" rx="28" fill="url(#glow)"/>
+  <!-- ondas no estilo do menu de console -->
+  <path d="M-20 300 C 260 210, 520 360, 820 250 S 1180 170, 1320 230" fill="none" stroke="url(#wave)" stroke-width="3"/>
+  <path d="M-20 330 C 300 250, 560 390, 860 280 S 1200 210, 1320 270" fill="none" stroke="url(#wave)" stroke-width="2" opacity="0.7"/>
+  <path d="M-20 360 C 340 300, 600 410, 900 320 S 1220 260, 1320 310" fill="none" stroke="url(#wave)" stroke-width="1.5" opacity="0.5"/>
+  <!-- partículas -->
+  <g fill="#ffffff">
+    <circle cx="140" cy="70" r="1.6" opacity="0.7"/><circle cx="260" cy="120" r="1.2" opacity="0.5"/>
+    <circle cx="420" cy="60" r="1.4" opacity="0.6"/><circle cx="610" cy="96" r="1" opacity="0.5"/>
+    <circle cx="760" cy="52" r="1.8" opacity="0.7"/><circle cx="930" cy="110" r="1.2" opacity="0.5"/>
+    <circle cx="1080" cy="64" r="1.5" opacity="0.6"/><circle cx="1190" cy="140" r="1.1" opacity="0.5"/>
+    <circle cx="980" cy="330" r="1.4" opacity="0.5"/><circle cx="700" cy="350" r="1.2" opacity="0.4"/>
+  </g>
+  <!-- marca -->
+  <g transform="translate(96 132)">
+    <rect width="88" height="88" rx="18" fill="#ffd23f"/>
+    <text x="44" y="64" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-weight="800" font-size="56" fill="#0b3f9d">L</text>
+  </g>
+  <text x="212" y="196" font-family="Segoe UI, Inter, Arial, sans-serif" font-weight="800" font-size="84" fill="#ffffff" letter-spacing="-1">Laaazy</text>
+  <text x="216" y="244" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="25" fill="#dbe7ff">Seu PC com cara de console — no sofá, só com o controle.</text>
+  <!-- botões do controle -->
+  <g font-family="Segoe UI Symbol, Arial, sans-serif" font-size="30" text-anchor="middle" font-weight="700">
+    <g transform="translate(1150 200) scale(0.86)">
+      <circle cx="0" cy="-62" r="30" fill="#0a2f78" stroke="#84d3ff" stroke-opacity="0.6" stroke-width="2"/>
+      <text x="0" y="-52" fill="#5ee6b8">△</text>
+      <circle cx="62" cy="0" r="30" fill="#0a2f78" stroke="#84d3ff" stroke-opacity="0.6" stroke-width="2"/>
+      <text x="62" y="10" fill="#ff6b8b">○</text>
+      <circle cx="0" cy="62" r="30" fill="#0a2f78" stroke="#84d3ff" stroke-opacity="0.6" stroke-width="2"/>
+      <text x="0" y="72" fill="#8fb8ff">✕</text>
+      <circle cx="-62" cy="0" r="30" fill="#0a2f78" stroke="#84d3ff" stroke-opacity="0.6" stroke-width="2"/>
+      <text x="-62" y="10" fill="#f6a5ff">□</text>
+    </g>
+  </g>
+  <!-- chips -->
+  <g font-family="Segoe UI, Inter, Arial, sans-serif" font-size="17" fill="#ffffff">
+    <rect x="216" y="280" width="158" height="38" rx="19" fill="#ffffff" fill-opacity="0.14"/>
+    <text x="295" y="305" text-anchor="middle">🎬 Filmes e séries</text>
+    <rect x="386" y="280" width="104" height="38" rx="19" fill="#ffffff" fill-opacity="0.14"/>
+    <text x="438" y="305" text-anchor="middle">🎮 Jogos</text>
+    <rect x="502" y="280" width="140" height="38" rx="19" fill="#ffffff" fill-opacity="0.14"/>
+    <text x="572" y="305" text-anchor="middle">✨ IA Gemini</text>
+    <rect x="654" y="280" width="172" height="38" rx="19" fill="#ffffff" fill-opacity="0.14"/>
+    <text x="740" y="305" text-anchor="middle">🇧🇷 Trailer dublado</text>
+  </g>
+</svg>

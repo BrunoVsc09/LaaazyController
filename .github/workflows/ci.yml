@@ -1,0 +1,28 @@
+name: Testes
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+
+jobs:
+  testes:
+    name: Testes e build da tela (Windows)
+    runs-on: windows-latest
+    env:
+      # Os testes não abrem o Electron: não precisa baixar o binário
+      ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Testes (Vitest)
+        run: pnpm test
+      - name: Preloads e tela (Next.js)
+        run: |
+          pnpm preloads
+          pnpm build

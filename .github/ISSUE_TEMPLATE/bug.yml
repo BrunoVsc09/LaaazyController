@@ -1,0 +1,29 @@
+name: 🐞 Algo deu errado
+description: Conte o que aconteceu para a gente corrigir
+labels: [bug]
+body:
+  - type: textarea
+    id: oque
+    attributes:
+      label: O que aconteceu?
+      description: O que você fez, o que esperava e o que aconteceu. Fotos ajudam.
+    validations:
+      required: true
+  - type: dropdown
+    id: onde
+    attributes:
+      label: Onde?
+      options: [Início, Biblioteca, Busca, Apps, Configurações, Perfis do controle, Teclado por cima do Edge, Botão PS, Outro]
+  - type: input
+    id: perfil
+    attributes:
+      label: Perfil do DS4Windows na hora
+      placeholder: ex.: PC, Brunera, não uso
+  - type: input
+    id: versao
+    attributes:
+      label: Versão do Laaazy e do Windows
+      placeholder: ex.: 3.2.0 · Windows 11
+  - type: markdown
+    attributes:
+      value: "⚠️ **Nunca cole chaves de API** (TMDB, Gemini, YouTube, SteamGridDB) aqui."
