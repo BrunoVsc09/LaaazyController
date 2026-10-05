@@ -21,9 +21,10 @@ const BACK: Hint = { ...HINT_ICONS.circle, label: 'Voltar' }
 const SEARCH: Hint = { ...HINT_ICONS.square, label: 'Buscar' }
 const PROFILE: Hint = { ...HINT_ICONS.triangle, label: 'Perfil do controle' }
 const SIMILAR: Hint = { ...HINT_ICONS.triangle, label: 'Parecidos' }
+const PREVIEW: Hint = { ...HINT_ICONS.cross, label: 'Prévia · 2x assistir' }
 
 const BY_SCREEN: Record<Screen, Hint[]> = {
-  home: [CONFIRM, SEARCH, SIMILAR],
+  home: [PREVIEW, SEARCH, SIMILAR],
   library: [CONFIRM, BACK, SEARCH, PROFILE],
   apps: [CONFIRM, BACK, SEARCH],
   search: [CONFIRM, BACK],

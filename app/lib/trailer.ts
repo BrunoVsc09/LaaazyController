@@ -1,6 +1,5 @@
 // Prévia do trailer no destaque do Início: endereço do player, conversa com ele
 // (API de mensagens do YouTube) e para qual título ir quando o trailer acaba.
-export const PREVIEW_DELAY_MS = 1200 // parado no título por esse tempo antes de tocar
 export const YT_ORIGIN = 'https://www.youtube-nocookie.com'
 
 const KEY = /^[\w-]{6,20}$/
@@ -46,3 +45,10 @@ export function nextTitleId(rows: { items: { id: string }[] }[], currentId: stri
 
 // Filmes e séries primeiro (logo abaixo do destaque); jogos e apps depois
 export const homeSections = () => ['hero', 'titles', 'recent', 'apps'] as const
+
+// Aperto (X ou clique) num título do Início: 1º aperto mostra a prévia; 2º aperto no mesmo
+// título abre onde assistir. Com a prévia desligada, o aperto já abre.
+export function titlePress(previewingId: string | null, id: string, previewOn: boolean): 'preview' | 'open' {
+  if (!previewOn || previewingId === id) return 'open'
+  return 'preview'
+}

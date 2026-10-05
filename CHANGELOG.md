@@ -2,6 +2,12 @@
 
 ## Próxima versão (ainda não lançada)
 
+### Mudou
+- **Prévia do trailer só quando você aperta:** no Início, parar num título só mostra as
+  informações dele. 1º aperto (X ou clique) toca a prévia; 2º aperto no mesmo título abre
+  onde assistir. Ir para outro título para a prévia. Quando uma prévia que você pediu
+  acaba, a do próximo título começa. Com a prévia desligada, o 1º aperto já abre.
+
 ### Removido
 - **"Pedir à IA" da Busca.** O Gemini continua no "Parecido com este" (△ no Início); a Busca
   fica com a busca normal e o Explorar sem digitar.

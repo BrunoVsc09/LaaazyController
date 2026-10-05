@@ -6,7 +6,7 @@ import AppIcon from '../components/AppIcon'
 import { CATALOG, type Card } from '../lib/catalog'
 import { buildRows, heroInfo, pinnedCards, shuffled, type EpisodeNews } from '../lib/home-model'
 import { getLazy, type CatalogHome, type Game, type Title } from '../lib/lazy-api'
-import { PREVIEW_DELAY_MS, YT_ORIGIN, nextTitleId, playerCommand, playerEvent, trailerEmbedUrl } from '../lib/trailer'
+import { YT_ORIGIN, nextTitleId, playerCommand, playerEvent, titlePress, trailerEmbedUrl } from '../lib/trailer'
 import type { Sounds } from '../hooks/useSounds'
 
 type Props = { pinned: string[]; sounds: Sounds; onActivate: (card: Card) => void; onOpenSettings: () => void }
@@ -65,21 +65,26 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
     setTrailerLabel(t?.label ? `Trailer ${t.label}` : '')
   }
   const trailerIndex = useRef(0)
+  // Título cuja prévia foi pedida (1º aperto). Mover o foco para outro título para a prévia.
+  const [playingId, setPlayingId] = useState<string | null>(null)
+  const playingRef = useRef<string | null>(null)
+  playingRef.current = playingId
   useEffect(() => {
     setPreview(null)
     setTrailerLabel('')
     trailers.current = []
-    if (!lazy || !hero || !previewOn) return
+    if (!lazy || !hero || !previewOn || playingId !== hero.id) return
     const id = hero.id
-    const t = window.setTimeout(async () => {
-      const list = await lazy.catalog.trailer(id, { title: hero.title, year: hero.year })
-      if (heroId.current !== id) return
+    let alive = true
+    lazy.catalog.trailer(id, { title: hero.title, year: hero.year }).then((list) => {
+      if (!alive || heroId.current !== id) return
       trailers.current = list
       trailerIndex.current = 0
       playTrailer(0)
-    }, PREVIEW_DELAY_MS)
-    return () => window.clearTimeout(t)
-  }, [hero?.id, previewOn]) // eslint-disable-line react-hooks/exhaustive-deps
+      if (!list.length) setMsg('Sem trailer para este título. Aperte de novo para assistir.')
+    })
+    return () => { alive = false }
+  }, [playingId, previewOn]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const rows = data ? buildRows({ ...mix, myList, news }) : []
   useEffect(() => { if (!hero && rows[0]?.items[0]) setHero(rows[0].items[0]) }, [rows.length]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -122,7 +127,9 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
       if (!next) return
       const card = document.querySelector<HTMLElement>(`.lz-title[data-id="${CSS.escape(next.id)}"]`)
       if (card && document.activeElement?.classList.contains('lz-title')) { card.focus(); card.scrollIntoView({ block: 'nearest', inline: 'nearest' }) }
-      else setHero(next)
+      // A prévia foi pedida por você: ao acabar, segue tocando a do próximo título
+      setHero(next)
+      setPlayingId(next.id)
     }
     window.addEventListener('message', onMessage)
     return () => window.removeEventListener('message', onMessage)
@@ -149,12 +156,25 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
   const info = hero ? heroInfo(hero) : null
 
   // Título salvo pela busca não tem serviço: pergunta ao TMDB onde ele está
-  const watch = async () => {
-    if (!lazy || !hero) return
-    const service = info?.primary ?? (await lazy.catalog.where(hero.id))[0]
+  const watch = async (t: Title | null = hero) => {
+    if (!lazy || !t) return
+    const service = heroInfo(t).primary ?? (await lazy.catalog.where(t.id))[0]
     const url = service && urlOf(service)
-    if (!url) { setMsg(`"${hero.title}" não está nos seus serviços de streaming no Brasil.`); return }
+    if (!url) { setMsg(`"${t.title}" não está nos seus serviços de streaming no Brasil.`); return }
     setMsg((await lazy.open(url, service)) || '')
+  }
+  // 1º aperto num título: prévia. 2º aperto no mesmo: abre onde assistir.
+  const pressTitle = (t: Title) => {
+    if (titlePress(playingRef.current, t.id, previewOn) === 'open') { void watch(t); return }
+    setHero(t)
+    setMsg('')
+    setPlayingId(t.id)
+  }
+  const focusTitle = (t: Title) => {
+    setHero(t)
+    setMsg('')
+    if (playingRef.current !== t.id) setPlayingId(null)
+    sounds.hover()
   }
   const tap = (fn: () => void) => () => { sounds.click(); fn() }
   // Controle vira mouse e o Laaazy sai da frente; o PS traz de volta
@@ -172,7 +192,7 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
             <h1>{hero.title}</h1>
             {hero.overview && <p className="lz-overview">{hero.overview}</p>}
             <div className="lz-actions">
-              <button type="button" className="lz-btn primary" onClick={tap(watch)} onMouseEnter={sounds.hover}>▶ {info.primary ? `Assistir na ${info.primary}` : 'Onde assistir'}</button>
+              <button type="button" className="lz-btn primary" onClick={tap(() => watch())} onMouseEnter={sounds.hover}>▶ {info.primary ? `Assistir na ${info.primary}` : 'Onde assistir'}</button>
               {previewOn && <button type="button" className="lz-btn" aria-pressed={sound} onClick={tap(toggleSound)} onMouseEnter={sounds.hover}>{sound ? '🔊 Trailer com som' : '🔇 Trailer sem som'}</button>}
               <button type="button" className="lz-btn" aria-pressed={inList} onClick={tap(toggleList)} onMouseEnter={sounds.hover}>{inList ? '✓ Na Minha lista' : '＋ Minha lista'}</button>
               <button type="button" className="lz-btn" onClick={tap(() => reshuffle())} onMouseEnter={sounds.hover}>↻ Outros títulos</button>
@@ -203,7 +223,7 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
           <div className="lz-strip">
             {similar.items.map((t) => (
               <button key={t.id} type="button" className="lz-title" data-id={t.id} style={bg(t)} aria-label={`${t.title} (${t.kind})`}
-                onFocus={() => { setHero(t); setMsg(''); sounds.hover() }} onClick={tap(watch)}>
+                onFocus={() => focusTitle(t)} onClick={tap(() => pressTitle(t))}>
                 <span>{t.title}</span>
               </button>
             ))}
@@ -217,7 +237,7 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
           <div className="lz-strip">
             {row.items.map((t) => (
               <button key={t.id} type="button" className="lz-title" data-id={t.id} style={bg(t)} aria-label={`${t.title} (${t.kind})`}
-                onFocus={() => { setHero(t); setMsg(''); sounds.hover() }} onClick={tap(watch)}>
+                onFocus={() => focusTitle(t)} onClick={tap(() => pressTitle(t))}>
                 {row.badges?.[t.id] && <em className="lz-badge">{row.badges[t.id]}</em>}
                 <span>{t.title}</span>
               </button>

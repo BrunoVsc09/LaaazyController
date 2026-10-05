@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { trailerEmbedUrl, homeSections, PREVIEW_DELAY_MS, playerEvent, playerCommand, nextTitleId, YT_ORIGIN } from './trailer'
+import { trailerEmbedUrl, homeSections, playerEvent, playerCommand, nextTitleId, YT_ORIGIN, titlePress } from './trailer'
 
 describe('trailerEmbedUrl', () => {
   it('player do YouTube sem controles, aceitando comandos e avisando quando acaba (sem repetir)', () => {
@@ -20,9 +20,6 @@ describe('trailerEmbedUrl', () => {
     expect(trailerEmbedUrl('../../x')).toBeNull()
     expect(trailerEmbedUrl('')).toBeNull()
     expect(trailerEmbedUrl(null)).toBeNull()
-  })
-  it('espera um pouco parado no título antes de tocar', () => {
-    expect(PREVIEW_DELAY_MS).toBeGreaterThanOrEqual(800)
   })
 })
 
@@ -62,5 +59,20 @@ describe('nextTitleId (passar para o próximo quando o trailer acaba)', () => {
 describe('homeSections (ordem do Início)', () => {
   it('filmes e séries logo abaixo do destaque; jogos e apps depois', () => {
     expect(homeSections()).toEqual(['hero', 'titles', 'recent', 'apps'])
+  })
+})
+
+describe('titlePress: o trailer só toca quando você aperta', () => {
+  it('1º aperto num título: mostra a prévia', () => {
+    expect(titlePress(null, 'tv:1', true)).toBe('preview')
+  })
+  it('2º aperto no mesmo título (prévia já dele): abre onde assistir', () => {
+    expect(titlePress('tv:1', 'tv:1', true)).toBe('open')
+  })
+  it('aperto em outro título enquanto a prévia de um toca: troca a prévia', () => {
+    expect(titlePress('tv:1', 'movie:2', true)).toBe('preview')
+  })
+  it('prévia desligada em Configurações: o aperto já abre onde assistir', () => {
+    expect(titlePress(null, 'tv:1', false)).toBe('open')
   })
 })

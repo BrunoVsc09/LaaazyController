@@ -200,3 +200,8 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Início: em filmes populares aparece o selo "🇧🇷 Trailer dublado" ou "legendado" na prévia.
 - [ ] Voltar ao mesmo título: mesma prévia, e o "Restam N de 90" não cai de novo.
 
+## Prévia só quando apertar
+- [ ] Abrir o Início e andar pelos títulos: nenhum trailer toca sozinho.
+- [ ] X num título: a prévia toca. X de novo no mesmo: abre o streaming.
+- [ ] Com a prévia tocando, ir para outro título: a prévia para.
+
