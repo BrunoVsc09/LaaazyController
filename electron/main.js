@@ -96,6 +96,12 @@ const windows = createWindowManager({
   onFocus: () => { desktop.leave(); if (externalActive) { externalActive = false; if (!closeDs4OnMenu()) ds4.applyFor('menu') } },
 })
 
+// Tira o Laaazy da frente (jogo aberto ou Área de trabalho); bringToFront traz de volta
+function hideLaaazy() {
+  const w = windows.get()
+  if (w) { w.setAlwaysOnTop(false); w.minimize() }
+}
+
 // ---- Serviços ----
 const settings = createSettings({
   read: () => store.readJsonSync(userFile('settings.json'), {}),
@@ -134,6 +140,9 @@ const library = createLibrary({
   onLaunch: (id) => { ds4.ensureRunning(); ds4.applyForGame(id); returnWatch.start() },
   // Continuar jogando: guarda o jogo aberto na frente da lista
   onLaunched: async (id) => {
+    // O Laaazy sai da frente: em tela cheia e com foco, o Windows deixava o jogo abrir atrás dele.
+    // A volta automática (ou o PS) traz o Laaazy de volta quando o jogo fecha ou não aparece.
+    setTimeout(hideLaaazy, 1500)
     const ids = await store.readJson(userFile('recent.json'), [])
     await store.writeJson(userFile('recent.json'), pushRecent(ids, id))
   },
@@ -256,7 +265,7 @@ const returnWatch = createReturnWatch({
 setInterval(() => returnWatch.tick(), 1500).unref()
 
 // Botão "Área de trabalho" do Início
-const desktop = createDesktop({ ds4, returnWatch, minimize: () => { const w = windows.get(); if (w) { w.setAlwaysOnTop(false); w.minimize() } } })
+const desktop = createDesktop({ ds4, returnWatch, minimize: hideLaaazy })
 
 registerIpc(ipcMain, {
   launcher, locator, settings, ds4, library: libraryWithCovers, catalog, myList, power, covers, volume, assistant, psButton, textEntry, goHome, desktop,

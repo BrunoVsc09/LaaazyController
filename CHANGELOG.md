@@ -28,6 +28,11 @@
 - **Edge sem InPrivate:** os streamings abrem em tela cheia com um perfil próprio que
   guarda os logins.
 
+### Corrigido
+- **Jogos da Steam que não abriam:** o Laaazy sai da frente ao abrir um jogo (o Windows deixava
+  o jogo abrir atrás dele) e volta sozinho quando o jogo fecha, ou depois de 90 s se ele não
+  aparecer. Jogos baixando ou com instalação incompleta não aparecem mais na Biblioteca.
+
 ## 3.1.0 — 2026-10-04
 
 ### Novo

@@ -22,6 +22,13 @@ describe('steam', () => {
     expect(steam.parseAppManifest('"appid" "1" "name" "Proton 8.0"')).toBeNull()
     expect(steam.parseAppManifest('"name" "Sem id"')).toBeNull()
   })
+  it('jogo baixando ou com instalação incompleta (StateFlags sem o bit 4) não aparece: a Steam não abre', () => {
+    const acf = (flags) => `"appid" "620" "name" "Portal 2" "StateFlags" "${flags}"`
+    expect(steam.parseAppManifest(acf(4))).not.toBeNull() // instalado
+    expect(steam.parseAppManifest(acf(6))).not.toBeNull() // instalado, pede atualização (a Steam atualiza ao abrir)
+    expect(steam.parseAppManifest(acf(1026))).toBeNull() // baixando
+    expect(steam.parseAppManifest(acf(2))).toBeNull()
+  })
   it('isManifestFile', () => {
     expect(steam.isManifestFile('appmanifest_620.acf')).toBe(true)
     expect(steam.isManifestFile('appmanifest_620.acf.tmp')).toBe(false)

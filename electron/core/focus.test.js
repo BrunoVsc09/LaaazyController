@@ -43,9 +43,9 @@ describe('watchStep (volta automática ao Laaazy)', () => {
     r = mod.watchStep(r.state, fg('Laaazy', 11), ctx, 2 * S)
     expect(r.action).toBe('return')
   })
-  it('se nada externo aparece em 90 segundos, desiste', () => {
+  it('se o jogo não aparece em 90 segundos, desiste e traz o Laaazy de volta (ele foi minimizado ao abrir o jogo)', () => {
     const r = mod.watchStep(mod.startWatch(0), fg('steam'), ctx, 91 * S)
-    expect(r).toEqual({ state: { phase: 'idle' }, action: null })
+    expect(r).toEqual({ state: { phase: 'idle' }, action: 'return' })
   })
   it('parado: não faz nada', () => {
     expect(mod.watchStep({ phase: 'idle' }, fg('explorer'), ctx, 0)).toEqual({ state: { phase: 'idle' }, action: null })

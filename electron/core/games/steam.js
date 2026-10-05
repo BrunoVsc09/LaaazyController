@@ -10,6 +10,9 @@ function parseAppManifest(acf) {
   const id = (acf.match(/"appid"\s+"(\d+)"/) || [])[1]
   const name = (acf.match(/"name"\s+"([^"]+)"/) || [])[1]
   if (!id || !name || SKIP.test(name)) return null
+  // StateFlags bit 4 = instalado por completo; sem ele (baixando, instalação parada) a Steam não abre
+  const flags = (acf.match(/"StateFlags"\s+"(\d+)"/) || [])[1]
+  if (flags !== undefined && (Number(flags) & 4) === 0) return null
   return {
     id: 'steam:' + id, name, platform: 'Steam',
     launch: { type: 'url', value: 'steam://rungameid/' + id },
