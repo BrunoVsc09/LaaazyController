@@ -159,3 +159,10 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Categoria Terror com Tipo Tudo: só filmes (o TMDB não tem terror para séries)
 - [ ] Mais recentes: nenhum título que ainda vai lançar
 - [ ] X num título abre no serviço onde ele está
+
+## Escolher jogo/pasta com o controle
+- [ ] Biblioteca → Adicionar jogo: abre o navegador do Laaazy com Downloads, Área de trabalho, Arquivos de Programas e os discos
+- [ ] D-pad anda; X entra na pasta; "‹ Pasta de cima" volta; O fecha
+- [ ] Só aparecem pastas e jogos (.exe / .lnk); X num jogo adiciona e mostra "<nome> adicionado"
+- [ ] Adicionar pasta: "✓ Escolher esta pasta" acha os jogos de dentro
+- [ ] "Janela do Windows (mouse)" ainda abre a janela antiga

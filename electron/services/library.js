@@ -1,6 +1,7 @@
 // Biblioteca: lista (Steam + Epic + adicionados à mão), abre, adiciona e remove jogos.
 const { mergeGames } = require('../core/games/merge')
 const { customGame } = require('../core/games/folder')
+const { isGameFile, isBrowsable } = require('../core/fs-browse')
 
 const CACHE_MS = 15000
 const GAME_URL = /^(steam|com\.epicgames\.launcher):\/\//
@@ -72,9 +73,23 @@ function createLibrary({
     return { ok: true, added, msg: added ? '' : 'Esse jogo já estava na lista.' }
   }
 
+  // Pelo navegador de pastas do Laaazy (controle): caminho já escolhido na tela
+  async function addExePath(exe) {
+    if (!isBrowsable(exe) || !isGameFile(exe) || !exists(exe)) return { ok: false, added: 0, msg: 'Escolha um arquivo .exe ou atalho (.lnk) que exista.' }
+    const g = customGame(exe)
+    const { added, ok } = await addCustom([{ exe }])
+    if (!ok) return { ok: false, added: 0, msg: SAVE_FAILED }
+    return { ok: true, added, msg: added ? `"${g.name}" adicionado.` : 'Esse jogo já estava na lista.' }
+  }
+
   async function addFolder() {
     const dir = await chooseDir()
     if (!dir) return { ok: true, added: 0, msg: '' }
+    return addFolderPath(dir)
+  }
+
+  async function addFolderPath(dir) {
+    if (!isBrowsable(dir)) return { ok: false, added: 0, msg: 'Pasta inválida.' }
     const found = await scanFolder(dir)
     if (!found.length) return { ok: true, added: 0, msg: 'Não achei nenhum jogo nessa pasta.' }
     const { added, ok } = await addCustom(found)
@@ -88,7 +103,7 @@ function createLibrary({
     return { ok, msg: ok ? '' : SAVE_FAILED }
   }
 
-  return { list, launch, addExe, addFolder, remove }
+  return { list, launch, addExe, addFolder, addExePath, addFolderPath, remove }
 }
 
 module.exports = { createLibrary }

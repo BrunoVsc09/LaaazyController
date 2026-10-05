@@ -11,7 +11,8 @@ function make() {
     locator: { find: vi.fn(async () => 'C:\\E\\msedge.exe'), choose: vi.fn(async () => null) },
     settings: { all: vi.fn(() => ({ a: 1 })), set: vi.fn(() => true) },
     ds4: { get: vi.fn(), set: vi.fn(async () => ({ ok: true })) },
-    library: { list: vi.fn(), launch: vi.fn(async () => ({ ok: true })), addExe: vi.fn(), addFolder: vi.fn(), remove: vi.fn() },
+    library: { list: vi.fn(), launch: vi.fn(async () => ({ ok: true })), addExe: vi.fn(), addFolder: vi.fn(), remove: vi.fn(), addExePath: vi.fn(async () => ({ ok: true })), addFolderPath: vi.fn(async () => ({ ok: true })) },
+    browse: { list: vi.fn(async () => ({ ok: true, entries: [] })), places: vi.fn(() => ({ places: [], drives: [] })) },
     goHome: vi.fn(), back: vi.fn(), sendKey: vi.fn(), quit: vi.fn(),
     takeWarnings: vi.fn(() => []),
     systemUser: vi.fn(() => ({ name: 'ana', initial: 'A' })),
@@ -101,6 +102,16 @@ describe('registerIpc', () => {
     expect(h.catalog.explore).not.toHaveBeenCalled()
     await invoke(C.CATALOG_EXPLORE, { genre: 'terror' })
     expect(h.catalog.explore).toHaveBeenCalledWith({ genre: 'terror' })
+  })
+  it('navegador de pastas: caminhos só como texto; modo só file ou dir', async () => {
+    const { invoke, h } = make()
+    expect(await invoke(C.FS_LIST, 5, 'file')).toMatchObject({ ok: false })
+    expect(await invoke(C.FS_LIST, 'C:\\', 'tudo')).toMatchObject({ ok: false })
+    expect(h.browse.list).not.toHaveBeenCalled()
+    await invoke(C.FS_LIST, 'C:\\', 'dir')
+    expect(h.browse.list).toHaveBeenCalledWith('C:\\', 'dir')
+    expect(await invoke(C.GAMES_ADD_EXE_PATH, {})).toMatchObject({ ok: false })
+    expect(h.library.addExePath).not.toHaveBeenCalled()
   })
   it('IA: pedido e chave só como texto', async () => {
     const { invoke, h } = make()

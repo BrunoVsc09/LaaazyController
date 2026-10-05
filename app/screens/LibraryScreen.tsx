@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import FileBrowser from '../components/FileBrowser'
 import { getLazy, type Ds4Data, type Game } from '../lib/lazy-api'
 import { nextSort, visibleGames, type Sort } from '../lib/library-filter'
 import type { Sounds } from '../hooks/useSounds'
@@ -43,7 +44,7 @@ export default function LibraryScreen({ onBack, sounds }: Props) {
       const g = id && gamesRef.current.find((x) => x.id === id)
       if (g) setPicker(g)
     }
-    const onClose = () => closePicker()
+    const onClose = () => { closePicker(); setBrowse(null) }
     window.addEventListener('lz:triangle', onTriangle)
     window.addEventListener('lz:close-modal', onClose)
     return () => { window.removeEventListener('lz:triangle', onTriangle); window.removeEventListener('lz:close-modal', onClose) }
@@ -59,15 +60,28 @@ export default function LibraryScreen({ onBack, sounds }: Props) {
   const refresh = async (fresh = false) => { if (lazy) setGames(await lazy.games.list(fresh ? { fresh: true } : undefined)) }
 
   // Varrer uma pasta grande demora: mostra que está trabalhando e quantos jogos entraram
-  const add = async (kind: 'addExe' | 'addFolder') => {
+  const add = async (kind: 'addExe' | 'addFolder' | 'addExePath' | 'addFolderPath', path?: string) => {
     if (!lazy) return
     setMsg('')
-    setBusy(kind === 'addFolder' ? 'Procurando jogos na pasta...' : 'Adicionando...')
+    setBusy(kind.startsWith('addFolder') ? 'Procurando jogos na pasta...' : 'Adicionando...')
     try {
-      const r = await lazy.games[kind]()
+      const r = kind === 'addExePath' || kind === 'addFolderPath' ? await lazy.games[kind](path ?? '') : await lazy.games[kind]()
       setMsg(r.msg)
       await refresh(true)
     } finally { setBusy('') }
+  }
+  // Navegador de pastas do Laaazy (controle); a janela do Windows fica como opção para mouse
+  const [browse, setBrowse] = useState<'file' | 'dir' | null>(null)
+  const pickPath = (path: string) => {
+    const mode = browse
+    setBrowse(null)
+    void add(mode === 'dir' ? 'addFolderPath' : 'addExePath', path)
+    window.setTimeout(() => document.querySelector<HTMLElement>('.find-games-button')?.focus(), 0)
+  }
+  const useWindows = () => {
+    const mode = browse
+    setBrowse(null)
+    void add(mode === 'dir' ? 'addFolder' : 'addExe')
   }
 
   const launch = async (g: Game) => {
@@ -99,10 +113,10 @@ export default function LibraryScreen({ onBack, sounds }: Props) {
       <aside className="library-sidebar">
         <button className="library-back" onClick={onBack} onMouseEnter={sounds.hover}>‹ Biblioteca</button>
         <div className="library-search-box">
-          <button type="button" className="find-games-button" onClick={tap(() => add('addExe'))} onMouseEnter={sounds.hover}>
+          <button type="button" className="find-games-button" onClick={tap(() => setBrowse('file'))} onMouseEnter={sounds.hover}>
             <span className="search-button-icon" aria-hidden="true">＋</span><span><strong>Adicionar jogo</strong><small>Escolher o .exe ou atalho do jogo</small></span>
           </button>
-          <button type="button" className="find-games-button" onClick={tap(() => add('addFolder'))} onMouseEnter={sounds.hover}>
+          <button type="button" className="find-games-button" onClick={tap(() => setBrowse('dir'))} onMouseEnter={sounds.hover}>
             <span className="search-button-icon" aria-hidden="true">▤</span><span><strong>Adicionar pasta</strong><small>Achar jogos dentro de uma pasta</small></span>
           </button>
           <label className="library-search">
@@ -140,6 +154,7 @@ export default function LibraryScreen({ onBack, sounds }: Props) {
           ))}
         </div>
       </div>
+      {browse && <FileBrowser mode={browse} sounds={sounds} onPick={pickPath} onClose={() => setBrowse(null)} onWindows={useWindows} />}
       {picker && (
         <div className="lz-picker power-menu" data-modal role="dialog" aria-label={`Perfil do controle: ${picker.name}`}>
           <p><strong>Perfil do controle</strong><br />{picker.name}</p>

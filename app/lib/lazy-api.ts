@@ -1,6 +1,8 @@
 // Contrato de window.lazy (definido em electron/preload.src.js).
 export type Game = { id: string; name: string; platform: string; cover?: string }
 export type Result = { ok: boolean; msg: string }
+export type FsEntry = { name: string; path: string; type: 'dir' | 'exe' | 'lnk' | 'place' | 'drive' }
+export type FsList = { ok: boolean; path?: string; parent?: string | null; entries: FsEntry[]; msg?: string }
 export type StreamMode = 'app' | 'edge'
 export type Settings = {
   closeDs4OnMenu: boolean
@@ -26,6 +28,7 @@ export type LazyApi = {
   launch(name: string): Promise<string>
   quit(): void
   clipboard: { read(): Promise<string> }
+  fs: { list(dir: string, mode: 'file' | 'dir'): Promise<FsList> }
   oskOverlay: { submit(text: string): Promise<boolean>; cancel(): Promise<void>; onOpened(cb: () => void): void }
   volume(action: 'up' | 'down' | 'mute'): void
   onHome(cb: () => void): void
@@ -40,6 +43,8 @@ export type LazyApi = {
     addExe(): Promise<Result & { added: number }>
     addFolder(): Promise<Result & { added: number }>
     remove(id: string): Promise<Result>
+    addExePath(path: string): Promise<Result & { added: number }>
+    addFolderPath(path: string): Promise<Result & { added: number }>
     recent(): Promise<Game[]>
   }
   ai: {

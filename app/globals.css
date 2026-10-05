@@ -284,3 +284,11 @@ button { font: inherit; }
 .lz-chip { flex: 0 0 auto; padding: 10px 18px; border-radius: 999px; border: 0; background: rgba(255,255,255,.12); color: #fff; font-size: 16px; cursor: pointer; }
 .lz-chip.on { background: #ffd23f; color: #111; font-weight: 700; }
 .lz-chip:focus-visible { outline: 3px solid #ffd23f; outline-offset: 3px; }
+/* Navegador de pastas do Laaazy (escolher jogo/pasta com o controle) */
+.lz-browser { position: fixed; top: 6vh; left: 12vw; right: 12vw; bottom: 8vh; z-index: 50; padding: 20px; border-radius: 18px; background: rgba(8, 24, 60, .98); box-shadow: 0 20px 60px rgba(0,0,0,.5); color: #fff; display: flex; flex-direction: column; gap: 12px; }
+.lz-browser-head { display: flex; flex-direction: column; gap: 4px; font-size: 20px; }
+.lz-browser-head span { font-size: 16px; color: #b7d3ff; overflow-wrap: anywhere; }
+.lz-browser-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.lz-browser-list { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding: 4px; }
+.lz-browser .lz-entry { text-align: left; }
+.lz-browser button:focus-visible { outline: 3px solid #ffd23f; outline-offset: 2px; }

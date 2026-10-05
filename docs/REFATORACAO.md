@@ -366,6 +366,7 @@ nos testes, chaves de API sempre configuradas no app e guardadas criptografadas)
 | **25. Blindagem do Electron** | canais só aceitam a tela do app e o teclado por cima; CSP e janela trancada (inclui o player do YouTube e as imagens do TMDB/SteamGridDB na lista permitida); permissões negadas nos sites | — | pequeno–médio |
 | **33. Pequenas pendências** | perfil "PC" como padrão nos streamings (no Edge o controle precisa de mouse); aviso ao colar a chave do Gemini (AIza…) no campo do TMDB; sons e ícones dentro do app (precisa de permissão para baixar) | permissão (sons) | pequeno |
 | **11 (visual). Design final** | ajustar o protótipo "lazy." e aplicar nas telas (Início com prévia, Busca com Explorar, Biblioteca, Apps, Configurações, teclado por cima); remover o CSS morto | ajuste e aprovação do design | grande |
+| **35. Escolher jogo/pasta com o controle** | ✅ navegador de pastas do Laaazy (atalhos, discos, só pastas e .exe/.lnk), janela do Windows como opção para mouse |
 | **34. Versão 3.2.0** | versão, CHANGELOG (Gemini, PS, voltar ao Laaazy, perfil por jogo, Edge sem InPrivate, prévia de trailer, teclado por cima, Explorar), roteiro manual completo, `.exe` final | 30–33 e 25 | pequeno |
 
 Ordem sugerida: 30 → 31 → 32 → 25 → 33 → 34 → 11 (visual, quando o design estiver pronto;

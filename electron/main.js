@@ -35,6 +35,7 @@ const { createForeground } = require('./services/foreground')
 const { createReturnWatch } = require('./services/return-watch')
 const { createPsButton } = require('./services/ps-button')
 const { createTextEntry } = require('./services/text-entry')
+const { createFileBrowser } = require('./adapters/file-browser')
 const { typeCommand } = require('./core/typing')
 const { createKeyboardOverlay } = require('./window/keyboard-overlay')
 const { widevineStatus } = require('./core/drm')
@@ -253,6 +254,7 @@ setInterval(() => returnWatch.tick(), 1500).unref()
 
 registerIpc(ipcMain, {
   launcher, locator, settings, ds4, library: libraryWithCovers, catalog, myList, power, covers, volume, assistant, psButton, textEntry, goHome,
+  browse: createFileBrowser(),
   // Botão Colar das chaves: texto copiado, já limpo de espaços (só quando você aperta)
   readClipboard: () => cleanKey(clipboard.readText()).slice(0, 500),
   recentGames: async () => recentGames(await store.readJson(userFile('recent.json'), []), await libraryWithCovers.list()),

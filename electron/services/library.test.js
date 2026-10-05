@@ -103,6 +103,25 @@ describe('library: jogos recentes', () => {
   })
 })
 
+describe('library: adicionar pelo navegador de pastas do Laaazy', () => {
+  it('addExePath adiciona um .exe que existe', async () => {
+    const { lib, custom } = make({ files: ['C:\\J\\Hades.exe'] })
+    expect(await lib.addExePath('C:\\J\\Hades.exe')).toEqual({ ok: true, added: 1, msg: '"Hades" adicionado.' })
+    expect(custom()).toEqual([hades])
+  })
+  it('addExePath recusa arquivo que não é jogo ou que não existe', async () => {
+    const { lib, deps } = make({ files: ['C:\\J\\leia.txt'] })
+    expect((await lib.addExePath('C:\\J\\leia.txt')).ok).toBe(false)
+    expect((await lib.addExePath('C:\\J\\sumiu.exe')).ok).toBe(false)
+    expect(deps.writeCustom).not.toHaveBeenCalled()
+  })
+  it('addFolderPath procura jogos dentro da pasta escolhida', async () => {
+    const { lib, deps } = make({ scanned: [{ name: 'A', exe: 'C:\\J\\A\\a.exe' }] })
+    expect(await lib.addFolderPath('C:\\J')).toEqual({ ok: true, added: 1, msg: '1 jogo(s) adicionado(s).' })
+    expect(deps.scanFolder).toHaveBeenCalledWith('C:\\J')
+  })
+})
+
 describe('library: adicionar e remover', () => {
   it('addExe adiciona e não duplica', async () => {
     const { lib, custom } = make({ chosenExe: 'C:\\J\\Hades.exe' })

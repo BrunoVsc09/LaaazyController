@@ -10,6 +10,7 @@ contextBridge.exposeInMainWorld('lazy', {
   launch: invoke(C.LAUNCH),
   quit: () => ipcRenderer.send(C.QUIT),
   clipboard: { read: invoke(C.CLIPBOARD_READ) },
+  fs: { list: invoke(C.FS_LIST) },
   // Teclado por cima de outros programas (página keyboard.html)
   oskOverlay: {
     submit: invoke(C.OSK_SUBMIT),
@@ -33,6 +34,8 @@ contextBridge.exposeInMainWorld('lazy', {
     addFolder: invoke(C.GAMES_ADD_FOLDER),
     recent: invoke(C.GAMES_RECENT),
     remove: invoke(C.GAMES_REMOVE),
+    addExePath: invoke(C.GAMES_ADD_EXE_PATH),
+    addFolderPath: invoke(C.GAMES_ADD_FOLDER_PATH),
   },
   system: { user: invoke(C.SYSTEM_USER) },
   ai: { status: invoke(C.AI_STATUS), setKey: invoke(C.AI_SET_KEY), clearKey: invoke(C.AI_CLEAR_KEY), ask: invoke(C.AI_ASK) },
