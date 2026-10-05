@@ -23,4 +23,11 @@ function killTree(pid, force) {
   execFile('taskkill', args, { windowsHide: true }, () => {})
 }
 
-module.exports = { spawnDetached, killTree }
+// "pid ppid" de todos os processos (para saber quem abriu o Laaazy); '' se falhar
+const TABLE_CMD = 'Get-CimInstance Win32_Process | ForEach-Object { "$($_.ProcessId) $($_.ParentProcessId)" }'
+function processTable() {
+  return new Promise((res) => execFile('powershell.exe', ['-NoLogo', '-NoProfile', '-NonInteractive', '-Command', TABLE_CMD],
+    { windowsHide: true, timeout: 20000, maxBuffer: 4 * 1024 * 1024 }, (e, out) => res(e ? '' : String(out))))
+}
+
+module.exports = { spawnDetached, killTree, processTable }

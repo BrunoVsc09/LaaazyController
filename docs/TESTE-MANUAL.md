@@ -200,6 +200,9 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Início: em filmes populares aparece o selo "🇧🇷 Trailer dublado" ou "legendado" na prévia.
 - [ ] Voltar ao mesmo título: mesma prévia, e o "Restam N de 90" não cai de novo.
 
+## PS não fecha o Laaazy
+- [ ] Rodar `pnpm app`, clicar no terminal (ele fica na frente) e apertar PS: o Laaazy volta ao Início e não fecha.
+
 ## Prévia só quando apertar
 - [ ] Abrir o Início e andar pelos títulos: nenhum trailer toca sozinho.
 - [ ] X num título: a prévia toca. X de novo no mesmo: abre o streaming.

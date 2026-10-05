@@ -33,6 +33,9 @@
   fica com a busca normal e o Explorar sem digitar.
 
 ### Corrigido
+- **PS fechava o próprio Laaazy:** com o terminal do "pnpm app" (ou o app que abriu o Laaazy)
+  na frente, o PS fechava esse programa com tudo o que ele abriu — inclusive o Laaazy. Agora
+  quem abriu o Laaazy nunca é fechado pelo PS.
 - **Crunchyroll com tela preta no Edge:** nova opção "Aceleração de vídeo no Edge" por serviço
   (Configurações). Desligada, o Edge abre sem GPU num perfil separado; já vem desligada para a
   Crunchyroll (entre na conta uma vez nesse modo).

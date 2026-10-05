@@ -8,6 +8,7 @@ describe('foreground.closeCurrent', () => {
     const deps = {
       fgInfo: vi.fn(async () => info),
       ownPids: () => [10],
+      ancestorPids: () => [7, 3],
       selfPid: 10,
       showMenu: vi.fn(),
       kill: vi.fn(),
@@ -31,6 +32,12 @@ describe('foreground.closeCurrent', () => {
   })
   it('closeAndHome com processo protegido (Steam, Explorer): só volta ao Início', async () => {
     const { fg, deps } = make({ pid: 99, name: 'explorer' })
+    expect(await fg.closeAndHome()).toBe(false)
+    expect(deps.showMenu).toHaveBeenCalled()
+    expect(deps.kill).not.toHaveBeenCalled()
+  })
+  it('PS com o terminal que abriu o Laaazy na frente: só volta ao Início (fechar levaria o Laaazy junto)', async () => {
+    const { fg, deps } = make({ pid: 7, name: 'WindowsTerminal' })
     expect(await fg.closeAndHome()).toBe(false)
     expect(deps.showMenu).toHaveBeenCalled()
     expect(deps.kill).not.toHaveBeenCalled()

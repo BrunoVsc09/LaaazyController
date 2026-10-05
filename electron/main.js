@@ -7,7 +7,8 @@ const path = require('path')
 
 const store = require('./adapters/json-store')
 const { regAppPath, regValue } = require('./adapters/registry')
-const { spawnDetached, killTree } = require('./adapters/process')
+const { spawnDetached, killTree, processTable } = require('./adapters/process')
+const { ancestorsOf, parseProcessTable } = require('./core/processes')
 const { createForegroundProbe } = require('./adapters/ps-foreground')
 const { createDialogs } = require('./adapters/dialogs')
 const { createDs4Cli } = require('./adapters/ds4-cli')
@@ -263,7 +264,11 @@ const foreground = createForeground({
   selfPid: process.pid,
   showMenu,
   kill: killTree,
+  ancestorPids: () => laaazyAncestors,
 })
+// Quem abriu o Laaazy (terminal do "pnpm app", app do Claude...): o PS nunca fecha esses,
+// porque fechar com /T levaria o Laaazy junto
+let laaazyAncestors = []
 
 // Botão PS: mata o que está na frente, fecha o DS4Windows (showMenu) e volta ao Início
 const psButton = createPsButton({
@@ -345,6 +350,7 @@ app.whenReady().then(async () => {
     try { globalShortcut.register(accel, () => volume.step(action)) } catch {}
   }
   probe.warm()
+  processTable().then((t) => { laaazyAncestors = ancestorsOf(parseProcessTable(t), process.pid) })
 })
 
 app.on('before-quit', () => cursorLock.unlock())
