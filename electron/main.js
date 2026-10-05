@@ -29,6 +29,7 @@ const { pushRecent, recentGames } = require('./core/recent')
 const { createSettings } = require('./services/settings')
 const { createExeLocator } = require('./services/exe-locator')
 const { createDs4 } = require('./services/ds4')
+const { createDesktop } = require('./services/desktop')
 const { createLibrary } = require('./services/library')
 const { createLauncher } = require('./services/launcher')
 const { createForeground } = require('./services/foreground')
@@ -92,7 +93,7 @@ const windows = createWindowManager({
   onClosed: () => stream.forget(),
   // Voltou do Edge/navegador para o menu: volta o perfil do Menu
   forceFocus: (hwnd) => probe.focus(hwnd),
-  onFocus: () => { if (externalActive) { externalActive = false; if (!closeDs4OnMenu()) ds4.applyFor('menu') } },
+  onFocus: () => { desktop.leave(); if (externalActive) { externalActive = false; if (!closeDs4OnMenu()) ds4.applyFor('menu') } },
 })
 
 // ---- Serviços ----
@@ -208,6 +209,7 @@ function goHome() {
 }
 
 function showMenu() {
+  desktop.leave()
   goHome()
   windows.send(C.GO_HOME) // fecha Biblioteca / telas de configuração
   windows.bringToFront()
@@ -230,6 +232,7 @@ const psButton = createPsButton({
   psClosesApp: () => settings.get('psClosesApp') !== false,
   ensureDs4: () => ds4.ensureRunning(),
   notifyTested: () => windows.send(C.PS_TESTED),
+  desktopActive: () => desktop.isActive(),
 })
 
 // Teclado do Laaazy por cima do Edge (F19 / Ctrl+Alt+K): digita no campo selecionado
@@ -252,8 +255,11 @@ const returnWatch = createReturnWatch({
 })
 setInterval(() => returnWatch.tick(), 1500).unref()
 
+// Botão "Área de trabalho" do Início
+const desktop = createDesktop({ ds4, returnWatch, minimize: () => { const w = windows.get(); if (w) { w.setAlwaysOnTop(false); w.minimize() } } })
+
 registerIpc(ipcMain, {
-  launcher, locator, settings, ds4, library: libraryWithCovers, catalog, myList, power, covers, volume, assistant, psButton, textEntry, goHome,
+  launcher, locator, settings, ds4, library: libraryWithCovers, catalog, myList, power, covers, volume, assistant, psButton, textEntry, goHome, desktop,
   browse: createFileBrowser(),
   // Botão Colar das chaves: texto copiado, já limpo de espaços (só quando você aperta)
   readClipboard: () => cleanKey(clipboard.readText()).slice(0, 500),

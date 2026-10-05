@@ -3,6 +3,9 @@
 ## Próxima versão (ainda não lançada)
 
 ### Novo
+- **Área de trabalho (Início, depois dos apps):** o controle vira mouse (perfil "PC", trocável
+  em Perfis do controle) e o Laaazy é minimizado. O PS traz de volta ao Início sem fechar
+  o que estiver aberto na área de trabalho.
 - **Início com fileiras de Filmes, Séries e Animes, sorteadas:** cada vez que o Início abre
   aparecem outros títulos (sorteio de até 100 por tipo nos seus apps), e o botão
   **↻ Outros títulos** sorteia de novo na hora. Animes saíram da fileira de séries.

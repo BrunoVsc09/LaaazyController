@@ -141,6 +141,11 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
     setMsg((await lazy.open(url, service)) || '')
   }
   const tap = (fn: () => void) => () => { sounds.click(); fn() }
+  // Controle vira mouse e o Laaazy sai da frente; o PS traz de volta
+  const desktop = async () => {
+    const r = await lazy?.desktop()
+    if (r && !r.ok) setMsg(r.msg)
+  }
 
   return (
     <section className="lz-home" aria-label="Início">
@@ -225,6 +230,10 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
               <AppIcon card={card} size={36} /><span>{card.label}</span>
             </button>
           ))}
+          <button type="button" className="lz-app" style={{ background: 'rgba(255,255,255,.14)', color: '#fff' }}
+            aria-label="Área de trabalho" onClick={tap(desktop)} onFocus={sounds.hover}>
+            <span aria-hidden="true" style={{ fontSize: 30 }}>🖥</span><span>Área de trabalho</span>
+          </button>
         </div>
       </div>
     </section>

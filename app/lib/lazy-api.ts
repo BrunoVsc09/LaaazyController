@@ -28,6 +28,8 @@ export type LazyApi = {
   launch(name: string): Promise<string>
   quit(): void
   clipboard: { read(): Promise<string> }
+  // Área de trabalho: perfil PC no controle e Laaazy minimizado (o PS traz de volta)
+  desktop(): Promise<{ ok: boolean; msg: string }>
   fs: { list(dir: string, mode: 'file' | 'dir'): Promise<FsList> }
   oskOverlay: { submit(text: string): Promise<boolean>; cancel(): Promise<void>; onOpened(cb: () => void): void }
   volume(action: 'up' | 'down' | 'mute'): void

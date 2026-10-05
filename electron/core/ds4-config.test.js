@@ -5,7 +5,8 @@ const { mergeConfig, validateChange, DEFAULTS } = mod
 
 describe('ds4-config', () => {
   it('padrões: Menu = Brunera; navegadores e Crunchyroll = PC', () => {
-    expect(DEFAULTS).toEqual({ menu: 'Brunera', Crunchyroll: 'PC', 'Google Chrome': 'PC', Firefox: 'PC' })
+    expect(DEFAULTS).toMatchObject({ menu: 'Brunera', Crunchyroll: 'PC', 'Google Chrome': 'PC', Firefox: 'PC' })
+    expect(DEFAULTS.desktop).toBe('PC') // Área de trabalho: controle vira mouse
   })
   it('valor salvo vence o padrão, inclusive vazio ("não mudar")', () => {
     expect(mergeConfig({ menu: '', Netflix: 'TV' })).toMatchObject({ menu: '', Netflix: 'TV', Firefox: 'PC' })

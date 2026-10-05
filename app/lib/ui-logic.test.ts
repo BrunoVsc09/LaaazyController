@@ -57,7 +57,7 @@ describe('CATALOG', () => {
     }
   })
   it('todo card com perfil DS4 existe no catálogo', () => {
-    for (const k of DS4_KEYS.filter((k: string) => k !== 'menu' && k !== 'games')) {
+    for (const k of DS4_KEYS.filter((k: string) => !['menu', 'games', 'desktop'].includes(k))) {
       expect(CATALOG.some((c) => c.label === k), k).toBe(true)
     }
   })

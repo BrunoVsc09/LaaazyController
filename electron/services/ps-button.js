@@ -3,7 +3,7 @@
 // Modo teste (tela Perfis do controle): o próximo aperto só confirma que o F24 chegou.
 const TEST_MS = 15000
 
-function createPsButton({ foreground, home, psClosesApp, ensureDs4, notifyTested, now = Date.now }) {
+function createPsButton({ foreground, home, psClosesApp, ensureDs4, notifyTested, desktopActive = () => false, now = Date.now }) {
   let testUntil = 0
 
   function startTest() {
@@ -19,7 +19,8 @@ function createPsButton({ foreground, home, psClosesApp, ensureDs4, notifyTested
       return 'tested'
     }
     testUntil = 0
-    if (!psClosesApp()) { home(); return 'home' }
+    // Na Área de trabalho o que está na frente é do usuário (Explorer, navegador): não mata
+    if (!psClosesApp() || desktopActive()) { home(); return 'home' }
     await foreground.closeAndHome()
     return 'closed'
   }

@@ -1,8 +1,8 @@
 // Qual perfil do DS4Windows usar em cada card e em cada jogo. Sem I/O.
 const KEYS = require('../../shared/ds4-keys')
 
-// Menu = Brunera; navegadores e Crunchyroll = PC (dá para trocar na tela de perfis)
-const DEFAULTS = { menu: 'Brunera', Crunchyroll: 'PC', 'Google Chrome': 'PC', Firefox: 'PC' }
+// Menu = Brunera; navegadores, Crunchyroll e Área de trabalho = PC (dá para trocar na tela de perfis)
+const DEFAULTS = { menu: 'Brunera', desktop: 'PC', Crunchyroll: 'PC', 'Google Chrome': 'PC', Firefox: 'PC' }
 
 // Perfil de um jogo específico: "game:" + id do jogo (sem caracteres de controle)
 const GAME_KEY = /^game:[^\u0000-\u001f\u007f]{1,300}$/

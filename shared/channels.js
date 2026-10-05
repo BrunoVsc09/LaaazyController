@@ -51,6 +51,7 @@ module.exports = {
   AI_CLEAR_KEY: 'ai:clearKey',
   AI_ASK: 'ai:ask',
   AI_SIMILAR: 'ai:similar',
+  DESKTOP_ENTER: 'desktop:enter',
   COVERS_STATUS: 'covers:status',
   COVERS_SET_KEY: 'covers:setKey',
   COVERS_CLEAR_KEY: 'covers:clearKey',

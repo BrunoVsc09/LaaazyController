@@ -1,9 +1,10 @@
 import { describe, it, expect, vi } from 'vitest'
 import mod from './ps-button.js'
 
-function make({ closes = true } = {}) {
+function make({ closes = true, desktop = false } = {}) {
   let t = 0
   const deps = {
+    desktopActive: () => desktop,
     foreground: { closeAndHome: vi.fn(async () => true) },
     home: vi.fn(),
     psClosesApp: () => closes,
@@ -35,6 +36,12 @@ describe('botão PS', () => {
     expect(deps.notifyTested).toHaveBeenCalled()
     expect(deps.foreground.closeAndHome).not.toHaveBeenCalled()
     expect(await ps.press()).toBe('closed') // depois do teste, volta ao normal
+  })
+  it('na Área de trabalho: só volta ao Início, sem matar o que está na frente', async () => {
+    const { ps, deps } = make({ desktop: true })
+    expect(await ps.press()).toBe('home')
+    expect(deps.home).toHaveBeenCalled()
+    expect(deps.foreground.closeAndHome).not.toHaveBeenCalled()
   })
   it('o teste expira em 15 segundos', async () => {
     const { ps, advance } = make()

@@ -50,6 +50,7 @@ function registerIpc(ipcMain, h) {
   handle(C.AI_STATUS, () => h.assistant.status())
   handle(C.AI_SET_KEY, (key) => (isText(key) ? h.assistant.setKey(key) : { ok: false, msg: 'Chave inválida.' }))
   handle(C.AI_CLEAR_KEY, () => h.assistant.clearKey())
+  handle(C.DESKTOP_ENTER, () => h.desktop.enter())
   handle(C.AI_SIMILAR, (t) => (t && isText(t.id) && isText(t.title)
     ? h.assistant.similarMood({ id: t.id, title: t.title, kind: str(t.kind), year: str(t.year), overview: str(t.overview) })
     : { ok: false, items: [], msg: 'Título inválido.' }))

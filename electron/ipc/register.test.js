@@ -33,6 +33,7 @@ function make() {
     textEntry: { submit: vi.fn(async () => true), cancel: vi.fn() },
     readClipboard: vi.fn(() => 'abc'),
     psButton: { startTest: vi.fn(() => true) },
+    desktop: { enter: vi.fn(async () => ({ ok: true, msg: '' })) },
     assistant: { status: vi.fn(async () => ({})), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })), ask: vi.fn(async () => ({ ok: true, items: [] })), similarMood: vi.fn(async () => ({ ok: true, items: [] })) },
     volume: { step: vi.fn(() => true) },
     covers: { status: vi.fn(() => ({ configured: false })), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })) },
@@ -128,6 +129,11 @@ describe('registerIpc', () => {
     expect(h.assistant.similarMood).not.toHaveBeenCalled()
     await invoke(C.AI_SIMILAR, { id: 'tv:1', title: 'Dark', kind: 'Série', year: '2017', overview: 'x', poster: 'p', extra: { a: 1 } })
     expect(h.assistant.similarMood).toHaveBeenCalledWith({ id: 'tv:1', title: 'Dark', kind: 'Série', year: '2017', overview: 'x' })
+  })
+  it('Área de trabalho: canal sem argumentos', async () => {
+    const { invoke, h } = make()
+    expect(await invoke(C.DESKTOP_ENTER, 'qualquer')).toEqual({ ok: true, msg: '' })
+    expect(h.desktop.enter).toHaveBeenCalledWith()
   })
   it('volume: só up, down e mute', () => {
     const { send, h } = make()
