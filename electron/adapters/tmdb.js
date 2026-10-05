@@ -57,7 +57,7 @@ function createTmdb({ fetch = globalThis.fetch } = {}) {
 
   const tvDetails = (token, id) => get(token, `/tv/${id}`, { language: 'pt-BR' })
 
-  // Discover com filtros livres (já montados e validados por core/ai-filters)
+  // Discover com filtros livres (já montados e validados por core/explore)
   const discoverWith = async (token, kind, params) => (await get(token, `/discover/${kind}`, params)).results || []
 
   const recommendations = async (token, kind, id) =>

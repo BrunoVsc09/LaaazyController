@@ -1,6 +1,6 @@
 // "Explorar sem digitar": escolhas da tela → parâmetros do /discover do TMDB. Sem I/O.
 const opts = require('../../shared/explore-options')
-const { GENRES } = require('./ai-filters')
+const { GENRES } = require('./genres')
 
 const ids = (list) => list.map((x) => x.id)
 const pick = (v, list, fallback) => (ids(list).includes(v) ? v : fallback)

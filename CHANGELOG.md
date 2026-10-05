@@ -2,6 +2,10 @@
 
 ## Próxima versão (ainda não lançada)
 
+### Removido
+- **"Pedir à IA" da Busca.** O Gemini continua no "Parecido com este" (△ no Início); a Busca
+  fica com a busca normal e o Explorar sem digitar.
+
 ### Novo
 - **Trailers dublados e legendados (YouTube):** com uma chave grátis da YouTube Data API em
   Configurações, o Início procura "‹título› trailer dublado/legendado" no YouTube, fica só com

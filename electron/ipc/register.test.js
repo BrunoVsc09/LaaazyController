@@ -35,7 +35,7 @@ function make() {
     psButton: { startTest: vi.fn(() => true) },
     desktop: { enter: vi.fn(async () => ({ ok: true, msg: '' })) },
     ytTrailers: { status: vi.fn(async () => ({ configured: false, left: 90 })), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })) },
-    assistant: { status: vi.fn(async () => ({})), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })), ask: vi.fn(async () => ({ ok: true, items: [] })), similarMood: vi.fn(async () => ({ ok: true, items: [] })) },
+    assistant: { status: vi.fn(async () => ({})), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })), similarMood: vi.fn(async () => ({ ok: true, items: [] })) },
     volume: { step: vi.fn(() => true) },
     covers: { status: vi.fn(() => ({ configured: false })), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })) },
     power: { run: vi.fn(async () => ({ ok: true })), openAtLogin: vi.fn(() => false), setOpenAtLogin: vi.fn() },
@@ -117,13 +117,10 @@ describe('registerIpc', () => {
     expect(await invoke(C.GAMES_ADD_EXE_PATH, {})).toMatchObject({ ok: false })
     expect(h.library.addExePath).not.toHaveBeenCalled()
   })
-  it('IA: pedido e chave só como texto', async () => {
+  it('IA: chave só como texto', async () => {
     const { invoke, h } = make()
-    expect(await invoke(C.AI_ASK, { texto: 1 })).toMatchObject({ ok: false, items: [] })
     expect(await invoke(C.AI_SET_KEY, 5)).toMatchObject({ ok: false })
-    expect(h.assistant.ask).not.toHaveBeenCalled()
-    await invoke(C.AI_ASK, 'comédia')
-    expect(h.assistant.ask).toHaveBeenCalledWith('comédia')
+    expect(h.assistant.setKey).not.toHaveBeenCalled()
   })
   it('IA "Parecido com este": só objeto com id e título em texto; repassa só os campos conhecidos', async () => {
     const { invoke, h } = make()
@@ -149,6 +146,10 @@ describe('registerIpc', () => {
     expect(h.volume.step).toHaveBeenCalledWith('up')
     on.get(C.QUIT)(from('https://www.netflix.com/'))
     expect(h.quit).not.toHaveBeenCalled()
+  })
+  it('"Pedir à IA" saiu: o canal ai:ask não existe mais', () => {
+    expect(C.AI_ASK).toBeUndefined()
+    expect([...make().handle.keys()]).not.toContain('ai:ask')
   })
   it('YouTube: chave só como texto', async () => {
     const { invoke, h } = make()

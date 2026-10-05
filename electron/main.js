@@ -216,9 +216,9 @@ const catalog = createCatalog({
   writeCache: (c) => store.writeJson(userFile('catalog-cache.json'), c || {}),
 })
 
-// Pedir à IA (Gemini interpreta, TMDB acha os títulos). Uso do dia em ai-usage.json
+// Gemini: "Parecido com este" (△ no Início). Uso do dia em ai-usage.json
 const assistant = createAssistant({
-  gemini: createGemini(), tmdb: createTmdb(), catalog, secrets: secretStore,
+  gemini: createGemini(), tmdb: createTmdb(), secrets: secretStore,
   model: () => settings.get('geminiModel'),
   readUsage: () => store.readJson(userFile('ai-usage.json'), {}),
   writeUsage: (u) => store.writeJson(userFile('ai-usage.json'), u),

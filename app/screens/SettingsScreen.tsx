@@ -108,9 +108,9 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
         onResult={(m, on) => { setMsg(m); setTmdbOn(on) }}
       />
       <ApiKeySection
-        title="Pedir à IA (Gemini)" configured={aiOn} sounds={sounds}
-        help={`Entende pedidos como "comédia leve, menos de 1h30, na Netflix". Chave grátis em aistudio.google.com → Get API key. ${aiOn ? `Restam ${aiLeft} de 50 pedidos hoje.` : ''}`}
-        note="A IA só traduz o pedido em filtros; os títulos vêm do TMDB."
+        title="Parecido com este (Gemini)" configured={aiOn} sounds={sounds}
+        help={`Com △ num título do Início, a IA diz o clima dele e sugere outros com o mesmo clima. Chave grátis em aistudio.google.com → Get API key. ${aiOn ? `Restam ${aiLeft} de 50 pedidos hoje.` : ''}`}
+        note="A IA só sugere nomes; cada título é conferido no TMDB."
         onSave={(k) => lazy!.ai.setKey(k)} onClear={() => lazy!.ai.clearKey()}
         onResult={(m, on) => { setMsg(m); setAiOn(on) }}
       />

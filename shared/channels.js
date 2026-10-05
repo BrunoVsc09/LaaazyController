@@ -49,7 +49,6 @@ module.exports = {
   AI_STATUS: 'ai:status',
   AI_SET_KEY: 'ai:setKey',
   AI_CLEAR_KEY: 'ai:clearKey',
-  AI_ASK: 'ai:ask',
   AI_SIMILAR: 'ai:similar',
   DESKTOP_ENTER: 'desktop:enter',
   YT_STATUS: 'yt:status',
