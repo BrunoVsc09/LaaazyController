@@ -23,6 +23,8 @@ export type Title = {
 }
 export type CatalogHome = { ok: boolean; configured: boolean; stale?: boolean; series: Title[]; films: Title[]; animes?: Title[]; msg?: string }
 
+export type PowerAction = 'quit' | 'suspend' | 'shutdown' | 'shutdown_3h' | 'shutdown_2h' | 'shutdown_cancel'
+
 export type LazyApi = {
   open(url: string, label: string): Promise<string>
   launch(name: string): Promise<string>
@@ -60,7 +62,7 @@ export type LazyApi = {
   yt: { status(): Promise<{ configured: boolean; left: number }>; setKey(key: string): Promise<Result>; clearKey(): Promise<Result> }
   covers: { status(): Promise<{ configured: boolean }>; setKey(key: string): Promise<Result>; clearKey(): Promise<Result> }
   power: {
-    run(action: 'quit' | 'suspend' | 'shutdown', confirmed?: boolean): Promise<{ ok: boolean; confirm?: boolean; msg?: string }>
+    run(action: PowerAction, confirmed?: boolean): Promise<{ ok: boolean; confirm?: boolean; msg?: string }>
     openAtLogin(): Promise<boolean>
     setOpenAtLogin(on: boolean): Promise<void>
   }

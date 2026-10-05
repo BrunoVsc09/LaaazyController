@@ -2,10 +2,20 @@ import { describe, it, expect } from 'vitest'
 import mod from './power.js'
 
 describe('power: comandos', () => {
-  it('suspender e desligar pedem confirmação; fechar o app não', () => {
-    expect(mod.needsConfirm('suspend')).toBe(true)
-    expect(mod.needsConfirm('shutdown')).toBe(true)
+  it('tudo que mexe no PC pede confirmação; fechar o app não', () => {
+    for (const a of ['suspend', 'shutdown', 'shutdown_3h', 'shutdown_2h', 'shutdown_cancel']) expect(mod.needsConfirm(a), a).toBe(true)
     expect(mod.needsConfirm('quit')).toBe(false)
+  })
+  it('desligar agendado (pelo próprio Windows: vale mesmo com o Laaazy fechado) e cancelar', () => {
+    expect(mod.COMMANDS.shutdown_3h).toEqual({ cmd: 'shutdown', args: ['/s', '/t', '10800'] })
+    expect(mod.COMMANDS.shutdown_2h).toEqual({ cmd: 'shutdown', args: ['/s', '/t', '7200'] })
+    expect(mod.COMMANDS.shutdown_cancel).toEqual({ cmd: 'shutdown', args: ['/a'] })
+    expect(mod.delaySeconds('shutdown_3h')).toBe(10800)
+    expect(mod.delaySeconds('shutdown')).toBe(0)
+  })
+  it('clockText: hora e minuto com dois dígitos', () => {
+    expect(mod.clockText(new Date(2026, 9, 5, 2, 7))).toBe('02:07')
+    expect(mod.clockText(new Date(2026, 9, 5, 23, 45))).toBe('23:45')
   })
   it('comando do Windows de cada ação', () => {
     expect(mod.COMMANDS.shutdown).toEqual({ cmd: 'shutdown', args: ['/s', '/t', '0'] })
