@@ -8,6 +8,7 @@
 ![Electron](https://img.shields.io/badge/Electron-castlabs%2044%20(Widevine)-47848F?logo=electron&logoColor=white)
 ![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white)
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
+[![Testes](https://github.com/BrunoVsc09/LaaazyController/actions/workflows/ci.yml/badge.svg)](https://github.com/BrunoVsc09/LaaazyController/actions/workflows/ci.yml)
 ![Testes](https://img.shields.io/badge/testes-552%20passando-2ea44f?logo=vitest&logoColor=white)
 ![TDD](https://img.shields.io/badge/feito%20com-TDD-ffd23f)
 ![Licença](https://img.shields.io/badge/licen%C3%A7a-MIT-blue)

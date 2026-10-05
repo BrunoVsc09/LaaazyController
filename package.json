@@ -5,6 +5,14 @@
   "description": "Central de mídia para Windows com cara de console, controlada pelo DualShock 4: filmes, séries, animes, jogos e apps numa tela só.",
   "author": "Bruno <brunodev09@gmail.com>",
   "license": "MIT",
+  "homepage": "https://github.com/BrunoVsc09/LaaazyController#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BrunoVsc09/LaaazyController.git"
+  },
+  "bugs": {
+    "url": "https://github.com/BrunoVsc09/LaaazyController/issues"
+  },
   "keywords": [
     "electron",
     "nextjs",
