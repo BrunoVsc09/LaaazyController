@@ -353,3 +353,20 @@ nos testes, chaves de API sempre configuradas no app e guardadas criptografadas)
 ### Pendências pequenas (podem entrar na fase 11)
 - Perfil "PC" do DS4Windows como padrão para todos os streamings (no Edge o controle precisa dele).
 - Sons e ícones dos comandos guardados dentro do app (precisa de permissão para baixar).
+
+---
+
+## 9. Fases que faltam (planejado em 2026-10-04, depois do primeiro uso real)
+
+| Fase | O que entra | Depende de | Esforço |
+|---|---|---|---|
+| **30. Jogos da Steam que não abrem** | diagnóstico com o usuário; suspeitas: (a) o jogo abre atrás do Laaazy em tela cheia → minimizar o Laaazy ao abrir um jogo (a volta automática e o PS trazem de volta); (b) jogo não instalado por completo (baixando/atualizando) → esconder pelo StateFlags do manifesto; mensagem clara quando a Steam não está aberta ou logada | resposta do usuário (qual jogo, o que acontece) | pequeno–médio |
+| **31. Botão "Área de trabalho" no Início** | card depois dos apps: aplica o perfil **PC** do DS4Windows (controle vira mouse), abre o DS4Windows se preciso e minimiza o Laaazy. PS volta ao Início. Perfil configurável em Perfis do controle ("Área de trabalho") | — | pequeno |
+| **32. Teste do `.exe` portátil** | `pnpm dist` de verdade: conferir que o pacote leva `out/` (incl. keyboard.html), `shared/`, preloads gerados; teste de fumaça do pacote; roteiro manual no `.exe` | — | pequeno |
+| **25. Blindagem do Electron** | canais só aceitam a tela do app e o teclado por cima; CSP e janela trancada (inclui o player do YouTube e as imagens do TMDB/SteamGridDB na lista permitida); permissões negadas nos sites | — | pequeno–médio |
+| **33. Pequenas pendências** | perfil "PC" como padrão nos streamings (no Edge o controle precisa de mouse); aviso ao colar a chave do Gemini (AIza…) no campo do TMDB; sons e ícones dentro do app (precisa de permissão para baixar) | permissão (sons) | pequeno |
+| **11 (visual). Design final** | ajustar o protótipo "lazy." e aplicar nas telas (Início com prévia, Busca com Explorar, Biblioteca, Apps, Configurações, teclado por cima); remover o CSS morto | ajuste e aprovação do design | grande |
+| **34. Versão 3.2.0** | versão, CHANGELOG (Gemini, PS, voltar ao Laaazy, perfil por jogo, Edge sem InPrivate, prévia de trailer, teclado por cima, Explorar), roteiro manual completo, `.exe` final | 30–33 e 25 | pequeno |
+
+Ordem sugerida: 30 → 31 → 32 → 25 → 33 → 34 → 11 (visual, quando o design estiver pronto;
+pode virar a 4.0).
