@@ -2,6 +2,11 @@
 
 ## Próxima versão (ainda não lançada)
 
+### Novo
+- **Energia:** desligar daqui a 3 horas ou 2 horas (agendado no próprio Windows, vale mesmo
+  com o Laaazy fechado; mostra a hora) e cancelar o desligamento. Tudo que mexe no PC
+  pergunta "Você tem certeza?" com Sim / Não.
+
 ### Mudou
 - **Prévia do trailer só quando você aperta:** no Início, parar num título só mostra as
   informações dele. 1º aperto (X ou clique) toca a prévia; 2º aperto no mesmo título abre

@@ -206,3 +206,9 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Com a prévia tocando, passar o mouse/analógico por outros títulos: a prévia continua.
 - [ ] Apertar X em outro título: a prévia troca para ele.
 
+## Energia: desligar agendado
+- [ ] Energia → Desligar daqui a 2 horas → pergunta com a hora → Sim: mostra "O PC vai desligar às HH:MM" e o Windows avisa.
+- [ ] Energia → Cancelar o desligamento → Sim: "Desligamento cancelado." De novo: "Não havia nenhum desligamento agendado."
+- [ ] Desligar daqui a 3 horas depois de já ter agendado 2 horas: troca para o novo horário (sem erro).
+- [ ] Desligar o PC e Suspender o PC: "Você tem certeza?" com Sim / Não; Não volta ao menu.
+
