@@ -144,3 +144,11 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] "🔇 Trailer sem som" / "🔊 Trailer com som" liga e desliga o som da prévia na hora, sem abrir o Edge; a escolha vale para as próximas prévias
 - [ ] Quando o trailer acaba, a prévia passa sozinha para o próximo título (e o foco vai junto)
 - [ ] "Assistir na <serviço>" abre o serviço no Edge
+
+## Teclado por cima do Edge
+- [ ] No DS4Windows, mapear um botão (Share/touchpad) para F19 em todos os perfis
+- [ ] No Edge (ex.: Netflix), selecionar o campo de busca, apertar o botão: o teclado do Laaazy aparece na metade de baixo da tela
+- [ ] Digitar com o controle e apertar ✓ Pronto (ou Options): o teclado some e o texto aparece no campo do Edge
+- [ ] Campo de senha: 🙈 Ocultar mostra bolinhas no teclado; a senha é digitada certinha
+- [ ] Texto com acento (ç, ã, é) sai certo; o que estava copiado antes continua copiado depois
+- [ ] O cancela sem digitar nada

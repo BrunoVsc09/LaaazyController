@@ -26,6 +26,7 @@ export type LazyApi = {
   launch(name: string): Promise<string>
   quit(): void
   clipboard: { read(): Promise<string> }
+  oskOverlay: { submit(text: string): Promise<boolean>; cancel(): Promise<void>; onOpened(cb: () => void): void }
   volume(action: 'up' | 'down' | 'mute'): void
   onHome(cb: () => void): void
   ps: { startTest(): Promise<boolean>; onTested(cb: () => void): void }

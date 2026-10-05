@@ -28,6 +28,7 @@ function make() {
     },
     myList: { get: vi.fn(async () => []), toggle: vi.fn(async () => ({ ok: true, added: true })) },
     recentGames: vi.fn(async () => []),
+    textEntry: { submit: vi.fn(async () => true), cancel: vi.fn() },
     readClipboard: vi.fn(() => 'abc'),
     psButton: { startTest: vi.fn(() => true) },
     assistant: { status: vi.fn(async () => ({})), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })), ask: vi.fn(async () => ({ ok: true, items: [] })) },
@@ -46,7 +47,7 @@ describe('registerIpc', () => {
     const { on, handle } = make()
     const registered = new Set([...on.keys(), ...handle.keys()])
     for (const ch of Object.values(C)) {
-      if (![C.GO_HOME, C.PS_TESTED].includes(ch)) expect(registered.has(ch), ch).toBe(true)
+      if (![C.GO_HOME, C.PS_TESTED, C.OSK_OPENED].includes(ch)) expect(registered.has(ch), ch).toBe(true)
     }
   })
   it('open só aceita http(s) e devolve o aviso do launcher', async () => {
@@ -107,6 +108,13 @@ describe('registerIpc', () => {
     expect(h.volume.step).not.toHaveBeenCalled()
     send(C.VOLUME, 'up')
     expect(h.volume.step).toHaveBeenCalledWith('up')
+  })
+  it('teclado por cima: só texto é digitado', async () => {
+    const { invoke, h } = make()
+    expect(await invoke(C.OSK_SUBMIT, { evil: 1 })).toBe(false)
+    expect(h.textEntry.submit).not.toHaveBeenCalled()
+    await invoke(C.OSK_SUBMIT, 'abc')
+    expect(h.textEntry.submit).toHaveBeenCalledWith('abc')
   })
   it('capas: chave precisa ser texto', async () => {
     const { invoke, h } = make()

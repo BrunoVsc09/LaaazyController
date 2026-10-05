@@ -43,6 +43,7 @@ export default function Ds4Screen({ onBack, sounds }: Props) {
       <button className="library-back" onClick={onBack} onMouseEnter={sounds.hover}>‹ Perfis do controle</button>
       <h1>Perfil do controle em cada app</h1>
       <p className="ds4-help">Aperte X numa linha para trocar o perfil. Ele já é aplicado na hora, para você testar, e também ao abrir o card. Ao sair, volta o perfil do Menu. Atalhos no teclado: Ctrl+Alt+Home volta ao menu; Ctrl+Alt+End fecha o que está na frente e volta.</p>
+      <p className="ds4-help">Teclado por cima do Edge (busca e senhas nos streamings): no DS4Windows, mapeie um botão (ex.: Share ou touchpad) para a tecla F19 em todos os perfis. No teclado: Ctrl+Alt+K.</p>
       <button className="ds4-row" onClick={tap(testPs)} onMouseEnter={sounds.hover}><span>Testar o botão PS</span><b>▶</b></button>
       {psMsg && <p className="ds4-help" role="status" style={{ color: '#ffd23f' }}>{psMsg}</p>}
       <button className="ds4-row" onClick={tap(openDs4)} onMouseEnter={sounds.hover}><span>Abrir o DS4Windows</span><b>▶</b></button>

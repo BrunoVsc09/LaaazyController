@@ -44,6 +44,10 @@ O que testar à mão: [docs/TESTE-MANUAL.md](docs/TESTE-MANUAL.md).
 No DS4Windows, mapeie o botão PS para **F24** (volta ao menu) e outro botão para
 **F23** (fecha o programa da frente e volta). No teclado: Ctrl+Alt+Home e Ctrl+Alt+End.
 
+Teclado por cima do Edge: mapeie um botão (ex.: Share ou touchpad) para **F19** no
+DS4Windows. Selecione o campo no site (busca, senha), aperte o botão, digite com o
+controle e aperte ✓ Pronto (ou Options): o Laaazy digita no campo. No teclado: Ctrl+Alt+K.
+
 Volume: dentro do Laaazy, **L2** abaixa e **R2** aumenta. Com o Edge ou um jogo na frente,
 mapeie no DS4Windows **F22** (aumentar), **F21** (abaixar) e **F20** (silenciar). No teclado:
 Ctrl+Alt+↑, Ctrl+Alt+↓ e Ctrl+Alt+M.

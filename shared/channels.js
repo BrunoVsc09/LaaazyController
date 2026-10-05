@@ -8,6 +8,9 @@ module.exports = {
   GO_HOME: 'go-home', // principal → tela
   PS_TESTED: 'ps:tested', // principal → tela
   PS_TEST_START: 'ps:testStart',
+  OSK_OPENED: 'osk:opened', // principal → teclado por cima
+  OSK_SUBMIT: 'osk:submit',
+  OSK_CANCEL: 'osk:cancel',
   LAUNCH: 'launch',
   EXE_GET: 'exe:get',
   EXE_CHOOSE: 'exe:choose',

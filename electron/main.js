@@ -34,6 +34,9 @@ const { createLauncher } = require('./services/launcher')
 const { createForeground } = require('./services/foreground')
 const { createReturnWatch } = require('./services/return-watch')
 const { createPsButton } = require('./services/ps-button')
+const { createTextEntry } = require('./services/text-entry')
+const { typeCommand } = require('./core/typing')
+const { createKeyboardOverlay } = require('./window/keyboard-overlay')
 const { widevineStatus } = require('./core/drm')
 const { planMigration } = require('./core/migration')
 const { cleanKey } = require('./core/keys')
@@ -228,6 +231,17 @@ const psButton = createPsButton({
   notifyTested: () => windows.send(C.PS_TESTED),
 })
 
+// Teclado do Laaazy por cima do Edge (F19 / Ctrl+Alt+K): digita no campo selecionado
+const keyboardOverlay = createKeyboardOverlay({ preload: path.join(__dirname, 'preload.js'), url: 'app://local/keyboard.html' })
+const textEntry = createTextEntry({
+  fgHwnd: probe.hwnd,
+  showOverlay: () => keyboardOverlay.show(),
+  hideOverlay: () => keyboardOverlay.hide(),
+  focusWindow: (hwnd) => probe.focus(hwnd),
+  typeText: (text) => { const cmd = typeCommand(text); if (!cmd) return false; keySender.send(cmd); return true },
+  sleep,
+})
+
 // Jogo ou Edge fechou: o Laaazy volta sozinho para a frente, no Início
 const returnWatch = createReturnWatch({
   fgInfo: probe.info,
@@ -238,7 +252,7 @@ const returnWatch = createReturnWatch({
 setInterval(() => returnWatch.tick(), 1500).unref()
 
 registerIpc(ipcMain, {
-  launcher, locator, settings, ds4, library: libraryWithCovers, catalog, myList, power, covers, volume, assistant, psButton, goHome,
+  launcher, locator, settings, ds4, library: libraryWithCovers, catalog, myList, power, covers, volume, assistant, psButton, textEntry, goHome,
   // Botão Colar das chaves: texto copiado, já limpo de espaços (só quando você aperta)
   readClipboard: () => cleanKey(clipboard.readText()).slice(0, 500),
   recentGames: async () => recentGames(await store.readJson(userFile('recent.json'), []), await libraryWithCovers.list()),
@@ -272,6 +286,9 @@ app.whenReady().then(async () => {
   }
   for (const key of ['F23', 'CommandOrControl+Alt+End']) {
     try { globalShortcut.register(key, () => foreground.closeCurrent()) } catch {}
+  }
+  for (const key of ['F19', 'CommandOrControl+Alt+K']) {
+    try { globalShortcut.register(key, () => textEntry.open()) } catch {}
   }
   for (const { accel, action } of VOLUME_SHORTCUTS) {
     try { globalShortcut.register(accel, () => volume.step(action)) } catch {}

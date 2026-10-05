@@ -271,3 +271,9 @@ button { font: inherit; }
 @media (prefers-reduced-motion: reduce) { .lz-saver-img { animation: none; } }
 .lz-hero-media { position: relative; overflow: hidden; }
 .lz-hero-media iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; pointer-events: none; animation: lz-saver-in .8s ease-out both; }
+/* Teclado por cima de outros programas (janela própria, keyboard.html) */
+.kb-overlay { min-height: 100vh; background: #08183c; color: #fff; display: flex; flex-direction: column; }
+.kb-bar { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 16px 24px; font-size: 18px; }
+.kb-bar span { opacity: .75; flex: 1; }
+.kb-bar button:focus-visible { outline: 3px solid #ffd23f; outline-offset: 2px; }
+.kb-overlay .osk { position: static; transform: none; width: auto; margin: 0 24px 24px; box-shadow: none; }

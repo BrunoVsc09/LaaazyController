@@ -14,6 +14,7 @@ const SETUP = "Add-Type -TypeDefinition 'using System;using System.Runtime.Inter
   'public static void Focus(IntPtr h){keybd_event(0x12,0,0,UIntPtr.Zero);ShowWindow(h,5);SetForegroundWindow(h);keybd_event(0x12,0,2,UIntPtr.Zero);}' +
   "}'\n"
 const QUERY = '$p=0;[void][FG]::GetWindowThreadProcessId([FG]::GetForegroundWindow(),[ref]$p);$n=(Get-Process -Id $p -ErrorAction SilentlyContinue).ProcessName;"FGPID:${p}:$n"\n'
+const QUERY_HWND = '"FGHWND:" + [FG]::GetForegroundWindow().ToInt64()\n'
 const NONE = { pid: 0, name: '' }
 
 function createForegroundProbe() {
@@ -48,6 +49,25 @@ function createForegroundProbe() {
     })
   }
 
+  // Identificador (HWND) da janela que está na frente, como texto; '' se não deu
+  function hwnd() {
+    return new Promise((resolve) => {
+      warm()
+      if (!ps) return resolve('')
+      const proc = ps
+      let buf = ''
+      const done = (v) => { clearTimeout(tm); proc.stdout.off('data', onData); resolve(v) }
+      const onData = (d) => {
+        buf += d
+        const m = buf.match(/FGHWND:(\d+)\r?\n/)
+        if (m) done(m[1])
+      }
+      const tm = setTimeout(() => done(''), 3000)
+      proc.stdout.on('data', onData)
+      proc.stdin.write(QUERY_HWND)
+    })
+  }
+
   // Traz a janela (pelo HWND) para a frente com foco de teclado/controle
   function focus(hwnd) {
     const cmd = focusCommand(hwnd)
@@ -58,7 +78,7 @@ function createForegroundProbe() {
 
   const dispose = () => { try { ps && ps.kill() } catch {} }
 
-  return { warm, info, focus, dispose }
+  return { warm, info, hwnd, focus, dispose }
 }
 
 module.exports = { createForegroundProbe }
