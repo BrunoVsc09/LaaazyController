@@ -4,7 +4,7 @@ const { BrowserWindow, screen } = require('electron')
 const C = require('../../shared/channels')
 const { lockWindow } = require('./window-manager')
 
-function createKeyboardOverlay({ preload, url }) {
+function createKeyboardOverlay({ preload, url, icon }) {
   let win = null
 
   function ensure() {
@@ -14,6 +14,7 @@ function createKeyboardOverlay({ preload, url }) {
       x: 0, y: Math.round(height * 0.42), width, height: Math.round(height * 0.58),
       frame: false, show: false, resizable: false, skipTaskbar: true, alwaysOnTop: true,
       backgroundColor: '#08183c',
+      icon,
       webPreferences: { preload },
     })
     win.setAlwaysOnTop(true, 'screen-saver') // por cima até de programas em tela cheia

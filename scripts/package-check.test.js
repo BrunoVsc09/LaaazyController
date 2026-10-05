@@ -4,7 +4,7 @@ import check from './package-check.js'
 const GOOD = [
   '/package.json',
   '/electron/main.js', '/electron/preload.js', '/electron/stream-preload.js',
-  '/electron/core/security.js', '/shared/channels.js',
+  '/electron/core/security.js', '/electron/assets/icon.ico', '/shared/channels.js',
   '/out/index.html', '/out/keyboard.html', '/out/_next/static/chunks/a.js',
 ]
 
@@ -24,6 +24,9 @@ describe('problemsIn: conferência do app.asar do .exe portátil', () => {
   })
   it('node_modules não vai no pacote: o Electron só usa módulos do Node e a tela já vem pronta em out/', () => {
     expect(check.problemsIn([...GOOD, '/node_modules/next/dist/server/next.js'])).toEqual(['sobra node_modules/next/dist/server/next.js'])
+  })
+  it('aponta o ícone da janela faltando (sem ele a barra de tarefas mostra o ícone do Electron)', () => {
+    expect(check.problemsIn(GOOD.filter((f) => f !== '/electron/assets/icon.ico'))).toEqual(['falta electron/assets/icon.ico'])
   })
   it('aceita caminhos com barra invertida (listagem no Windows)', () => {
     expect(check.problemsIn(GOOD.map((f) => f.replace(/\//g, '\\')))).toEqual([])

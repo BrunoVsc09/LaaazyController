@@ -3,6 +3,9 @@
 ## Próxima versão (ainda não lançada)
 
 ### Novo
+- **Logo do Laaazy:** um controle dormindo na cama. Aparece no `.exe`, na janela, na barra de
+  tarefas, no Alt+Tab e no GitHub. `pnpm icons` gera todos os tamanhos a partir de
+  `docs/assets/logo.svg`.
 - **Energia:** desligar daqui a 3 horas ou 2 horas (agendado no próprio Windows, vale mesmo
   com o Laaazy fechado; mostra a hora) e cancelar o desligamento. Tudo que mexe no PC
   pergunta "Você tem certeza?" com Sim / Não.

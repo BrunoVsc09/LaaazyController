@@ -10,7 +10,7 @@ function lockWindow(win) {
 }
 
 // forceFocus(hwnd): passa pelo bloqueio de foco do Windows (ver adapters/ps-foreground)
-function createWindowManager({ preload, onFocus, onBlur = () => {}, onResize, onClosed, forceFocus = () => {} }) {
+function createWindowManager({ preload, icon, onFocus, onBlur = () => {}, onResize, onClosed, forceFocus = () => {} }) {
   let win = null
   // Depois de fechada, a janela continua existindo mas todo método lança exceção
   const alive = () => !!win && !win.isDestroyed()
@@ -21,6 +21,7 @@ function createWindowManager({ preload, onFocus, onBlur = () => {}, onResize, on
       fullscreen: true,
       autoHideMenuBar: true,
       backgroundColor: '#0b3f9d',
+      icon, // logo do Laaazy na janela, na barra de tarefas e no Alt+Tab
       // Prévia do trailer com som no Início sem precisar de um clique antes
       webPreferences: { preload, autoplayPolicy: 'no-user-gesture-required' },
     })

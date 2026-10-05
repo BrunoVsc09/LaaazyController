@@ -6,7 +6,7 @@ const path = require('path')
 const REQUIRED = [
   'package.json',
   'electron/main.js', 'electron/preload.js', 'electron/stream-preload.js',
-  'electron/core/security.js', 'shared/channels.js',
+  'electron/core/security.js', 'electron/assets/icon.ico', 'shared/channels.js',
   'out/index.html', 'out/keyboard.html',
 ]
 // Testes, fontes dos preloads (o pacote leva os gerados), qualquer segredo e node_modules

@@ -92,8 +92,10 @@ const probe = createForegroundProbe()
 // ---- Janela e camada de streaming ----
 let externalActive = false
 const stream = createStreamView({ getWin: () => windows.get(), preload: path.join(__dirname, 'stream-preload.js') })
+const ICON = path.join(__dirname, 'assets', 'icon.ico')
 const windows = createWindowManager({
   preload: path.join(__dirname, 'preload.js'),
+  icon: ICON,
   onResize: () => stream.fit(),
   onClosed: () => stream.forget(),
   // Voltou do Edge/navegador para o menu: volta o perfil do Menu
@@ -281,7 +283,7 @@ const psButton = createPsButton({
 })
 
 // Teclado do Laaazy por cima do Edge (F19 / Ctrl+Alt+K): digita no campo selecionado
-const keyboardOverlay = createKeyboardOverlay({ preload: path.join(__dirname, 'preload.js'), url: 'app://local/keyboard.html' })
+const keyboardOverlay = createKeyboardOverlay({ preload: path.join(__dirname, 'preload.js'), url: 'app://local/keyboard.html', icon: ICON })
 const textEntry = createTextEntry({
   fgHwnd: probe.hwnd,
   showOverlay: () => keyboardOverlay.show(),

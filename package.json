@@ -38,7 +38,8 @@
     "start": "next start",
     "app": "pnpm preloads && next build && electron .",
     "dist": "pnpm preloads && next build && electron-builder && node scripts/package-check.js",
-    "preloads": "node scripts/build-preloads.js"
+    "preloads": "node scripts/build-preloads.js",
+    "icons": "electron scripts/make-icons.js"
   },
   "dependencies": {
     "lucide-react": "^1.16.0",
@@ -76,7 +77,8 @@
       "!node_modules/**"
     ],
     "win": {
-      "target": "portable"
+      "target": "portable",
+      "icon": "build/icon.ico"
     }
   }
 }

@@ -29,13 +29,25 @@
     <circle cx="1080" cy="64" r="1.5" opacity="0.6"/><circle cx="1190" cy="140" r="1.1" opacity="0.5"/>
     <circle cx="980" cy="330" r="1.4" opacity="0.5"/><circle cx="700" cy="350" r="1.2" opacity="0.4"/>
   </g>
-  <!-- marca -->
-  <g transform="translate(96 132)">
-    <rect width="88" height="88" rx="18" fill="#ffd23f"/>
-    <text x="44" y="64" text-anchor="middle" font-family="Segoe UI, Inter, Arial, sans-serif" font-weight="800" font-size="56" fill="#0b3f9d">L</text>
-  </g>
-  <text x="212" y="196" font-family="Segoe UI, Inter, Arial, sans-serif" font-weight="800" font-size="84" fill="#ffffff" letter-spacing="-1">Laaazy</text>
-  <text x="216" y="244" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="25" fill="#dbe7ff">Seu PC com cara de console — no sofá, só com o controle.</text>
+  <!-- marca: o controle dormindo (docs/assets/logo.svg) -->
+  <rect x="81" y="109" width="126" height="126" rx="30" fill="none" stroke="#ffffff" stroke-opacity="0.55" stroke-width="3"/>
+  <svg x="84" y="112" width="120" height="120" viewBox="0 0 512 512">
+<defs><linearGradient id="lzBg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a2f78"/><stop offset="1" stop-color="#1760b6"/></linearGradient></defs>
+<rect width="512" height="512" rx="112" fill="url(#lzBg)"/>
+<rect x="96" y="118" width="320" height="120" rx="56" fill="#ffffff"/>
+<g transform="translate(256 248)">
+<path d="M -112 -58 H 112 Q 142 -58 152 -22 L 170 58 Q 178 96 146 102 Q 120 105 100 72 L 82 46 H -82 L -100 72 Q -120 105 -146 102 Q -178 96 -170 58 L -152 -22 Q -142 -58 -112 -58 Z" fill="#1b2a4a" stroke="#ffffff" stroke-width="9" stroke-linejoin="round"/>
+<path d="M -52 8 q 16 16 32 0 M 20 8 q 16 16 32 0" fill="none" stroke="#ffffff" stroke-width="11" stroke-linecap="round"/>
+<g fill="#ffd23f"><rect x="-128" y="-26" width="44" height="14" rx="5"/><rect x="-113" y="-41" width="14" height="44" rx="5"/></g>
+<g fill="#ffffff"><circle cx="106" cy="-40" r="10"/><circle cx="130" cy="-18" r="10"/><circle cx="82" cy="-18" r="10"/><circle cx="106" cy="4" r="10"/></g>
+</g>
+<path d="M 64 292 C 140 262, 210 300, 256 284 S 380 262, 448 292 L 448 420 Q 448 444 424 444 L 88 444 Q 64 444 64 420 Z" fill="#ffd23f"/>
+<path d="M 64 292 C 140 262, 210 300, 256 284 S 380 262, 448 292" fill="none" stroke="#e0b21e" stroke-width="8"/>
+<path d="M 120 356 H 392 M 150 400 H 362" stroke="#e0b21e" stroke-width="8" stroke-linecap="round" opacity=".6"/>
+<g fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-weight="800"><text x="372" y="110" font-size="70">z</text><text x="420" y="66" font-size="44" opacity=".7">z</text></g>
+</svg>
+  <text x="222" y="196" font-family="Segoe UI, Inter, Arial, sans-serif" font-weight="800" font-size="84" fill="#ffffff" letter-spacing="-1">Laaazy</text>
+  <text x="226" y="244" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="25" fill="#dbe7ff">Seu PC com cara de console — no sofá, só com o controle.</text>
   <!-- botões do controle -->
   <g font-family="Segoe UI Symbol, Arial, sans-serif" font-size="30" text-anchor="middle" font-weight="700">
     <g transform="translate(1150 200) scale(0.86)">
