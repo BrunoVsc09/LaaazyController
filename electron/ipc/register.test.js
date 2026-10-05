@@ -34,6 +34,7 @@ function make() {
     readClipboard: vi.fn(() => 'abc'),
     psButton: { startTest: vi.fn(() => true) },
     desktop: { enter: vi.fn(async () => ({ ok: true, msg: '' })) },
+    ytTrailers: { status: vi.fn(async () => ({ configured: false, left: 90 })), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })) },
     assistant: { status: vi.fn(async () => ({})), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })), ask: vi.fn(async () => ({ ok: true, items: [] })), similarMood: vi.fn(async () => ({ ok: true, items: [] })) },
     volume: { step: vi.fn(() => true) },
     covers: { status: vi.fn(() => ({ configured: false })), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })) },
@@ -149,6 +150,14 @@ describe('registerIpc', () => {
     on.get(C.QUIT)(from('https://www.netflix.com/'))
     expect(h.quit).not.toHaveBeenCalled()
   })
+  it('YouTube: chave só como texto', async () => {
+    const { invoke, h } = make()
+    expect(await invoke(C.YT_SET_KEY, 5)).toMatchObject({ ok: false })
+    expect(h.ytTrailers.setKey).not.toHaveBeenCalled()
+    await invoke(C.YT_SET_KEY, 'AIza')
+    expect(h.ytTrailers.setKey).toHaveBeenCalledWith('AIza')
+    expect(await invoke(C.YT_STATUS)).toEqual({ configured: false, left: 90 })
+  })
   it('volume: só up, down e mute', () => {
     const { send, h } = make()
     send(C.VOLUME, 'explodir')
@@ -190,6 +199,9 @@ describe('registerIpc', () => {
     expect(h.catalog.setKey).toHaveBeenCalledWith('CHAVE')
     expect(await invoke(C.CATALOG_TRAILER, {})).toEqual([])
     expect(await invoke(C.CATALOG_TRAILER, 'tv:1')).toEqual([{ key: 'yt1', lang: 'pt' }])
+    // título e ano para achar o trailer dublado: só texto, cortado em 200 letras
+    await invoke(C.CATALOG_TRAILER, 'tv:2', { title: 'D'.repeat(300), year: 2017, x: 1 })
+    expect(h.catalog.trailer).toHaveBeenLastCalledWith('tv:2', { title: 'D'.repeat(200), year: '' })
     await invoke(C.CATALOG_HOME, { fresh: 'sim', x: 1 })
     expect(h.catalog.home).toHaveBeenCalledWith({ fresh: true })
   })

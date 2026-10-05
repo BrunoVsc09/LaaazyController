@@ -57,6 +57,8 @@ export type LazyApi = {
     // "Parecido com este": clima do título (pela IA) e títulos com o mesmo clima
     similar(title: Title): Promise<{ ok: boolean; items: Title[]; mood?: string; ai?: boolean; msg?: string }>
   }
+  // Trailers dublados/legendados pelo YouTube (chave opcional)
+  yt: { status(): Promise<{ configured: boolean; left: number }>; setKey(key: string): Promise<Result>; clearKey(): Promise<Result> }
   covers: { status(): Promise<{ configured: boolean }>; setKey(key: string): Promise<Result>; clearKey(): Promise<Result> }
   power: {
     run(action: 'quit' | 'suspend' | 'shutdown', confirmed?: boolean): Promise<{ ok: boolean; confirm?: boolean; msg?: string }>
@@ -72,7 +74,7 @@ export type LazyApi = {
     clearKey(): Promise<Result>
     home(opts?: { fresh: boolean }): Promise<CatalogHome>
     // Trailers do melhor ao pior; o player tenta o próximo se um não tocar
-    trailer(id: string): Promise<{ key: string; lang: string }[]>
+    trailer(id: string, hint?: { title: string; year: string }): Promise<{ key: string; lang: string; label?: 'dublado' | 'legendado' }[]>
     search(query: string): Promise<{ ok: boolean; configured?: boolean; items: Title[]; msg?: string }>
     where(id: string): Promise<string[]>
     episodes(): Promise<{ id: string; label: string; kind: 'new' | 'soon'; date: string }[]>

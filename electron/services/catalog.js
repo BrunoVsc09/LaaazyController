@@ -4,6 +4,7 @@ const { resolveProviders, mergeLists, searchItems, servicesFrom, rankTrailers, p
 const { episodeNews } = require('../core/episodes')
 const { cleanKey, wrongKeyMsg } = require('../core/keys')
 const explorer = require('../core/explore')
+const { mergeTrailers } = require('../core/yt-trailers')
 
 const CACHE_MS = 6 * 3600 * 1000
 const CACHE_VERSION = 3
@@ -13,7 +14,8 @@ const KINDS = ['tv', 'movie']
 const PAGES = [1, 2, 3] // 3 páginas de 20 por serviço: o Início sorteia de uma lista grande
 const POOL = 100 // títulos guardados por tipo
 
-function createCatalog({ tmdb, secrets, readCache, writeCache, now = Date.now }) {
+// findPt({ id, title, year }): trailers dublados/legendados do YouTube ([] sem chave)
+function createCatalog({ tmdb, secrets, readCache, writeCache, findPt = async () => [], now = Date.now }) {
   const trailers = new Map()
   const places = new Map()
   const details = new Map() // série → { at, data }, por 6 horas
@@ -70,10 +72,7 @@ function createCatalog({ tmdb, secrets, readCache, writeCache, now = Date.now })
 
   // [{ key, lang }] dos trailers no YouTube, do melhor ao pior (português primeiro); [] sem nenhum.
   // Série sem vídeo no cadastro geral: procura na 1ª temporada.
-  async function trailer(itemId) {
-    const ref = parseItemId(itemId)
-    const key = token()
-    if (!ref || !key) return []
+  async function fromTmdb(itemId, ref, key) {
     if (trailers.has(itemId)) return trailers.get(itemId)
     try {
       let list = rankTrailers(await tmdb.videos(key, ref.kind, ref.id))
@@ -81,6 +80,18 @@ function createCatalog({ tmdb, secrets, readCache, writeCache, now = Date.now })
       trailers.set(itemId, list)
       return list
     } catch { return [] }
+  }
+
+  // Com o título (hint), o dublado/legendado achado no YouTube vem antes dos do TMDB
+  async function trailer(itemId, hint) {
+    const ref = parseItemId(itemId)
+    const key = token()
+    if (!ref || !key) return []
+    const [pt, tm] = await Promise.all([
+      hint && hint.title ? findPt({ id: itemId, title: hint.title, year: hint.year || '' }).catch(() => []) : [],
+      fromTmdb(itemId, ref, key),
+    ])
+    return mergeTrailers(pt, tm)
   }
 
   async function search(raw) {

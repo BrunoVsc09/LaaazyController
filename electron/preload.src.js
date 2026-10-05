@@ -40,6 +40,7 @@ contextBridge.exposeInMainWorld('lazy', {
   system: { user: invoke(C.SYSTEM_USER) },
   desktop: invoke(C.DESKTOP_ENTER),
   ai: { status: invoke(C.AI_STATUS), setKey: invoke(C.AI_SET_KEY), clearKey: invoke(C.AI_CLEAR_KEY), ask: invoke(C.AI_ASK), similar: invoke(C.AI_SIMILAR) },
+  yt: { status: invoke(C.YT_STATUS), setKey: invoke(C.YT_SET_KEY), clearKey: invoke(C.YT_CLEAR_KEY) },
   covers: { status: invoke(C.COVERS_STATUS), setKey: invoke(C.COVERS_SET_KEY), clearKey: invoke(C.COVERS_CLEAR_KEY) },
   myList: { get: invoke(C.MYLIST_GET), toggle: invoke(C.MYLIST_TOGGLE) },
   power: { run: invoke(C.POWER_RUN), openAtLogin: invoke(C.POWER_LOGIN_GET), setOpenAtLogin: invoke(C.POWER_LOGIN_SET) },

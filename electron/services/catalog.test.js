@@ -23,13 +23,14 @@ function make({ key = 'TOKEN', cache = null, pingOk = true, fail = false, secret
     set: vi.fn((_n, v) => { if (!secretOk) return false; saved = v; return true }),
     clear: vi.fn(() => { saved = '' }),
   }
+  const findPt = vi.fn(async () => [])
   const catalog = mod.createCatalog({
-    tmdb, secrets,
+    tmdb, secrets, findPt,
     readCache: async () => stored,
     writeCache: vi.fn(async (c) => { stored = c; return true }),
     now: () => t,
   })
-  return { catalog, tmdb, secrets, advance: (ms) => { t += ms }, stored: () => stored }
+  return { catalog, tmdb, secrets, findPt, advance: (ms) => { t += ms }, stored: () => stored }
 }
 
 describe('catalog.home', () => {
@@ -134,6 +135,20 @@ describe('catalog.trailer', () => {
     expect(await catalog.trailer('movie:5')).toEqual([{ key: 'yt1', lang: 'pt' }])
     expect(tmdb.videos).toHaveBeenCalledTimes(1)
     expect(tmdb.videos).toHaveBeenCalledWith('TOKEN', 'movie', 5)
+  })
+  it('com o título: trailer dublado/legendado do YouTube vem antes dos do TMDB', async () => {
+    const { catalog, findPt } = make()
+    findPt.mockResolvedValue([{ key: 'dub', lang: 'pt', label: 'dublado' }])
+    expect(await catalog.trailer('movie:5', { title: 'Duna', year: '2021' })).toEqual([{ key: 'dub', lang: 'pt', label: 'dublado' }, { key: 'yt1', lang: 'pt' }])
+    expect(findPt).toHaveBeenCalledWith({ id: 'movie:5', title: 'Duna', year: '2021' })
+  })
+  it('sem o título (ou YouTube com erro): só os do TMDB', async () => {
+    const { catalog, findPt } = make()
+    expect(await catalog.trailer('movie:5')).toEqual([{ key: 'yt1', lang: 'pt' }])
+    expect(findPt).not.toHaveBeenCalled()
+    const b = make()
+    b.findPt.mockRejectedValue(new Error('x'))
+    expect(await b.catalog.trailer('movie:6', { title: 'X', year: '' })).toEqual([{ key: 'yt1', lang: 'pt' }])
   })
   it('série sem vídeo no cadastro geral: procura na 1ª temporada', async () => {
     const { catalog, tmdb } = make()

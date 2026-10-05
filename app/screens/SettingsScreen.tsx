@@ -23,6 +23,8 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
   const [trailerOn, setTrailerOn] = useState(true)
   const [saverMin, setSaverMin] = useState(10)
   const [gridOn, setGridOn] = useState(false)
+  const [ytOn, setYtOn] = useState(false)
+  const [ytLeft, setYtLeft] = useState(90)
   const [aiOn, setAiOn] = useState(false)
   const [aiLeft, setAiLeft] = useState(0)
   const [aiModel, setAiModel] = useState('')
@@ -34,6 +36,7 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
     lazy.drm.status().then(setDrm)
     lazy.catalog.status().then((s) => setTmdbOn(s.configured))
     lazy.covers.status().then((s) => setGridOn(s.configured))
+    lazy.yt.status().then((s) => { setYtOn(s.configured); setYtLeft(s.left) })
     lazy.ai.status().then((s) => { setAiOn(s.configured); setAiLeft(s.left); setAiModel(s.model) })
     lazy.power.openAtLogin().then(setAtLogin)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -117,6 +120,13 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
           style={{ flex: 1, marginLeft: 24, background: 'transparent', border: 0, color: 'inherit', font: 'inherit', textAlign: 'right' }} />
       </label>
       <button className="ds4-row" onClick={tap(saveModel)} onMouseEnter={sounds.hover}><span>Salvar modelo</span><b>▶</b></button>
+      <ApiKeySection
+        title="Trailers dublados e legendados (YouTube)" configured={ytOn} sounds={sounds}
+        help={`Para o Início achar o trailer dublado ou legendado. No console.cloud.google.com (pode ser o mesmo projeto do Gemini): Biblioteca → "YouTube Data API v3" → Ativar; depois Credenciais → Criar chave de API. Se a chave do Gemini estiver no mesmo projeto e sem restrição, ela também serve. ${ytOn ? `Restam ${ytLeft} de 90 buscas hoje.` : ''}`}
+        note="Cada título é buscado uma vez e fica guardado por 30 dias."
+        onSave={(k) => lazy!.yt.setKey(k)} onClear={() => lazy!.yt.clearKey()}
+        onResult={(m, on) => { setMsg(m); setYtOn(on) }}
+      />
       <ApiKeySection
         title="Capas dos jogos (SteamGridDB)" configured={gridOn} sounds={sounds}
         help="Para jogos da Epic e do PC ganharem capa. Crie uma chave grátis em steamgriddb.com → Preferências → API e cole aqui."

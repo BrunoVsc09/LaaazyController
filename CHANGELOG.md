@@ -2,6 +2,13 @@
 
 ## Próxima versão (ainda não lançada)
 
+### Novo
+- **Trailers dublados e legendados (YouTube):** com uma chave grátis da YouTube Data API em
+  Configurações, o Início procura "‹título› trailer dublado/legendado" no YouTube, fica só com
+  vídeos que são mesmo o trailer do título (sem reações nem análises), prefere dublado e
+  canais oficiais do Brasil, e mostra o selo "🇧🇷 Trailer dublado" na prévia. Cada título é
+  buscado uma vez e guardado por 30 dias; até 90 buscas por dia.
+
 ### Corrigido
 - **Trailer indisponível:** o Início tenta até 5 trailers de cada título (português primeiro);
   se o YouTube não deixar tocar um, passa para o próximo. Séries sem trailer no cadastro geral

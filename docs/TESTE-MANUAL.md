@@ -198,3 +198,8 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] `pnpm dist` termina com "Pacote OK".
 - [ ] Abrir `dist/Laaazy 3.2.0.exe`: Início, Biblioteca, trailer, teclado por cima (Ctrl+Alt+K) e PS funcionam.
 
+## Trailers dublados e legendados (YouTube)
+- [ ] Configurações → Trailers (YouTube): colar a chave e salvar → "Chave do YouTube salva".
+- [ ] Início: em filmes populares aparece o selo "🇧🇷 Trailer dublado" ou "legendado" na prévia.
+- [ ] Voltar ao mesmo título: mesma prévia, e o "Restam N de 90" não cai de novo.
+

@@ -34,6 +34,11 @@ describe('wrongKeyMsg: chave colada no campo errado', () => {
   it('chave de 32 letras e números no campo do Gemini (é do TMDB ou do SteamGridDB)', () => {
     expect(mod.wrongKeyMsg(HEX32, 'gemini')).toMatch(/TMDB ou do SteamGridDB/)
   })
+  it('chave do Google (AIza) também é a do YouTube: nada a avisar no campo do YouTube', () => {
+    expect(mod.wrongKeyMsg(GEMINI, 'youtube')).toBe('')
+    expect(mod.wrongKeyMsg(TMDB_TOKEN, 'youtube')).toMatch(/do TMDB/)
+    expect(mod.wrongKeyMsg(HEX32, 'youtube')).toMatch(/TMDB ou do SteamGridDB/)
+  })
   it('chave no campo certo: nada a avisar', () => {
     expect(mod.wrongKeyMsg(GEMINI, 'gemini')).toBe('')
     expect(mod.wrongKeyMsg(TMDB_TOKEN, 'tmdb')).toBe('')

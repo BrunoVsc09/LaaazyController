@@ -316,3 +316,6 @@ html, body, :is(.ps4-screen, .kb-overlay) * { scrollbar-width: none; }
 .lz-hero-media { height: 100%; width: auto; max-width: 100%; justify-self: end; }
 /* Card em foco para abaixo do destaque e acima do rodapé */
 html:has(.lz-home) { scroll-padding-top: calc(var(--lz-hero-h) + 16px); scroll-padding-bottom: 120px; }
+
+/* Selo "Trailer dublado/legendado" (achado no YouTube) sobre a prévia */
+.lz-trailer-label { position: absolute; left: 12px; top: 12px; z-index: 1; padding: 4px 10px; border-radius: 999px; background: rgba(0, 0, 0, .65); color: #ffd23f; font-size: 14px; font-weight: 700; }

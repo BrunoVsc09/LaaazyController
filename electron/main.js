@@ -16,6 +16,8 @@ const { createTmdb } = require('./adapters/tmdb')
 const { createSecretStore } = require('./adapters/secret-store')
 const { createCatalog } = require('./services/catalog')
 const { createSgdb } = require('./adapters/sgdb')
+const { createYoutube } = require('./adapters/youtube')
+const { createYtTrailers } = require('./services/yt-trailers')
 const { createCovers } = require('./services/covers')
 const { createMyList } = require('./services/my-list')
 const { createGemini } = require('./adapters/gemini')
@@ -193,10 +195,20 @@ const covers = createCovers({
 })
 const libraryWithCovers = { ...library, list: async (opts) => covers.fill(await library.list(opts)) }
 
+// Trailers dublados/legendados pelo YouTube (chave opcional, criptografada como as outras)
+const ytTrailers = createYtTrailers({
+  yt: createYoutube(), secrets: secretStore,
+  readCache: () => store.readJson(userFile('yt-trailers.json'), {}),
+  writeCache: (c) => store.writeJson(userFile('yt-trailers.json'), c),
+  readUsage: () => store.readJson(userFile('yt-usage.json'), {}),
+  writeUsage: (u) => store.writeJson(userFile('yt-usage.json'), u),
+})
+
 // Filmes e séries (TMDB). A chave fica criptografada em secrets.json; o cache em catalog-cache.json.
 const catalog = createCatalog({
   tmdb: createTmdb(),
   secrets: secretStore,
+  findPt: (item) => ytTrailers.find(item),
   readCache: async () => {
     const c = await store.readJson(userFile('catalog-cache.json'), {})
     return c.at ? c : null
@@ -269,7 +281,7 @@ setInterval(() => returnWatch.tick(), 1500).unref()
 const desktop = createDesktop({ ds4, returnWatch, minimize: hideLaaazy })
 
 registerIpc(ipcMain, {
-  launcher, locator, settings, ds4, library: libraryWithCovers, catalog, myList, power, covers, volume, assistant, psButton, textEntry, goHome, desktop,
+  launcher, locator, settings, ds4, library: libraryWithCovers, catalog, myList, power, covers, volume, assistant, psButton, textEntry, goHome, desktop, ytTrailers,
   browse: createFileBrowser(),
   // Botão Colar das chaves: texto copiado, já limpo de espaços (só quando você aperta)
   readClipboard: () => cleanKey(clipboard.readText()).slice(0, 500),

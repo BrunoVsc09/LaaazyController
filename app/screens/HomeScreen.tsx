@@ -57,19 +57,22 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Trailers do título (melhor primeiro): se o YouTube disser que um não toca, vai para o próximo
-  const trailers = useRef<{ key: string; lang: string }[]>([])
+  const trailers = useRef<{ key: string; lang: string; label?: string }[]>([])
+  const [trailerLabel, setTrailerLabel] = useState('')
   const playTrailer = (i: number) => {
     const t = trailers.current[i]
     setPreview(t ? trailerEmbedUrl(t.key, { sound: soundRef.current, captions: t.lang !== 'pt' }) : null)
+    setTrailerLabel(t?.label ? `Trailer ${t.label}` : '')
   }
   const trailerIndex = useRef(0)
   useEffect(() => {
     setPreview(null)
+    setTrailerLabel('')
     trailers.current = []
     if (!lazy || !hero || !previewOn) return
     const id = hero.id
     const t = window.setTimeout(async () => {
-      const list = await lazy.catalog.trailer(id)
+      const list = await lazy.catalog.trailer(id, { title: hero.title, year: hero.year })
       if (heroId.current !== id) return
       trailers.current = list
       trailerIndex.current = 0
@@ -177,6 +180,7 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
             {msg && <p className="lz-meta" role="status">{msg}</p>}
           </div>
           <div className="lz-hero-media" style={bg(hero)} aria-hidden="true">
+            {preview && trailerLabel && <span className="lz-trailer-label">🇧🇷 {trailerLabel}</span>}
             {preview && <iframe key={preview} ref={frame} src={preview} title="Prévia do trailer" tabIndex={-1} allow="autoplay; encrypted-media" onLoad={() => send('listening')} />}
           </div>
         </div>
