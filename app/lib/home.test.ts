@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { DEFAULT_PINNED, togglePin, pinnedCards, buildRows, heroInfo, appsGrid } from './home-model'
+import { DEFAULT_PINNED, togglePin, pinnedCards, buildRows, heroInfo, appsGrid, shuffled } from './home-model'
 import { CATALOG } from './catalog'
 import type { Title } from './lazy-api'
 
@@ -27,9 +27,9 @@ describe('apps fixados no Início', () => {
 })
 
 describe('buildRows', () => {
-  it('séries e filmes em alta, sem fileiras vazias', () => {
+  it('séries e filmes, sem fileiras vazias', () => {
     const rows = buildRows({ series: [t('a')], films: [] })
-    expect(rows.map((r) => r.title)).toEqual(['Séries em alta nos seus apps'])
+    expect(rows.map((r) => r.title)).toEqual(['Séries nos seus apps'])
     expect(rows[0].items).toHaveLength(1)
   })
   it('sem nada, nenhuma fileira', () => {
@@ -40,7 +40,26 @@ describe('buildRows', () => {
 describe('buildRows com Minha lista', () => {
   it('Minha lista vem antes das fileiras em alta', () => {
     const rows = buildRows({ series: [t('a')], films: [t('b', { kind: 'Filme' })], myList: [t('c')] })
-    expect(rows.map((r) => r.title)).toEqual(['Minha lista', 'Séries em alta nos seus apps', 'Filmes em alta nos seus apps'])
+    expect(rows.map((r) => r.title)).toEqual(['Minha lista', 'Filmes nos seus apps', 'Séries nos seus apps'])
+  })
+  it('fileiras separadas: Filmes, Séries e Animes', () => {
+    const rows = buildRows({ series: [t('a')], films: [t('b', { kind: 'Filme' })], animes: [t('c')] })
+    expect(rows.map((r) => r.id)).toEqual(['films', 'series', 'animes'])
+    expect(rows[2].title).toBe('Animes nos seus apps')
+  })
+})
+
+describe('shuffled: cada vez o Início mostra outros títulos', () => {
+  const items = ['a', 'b', 'c', 'd', 'e'].map((id) => t(id))
+  it('mesma lista em outra ordem, sem perder nem repetir', () => {
+    const r = shuffled(items, () => 0)
+    expect(r.map((x) => x.id).sort()).toEqual(['a', 'b', 'c', 'd', 'e'])
+    expect(r.map((x) => x.id)).not.toEqual(['a', 'b', 'c', 'd', 'e'])
+  })
+  it('não mexe na lista original e corta no limite', () => {
+    const r = shuffled(items, Math.random, 3)
+    expect(r).toHaveLength(3)
+    expect(items.map((x) => x.id)).toEqual(['a', 'b', 'c', 'd', 'e'])
   })
 })
 

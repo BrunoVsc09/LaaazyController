@@ -14,7 +14,7 @@ function make({ key = 'TOKEN', cache = null, pingOk = true, fail = false, secret
   const tmdb = {
     ping: vi.fn(async () => (pingOk === true ? { ok: true } : pingOk === false ? { ok: false, reason: 'refused' } : pingOk)),
     providers: vi.fn(async () => { if (fail) throw new Error('offline'); return providers }),
-    discover: vi.fn(async (_t, kind, pid) => [{ id: pid, name: `S${pid}`, title: `F${pid}`, popularity: pid }]),
+    discover: vi.fn(async (_t, kind, pid) => [{ id: pid, name: `S${pid}`, title: `F${pid}`, popularity: pid }, { id: 900 + pid, name: `A${pid}`, title: `AF${pid}`, popularity: 1, original_language: 'ja', genre_ids: [16] }]),
     videos: vi.fn(async () => [{ site: 'YouTube', type: 'Trailer', key: 'yt1', official: true, iso_639_1: 'pt', iso_3166_1: 'BR' }]),
   }
   const secrets = {
@@ -44,16 +44,18 @@ describe('catalog.home', () => {
     expect(r.series.map((s) => s.title)).toEqual(['S119', 'S8'])
     expect(r.series[0].services).toEqual(['Prime Video'])
     expect(r.films.map((s) => s.title)).toEqual(['F119', 'F8'])
-    expect(tmdb.discover).toHaveBeenCalledTimes(8) // 2 serviços × 2 tipos × 2 páginas
-    expect(tmdb.discover.mock.calls.map((c) => c[3]).sort()).toEqual([1, 1, 1, 1, 2, 2, 2, 2])
+    // animes (séries e filmes) saem das outras fileiras e ganham a sua
+    expect(r.animes.map((s) => s.title).sort()).toEqual(['A119', 'A8', 'AF119', 'AF8'])
+    expect(tmdb.discover).toHaveBeenCalledTimes(12) // 2 serviços × 2 tipos × 3 páginas
+    expect(tmdb.discover.mock.calls.map((c) => c[3]).sort()).toEqual([1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3])
     expect(stored().series).toHaveLength(2)
   })
-  it('lista guardada por uma versão antiga do app (sem v: 2) é buscada de novo na hora', async () => {
+  it('lista guardada por uma versão antiga do app (sem v: 3) é buscada de novo na hora', async () => {
     const { catalog, tmdb, stored } = make({ cache: { at: 10 * HOUR, series: [{ id: 'tv:1', title: 'Velha' }], films: [] } })
     const r = await catalog.home()
     expect(tmdb.providers).toHaveBeenCalled()
     expect(r.series.map((s) => s.title)).not.toContain('Velha')
-    expect(stored().v).toBe(2)
+    expect(stored().v).toBe(3)
   })
   it('usa o cache por 6 horas; fresh ignora o cache', async () => {
     const { catalog, tmdb, advance } = make()

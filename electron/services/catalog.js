@@ -6,11 +6,12 @@ const { cleanKey } = require('../core/keys')
 const explorer = require('../core/explore')
 
 const CACHE_MS = 6 * 3600 * 1000
-const CACHE_VERSION = 2
+const CACHE_VERSION = 3
 const MAX_SERIES = 20
 const SECRET = 'tmdb'
 const KINDS = ['tv', 'movie']
-const PAGES = [1, 2] // 2 páginas de 20 por serviço: até 40 títulos por fileira
+const PAGES = [1, 2, 3] // 3 páginas de 20 por serviço: o Início sorteia de uma lista grande
+const POOL = 100 // títulos guardados por tipo
 
 function createCatalog({ tmdb, secrets, readCache, writeCache, now = Date.now }) {
   const trailers = new Map()
@@ -44,21 +45,24 @@ function createCatalog({ tmdb, secrets, readCache, writeCache, now = Date.now })
     const ids = resolveProviders(await tmdb.providers(key, kind))
     const lists = await Promise.all(Object.entries(ids).map(async ([service, pid]) =>
       ({ service, results: (await Promise.all(PAGES.map((p) => tmdb.discover(key, kind, pid, p)))).flat() })))
-    return mergeLists(lists, kind)
+    return mergeLists(lists, kind, POOL)
   }
 
   async function home({ fresh = false } = {}) {
     const key = token()
-    if (!key) return { ok: false, configured: false, series: [], films: [], msg: 'Configure a chave do TMDB em Configurações para ver filmes e séries.' }
+    if (!key) return { ok: false, configured: false, series: [], films: [], animes: [], msg: 'Configure a chave do TMDB em Configurações para ver filmes e séries.' }
     const cache = await readCache()
-    // v: 2 = listas com 2 páginas por serviço; cache de versão antiga é buscado de novo
-    if (!fresh && cache && cache.v === CACHE_VERSION && now() - cache.at < CACHE_MS) return { ok: true, configured: true, series: cache.series, films: cache.films }
+    // v: 3 = 3 páginas por serviço e animes separados; cache de versão antiga é buscado de novo
+    if (!fresh && cache && cache.v === CACHE_VERSION && now() - cache.at < CACHE_MS) return { ok: true, configured: true, series: cache.series, films: cache.films, animes: cache.animes || [] }
     try {
-      const [series, films] = await Promise.all(KINDS.map((k) => fetchKind(key, k)))
-      await writeCache({ v: CACHE_VERSION, at: now(), series, films })
-      return { ok: true, configured: true, series, films }
+      const [tv, movies] = await Promise.all(KINDS.map((k) => fetchKind(key, k)))
+      const series = tv.filter((x) => !x.anime)
+      const films = movies.filter((x) => !x.anime)
+      const animes = [...tv, ...movies].filter((x) => x.anime).sort((a, b) => b.popularity - a.popularity)
+      await writeCache({ v: CACHE_VERSION, at: now(), series, films, animes })
+      return { ok: true, configured: true, series, films, animes }
     } catch (e) {
-      if (cache) return { ok: true, configured: true, stale: true, series: cache.series, films: cache.films, msg: 'Sem conexão com o TMDB; mostrando a última lista.' }
+      if (cache) return { ok: true, configured: true, stale: true, series: cache.series, films: cache.films, animes: cache.animes || [], msg: 'Sem conexão com o TMDB; mostrando a última lista.' }
       return { ok: false, configured: true, series: [], films: [], msg: 'Não consegui falar com o TMDB: ' + e.message }
     }
   }

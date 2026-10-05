@@ -15,7 +15,7 @@ export default function Screensaver() {
 
   useEffect(() => {
     const lazy = getLazy()
-    if (lazy) Promise.all([lazy.catalog.home(), lazy.myList.get()]).then(([h, list]) => setSlides(slidesFrom([...list, ...h.series, ...h.films])))
+    if (lazy) Promise.all([lazy.catalog.home(), lazy.myList.get()]).then(([h, list]) => setSlides(slidesFrom([...list, ...h.series, ...h.films, ...(h.animes ?? [])])))
     const t = window.setInterval(() => { setI((x) => x + 1); setNow(new Date()) }, SLIDE_MS)
     return () => window.clearInterval(t)
   }, [])

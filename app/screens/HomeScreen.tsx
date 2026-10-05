@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import streaming from '../../shared/streaming'
 import AppIcon from '../components/AppIcon'
 import { CATALOG, type Card } from '../lib/catalog'
-import { buildRows, heroInfo, pinnedCards, type EpisodeNews } from '../lib/home-model'
+import { buildRows, heroInfo, pinnedCards, shuffled, type EpisodeNews } from '../lib/home-model'
 import { getLazy, type CatalogHome, type Game, type Title } from '../lib/lazy-api'
 import { PREVIEW_DELAY_MS, YT_ORIGIN, nextTitleId, playerCommand, playerEvent, trailerEmbedUrl } from '../lib/trailer'
 import type { Sounds } from '../hooks/useSounds'
@@ -12,11 +12,18 @@ import type { Sounds } from '../hooks/useSounds'
 type Props = { pinned: string[]; sounds: Sounds; onActivate: (card: Card) => void; onOpenSettings: () => void }
 
 const urlOf = (label: string) => streaming.find((s) => s.label === label)?.url
+const PER_ROW = 30 // títulos sorteados por fileira, de uma lista de até 100
 const bg = (t: Title) => (t.backdrop || t.poster ? { backgroundImage: `url(${t.backdrop || t.poster})` } : undefined)
 
 export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings }: Props) {
   const lazy = getLazy()
   const [data, setData] = useState<CatalogHome | null>(null)
+  // Fileiras sorteadas: muda a cada abertura do Início e no "Outros títulos"
+  const [mix, setMix] = useState<{ films: Title[]; series: Title[]; animes: Title[] }>({ films: [], series: [], animes: [] })
+  const reshuffle = (d: CatalogHome | null = data) => {
+    if (!d) return
+    setMix({ films: shuffled(d.films, Math.random, PER_ROW), series: shuffled(d.series, Math.random, PER_ROW), animes: shuffled(d.animes ?? [], Math.random, PER_ROW) })
+  }
   const [hero, setHero] = useState<Title | null>(null)
   const [msg, setMsg] = useState('')
   const [recent, setRecent] = useState<Game[]>([])
@@ -37,7 +44,8 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
     if (!lazy) return
     Promise.all([lazy.catalog.home(), lazy.myList.get()]).then(([d, list]) => {
       setData(d); setMyList(list)
-      setHero(list[0] ?? d.series[0] ?? d.films[0] ?? null)
+      reshuffle(d)
+      setHero(list[0] ?? null)
       // Começa nos filmes e séries, para já ir passando e vendo as prévias
       window.setTimeout(() => {
         if (!document.querySelector('.lz-home :focus')) document.querySelector<HTMLElement>('.lz-home .lz-title')?.focus()
@@ -59,7 +67,8 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
     return () => window.clearTimeout(t)
   }, [hero?.id, previewOn]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const rows = data ? buildRows({ ...data, myList, news }) : []
+  const rows = data ? buildRows({ ...mix, myList, news }) : []
+  useEffect(() => { if (!hero && rows[0]?.items[0]) setHero(rows[0].items[0]) }, [rows.length]) // eslint-disable-line react-hooks/exhaustive-deps
   const rowsRef = useRef(rows)
   rowsRef.current = rows
 
@@ -145,6 +154,7 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
               <button type="button" className="lz-btn primary" onClick={tap(watch)} onMouseEnter={sounds.hover}>▶ {info.primary ? `Assistir na ${info.primary}` : 'Onde assistir'}</button>
               {previewOn && <button type="button" className="lz-btn" aria-pressed={sound} onClick={tap(toggleSound)} onMouseEnter={sounds.hover}>{sound ? '🔊 Trailer com som' : '🔇 Trailer sem som'}</button>}
               <button type="button" className="lz-btn" aria-pressed={inList} onClick={tap(toggleList)} onMouseEnter={sounds.hover}>{inList ? '✓ Na Minha lista' : '＋ Minha lista'}</button>
+              <button type="button" className="lz-btn" onClick={tap(() => reshuffle())} onMouseEnter={sounds.hover}>↻ Outros títulos</button>
             </div>
             {msg && <p className="lz-meta" role="status">{msg}</p>}
           </div>

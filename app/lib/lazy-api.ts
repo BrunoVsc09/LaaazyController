@@ -19,9 +19,9 @@ export type Ds4Data = { profiles: string[]; config: Record<string, string>; dir:
 export type DrmStatus = { installed: boolean; version: string; msg: string }
 export type Title = {
   id: string; kind: 'Série' | 'Filme'; title: string; year: string; overview: string
-  poster: string; backdrop: string; popularity: number; services: string[]
+  poster: string; backdrop: string; popularity: number; services: string[]; anime?: boolean
 }
-export type CatalogHome = { ok: boolean; configured: boolean; stale?: boolean; series: Title[]; films: Title[]; msg?: string }
+export type CatalogHome = { ok: boolean; configured: boolean; stale?: boolean; series: Title[]; films: Title[]; animes?: Title[]; msg?: string }
 
 export type LazyApi = {
   open(url: string, label: string): Promise<string>

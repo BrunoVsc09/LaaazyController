@@ -34,6 +34,11 @@ describe('toItem', () => {
     const it2 = cat.toItem({ id: 2, title: 'Filme Y', release_date: '2023-01-01' }, 'movie', 'Prime Video')
     expect(it2).toMatchObject({ id: 'movie:2', kind: 'Filme', title: 'Filme Y', year: '2023', poster: '', backdrop: '', overview: '', popularity: 0 })
   })
+  it('anime (animação japonesa) vem marcado; o resto não ganha o campo', () => {
+    expect(cat.toItem({ id: 4, name: 'Frieren', original_language: 'ja', genre_ids: [16, 10765] }, 'tv')).toMatchObject({ anime: true })
+    expect(cat.toItem({ id: 5, name: 'Arcane', original_language: 'en', genre_ids: [16] }, 'tv')).not.toHaveProperty('anime')
+    expect(cat.toItem({ id: 6, name: 'Dorama', original_language: 'ja', genre_ids: [18] }, 'tv')).not.toHaveProperty('anime')
+  })
   it('sem título não vira item', () => {
     expect(cat.toItem({ id: 3 }, 'tv', 'Netflix')).toBeNull()
   })

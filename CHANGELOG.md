@@ -3,6 +3,9 @@
 ## Próxima versão (ainda não lançada)
 
 ### Novo
+- **Início com fileiras de Filmes, Séries e Animes, sorteadas:** cada vez que o Início abre
+  aparecem outros títulos (sorteio de até 100 por tipo nos seus apps), e o botão
+  **↻ Outros títulos** sorteia de novo na hora. Animes saíram da fileira de séries.
 - **Parecido com este (△ no Início):** num filme ou série, aperte △ e aparece no topo uma
   fileira com o mesmo clima ("suspense lento e frio"), não só o mesmo gênero. O Gemini
   sugere, o TMDB confere cada título. Sem a chave do Gemini, usa as recomendações do TMDB.

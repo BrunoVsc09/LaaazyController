@@ -17,13 +17,16 @@ export const appsGrid = (cards: Card[]) => cards.filter((c) => c.screen !== 'lib
 export type TitleRow = { id: string; title: string; items: Title[]; badges?: Record<string, string> }
 export type EpisodeNews = { id: string; label: string }
 
-export function buildRows({ series, films, myList = [], news = [] }: { series: Title[]; films: Title[]; myList?: Title[]; news?: EpisodeNews[] }): TitleRow[] {
+type RowsInput = { series: Title[]; films: Title[]; animes?: Title[]; myList?: Title[]; news?: EpisodeNews[] }
+
+export function buildRows({ series, films, animes = [], myList = [], news = [] }: RowsInput): TitleRow[] {
   const withNews = news.map((n) => myList.find((t) => t.id === n.id)).filter((t): t is Title => !!t)
   const rows: TitleRow[] = [
     { id: 'news', title: 'Novos episódios', items: withNews, badges: Object.fromEntries(news.map((n) => [n.id, n.label])) },
     { id: 'mylist', title: 'Minha lista', items: myList },
-    { id: 'series', title: 'Séries em alta nos seus apps', items: series },
-    { id: 'films', title: 'Filmes em alta nos seus apps', items: films },
+    { id: 'films', title: 'Filmes nos seus apps', items: films },
+    { id: 'series', title: 'Séries nos seus apps', items: series },
+    { id: 'animes', title: 'Animes nos seus apps', items: animes },
   ]
   return rows.filter((r) => r.items.length > 0)
 }
@@ -33,4 +36,14 @@ const KNOWN = new Set(streaming.map((s) => s.label))
 export function heroInfo(t: Title) {
   const meta = [t.kind, t.year, t.services.join(', ')].filter(Boolean).join(' · ')
   return { meta, primary: t.services.find((s) => KNOWN.has(s)) ?? null }
+}
+
+// Cópia embaralhada (Fisher-Yates), cortada em `limit`: cada abertura do Início mostra outros títulos
+export function shuffled<T>(items: T[], rand: () => number = Math.random, limit = items.length): T[] {
+  const out = [...items]
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1))
+    ;[out[i], out[j]] = [out[j], out[i]]
+  }
+  return out.slice(0, limit)
 }

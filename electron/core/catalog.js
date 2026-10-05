@@ -24,6 +24,9 @@ function resolveProviders(list) {
   return ids
 }
 
+// Anime = animação (gênero 16) japonesa; ganha fileira própria no Início
+const isAnime = (raw) => raw.original_language === 'ja' && (raw.genre_ids || []).includes(16)
+
 // Série usa name/first_air_date; filme usa title/release_date
 function toItem(raw, kind, service) {
   const tv = kind === 'tv'
@@ -39,6 +42,7 @@ function toItem(raw, kind, service) {
     backdrop: raw.backdrop_path ? IMG + 'w1280' + raw.backdrop_path : '',
     popularity: raw.popularity || 0,
     services: service ? [service] : [],
+    ...(isAnime(raw) ? { anime: true } : {}),
   }
 }
 
