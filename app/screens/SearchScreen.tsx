@@ -54,7 +54,8 @@ export default function SearchScreen({ sounds, onActivate, onBack }: Props) {
   }
   // A IA só é chamada quando você aperta o botão (não a cada letra)
   const askAi = async () => {
-    if (!lazy || query.trim().length < 2) return
+    if (!lazy) return
+    if (query.trim().length < 2) { setAiNote('Escreva primeiro o que você quer ver (X no campo abre o teclado) e aperte de novo.'); return }
     setAiNote('Perguntando à IA...')
     const r = await lazy.ai.ask(query)
     setAiItems(r.items)
@@ -67,9 +68,11 @@ export default function SearchScreen({ sounds, onActivate, onBack }: Props) {
     <section className="lz-apps lz-search" aria-label="Buscar">
       <label className="lz-search-box">
         <span aria-hidden="true">⌕</span>
-        <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar filmes, séries, jogos e apps" aria-label="Buscar" />
+        <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder={aiOn ? 'Busque ou peça à IA: "comédia leve na Netflix"' : 'Buscar filmes, séries, jogos e apps'} aria-label="Buscar" />
       </label>
-      {aiOn && <button type="button" className="lz-btn primary" onClick={tap(askAi)} disabled={query.trim().length < 2}>✨ Pedir à IA</button>}
+      {aiOn
+        ? <button type="button" className="lz-btn primary" onClick={tap(askAi)}>✨ Pedir à IA (Gemini)</button>
+        : <p className="lz-meta">✨ Pedir à IA: configure a chave do Gemini em Configurações (⚙ no topo).</p>}
       {aiNote && <p className="lz-meta" role="status">{aiNote}</p>}
       {aiItems && aiItems.length > 0 && (
         <div className="lz-row"><h2>Sugestões da IA (títulos do TMDB)</h2>

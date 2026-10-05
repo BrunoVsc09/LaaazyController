@@ -6,12 +6,14 @@ export const YT_ORIGIN = 'https://www.youtube-nocookie.com'
 const KEY = /^[\w-]{6,20}$/
 
 // Sem controles; enablejsapi para ligar o som e saber quando acaba (sem loop: acaba e passa)
-export function trailerEmbedUrl(key: string | null | undefined, { sound = false } = {}) {
+// captions: trailer que não é em português → liga a legenda em português (se o vídeo tiver)
+export function trailerEmbedUrl(key: string | null | undefined, { sound = false, captions = false } = {}) {
   if (!key || !KEY.test(key)) return null
   const q = new URLSearchParams({
     autoplay: '1', mute: sound ? '0' : '1', controls: '0', enablejsapi: '1',
     playsinline: '1', rel: '0', modestbranding: '1', disablekb: '1',
   })
+  if (captions) { q.set('cc_load_policy', '1'); q.set('cc_lang_pref', 'pt'); q.set('hl', 'pt-BR') }
   return `${YT_ORIGIN}/embed/${key}?${q}`
 }
 

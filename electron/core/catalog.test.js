@@ -52,20 +52,33 @@ describe('mergeLists', () => {
   })
 })
 
-describe('pickTrailer', () => {
-  it('prefere trailer oficial do YouTube', () => {
-    const v = [
-      { site: 'YouTube', type: 'Teaser', key: 't1', official: true },
-      { site: 'Vimeo', type: 'Trailer', key: 'v1', official: true },
-      { site: 'YouTube', type: 'Trailer', key: 'y1', official: false },
-      { site: 'YouTube', type: 'Trailer', key: 'y2', official: true },
-    ]
-    expect(cat.pickTrailer(v)).toBe('y2')
+describe('pickTrailer (prefere português do Brasil)', () => {
+  const v = (key, lang, country, type = 'Trailer', official = true, site = 'YouTube') => ({ key, iso_639_1: lang, iso_3166_1: country, type, official, site })
+  it('trailer em português do Brasil (dublado ou legendado) vem primeiro', () => {
+    expect(cat.pickTrailer([v('en1', 'en', 'US'), v('pt1', 'pt', 'PT'), v('br1', 'pt', 'BR')])).toEqual({ key: 'br1', lang: 'pt' })
   })
-  it('sem trailer, aceita teaser do YouTube; sem nada, null', () => {
-    expect(cat.pickTrailer([{ site: 'YouTube', type: 'Teaser', key: 't1' }])).toBe('t1')
-    expect(cat.pickTrailer([{ site: 'Vimeo', type: 'Trailer', key: 'v' }])).toBeNull()
+  it('sem do Brasil, português de outro país; sem português, inglês', () => {
+    expect(cat.pickTrailer([v('en1', 'en', 'US'), v('pt1', 'pt', 'PT')])).toEqual({ key: 'pt1', lang: 'pt' })
+    expect(cat.pickTrailer([v('en1', 'en', 'US')])).toEqual({ key: 'en1', lang: 'en' })
+  })
+  it('português vence mesmo sendo teaser; dentro do mesmo idioma, trailer oficial vence', () => {
+    expect(cat.pickTrailer([v('en1', 'en', 'US'), v('br-teaser', 'pt', 'BR', 'Teaser')])).toEqual({ key: 'br-teaser', lang: 'pt' })
+    expect(cat.pickTrailer([v('t', 'en', 'US', 'Teaser'), v('a', 'en', 'US', 'Trailer', false), v('b', 'en', 'US', 'Trailer', true)]).key).toBe('b')
+  })
+  it('só YouTube; sem trailer nem teaser, null', () => {
+    expect(cat.pickTrailer([v('x', 'pt', 'BR', 'Trailer', true, 'Vimeo')])).toBeNull()
+    expect(cat.pickTrailer([v('c', 'pt', 'BR', 'Clip')])).toBeNull()
     expect(cat.pickTrailer(undefined)).toBeNull()
+  })
+  it('vídeo sem idioma marcado também serve', () => {
+    expect(cat.pickTrailer([{ key: 'n1', site: 'YouTube', type: 'Trailer' }])).toEqual({ key: 'n1', lang: '' })
+  })
+})
+
+describe('mergeLists: até 40 por fileira', () => {
+  it('limite padrão de 40', () => {
+    const results = Array.from({ length: 60 }, (_, i) => ({ id: i, name: `S${i}`, popularity: i }))
+    expect(cat.mergeLists([{ service: 'Netflix', results }], 'tv')).toHaveLength(40)
   })
 })
 

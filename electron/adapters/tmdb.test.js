@@ -19,6 +19,16 @@ describe('tmdb adapter', () => {
     })
     expect(opts.headers.Authorization).toBe('Bearer TOKEN')
   })
+  it('videos pega português, inglês e vídeos sem idioma marcado', async () => {
+    const fetch = fakeFetch(200, { results: [] })
+    await mod.createTmdb({ fetch }).videos('T', 'movie', 1)
+    expect(new URL(fetch.mock.calls[0][0]).searchParams.get('include_video_language')).toBe('pt,en,null')
+  })
+  it('discover pede a página indicada', async () => {
+    const fetch = fakeFetch(200, { results: [] })
+    await mod.createTmdb({ fetch }).discover('T', 'tv', 8, 2)
+    expect(new URL(fetch.mock.calls[0][0]).searchParams.get('page')).toBe('2')
+  })
   it('providers e videos', async () => {
     const fetch = fakeFetch(200, { results: [] })
     const tmdb = mod.createTmdb({ fetch })

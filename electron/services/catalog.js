@@ -5,9 +5,11 @@ const { episodeNews } = require('../core/episodes')
 const { cleanKey } = require('../core/keys')
 
 const CACHE_MS = 6 * 3600 * 1000
+const CACHE_VERSION = 2
 const MAX_SERIES = 20
 const SECRET = 'tmdb'
 const KINDS = ['tv', 'movie']
+const PAGES = [1, 2] // 2 páginas de 20 por serviço: até 40 títulos por fileira
 
 function createCatalog({ tmdb, secrets, readCache, writeCache, now = Date.now }) {
   const trailers = new Map()
@@ -40,7 +42,7 @@ function createCatalog({ tmdb, secrets, readCache, writeCache, now = Date.now })
   async function fetchKind(key, kind) {
     const ids = resolveProviders(await tmdb.providers(key, kind))
     const lists = await Promise.all(Object.entries(ids).map(async ([service, pid]) =>
-      ({ service, results: await tmdb.discover(key, kind, pid) })))
+      ({ service, results: (await Promise.all(PAGES.map((p) => tmdb.discover(key, kind, pid, p)))).flat() })))
     return mergeLists(lists, kind)
   }
 
@@ -48,10 +50,11 @@ function createCatalog({ tmdb, secrets, readCache, writeCache, now = Date.now })
     const key = token()
     if (!key) return { ok: false, configured: false, series: [], films: [], msg: 'Configure a chave do TMDB em Configurações para ver filmes e séries.' }
     const cache = await readCache()
-    if (!fresh && cache && now() - cache.at < CACHE_MS) return { ok: true, configured: true, series: cache.series, films: cache.films }
+    // v: 2 = listas com 2 páginas por serviço; cache de versão antiga é buscado de novo
+    if (!fresh && cache && cache.v === CACHE_VERSION && now() - cache.at < CACHE_MS) return { ok: true, configured: true, series: cache.series, films: cache.films }
     try {
       const [series, films] = await Promise.all(KINDS.map((k) => fetchKind(key, k)))
-      await writeCache({ at: now(), series, films })
+      await writeCache({ v: CACHE_VERSION, at: now(), series, films })
       return { ok: true, configured: true, series, films }
     } catch (e) {
       if (cache) return { ok: true, configured: true, stale: true, series: cache.series, films: cache.films, msg: 'Sem conexão com o TMDB; mostrando a última lista.' }
@@ -59,7 +62,7 @@ function createCatalog({ tmdb, secrets, readCache, writeCache, now = Date.now })
     }
   }
 
-  // Chave do vídeo no YouTube, ou null
+  // { key, lang } do melhor trailer no YouTube (português primeiro), ou null
   async function trailer(itemId) {
     const ref = parseItemId(itemId)
     const key = token()

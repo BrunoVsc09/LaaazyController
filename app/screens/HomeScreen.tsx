@@ -53,8 +53,8 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
     if (!lazy || !hero || !previewOn) return
     const id = hero.id
     const t = window.setTimeout(async () => {
-      const key = await lazy.catalog.trailer(id)
-      if (heroId.current === id) setPreview(trailerEmbedUrl(key, { sound: soundRef.current }))
+      const t = await lazy.catalog.trailer(id)
+      if (heroId.current === id) setPreview(trailerEmbedUrl(t?.key, { sound: soundRef.current, captions: !!t && t.lang !== 'pt' }))
     }, PREVIEW_DELAY_MS)
     return () => window.clearTimeout(t)
   }, [hero?.id, previewOn]) // eslint-disable-line react-hooks/exhaustive-deps

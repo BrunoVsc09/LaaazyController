@@ -11,6 +11,11 @@ describe('trailerEmbedUrl', () => {
   it('com som: começa sem mudo', () => {
     expect(new URL(trailerEmbedUrl('dQw4w9WgXcQ', { sound: true })!).searchParams.get('mute')).toBe('0')
   })
+  it('trailer que não é em português: legenda em português ligada (quando o vídeo tiver)', () => {
+    const q = new URL(trailerEmbedUrl('dQw4w9WgXcQ', { captions: true })!).searchParams
+    expect(Object.fromEntries(q)).toMatchObject({ cc_load_policy: '1', cc_lang_pref: 'pt', hl: 'pt-BR' })
+    expect(new URL(trailerEmbedUrl('dQw4w9WgXcQ')!).searchParams.get('cc_load_policy')).toBeNull()
+  })
   it('chave estranha não vira URL', () => {
     expect(trailerEmbedUrl('../../x')).toBeNull()
     expect(trailerEmbedUrl('')).toBeNull()

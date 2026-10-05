@@ -31,16 +31,16 @@ function createTmdb({ fetch = globalThis.fetch } = {}) {
 
   const providers = async (token, kind) => (await get(token, `/watch/providers/${kind}`, REGION)).results || []
 
-  const discover = async (token, kind, providerId) => (await get(token, `/discover/${kind}`, {
+  const discover = async (token, kind, providerId, page = 1) => (await get(token, `/discover/${kind}`, {
     ...REGION,
     with_watch_providers: providerId,
     with_watch_monetization_types: 'flatrate',
     sort_by: 'popularity.desc',
-    page: 1,
+    page,
   })).results || []
 
   const videos = async (token, kind, id) =>
-    (await get(token, `/${kind}/${id}/videos`, { language: 'pt-BR', include_video_language: 'pt,en' })).results || []
+    (await get(token, `/${kind}/${id}/videos`, { language: 'pt-BR', include_video_language: 'pt,en,null' })).results || []
 
   const search = async (token, query) =>
     (await get(token, '/search/multi', { query, language: 'pt-BR', include_adult: false, page: 1 })).results || []

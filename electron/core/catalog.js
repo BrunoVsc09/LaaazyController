@@ -43,7 +43,7 @@ function toItem(raw, kind, service) {
 }
 
 // [{ service, results }] → itens sem repetição (somando serviços), do mais popular ao menos
-function mergeLists(lists, kind, limit = 20) {
+function mergeLists(lists, kind, limit = 40) {
   const byId = new Map()
   for (const { service, results } of lists) {
     for (const raw of results || []) {
@@ -76,11 +76,20 @@ function servicesFrom(providers) {
   return out
 }
 
-// Trailer oficial do YouTube > qualquer trailer do YouTube > teaser do YouTube
+// Melhor trailer do YouTube, preferindo português do Brasil (dublado ou legendado):
+// idioma pesa mais que tipo (um teaser em português vence um trailer em inglês).
+// Devolve { key, lang } ou null.
+function trailerScore(v) {
+  const lang = v.iso_639_1 === 'pt' ? (v.iso_3166_1 === 'BR' ? 300 : 200) : v.iso_639_1 === 'en' ? 100 : 50
+  const type = v.type === 'Trailer' ? 20 : 10
+  return lang + type + (v.official ? 1 : 0)
+}
+
 function pickTrailer(videos) {
-  const yt = (videos || []).filter((v) => v.site === 'YouTube')
-  const best = yt.find((v) => v.type === 'Trailer' && v.official) || yt.find((v) => v.type === 'Trailer') || yt.find((v) => v.type === 'Teaser')
-  return best ? best.key : null
+  const ok = (videos || []).filter((v) => v.site === 'YouTube' && v.key && (v.type === 'Trailer' || v.type === 'Teaser'))
+  if (!ok.length) return null
+  const best = ok.reduce((a, b) => (trailerScore(b) > trailerScore(a) ? b : a))
+  return { key: best.key, lang: best.iso_639_1 || '' }
 }
 
 function parseItemId(id) {

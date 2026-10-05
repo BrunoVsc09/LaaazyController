@@ -15,7 +15,7 @@ function make({ key = 'TOKEN', cache = null, pingOk = true, fail = false, secret
     ping: vi.fn(async () => (pingOk === true ? { ok: true } : pingOk === false ? { ok: false, reason: 'refused' } : pingOk)),
     providers: vi.fn(async () => { if (fail) throw new Error('offline'); return providers }),
     discover: vi.fn(async (_t, kind, pid) => [{ id: pid, name: `S${pid}`, title: `F${pid}`, popularity: pid }]),
-    videos: vi.fn(async () => [{ site: 'YouTube', type: 'Trailer', key: 'yt1', official: true }]),
+    videos: vi.fn(async () => [{ site: 'YouTube', type: 'Trailer', key: 'yt1', official: true, iso_639_1: 'pt', iso_3166_1: 'BR' }]),
   }
   const secrets = {
     get: () => saved,
@@ -44,8 +44,16 @@ describe('catalog.home', () => {
     expect(r.series.map((s) => s.title)).toEqual(['S119', 'S8'])
     expect(r.series[0].services).toEqual(['Prime Video'])
     expect(r.films.map((s) => s.title)).toEqual(['F119', 'F8'])
-    expect(tmdb.discover).toHaveBeenCalledTimes(4)
+    expect(tmdb.discover).toHaveBeenCalledTimes(8) // 2 serviços × 2 tipos × 2 páginas
+    expect(tmdb.discover.mock.calls.map((c) => c[3]).sort()).toEqual([1, 1, 1, 1, 2, 2, 2, 2])
     expect(stored().series).toHaveLength(2)
+  })
+  it('lista guardada por uma versão antiga do app (sem v: 2) é buscada de novo na hora', async () => {
+    const { catalog, tmdb, stored } = make({ cache: { at: 10 * HOUR, series: [{ id: 'tv:1', title: 'Velha' }], films: [] } })
+    const r = await catalog.home()
+    expect(tmdb.providers).toHaveBeenCalled()
+    expect(r.series.map((s) => s.title)).not.toContain('Velha')
+    expect(stored().v).toBe(2)
   })
   it('usa o cache por 6 horas; fresh ignora o cache', async () => {
     const { catalog, tmdb, advance } = make()
@@ -113,8 +121,8 @@ describe('catalog: chave', () => {
 describe('catalog.trailer', () => {
   it('devolve a chave do vídeo do YouTube e guarda em memória', async () => {
     const { catalog, tmdb } = make()
-    expect(await catalog.trailer('movie:5')).toBe('yt1')
-    expect(await catalog.trailer('movie:5')).toBe('yt1')
+    expect(await catalog.trailer('movie:5')).toEqual({ key: 'yt1', lang: 'pt' })
+    expect(await catalog.trailer('movie:5')).toEqual({ key: 'yt1', lang: 'pt' })
     expect(tmdb.videos).toHaveBeenCalledTimes(1)
     expect(tmdb.videos).toHaveBeenCalledWith('TOKEN', 'movie', 5)
   })
