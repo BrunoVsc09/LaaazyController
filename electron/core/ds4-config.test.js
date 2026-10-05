@@ -13,6 +13,11 @@ describe('ds4-config', () => {
   it('valor salvo vence o padrão, inclusive vazio ("não mudar")', () => {
     expect(mergeConfig({ menu: '', Netflix: 'TV' })).toMatchObject({ menu: '', Netflix: 'TV', Firefox: 'PC' })
   })
+  it('chave antiga "Jogos" (versões antigas) vale como o padrão dos jogos ("games")', () => {
+    expect(mergeConfig({ Jogos: 'Brunera' })).toMatchObject({ games: 'Brunera' })
+    expect(mergeConfig({ Jogos: 'Brunera' })).not.toHaveProperty('Jogos')
+    expect(mergeConfig({ Jogos: 'Brunera', games: 'PC' })).toMatchObject({ games: 'PC' }) // a nova vence
+  })
   it('aceita card conhecido com perfil existente ou vazio', () => {
     expect(validateChange('Netflix', 'TV', ['TV', 'PC'])).toEqual({ ok: true })
     expect(validateChange('Netflix', '', ['TV'])).toEqual({ ok: true })

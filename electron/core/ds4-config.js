@@ -9,7 +9,11 @@ const DEFAULTS = { menu: 'Brunera', ...Object.fromEntries(PC.map((k) => [k, 'PC'
 // Perfil de um jogo específico: "game:" + id do jogo (sem caracteres de controle)
 const GAME_KEY = /^game:[^\u0000-\u001f\u007f]{1,300}$/
 
-const mergeConfig = (saved) => ({ ...DEFAULTS, ...saved })
+// Versões antigas salvavam o padrão dos jogos como "Jogos"; hoje é "games" (a nova vence)
+function mergeConfig(saved) {
+  const { Jogos, ...rest } = saved || {}
+  return { ...DEFAULTS, ...(Jogos !== undefined ? { games: Jogos } : {}), ...rest }
+}
 
 const profileMissing = (name) => `Perfil "${name}" não encontrado na pasta de perfis.`
 

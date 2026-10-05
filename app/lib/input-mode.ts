@@ -29,6 +29,10 @@ export function createInputMode(now: () => number = () => performance.now()) {
       return true
     },
     padUsed() { if (now() - movedAt >= MOUSE_HOLD_MS) mode = 'pad' },
+    // Perfil PC do DS4Windows: o X também vira clique do mouse. Para não clicar duas vezes,
+    // no modo controle só o X do controle clica; no modo mouse só o mouse.
+    padClicks: () => mode === 'pad',
+    mouseButtonsWork: () => mode === 'mouse',
     // Chamado a cada quadro com "o analógico está inclinado?"; true = pode navegar
     stickAllowed(tilted: boolean) {
       if (!tilted) { stickSince = null; return false }

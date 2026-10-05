@@ -51,5 +51,14 @@ describe('createInputMode: controle e mouse sem brigar', () => {
     t = 1300 // mouse parado há mais de 1 s
     expect(m.stickAllowed(true)).toBe(true)
   })
+  it('perfil PC (X = clique do mouse): no modo controle só o X do controle clica; no modo mouse só o mouse', () => {
+    let t = 0
+    const m = createInputMode(() => t)
+    expect(m.padClicks()).toBe(true) // modo controle: X aperta o item com a borda
+    expect(m.mouseButtonsWork()).toBe(false) // o clique que o DS4Windows gera é ignorado
+    m.mouseMoved(500, 300); t = 50; m.mouseMoved(540, 300)
+    expect(m.padClicks()).toBe(false) // modo mouse: o clique do mouse já faz o trabalho
+    expect(m.mouseButtonsWork()).toBe(true)
+  })
 })
 

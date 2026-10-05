@@ -19,7 +19,8 @@ import { useGamepad } from './hooks/useGamepad'
 import { useSounds } from './hooks/useSounds'
 import type { Card } from './lib/catalog'
 import { focusMove } from './lib/focus'
-import { useMouseFocus } from './hooks/useMouseFocus'
+import { padClick, useMouseFocus } from './hooks/useMouseFocus'
+import { inputMode } from './lib/input-mode'
 import { DEFAULT_PINNED, togglePin } from './lib/home-model'
 import { getLazy } from './lib/lazy-api'
 import { OSK_HINTS } from './lib/osk'
@@ -142,19 +143,19 @@ export default function Page() {
     }
     if (!dx && !dy) lastMove.current = 0
     if (osk) {
-      if (fired(BTN.X)) (document.activeElement as HTMLElement | null)?.click()
+      if (fired(BTN.X)) padClick()
       if (fired(BTN.SQUARE)) oskPress.current?.('backspace')
       if (fired(BTN.TRIANGLE)) oskPress.current?.('space')
       if (fired(BTN.O)) closeOsk()
       return
     }
     if (inner && !modal) {
-      if (fired(BTN.X)) (document.activeElement as HTMLElement | null)?.click()
+      if (fired(BTN.X)) padClick()
       if (fired(BTN.O)) window.dispatchEvent(new Event('lz:close-modal'))
       return
     }
     if (modal) {
-      if (fired(BTN.X)) (document.activeElement as HTMLElement | null)?.click()
+      if (fired(BTN.X)) padClick()
       if (fired(BTN.O)) closePower()
       return
     }
@@ -163,7 +164,7 @@ export default function Page() {
     const active = document.activeElement
     if (fired(BTN.X)) {
       if (active instanceof HTMLInputElement) setOskTarget(active)
-      else (active as HTMLElement | null)?.click()
+      else if (inputMode.padClicks()) (active as HTMLElement | null)?.click()
     }
     if (fired(BTN.O) && screen !== 'home') back()
     if (fired(BTN.TRIANGLE) && (screen === 'library' || screen === 'home')) window.dispatchEvent(new Event('lz:triangle'))

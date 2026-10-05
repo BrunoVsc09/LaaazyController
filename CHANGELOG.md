@@ -33,6 +33,11 @@
   fica com a busca normal e o Explorar sem digitar.
 
 ### Corrigido
+- **X do controle no perfil PC:** o DS4Windows transforma o X em clique do mouse, e o
+  Laaazy também lia o X — um aperto virava dois cliques (liga/desliga voltava ao que era,
+  título abria direto). Agora, usando o controle, só o X aperta o item com a borda (cliques
+  do mouse gerados pelo DS4Windows são ignorados); mexendo o mouse, só o mouse clica.
+- **Padrão dos jogos** salvo por versões antigas (chave "Jogos") voltou a valer.
 - **Trailer indisponível:** o Início tenta até 5 trailers de cada título (português primeiro);
   se o YouTube não deixar tocar um, passa para o próximo. Séries sem trailer no cadastro geral
   usam o da 1ª temporada.

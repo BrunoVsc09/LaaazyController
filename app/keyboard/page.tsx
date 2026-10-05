@@ -8,7 +8,7 @@ import OnScreenKeyboard from '../components/OnScreenKeyboard'
 import { useGamepad } from '../hooks/useGamepad'
 import { useSounds } from '../hooks/useSounds'
 import { focusMove } from '../lib/focus'
-import { useMouseFocus } from '../hooks/useMouseFocus'
+import { padClick, useMouseFocus } from '../hooks/useMouseFocus'
 import { getLazy } from '../lib/lazy-api'
 
 const { BTN } = gamepad
@@ -44,7 +44,7 @@ export default function KeyboardOverlay() {
     const now = performance.now()
     if ((dx || dy) && now - lastMove.current > REPEAT_MS) { focusMove(NAV, dx, dx ? 0 : dy); lastMove.current = now }
     if (!dx && !dy) lastMove.current = 0
-    if (fired(BTN.X)) (document.activeElement as HTMLElement | null)?.click()
+    if (fired(BTN.X)) padClick()
     if (fired(BTN.SQUARE)) press.current?.('backspace')
     if (fired(BTN.TRIANGLE)) press.current?.('space')
     if (fired(BTN.OPTIONS)) submit()

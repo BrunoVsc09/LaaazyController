@@ -25,6 +25,15 @@ export function useMouseFocus(selector: () => string) {
       el?.focus({ preventScroll: true })
     }
     const onDown = (e: MouseEvent) => { if (keepsFocusOnPress(e.target as HTMLElement)) e.preventDefault() }
+    // Modo controle: cliques do mouse (o DS4Windows transforma X/O em clique) são ignorados;
+    // quem aperta é o X do controle, no item com a borda. Mexer o mouse de verdade libera.
+    const swallow = (e: MouseEvent) => {
+      if (!e.isTrusted || mode.current.mouseButtonsWork()) return
+      e.preventDefault()
+      e.stopPropagation()
+    }
+    const BUTTON_EVENTS = ['mousedown', 'mouseup', 'click', 'dblclick', 'auxclick', 'contextmenu'] as const
+    for (const ev of BUTTON_EVENTS) window.addEventListener(ev, swallow, true)
     const onKey = (e: KeyboardEvent) => { if (e.key.startsWith('Arrow')) padUsed() }
     window.addEventListener('mousemove', onMove)
     window.addEventListener('mousedown', onDown)
@@ -33,8 +42,14 @@ export function useMouseFocus(selector: () => string) {
       window.removeEventListener('mousemove', onMove)
       window.removeEventListener('mousedown', onDown)
       window.removeEventListener('keydown', onKey, true)
+      for (const ev of BUTTON_EVENTS) window.removeEventListener(ev, swallow, true)
     }
   }, [padUsed])
 
   return padUsed
+}
+
+// X do controle: aperta o item com a borda só no modo controle (no modo mouse, o clique do mouse já apertou)
+export function padClick() {
+  if (inputMode.padClicks()) (document.activeElement as HTMLElement | null)?.click()
 }
