@@ -71,7 +71,8 @@ export type LazyApi = {
     setKey(key: string): Promise<Result>
     clearKey(): Promise<Result>
     home(opts?: { fresh: boolean }): Promise<CatalogHome>
-    trailer(id: string): Promise<{ key: string; lang: string } | null>
+    // Trailers do melhor ao pior; o player tenta o próximo se um não tocar
+    trailer(id: string): Promise<{ key: string; lang: string }[]>
     search(query: string): Promise<{ ok: boolean; configured?: boolean; items: Title[]; msg?: string }>
     where(id: string): Promise<string[]>
     episodes(): Promise<{ id: string; label: string; kind: 'new' | 'soon'; date: string }[]>

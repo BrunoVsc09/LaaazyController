@@ -16,6 +16,7 @@ function make({ key = 'TOKEN', cache = null, pingOk = true, fail = false, secret
     providers: vi.fn(async () => { if (fail) throw new Error('offline'); return providers }),
     discover: vi.fn(async (_t, kind, pid) => [{ id: pid, name: `S${pid}`, title: `F${pid}`, popularity: pid }, { id: 900 + pid, name: `A${pid}`, title: `AF${pid}`, popularity: 1, original_language: 'ja', genre_ids: [16] }]),
     videos: vi.fn(async () => [{ site: 'YouTube', type: 'Trailer', key: 'yt1', official: true, iso_639_1: 'pt', iso_3166_1: 'BR' }]),
+    seasonVideos: vi.fn(async () => [{ site: 'YouTube', type: 'Trailer', key: 's1', iso_639_1: 'en', iso_3166_1: 'US' }]),
   }
   const secrets = {
     get: () => saved,
@@ -127,19 +128,28 @@ describe('catalog: chave', () => {
 })
 
 describe('catalog.trailer', () => {
-  it('devolve a chave do vídeo do YouTube e guarda em memória', async () => {
+  it('devolve os trailers do YouTube (melhor primeiro) e guarda em memória', async () => {
     const { catalog, tmdb } = make()
-    expect(await catalog.trailer('movie:5')).toEqual({ key: 'yt1', lang: 'pt' })
-    expect(await catalog.trailer('movie:5')).toEqual({ key: 'yt1', lang: 'pt' })
+    expect(await catalog.trailer('movie:5')).toEqual([{ key: 'yt1', lang: 'pt' }])
+    expect(await catalog.trailer('movie:5')).toEqual([{ key: 'yt1', lang: 'pt' }])
     expect(tmdb.videos).toHaveBeenCalledTimes(1)
     expect(tmdb.videos).toHaveBeenCalledWith('TOKEN', 'movie', 5)
   })
-  it('id inválido, sem chave ou erro: null', async () => {
-    expect(await make().catalog.trailer('x')).toBeNull()
-    expect(await make({ key: '' }).catalog.trailer('tv:1')).toBeNull()
+  it('série sem vídeo no cadastro geral: procura na 1ª temporada', async () => {
+    const { catalog, tmdb } = make()
+    tmdb.videos.mockResolvedValue([])
+    expect(await catalog.trailer('tv:7')).toEqual([{ key: 's1', lang: 'en' }])
+    expect(tmdb.seasonVideos).toHaveBeenCalledWith('TOKEN', 7, 1)
+    tmdb.seasonVideos.mockClear()
+    await catalog.trailer('movie:8') // filme não tem temporada
+    expect(tmdb.seasonVideos).not.toHaveBeenCalled()
+  })
+  it('id inválido, sem chave ou erro: lista vazia', async () => {
+    expect(await make().catalog.trailer('x')).toEqual([])
+    expect(await make({ key: '' }).catalog.trailer('tv:1')).toEqual([])
     const { catalog, tmdb } = make()
     tmdb.videos.mockRejectedValue(new Error('x'))
-    expect(await catalog.trailer('tv:1')).toBeNull()
+    expect(await catalog.trailer('tv:1')).toEqual([])
   })
 })
 

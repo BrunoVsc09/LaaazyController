@@ -1,5 +1,13 @@
 # Novidades do Laaazy
 
+## Próxima versão (ainda não lançada)
+
+### Corrigido
+- **Trailer indisponível:** o Início tenta até 5 trailers de cada título (português primeiro);
+  se o YouTube não deixar tocar um, passa para o próximo. Séries sem trailer no cadastro geral
+  usam o da 1ª temporada.
+- O destaque com o trailer fica preso no topo enquanto você navega por Séries e Animes.
+
 ## 3.2.0 — 2026-10-05
 
 ### Novo

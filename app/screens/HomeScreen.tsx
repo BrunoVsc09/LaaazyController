@@ -56,13 +56,24 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
     lazy.settings.get().then((s) => { setPreviewOn(s.trailerPreview !== false); setSound(s.trailerSound === true) })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Trailers do título (melhor primeiro): se o YouTube disser que um não toca, vai para o próximo
+  const trailers = useRef<{ key: string; lang: string }[]>([])
+  const playTrailer = (i: number) => {
+    const t = trailers.current[i]
+    setPreview(t ? trailerEmbedUrl(t.key, { sound: soundRef.current, captions: t.lang !== 'pt' }) : null)
+  }
+  const trailerIndex = useRef(0)
   useEffect(() => {
     setPreview(null)
+    trailers.current = []
     if (!lazy || !hero || !previewOn) return
     const id = hero.id
     const t = window.setTimeout(async () => {
-      const t = await lazy.catalog.trailer(id)
-      if (heroId.current === id) setPreview(trailerEmbedUrl(t?.key, { sound: soundRef.current, captions: !!t && t.lang !== 'pt' }))
+      const list = await lazy.catalog.trailer(id)
+      if (heroId.current !== id) return
+      trailers.current = list
+      trailerIndex.current = 0
+      playTrailer(0)
     }, PREVIEW_DELAY_MS)
     return () => window.clearTimeout(t)
   }, [hero?.id, previewOn]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -100,7 +111,9 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
   // Trailer acabou: passa para o próximo título (o foco vai junto se estiver nas fileiras)
   useEffect(() => {
     const onMessage = (e: MessageEvent) => {
-      if (playerEvent(e.origin, e.data) !== 'ended') return
+      const ev = playerEvent(e.origin, e.data)
+      if (ev === 'error') { trailerIndex.current += 1; playTrailer(trailerIndex.current); return }
+      if (ev !== 'ended') return
       const nextId = nextTitleId(rowsRef.current, heroId.current)
       const next = rowsRef.current.flatMap((r) => r.items).find((t) => t.id === nextId)
       if (!next) return

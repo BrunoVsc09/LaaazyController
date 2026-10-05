@@ -21,6 +21,19 @@ describe('resolveProviders', () => {
   })
 })
 
+describe('rankTrailers: vários vídeos, do melhor ao pior (o player tenta o próximo se um falhar)', () => {
+  const v = (key, lang, country, type = 'Trailer') => ({ site: 'YouTube', type, key, iso_639_1: lang, iso_3166_1: country })
+  it('português do Brasil primeiro, depois Portugal, inglês e o resto; sem repetir e no máximo 5', () => {
+    const list = [v('en1', 'en', 'US'), v('br1', 'pt', 'BR'), v('pt1', 'pt', 'PT'), v('br1', 'pt', 'BR'), v('es1', 'es', 'ES'),
+      v('en2', 'en', 'US', 'Teaser'), v('en3', 'en', 'US', 'Clip'), v('en4', 'en', 'GB'), v('en5', 'en', 'CA')]
+    expect(cat.rankTrailers(list).map((x) => x.key)).toEqual(['br1', 'pt1', 'en1', 'en4', 'en5'])
+  })
+  it('só YouTube, só trailer ou teaser; nada → lista vazia', () => {
+    expect(cat.rankTrailers([{ site: 'Vimeo', type: 'Trailer', key: 'v' }, v('c', 'pt', 'BR', 'Clip')])).toEqual([])
+    expect(cat.rankTrailers(undefined)).toEqual([])
+  })
+})
+
 describe('toItem', () => {
   it('série', () => {
     const raw = { id: 1, name: 'Série X', overview: 'Sinopse', first_air_date: '2024-05-01', poster_path: '/p.jpg', backdrop_path: '/b.jpg', popularity: 50 }

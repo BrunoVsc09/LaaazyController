@@ -89,16 +89,22 @@ function trailerScore(v) {
   return lang + type + (v.official ? 1 : 0)
 }
 
-function pickTrailer(videos) {
+// Vários trailers, do melhor ao pior (no máximo 5): se um não tocar, o player tenta o próximo
+function rankTrailers(videos) {
   const ok = (videos || []).filter((v) => v.site === 'YouTube' && v.key && (v.type === 'Trailer' || v.type === 'Teaser'))
-  if (!ok.length) return null
-  const best = ok.reduce((a, b) => (trailerScore(b) > trailerScore(a) ? b : a))
-  return { key: best.key, lang: best.iso_639_1 || '' }
+  const seen = new Set()
+  return ok
+    .sort((a, b) => trailerScore(b) - trailerScore(a))
+    .filter((v) => !seen.has(v.key) && seen.add(v.key))
+    .slice(0, 5)
+    .map((v) => ({ key: v.key, lang: v.iso_639_1 || '' }))
 }
+
+const pickTrailer = (videos) => rankTrailers(videos)[0] || null
 
 function parseItemId(id) {
   const m = /^(tv|movie):(\d+)$/.exec(typeof id === 'string' ? id : '')
   return m ? { kind: m[1], id: Number(m[2]) } : null
 }
 
-module.exports = { SERVICE_NAMES, resolveProviders, toItem, mergeLists, searchItems, servicesFrom, pickTrailer, parseItemId }
+module.exports = { SERVICE_NAMES, resolveProviders, toItem, mergeLists, searchItems, servicesFrom, pickTrailer, rankTrailers, parseItemId }

@@ -42,6 +42,10 @@ function createTmdb({ fetch = globalThis.fetch } = {}) {
   const videos = async (token, kind, id) =>
     (await get(token, `/${kind}/${id}/videos`, { language: 'pt-BR', include_video_language: 'pt,en,null' })).results || []
 
+  // Séries costumam ter o trailer só na temporada
+  const seasonVideos = async (token, id, season) =>
+    (await get(token, `/tv/${id}/season/${season}/videos`, { language: 'pt-BR', include_video_language: 'pt,en,null' })).results || []
+
   const search = async (token, query) =>
     (await get(token, '/search/multi', { query, language: 'pt-BR', include_adult: false, page: 1 })).results || []
 
@@ -59,7 +63,7 @@ function createTmdb({ fetch = globalThis.fetch } = {}) {
   const recommendations = async (token, kind, id) =>
     (await get(token, `/${kind}/${id}/recommendations`, { language: 'pt-BR', page: 1 })).results || []
 
-  return { ping, providers, discover, discoverWith, videos, search, watchProviders, tvDetails, recommendations }
+  return { ping, providers, discover, discoverWith, videos, seasonVideos, search, watchProviders, tvDetails, recommendations }
 }
 
 module.exports = { createTmdb }

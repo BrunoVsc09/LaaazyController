@@ -22,7 +22,7 @@ function make() {
       setKey: vi.fn(async () => ({ ok: true, msg: '' })),
       clearKey: vi.fn(async () => ({ ok: true, msg: '' })),
       home: vi.fn(async () => ({ ok: true })),
-      trailer: vi.fn(async () => 'yt1'),
+      trailer: vi.fn(async () => [{ key: 'yt1', lang: 'pt' }]),
       search: vi.fn(async () => ({ ok: true, items: [] })),
       where: vi.fn(async () => []),
       episodes: vi.fn(async () => []),
@@ -188,8 +188,8 @@ describe('registerIpc', () => {
     expect(h.catalog.setKey).not.toHaveBeenCalled()
     await invoke(C.CATALOG_SET_KEY, 'CHAVE')
     expect(h.catalog.setKey).toHaveBeenCalledWith('CHAVE')
-    expect(await invoke(C.CATALOG_TRAILER, {})).toBeNull()
-    expect(await invoke(C.CATALOG_TRAILER, 'tv:1')).toBe('yt1')
+    expect(await invoke(C.CATALOG_TRAILER, {})).toEqual([])
+    expect(await invoke(C.CATALOG_TRAILER, 'tv:1')).toEqual([{ key: 'yt1', lang: 'pt' }])
     await invoke(C.CATALOG_HOME, { fresh: 'sim', x: 1 })
     expect(h.catalog.home).toHaveBeenCalledWith({ fresh: true })
   })

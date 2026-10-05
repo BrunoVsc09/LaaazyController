@@ -17,12 +17,14 @@ export function trailerEmbedUrl(key: string | null | undefined, { sound = false,
   return `${YT_ORIGIN}/embed/${key}?${q}`
 }
 
-// Mensagem do player → 'ended' quando o vídeo acabou (estado 0); o resto não interessa
-export function playerEvent(origin: string, data: unknown): 'ended' | null {
+// Mensagem do player → 'ended' quando o vídeo acabou (estado 0); 'error' quando o vídeo não
+// pode tocar (removido, privado, bloqueado fora do YouTube); o resto não interessa
+export function playerEvent(origin: string, data: unknown): 'ended' | 'error' | null {
   if (origin !== YT_ORIGIN) return null
   let msg: { event?: string; info?: unknown } | null = null
   try { msg = typeof data === 'string' ? JSON.parse(data) : (data as typeof msg) } catch { return null }
   if (!msg || typeof msg !== 'object') return null
+  if (msg.event === 'onError') return 'error'
   if (msg.event === 'onStateChange' && msg.info === 0) return 'ended'
   const info = msg.info as { playerState?: number } | undefined
   if (msg.event === 'infoDelivery' && info && info.playerState === 0) return 'ended'

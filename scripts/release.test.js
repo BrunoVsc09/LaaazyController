@@ -11,9 +11,10 @@ describe('versão lançada', () => {
     const first = /^## (\d+\.\d+\.\d+) — (\d{4}-\d{2}-\d{2})$/m.exec(changelog)
     expect(first?.[1]).toBe(pkg.version)
   })
-  it('nada fica em "Próxima versão" depois de lançar', () => {
+  it('"Próxima versão" (mudanças ainda não lançadas) só pode ficar no topo, acima das lançadas', () => {
     const next = changelog.indexOf('## Próxima versão')
     const first = changelog.search(/^## \d+\.\d+\.\d+/m)
-    expect(next === -1 || next > first).toBe(true)
+    expect(next === -1 || next < first).toBe(true)
+    expect(changelog.split('## Próxima versão').length).toBeLessThanOrEqual(2)
   })
 })

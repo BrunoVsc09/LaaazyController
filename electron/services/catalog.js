@@ -1,5 +1,5 @@
 // Filmes e séries em alta nos serviços do usuário (fonte: TMDB), com cache de 6 horas.
-const { resolveProviders, mergeLists, searchItems, servicesFrom, pickTrailer, parseItemId, toItem } = require('../core/catalog')
+const { resolveProviders, mergeLists, searchItems, servicesFrom, rankTrailers, parseItemId, toItem } = require('../core/catalog')
 
 const { episodeNews } = require('../core/episodes')
 const { cleanKey, wrongKeyMsg } = require('../core/keys')
@@ -68,17 +68,19 @@ function createCatalog({ tmdb, secrets, readCache, writeCache, now = Date.now })
     }
   }
 
-  // { key, lang } do melhor trailer no YouTube (português primeiro), ou null
+  // [{ key, lang }] dos trailers no YouTube, do melhor ao pior (português primeiro); [] sem nenhum.
+  // Série sem vídeo no cadastro geral: procura na 1ª temporada.
   async function trailer(itemId) {
     const ref = parseItemId(itemId)
     const key = token()
-    if (!ref || !key) return null
+    if (!ref || !key) return []
     if (trailers.has(itemId)) return trailers.get(itemId)
     try {
-      const yt = pickTrailer(await tmdb.videos(key, ref.kind, ref.id))
-      trailers.set(itemId, yt)
-      return yt
-    } catch { return null }
+      let list = rankTrailers(await tmdb.videos(key, ref.kind, ref.id))
+      if (!list.length && ref.kind === 'tv') list = rankTrailers(await tmdb.seasonVideos(key, ref.id, 1))
+      trailers.set(itemId, list)
+      return list
+    } catch { return [] }
   }
 
   async function search(raw) {

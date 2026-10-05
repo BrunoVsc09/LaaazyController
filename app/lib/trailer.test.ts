@@ -32,6 +32,9 @@ describe('conversa com o player do YouTube', () => {
     expect(playerEvent(YT_ORIGIN, JSON.stringify({ event: 'infoDelivery', info: { playerState: 0 } }))).toBe('ended')
     expect(playerEvent(YT_ORIGIN, JSON.stringify({ event: 'onStateChange', info: 1 }))).toBeNull()
   })
+  it('vídeo que não pode tocar (removido, bloqueado fora do YouTube): erro, para tentar o próximo', () => {
+    for (const code of [2, 5, 100, 101, 150]) expect(playerEvent(YT_ORIGIN, JSON.stringify({ event: 'onError', info: code }))).toBe('error')
+  })
   it('ignora mensagens de outras origens e lixo', () => {
     expect(playerEvent('https://evil.com', JSON.stringify({ event: 'onStateChange', info: 0 }))).toBeNull()
     expect(playerEvent(YT_ORIGIN, '{quebrado')).toBeNull()
