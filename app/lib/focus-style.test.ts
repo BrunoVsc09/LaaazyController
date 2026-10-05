@@ -28,3 +28,16 @@ describe('sem barras de rolagem', () => {
     expect(css).toMatch(/\.ps4-footer \{ position: fixed;/)
   })
 })
+
+// O trailer ficava no topo e sumia ao descer para Séries/Animes; o rodapé fixo cobria a última fileira
+describe('Início: destaque com trailer sempre à vista', () => {
+  it('o destaque fica preso no topo enquanto as fileiras rolam por baixo', () => {
+    expect(css).toMatch(/\.lz-hero \{ position: sticky; top: 0;[^}]*height: var\(--lz-hero-h\)/)
+  })
+  it('a tela não vira caixa de rolagem própria (senão o sticky não funciona): overflow-x clip', () => {
+    expect(css).toMatch(/\.ps4-screen \{ overflow-x: clip; overflow-y: visible; \}/)
+  })
+  it('o card em foco para abaixo do destaque e acima do rodapé', () => {
+    expect(css).toMatch(/html:has\(\.lz-home\) \{ scroll-padding-top: calc\(var\(--lz-hero-h\) \+ 16px\); scroll-padding-bottom: 120px; \}/)
+  })
+})
