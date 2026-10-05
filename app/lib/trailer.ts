@@ -52,3 +52,8 @@ export function titlePress(previewingId: string | null, id: string, previewOn: b
   if (!previewOn || previewingId === id) return 'open'
   return 'preview'
 }
+
+// Foco num título (mouse, analógico, D-pad): com a prévia de outro título tocando, o destaque
+// continua nele ('keep'); só um aperto troca. Sem prévia, mostra o título em foco ('show').
+export const titleFocus = (playingId: string | null, id: string): 'show' | 'keep' =>
+  playingId && playingId !== id ? 'keep' : 'show'

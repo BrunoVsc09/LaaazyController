@@ -203,5 +203,6 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 ## Prévia só quando apertar
 - [ ] Abrir o Início e andar pelos títulos: nenhum trailer toca sozinho.
 - [ ] X num título: a prévia toca. X de novo no mesmo: abre o streaming.
-- [ ] Com a prévia tocando, ir para outro título: a prévia para.
+- [ ] Com a prévia tocando, passar o mouse/analógico por outros títulos: a prévia continua.
+- [ ] Apertar X em outro título: a prévia troca para ele.
 

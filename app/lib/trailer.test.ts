@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { trailerEmbedUrl, homeSections, playerEvent, playerCommand, nextTitleId, YT_ORIGIN, titlePress } from './trailer'
+import { trailerEmbedUrl, homeSections, playerEvent, playerCommand, nextTitleId, YT_ORIGIN, titlePress, titleFocus } from './trailer'
 
 describe('trailerEmbedUrl', () => {
   it('player do YouTube sem controles, aceitando comandos e avisando quando acaba (sem repetir)', () => {
@@ -74,5 +74,17 @@ describe('titlePress: o trailer só toca quando você aperta', () => {
   })
   it('prévia desligada em Configurações: o aperto já abre onde assistir', () => {
     expect(titlePress(null, 'tv:1', false)).toBe('open')
+  })
+})
+
+describe('titleFocus: passar por cima (mouse, analógico, D-pad) não cancela a prévia', () => {
+  it('sem prévia tocando: o destaque mostra o título em foco', () => {
+    expect(titleFocus(null, 'tv:2')).toBe('show')
+  })
+  it('com a prévia de outro título tocando: o destaque fica nele (só um aperto troca)', () => {
+    expect(titleFocus('tv:1', 'tv:2')).toBe('keep')
+  })
+  it('voltar ao título que está tocando: segue mostrando ele', () => {
+    expect(titleFocus('tv:1', 'tv:1')).toBe('show')
   })
 })

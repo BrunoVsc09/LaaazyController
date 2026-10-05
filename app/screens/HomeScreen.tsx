@@ -6,7 +6,7 @@ import AppIcon from '../components/AppIcon'
 import { CATALOG, type Card } from '../lib/catalog'
 import { buildRows, heroInfo, pinnedCards, shuffled, type EpisodeNews } from '../lib/home-model'
 import { getLazy, type CatalogHome, type Game, type Title } from '../lib/lazy-api'
-import { YT_ORIGIN, nextTitleId, playerCommand, playerEvent, titlePress, trailerEmbedUrl } from '../lib/trailer'
+import { YT_ORIGIN, nextTitleId, playerCommand, playerEvent, titleFocus, titlePress, trailerEmbedUrl } from '../lib/trailer'
 import type { Sounds } from '../hooks/useSounds'
 
 type Props = { pinned: string[]; sounds: Sounds; onActivate: (card: Card) => void; onOpenSettings: () => void }
@@ -65,8 +65,10 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
     setTrailerLabel(t?.label ? `Trailer ${t.label}` : '')
   }
   const trailerIndex = useRef(0)
-  // Título cuja prévia foi pedida (1º aperto). Mover o foco para outro título para a prévia.
+  // Título cuja prévia foi pedida (1º aperto). Passar por outros títulos não cancela; só outro aperto troca.
   const [playingId, setPlayingId] = useState<string | null>(null)
+  const previewRef = useRef<string | null>(null)
+  previewRef.current = preview
   const playingRef = useRef<string | null>(null)
   playingRef.current = playingId
   useEffect(() => {
@@ -171,10 +173,12 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
     setPlayingId(t.id)
   }
   const focusTitle = (t: Title) => {
+    sounds.hover()
+    // Só trava o destaque enquanto a prévia está tocando de verdade (título sem trailer não trava)
+    if (titleFocus(previewRef.current ? playingRef.current : null, t.id) === 'keep') return
+    if (playingRef.current !== t.id) setPlayingId(null)
     setHero(t)
     setMsg('')
-    if (playingRef.current !== t.id) setPlayingId(null)
-    sounds.hover()
   }
   const tap = (fn: () => void) => () => { sounds.click(); fn() }
   // Controle vira mouse e o Laaazy sai da frente; o PS traz de volta
