@@ -33,6 +33,10 @@
   padrão (no Edge o controle precisa de mouse). Quem já escolheu outro perfil continua com ele.
 - Colar a chave no campo errado (ex.: a do Gemini no campo do TMDB) agora avisa qual chave é.
 
+### Pacote
+- O `.exe` portátil ficou menor (149 → 102 MB): não leva mais o `node_modules`, que a tela
+  pronta não usa. `pnpm dist` confere sozinho se o pacote tem tudo e nada a mais.
+
 ### Segurança
 - Os canais internos só atendem a tela do Laaazy e o teclado por cima; sites de streaming só
   mandam os comandos do controle. A tela tem política de conteúdo (CSP), não navega para fora

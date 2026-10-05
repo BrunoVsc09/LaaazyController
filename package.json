@@ -11,7 +11,7 @@
     "build": "next build",
     "start": "next start",
     "app": "pnpm preloads && next build && electron .",
-    "dist": "pnpm preloads && next build && electron-builder",
+    "dist": "pnpm preloads && next build && electron-builder && node scripts/package-check.js",
     "preloads": "node scripts/build-preloads.js"
   },
   "dependencies": {
@@ -46,7 +46,8 @@
       "shared/**",
       "!shared/**/*.test.js",
       "out/**",
-      "package.json"
+      "package.json",
+      "!node_modules/**"
     ],
     "win": {
       "target": "portable"
