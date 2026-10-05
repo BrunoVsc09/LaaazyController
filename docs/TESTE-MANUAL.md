@@ -166,3 +166,35 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Só aparecem pastas e jogos (.exe / .lnk); X num jogo adiciona e mostra "<nome> adicionado"
 - [ ] Adicionar pasta: "✓ Escolher esta pasta" acha os jogos de dentro
 - [ ] "Janela do Windows (mouse)" ainda abre a janela antiga
+
+## Borda de seleção e barras de rolagem
+- [ ] Mexer o analógico (perfil PC) por cima dos botões: a borda amarela acompanha o cursor.
+- [ ] Clicar numa área vazia: a borda continua no item de antes.
+- [ ] Biblioteca com muitos jogos: sem barras de rolagem; o rodapé fica no fim da janela.
+- [ ] Rodapé: △ e □ com o ícone certo ao lado de cada texto.
+
+## Parecido com este (△ no Início)
+- [ ] Num filme ou série, △: aparece "Parecido com X · <clima>" no topo e o foco vai para ela.
+- [ ] △ num título dessa fileira puxa outra fileira.
+- [ ] Sem a chave do Gemini: a fileira aparece sem o clima (recomendações do TMDB).
+
+## Início sorteado e Animes
+- [ ] Fileiras Filmes, Séries e Animes; nenhum anime japonês em Séries.
+- [ ] Sair e voltar ao Início: outros títulos. "↻ Outros títulos" sorteia de novo na hora.
+
+## Área de trabalho
+- [ ] Início → Seus apps → Área de trabalho: o controle vira mouse (perfil PC) e o Laaazy minimiza.
+- [ ] Abrir o Explorer ou um navegador e apertar PS: volta ao Início sem fechar o que estava aberto.
+
+## Jogos da Steam
+- [ ] Abrir um jogo da Steam: o Laaazy sai da frente e o jogo aparece.
+- [ ] Fechar o jogo: o Laaazy volta sozinho. Jogo que não abre: o Laaazy volta em até 90 s.
+- [ ] Jogo baixando na Steam não aparece na Biblioteca.
+
+## Chaves no campo errado
+- [ ] Colar a chave do Gemini (AIza…) no campo do TMDB: aviso dizendo que é a do Gemini.
+
+## .exe portátil
+- [ ] `pnpm dist` termina com "Pacote OK".
+- [ ] Abrir `dist/Laaazy 3.2.0.exe`: Início, Biblioteca, trailer, teclado por cima (Ctrl+Alt+K) e PS funcionam.
+

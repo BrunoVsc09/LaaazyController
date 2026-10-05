@@ -1,6 +1,6 @@
 # Novidades do Laaazy
 
-## Próxima versão (ainda não lançada)
+## 3.2.0 — 2026-10-05
 
 ### Novo
 - **Área de trabalho (Início, depois dos apps):** o controle vira mouse (perfil "PC", trocável

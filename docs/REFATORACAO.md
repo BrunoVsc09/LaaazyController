@@ -369,7 +369,7 @@ nos testes, chaves de API sempre configuradas no app e guardadas criptografadas)
 | **35. Escolher jogo/pasta com o controle** | ✅ navegador de pastas do Laaazy (atalhos, discos, só pastas e .exe/.lnk), janela do Windows como opção para mouse |
 | **37. Início sorteado + Animes** | ✅ fileiras Filmes, Séries e Animes; 3 páginas por serviço (até 100 por tipo); sorteio a cada abertura e no "↻ Outros títulos" |
 | **36. "Parecido com este" (△ no Início)** | ✅ Gemini diz o clima do título e sugere outros; cada um é conferido no TMDB; sem IA, usa as recomendações do TMDB; guarda o resultado na sessão |
-| **34. Versão 3.2.0** | versão, CHANGELOG (Gemini, PS, voltar ao Laaazy, perfil por jogo, Edge sem InPrivate, prévia de trailer, teclado por cima, Explorar), roteiro manual completo, `.exe` final | 30–33 e 25 | pequeno |
+| **34. Versão 3.2.0** | ✅ lançada em 2026-10-05 · versão, CHANGELOG (Gemini, PS, voltar ao Laaazy, perfil por jogo, Edge sem InPrivate, prévia de trailer, teclado por cima, Explorar), roteiro manual completo, `.exe` final | 30–33 e 25 | pequeno |
 
 Ordem sugerida: 30 → 31 → 32 → 25 → 33 → 34 → 11 (visual, quando o design estiver pronto;
 pode virar a 4.0).
