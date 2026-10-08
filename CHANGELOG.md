@@ -1,5 +1,15 @@
 # Novidades do Laaazy
 
+## Próxima versão (ainda não lançada)
+
+### Corrigido
+- **Teclado por cima do Edge não digitava no site:** depois do Pronto, o Laaazy digitava antes
+  de o site reselecionar o campo (busca da Crunchyroll, por exemplo) e as letras se perdiam.
+  Agora espera o campo voltar antes de digitar.
+- **Borda amarela sumia no teclado por cima:** às vezes o Windows não deixava o teclado pegar
+  a frente; sem foco, nenhuma tecla aparecia selecionada e o D-pad não andava. Agora o teclado
+  força o foco (como a janela principal) e sempre abre com uma tecla selecionada.
+
 ## 3.3.0 — 2026-10-08
 
 ### Novo

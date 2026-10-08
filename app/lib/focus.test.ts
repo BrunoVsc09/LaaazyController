@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { hoverTarget, keepsFocusOnPress } from './focus'
+import { hoverTarget, keepsFocusOnPress, needsKeyFocus } from './focus'
 
 // Elemento falso: closest devolve o que estiver no mapa para o seletor pedido
 type Fake = { tagName: string; closest: (sel: string) => Fake | null }
@@ -35,5 +35,17 @@ describe('keepsFocusOnPress: clicar no fundo não apaga a borda', () => {
   it('clique em botão, campo, link ou vídeo segue normal', () => {
     const btn = el('BUTTON')
     expect(keepsFocusOnPress(el('SPAN', { 'button, input, textarea, select, a, label, iframe, [tabindex]': btn }))).toBe(false)
+  })
+})
+
+describe('needsKeyFocus: o teclado por cima sempre tem uma tecla com a borda', () => {
+  it('nada selecionado (body) ou fora das teclas: precisa selecionar uma tecla', () => {
+    expect(needsKeyFocus(null, '.kb-overlay button')).toBe(true)
+    expect(needsKeyFocus(el('BODY'), '.kb-overlay button')).toBe(true)
+  })
+  it('já há uma tecla selecionada: não mexe', () => {
+    const key = el('BUTTON')
+    key.closest = (sel) => (sel === '.kb-overlay button' ? key : null)
+    expect(needsKeyFocus(key, '.kb-overlay button')).toBe(false)
   })
 })

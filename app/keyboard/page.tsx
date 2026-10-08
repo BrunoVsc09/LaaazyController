@@ -7,7 +7,7 @@ import gamepad from '../../shared/gamepad'
 import OnScreenKeyboard from '../components/OnScreenKeyboard'
 import { useGamepad } from '../hooks/useGamepad'
 import { useSounds } from '../hooks/useSounds'
-import { focusMove } from '../lib/focus'
+import { focusMove, needsKeyFocus } from '../lib/focus'
 import { padClick, useMouseFocus } from '../hooks/useMouseFocus'
 import { getLazy } from '../lib/lazy-api'
 
@@ -35,6 +35,16 @@ export default function KeyboardOverlay() {
 
   const submit = () => { void getLazy()?.oskOverlay.submit(input.current?.value ?? '') }
   const cancel = () => { void getLazy()?.oskOverlay.cancel() }
+
+  // Sempre uma tecla com a borda: ao abrir e quando a janela ganha o foco do Windows
+  useEffect(() => {
+    const pick = () => {
+      if (needsKeyFocus(document.activeElement as HTMLElement | null, '.osk button')) document.querySelector<HTMLElement>('.osk button')?.focus()
+    }
+    const t = window.setTimeout(pick, 50)
+    window.addEventListener('focus', pick)
+    return () => { window.clearTimeout(t); window.removeEventListener('focus', pick) }
+  }, [session])
 
   // Mouse e controle sem brigar: a borda só segue o mouse quando ele anda de verdade
   const padUsed = useMouseFocus(() => NAV)

@@ -27,3 +27,6 @@ export function hoverTarget(target: ElLike | null, active: ElLike | null, select
 
 // Clique no fundo da tela tiraria o foco (e a borda) de tudo: nesse caso o clique não mexe no foco
 export const keepsFocusOnPress = (target: ElLike | null) => !target?.closest(PRESSABLE)
+
+// Teclado por cima: sem uma tecla selecionada não aparece a borda e o D-pad não tem de onde partir
+export const needsKeyFocus = (active: ElLike | null, keys: string) => !active?.closest(keys)

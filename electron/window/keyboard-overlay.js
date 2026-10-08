@@ -3,8 +3,10 @@
 const { BrowserWindow, screen } = require('electron')
 const C = require('../../shared/channels')
 const { lockWindow } = require('./window-manager')
+const { hwndFrom } = require('../core/focus')
 
-function createKeyboardOverlay({ preload, url, icon }) {
+// forceFocus(hwnd): passa pelo bloqueio de foco do Windows (o mesmo truque da janela principal)
+function createKeyboardOverlay({ preload, url, icon, forceFocus = () => {} }) {
   let win = null
 
   function ensure() {
@@ -30,7 +32,15 @@ function createKeyboardOverlay({ preload, url, icon }) {
       w.webContents.send(C.OSK_OPENED)
       w.show()
       w.focus()
-      w.webContents.focus() // o controle (Gamepad API) só funciona com a página em foco
+      // O Windows às vezes não deixa um programa de segundo plano pegar a frente: sem foco,
+      // a borda das teclas não aparece e o controle não anda. Força, e tenta de novo logo depois.
+      const grab = () => {
+        if (win !== w || w.isDestroyed() || !w.isVisible()) return
+        if (!w.isFocused()) forceFocus(hwndFrom(w.getNativeWindowHandle()))
+        w.webContents.focus() // o controle (Gamepad API) só funciona com a página em foco
+      }
+      grab()
+      for (const ms of [150, 500]) setTimeout(grab, ms)
     }
     if (w.webContents.isLoading()) w.webContents.once('did-finish-load', go)
     else go()

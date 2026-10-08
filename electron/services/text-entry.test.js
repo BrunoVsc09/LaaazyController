@@ -37,6 +37,18 @@ describe('teclado por cima de outro programa', () => {
     expect(deps.focusWindow).toHaveBeenCalledWith('111')
     expect(deps.typeText).toHaveBeenCalled()
   })
+  // Regressão (2026-10-08, reproduzido no Edge): com 250 ms, a janela do Edge já tinha voltado,
+  // mas o site ainda não tinha reselecionado o campo, e as letras se perdiam
+  it('depois que o Edge volta, espera o site reselecionar o campo (≥ 700 ms) antes de digitar', async () => {
+    for (const fg of [['111', '111'], ['111', '999']]) {
+      const { t, deps } = make({ fg })
+      await t.open()
+      await t.submit('oi')
+      const typedAt = deps.typeText.mock.invocationCallOrder[0]
+      const lastSleep = deps.sleep.mock.calls.filter((_, i) => deps.sleep.mock.invocationCallOrder[i] < typedAt).at(-1)
+      expect(lastSleep[0]).toBeGreaterThanOrEqual(700)
+    }
+  })
   it('cancelar: só esconde, não digita nada', async () => {
     const { t, deps } = make()
     await t.open()
