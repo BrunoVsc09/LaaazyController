@@ -9,8 +9,8 @@ module.exports = {
   PS_TESTED: 'ps:tested', // principal → tela
   PS_TEST_START: 'ps:testStart',
   OSK_OPENED: 'osk:opened', // principal → teclado por cima
-  OSK_SUBMIT: 'osk:submit',
-  OSK_CANCEL: 'osk:cancel',
+  OSK_EDIT: 'osk:edit', // tempo real: apagar N + digitar texto no campo do site
+  OSK_CLOSE: 'osk:close',
   LAUNCH: 'launch',
   EXE_GET: 'exe:get',
   EXE_CHOOSE: 'exe:choose',

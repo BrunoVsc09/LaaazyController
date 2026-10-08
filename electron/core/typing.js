@@ -22,4 +22,16 @@ function typeCommand(text) {
   ].join(';')
 }
 
-module.exports = { typeCommand, MAX }
+const { editDiff } = require('../../shared/edit-diff')
+
+// Comando que aplica { back, text } no campo do programa da frente; null se não há o que fazer
+function editCommand({ back, text }) {
+  if (!Number.isInteger(back) || back < 0 || back > MAX) return null
+  const del = back ? `$w.SendKeys('{BACKSPACE ${back}}')` : ''
+  if (!text) return del || null
+  const type = typeCommand(text)
+  if (!type) return null
+  return del ? `${del};${type}` : type
+}
+
+module.exports = { typeCommand, editDiff, editCommand, MAX }

@@ -35,7 +35,8 @@ export type LazyApi = {
   // Área de trabalho: perfil PC no controle e Laaazy minimizado (o PS traz de volta)
   desktop(): Promise<{ ok: boolean; msg: string }>
   fs: { list(dir: string, mode: 'file' | 'dir'): Promise<FsList> }
-  oskOverlay: { submit(text: string): Promise<boolean>; cancel(): Promise<void>; onOpened(cb: () => void): void }
+  // Teclado por cima em tempo real: cada mudança vai na hora para o campo do site
+  oskOverlay: { edit(back: number, text: string): Promise<boolean>; close(): Promise<void>; onOpened(cb: () => void): void }
   volume(action: 'up' | 'down' | 'mute'): void
   onHome(cb: () => void): void
   ps: { startTest(): Promise<boolean>; onTested(cb: () => void): void }

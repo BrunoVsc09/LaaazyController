@@ -42,7 +42,7 @@ const { createReturnWatch } = require('./services/return-watch')
 const { createPsButton } = require('./services/ps-button')
 const { createTextEntry } = require('./services/text-entry')
 const { createFileBrowser } = require('./adapters/file-browser')
-const { typeCommand } = require('./core/typing')
+const { editCommand } = require('./core/typing')
 const { createKeyboardOverlay } = require('./window/keyboard-overlay')
 const { widevineStatus } = require('./core/drm')
 const { planMigration } = require('./core/migration')
@@ -302,9 +302,8 @@ const textEntry = createTextEntry({
     cursorLock.unlock()
     setTimeout(() => returnWatch.release(), 2000)
   },
-  focusWindow: (hwnd) => probe.focus(hwnd),
-  typeText: (text) => { const cmd = typeCommand(text); if (!cmd) return false; keySender.send(cmd); return true },
-  sleep,
+  // Tempo real: cada mudança do teclado (apagar N + texto) vai na hora para o campo do site
+  sendEdit: (change) => { const cmd = editCommand(change); if (!cmd) return false; keySender.send(cmd); return true },
 })
 
 // Jogo ou Edge fechou: o Laaazy volta sozinho para a frente, no Início

@@ -144,7 +144,8 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 
 ## Teclado por cima do Edge
 - [ ] Crunchyroll → clicar na busca → Ctrl+Alt+K (ou Share): o teclado abre com a borda amarela numa tecla; o D-pad anda.
-- [ ] Digitar e apertar Pronto: o texto aparece na busca da Crunchyroll.
+- [ ] Cada tecla aparece na hora na busca da Crunchyroll (e o Apagar apaga na hora).
+- [ ] Pronto (Options) e O fecham o teclado; o texto continua na busca.
 - [ ] No DS4Windows, mapear um botão (Share/touchpad) para F19 em todos os perfis
 - [ ] No Edge (ex.: Netflix), selecionar o campo de busca, apertar o botão: o teclado do Laaazy aparece na metade de baixo da tela
 - [ ] Digitar com o controle e apertar ✓ Pronto (ou Options): o teclado some e o texto aparece no campo do Edge

@@ -30,7 +30,7 @@ function make() {
     },
     myList: { get: vi.fn(async () => []), toggle: vi.fn(async () => ({ ok: true, added: true })) },
     recentGames: vi.fn(async () => []),
-    textEntry: { submit: vi.fn(async () => true), cancel: vi.fn() },
+    textEntry: { edit: vi.fn(async () => true), close: vi.fn() },
     readClipboard: vi.fn(() => 'abc'),
     psButton: { startTest: vi.fn(() => true) },
     desktop: { enter: vi.fn(async () => ({ ok: true, msg: '' })) },
@@ -166,12 +166,16 @@ describe('registerIpc', () => {
     send(C.VOLUME, 'up')
     expect(h.volume.step).toHaveBeenCalledWith('up')
   })
-  it('teclado por cima: só texto é digitado', async () => {
+  it('teclado por cima (tempo real): apagar é número inteiro e o texto é texto; fechar não leva nada', async () => {
     const { invoke, h } = make()
-    expect(await invoke(C.OSK_SUBMIT, { evil: 1 })).toBe(false)
-    expect(h.textEntry.submit).not.toHaveBeenCalled()
-    await invoke(C.OSK_SUBMIT, 'abc')
-    expect(h.textEntry.submit).toHaveBeenCalledWith('abc')
+    expect(await invoke(C.OSK_EDIT, '1', 'a')).toBe(false)
+    expect(await invoke(C.OSK_EDIT, 0, { evil: 1 })).toBe(false)
+    expect(h.textEntry.edit).not.toHaveBeenCalled()
+    await invoke(C.OSK_EDIT, 1, 'abc')
+    expect(h.textEntry.edit).toHaveBeenCalledWith(1, 'abc')
+    await invoke(C.OSK_CLOSE, 'qualquer')
+    expect(h.textEntry.close).toHaveBeenCalledWith()
+    expect(C.OSK_SUBMIT).toBeUndefined() // não existe mais o "manda tudo no Pronto"
   })
   it('capas: chave precisa ser texto', async () => {
     const { invoke, h } = make()

@@ -5,7 +5,7 @@ import C from '../../shared/channels.js'
 describe('trustedSender: quem pode falar com o Laaazy pelos canais', () => {
   it('a tela do app e o teclado por cima (app://local) usam todos os canais', () => {
     expect(sec.trustedSender('app://local/', C.GAMES_LAUNCH)).toBe(true)
-    expect(sec.trustedSender('app://local/keyboard.html', C.OSK_SUBMIT)).toBe(true)
+    expect(sec.trustedSender('app://local/keyboard.html', C.OSK_EDIT)).toBe(true)
   })
   it('sites de streaming só usam os comandos do controle (voltar, teclas do player, volume, Início)', () => {
     for (const ch of [C.BACK, C.KEY, C.VOLUME, C.HOME]) expect(sec.trustedSender('https://www.netflix.com/browse', ch)).toBe(true)

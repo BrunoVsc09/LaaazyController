@@ -10,6 +10,7 @@ import { useSounds } from '../hooks/useSounds'
 import { focusMove, needsKeyFocus } from '../lib/focus'
 import { padClick, useMouseFocus } from '../hooks/useMouseFocus'
 import { getLazy } from '../lib/lazy-api'
+import { editDiff } from '../../shared/edit-diff'
 
 const { BTN } = gamepad
 const REPEAT_MS = 220
@@ -24,17 +25,30 @@ export default function KeyboardOverlay() {
   const [secret, setSecret] = useState(false)
   const lastMove = useRef(0)
 
-  // Cada vez que o teclado abre: campo vazio e teclado novo
+  // Tempo real: cada mudança do texto (letra, espaço, apagar, limpar) vai na hora para o campo do
+  // site, como "apagar N + digitar o resto" em relação ao que já foi mandado
+  const sent = useRef('')
+
+  // Cada vez que o teclado abre: campo vazio, nada mandado ainda e teclado novo
   useEffect(() => {
     setTarget(input.current)
     getLazy()?.oskOverlay.onOpened(() => {
       if (input.current) input.current.value = ''
+      sent.current = ''
       setSession((s) => s + 1)
     })
+    const el = input.current
+    const onInput = () => {
+      const next = el?.value ?? ''
+      const { back, text } = editDiff(sent.current, next)
+      sent.current = next
+      if (back || text) void getLazy()?.oskOverlay.edit(back, text)
+    }
+    el?.addEventListener('input', onInput)
+    return () => el?.removeEventListener('input', onInput)
   }, [])
 
-  const submit = () => { void getLazy()?.oskOverlay.submit(input.current?.value ?? '') }
-  const cancel = () => { void getLazy()?.oskOverlay.cancel() }
+  const close = () => { void getLazy()?.oskOverlay.close() }
 
   // Sempre uma tecla com a borda. A janela nunca tem o foco do Windows (o Edge mantém o campo
   // selecionado), então :focus não é desenhado: a tecla atual ganha data-current e o CSS desenha.
@@ -63,8 +77,8 @@ export default function KeyboardOverlay() {
     if (fired(BTN.X)) padClick()
     if (fired(BTN.SQUARE)) press.current?.('backspace')
     if (fired(BTN.TRIANGLE)) press.current?.('space')
-    if (fired(BTN.OPTIONS)) submit()
-    if (fired(BTN.O)) cancel()
+    if (fired(BTN.OPTIONS)) close()
+    if (fired(BTN.O)) close()
   })
 
   return (
@@ -72,11 +86,11 @@ export default function KeyboardOverlay() {
       <input ref={input} type={secret ? 'password' : 'text'} hidden readOnly aria-hidden="true" />
       <div className="kb-bar">
         <strong>Teclado do Laaazy</strong>
-        <span>digita no campo selecionado do programa de trás · Options = Pronto · O = cancelar</span>
+        <span>O texto vai direto para o campo do site enquanto você digita · Pronto (Options) ou O fecha o teclado</span>
         <button type="button" className="lz-btn" onClick={() => { sounds.click(); setSecret((s) => !s) }}>{secret ? '👁 Mostrar texto' : '🙈 Ocultar (senha)'}</button>
-        <button type="button" className="lz-btn" onClick={() => { sounds.click(); cancel() }}>Cancelar</button>
+        <button type="button" className="lz-btn" onClick={() => { sounds.click(); close() }}>Fechar</button>
       </div>
-      {target && <OnScreenKeyboard key={`${session}-${secret}`} target={target} onClose={submit} sounds={sounds} pressRef={press} />}
+      {target && <OnScreenKeyboard key={`${session}-${secret}`} target={target} onClose={close} sounds={sounds} pressRef={press} />}
     </main>
   )
 }

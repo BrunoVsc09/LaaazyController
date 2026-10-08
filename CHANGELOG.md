@@ -2,6 +2,12 @@
 
 ## Próxima versão (ainda não lançada)
 
+### Mudou
+- **Teclado por cima em tempo real:** cada tecla (letra, espaço, apagar, limpar) vai na hora
+  para o campo do site — a busca da Crunchyroll já vai mostrando os resultados enquanto você
+  digita. Pronto (Options) e O só fecham o teclado. O Laaazy só digita enquanto a janela da
+  frente for a mesma em que você abriu o teclado.
+
 ### Corrigido
 - **Teclado por cima do Edge não digitava no site:** depois do Pronto, o Laaazy digitava antes
   de o site reselecionar o campo (busca da Crunchyroll, por exemplo) e as letras se perdiam.

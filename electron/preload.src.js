@@ -13,8 +13,8 @@ contextBridge.exposeInMainWorld('lazy', {
   fs: { list: invoke(C.FS_LIST) },
   // Teclado por cima de outros programas (página keyboard.html)
   oskOverlay: {
-    submit: invoke(C.OSK_SUBMIT),
-    cancel: invoke(C.OSK_CANCEL),
+    edit: invoke(C.OSK_EDIT),
+    close: invoke(C.OSK_CLOSE),
     onOpened: (cb) => { ipcRenderer.removeAllListeners(C.OSK_OPENED); ipcRenderer.on(C.OSK_OPENED, () => cb()) },
   },
   volume: (action) => ipcRenderer.send(C.VOLUME, action),

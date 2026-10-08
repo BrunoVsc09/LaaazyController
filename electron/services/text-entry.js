@@ -1,14 +1,14 @@
-// Teclado do Laaazy por cima de outro programa (ex.: busca ou senha no Edge).
-// Abrir guarda a janela da frente; "Pronto" esconde o teclado, espera essa janela voltar
-// (com o campo ainda selecionado) e digita o texto nela.
+// Teclado do Laaazy por cima de outro programa (ex.: busca ou senha no Edge), em tempo real.
+// O teclado nunca pega o foco do Windows: o campo do site continua selecionado e cada tecla
+// apertada vai na hora para ele. Abrir guarda a janela da frente; só digita enquanto ela for a
+// mesma (se você trocar de programa, o Laaazy não digita no programa errado).
 const CONTROL = /[\u0000-\u001f\u007f]/
-const BACK_MS = 250
-// Depois que a janela volta, o site ainda precisa reselecionar o campo; digitar antes disso perde as letras
-const SETTLE_MS = 800
+const MAX = 500
 
 // maskMenu: aperta uma tecla neutra para o Alt do atalho não levar o Edge ao menu do navegador
-function createTextEntry({ fgHwnd, showOverlay, hideOverlay, focusWindow, typeText, sleep, maskMenu = () => {} }) {
+function createTextEntry({ fgHwnd, showOverlay, hideOverlay, sendEdit, maskMenu = () => {} }) {
   let target = null
+  let chain = Promise.resolve() // teclas em ordem, mesmo com a consulta ao Windows demorando
 
   async function open() {
     maskMenu() // primeiro de tudo: o Alt do Ctrl+Alt+K ainda está apertado
@@ -16,25 +16,27 @@ function createTextEntry({ fgHwnd, showOverlay, hideOverlay, focusWindow, typeTe
     showOverlay()
   }
 
-  function cancel() {
+  function close() {
     target = null
     hideOverlay()
   }
 
-  async function submit(text) {
-    const to = target
-    target = null
-    hideOverlay()
-    if (!to || typeof text !== 'string' || !text || text.length > 500 || CONTROL.test(text)) return false
-    await sleep(BACK_MS) // o Windows devolve o foco para a janela de antes
-    // Só puxa o foco se outra janela conhecida estiver na frente (o truque do Alt tira o foco da página)
-    const now = await fgHwnd()
-    if (now && now !== to) focusWindow(to)
-    await sleep(SETTLE_MS)
-    return typeText(text)
+  const valid = (back, text) =>
+    Number.isInteger(back) && back >= 0 && back <= MAX &&
+    typeof text === 'string' && text.length <= MAX && !CONTROL.test(text)
+
+  function edit(back, text) {
+    const run = chain.then(async () => {
+      const to = target
+      if (!to || !valid(back, text)) return false
+      if ((await fgHwnd()) !== to) return false
+      return sendEdit({ back, text })
+    })
+    chain = run.catch(() => false)
+    return run
   }
 
-  return { open, cancel, submit }
+  return { open, close, edit }
 }
 
 module.exports = { createTextEntry }
