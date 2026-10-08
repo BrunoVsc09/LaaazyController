@@ -9,6 +9,7 @@ const store = require('./adapters/json-store')
 const { regAppPath, regValue } = require('./adapters/registry')
 const { spawnDetached, killTree, processTable } = require('./adapters/process')
 const { ancestorsOf, parseProcessTable } = require('./core/processes')
+const { MASK_MENU } = require('./core/focus')
 const { createForegroundProbe } = require('./adapters/ps-foreground')
 const { createDialogs } = require('./adapters/dialogs')
 const { createDs4Cli } = require('./adapters/ds4-cli')
@@ -285,6 +286,7 @@ const psButton = createPsButton({
 // Teclado do Laaazy por cima do Edge (F19 / Ctrl+Alt+K): digita no campo selecionado
 const keyboardOverlay = createKeyboardOverlay({ preload: path.join(__dirname, 'preload.js'), url: 'app://local/keyboard.html', icon: ICON })
 const textEntry = createTextEntry({
+  maskMenu: () => probe.run(MASK_MENU),
   fgHwnd: probe.hwnd,
   // A volta automática pausa com o teclado aberto (a janela dele é do Laaazy) e retoma
   // depois que o Edge volta para a frente

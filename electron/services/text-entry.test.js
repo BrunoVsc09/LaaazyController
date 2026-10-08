@@ -6,6 +6,7 @@ function make({ fg = ['111'] } = {}) {
   const deps = {
     fgHwnd: vi.fn(async () => queue.length > 1 ? queue.shift() : queue[0]),
     showOverlay: vi.fn(),
+    maskMenu: vi.fn(),
     hideOverlay: vi.fn(),
     focusWindow: vi.fn(),
     typeText: vi.fn(() => true),
@@ -56,6 +57,14 @@ describe('teclado por cima de outro programa', () => {
     await t.submit('oi')
     expect(deps.focusWindow).not.toHaveBeenCalled()
     expect(deps.typeText).toHaveBeenCalledWith('oi')
+  })
+  // Regressão (2026-10-08, registrado dentro da Crunchyroll): o Ctrl e o Alt do atalho chegam ao
+  // Edge; um Alt solto sozinho leva o foco para o menu do navegador e a busca perde a seleção
+  it('ao abrir, mascara o Alt do atalho antes de tudo (o Edge não vai para o menu)', async () => {
+    const { t, deps } = make()
+    await t.open()
+    expect(deps.maskMenu).toHaveBeenCalled()
+    expect(deps.maskMenu.mock.invocationCallOrder[0]).toBeLessThan(deps.fgHwnd.mock.invocationCallOrder[0])
   })
   it('cancelar: só esconde, não digita nada', async () => {
     const { t, deps } = make()

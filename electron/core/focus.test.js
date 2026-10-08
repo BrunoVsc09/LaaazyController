@@ -17,6 +17,12 @@ describe('clipCommand: prender o cursor na janela do Laaazy', () => {
   })
 })
 
+describe('MASK_MENU: tecla neutra que impede o Alt solto de abrir o menu do Edge', () => {
+  it('aperta e solta a VK E8 (não faz nada em nenhum programa)', () => {
+    expect(mod.MASK_MENU).toBe('[FG]::Mask()')
+  })
+})
+
 describe('confineCommands: cursor dentro do teclado por cima', () => {
   // Regressão (2026-10-08, gravado no app real): no perfil PC o X também é clique do mouse; com o
   // cursor em cima do Edge, o clique ativava o Edge e o teclado perdia o foco depois da 1ª tecla

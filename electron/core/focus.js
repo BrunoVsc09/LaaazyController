@@ -11,6 +11,8 @@ const focusCommand = (hwnd) => (/^\d+$/.test(String(hwnd || '')) ? `[FG]::Focus(
 
 // Prender o cursor no retângulo da janela (pixels de tela). Só números inteiros vão para o PowerShell.
 const UNCLIP = '[FG]::Unclip()'
+// Tecla neutra (VK E8): soltar o Alt de um atalho não leva o Edge ao menu do navegador
+const MASK_MENU = '[FG]::Mask()'
 function clipCommand(r) {
   if (!r) return null
   const v = [r.x, r.y, r.width, r.height]
@@ -51,4 +53,4 @@ function watchStep(state, info, ctx, now) {
   return idle
 }
 
-module.exports = { hwndFrom, focusCommand, clipCommand, confineCommands, UNCLIP, startWatch, watchStep }
+module.exports = { hwndFrom, focusCommand, clipCommand, confineCommands, UNCLIP, MASK_MENU, startWatch, watchStep }

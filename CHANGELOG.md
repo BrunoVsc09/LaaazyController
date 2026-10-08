@@ -10,6 +10,9 @@
   foco do Windows, o Edge perdia o foco e sites como a Crunchyroll fecham a busca nessa hora. Agora
   o teclado aparece por cima **sem tirar o foco do Edge** (o controle continua sendo lido) e a
   tecla atual ganha a borda amarela desenhada pelo próprio Laaazy.
+- **Busca perdia a seleção com o Ctrl+Alt+K / Share:** o Ctrl e o Alt do atalho chegavam ao
+  Edge, e um Alt solto sozinho leva o foco para o menu do navegador. Agora o Laaazy aperta uma
+  tecla neutra na hora do atalho e o campo continua selecionado.
 - **Share no Edge voltava ao Início:** o teclado por cima é uma janela do Laaazy, e a volta
   automática achava que você tinha saído do Edge. Agora ela pausa enquanto o teclado está aberto.
 - **Teclado parava depois da 1ª tecla (perfil PC):** o X também é clique do mouse e, com o

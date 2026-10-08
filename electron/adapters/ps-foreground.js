@@ -20,6 +20,7 @@ const SETUP = "Add-Type -TypeDefinition 'using System;using System.Runtime.Inter
   'public static void Unclip(){ClipNone(IntPtr.Zero);}' +
   '[DllImport("user32.dll")]public static extern bool SetCursorPos(int x,int y);' +
   'public static void Move(int x,int y){SetCursorPos(x,y);}' +
+  'public static void Mask(){keybd_event(0xE8,0,0,UIntPtr.Zero);keybd_event(0xE8,0,2,UIntPtr.Zero);}' +
   "}'\n"
 const QUERY = '$p=0;[void][FG]::GetWindowThreadProcessId([FG]::GetForegroundWindow(),[ref]$p);$n=(Get-Process -Id $p -ErrorAction SilentlyContinue).ProcessName;"FGPID:${p}:$n"\n'
 const QUERY_HWND = '"FGHWND:" + [FG]::GetForegroundWindow().ToInt64()\n'

@@ -6,10 +6,12 @@ const BACK_MS = 250
 // Depois que a janela volta, o site ainda precisa reselecionar o campo; digitar antes disso perde as letras
 const SETTLE_MS = 800
 
-function createTextEntry({ fgHwnd, showOverlay, hideOverlay, focusWindow, typeText, sleep }) {
+// maskMenu: aperta uma tecla neutra para o Alt do atalho não levar o Edge ao menu do navegador
+function createTextEntry({ fgHwnd, showOverlay, hideOverlay, focusWindow, typeText, sleep, maskMenu = () => {} }) {
   let target = null
 
   async function open() {
+    maskMenu() // primeiro de tudo: o Alt do Ctrl+Alt+K ainda está apertado
     target = await fgHwnd()
     showOverlay()
   }
