@@ -1,7 +1,7 @@
 {
   "name": "laaazy",
   "productName": "Laaazy",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "Central de mídia para Windows com cara de console, controlada pelo DualShock 4: filmes, séries, animes, jogos e apps numa tela só.",
   "author": "Bruno <brunodev09@gmail.com>",
   "license": "MIT",
@@ -77,8 +77,39 @@
       "!node_modules/**"
     ],
     "win": {
-      "target": "portable",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
       "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Laaazy",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerLanguages": [
+        "pt_BR"
+      ],
+      "language": "1046",
+      "artifactName": "Laaazy-Setup-${version}-x64.${ext}"
+    },
+    "portable": {
+      "artifactName": "Laaazy-${version}-x64-portatil.${ext}"
     }
   }
 }

@@ -1,8 +1,11 @@
 # Novidades do Laaazy
 
-## Próxima versão (ainda não lançada)
+## 3.3.0 — 2026-10-08
 
 ### Novo
+- **Instalador para Windows 10 e 11 (x64):** além do `.exe` portátil, agora há um instalador
+  por usuário (sem pedir administrador), com atalhos na Área de trabalho e no Menu Iniciar
+  e desinstalador.
 - **Logo do Laaazy:** um controle dormindo na cama. Aparece no `.exe`, na janela, na barra de
   tarefas, no Alt+Tab e no GitHub. `pnpm icons` gera todos os tamanhos a partir de
   `docs/assets/logo.svg`.

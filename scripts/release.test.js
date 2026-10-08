@@ -18,3 +18,23 @@ describe('versão lançada', () => {
     expect(changelog.split('## Próxima versão').length).toBeLessThanOrEqual(2)
   })
 })
+
+describe('instalador do Windows (x64, Windows 10 e 11)', () => {
+  const win = pkg.build.win
+  const targets = Object.fromEntries(win.target.map((t) => [t.target, t.arch]))
+  it('gera o instalador (NSIS) e o portátil, os dois em 64 bits', () => {
+    expect(targets).toEqual({ nsis: ['x64'], portable: ['x64'] })
+  })
+  it('instalador por usuário (sem pedir administrador), escolhendo a pasta, com atalhos e desinstalador', () => {
+    expect(pkg.build.nsis).toMatchObject({
+      oneClick: false, perMachine: false, allowToChangeInstallationDirectory: true,
+      createDesktopShortcut: true, createStartMenuShortcut: true, shortcutName: 'Laaazy',
+      installerIcon: 'build/icon.ico', uninstallerIcon: 'build/icon.ico',
+    })
+  })
+  it('nomes dos arquivos sem espaço, com a versão e a arquitetura', () => {
+    expect(pkg.build.nsis.artifactName).toBe('Laaazy-Setup-${version}-x64.${ext}')
+    expect(pkg.build.portable.artifactName).toBe('Laaazy-${version}-x64-portatil.${ext}')
+  })
+})
+
