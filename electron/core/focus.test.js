@@ -17,6 +17,18 @@ describe('clipCommand: prender o cursor na janela do Laaazy', () => {
   })
 })
 
+describe('confineCommands: cursor dentro do teclado por cima', () => {
+  // Regressão (2026-10-08, gravado no app real): no perfil PC o X também é clique do mouse; com o
+  // cursor em cima do Edge, o clique ativava o Edge e o teclado perdia o foco depois da 1ª tecla
+  it('prende no retângulo do teclado e leva o cursor para o meio dele', () => {
+    expect(mod.confineCommands({ x: 0, y: 454, width: 1920, height: 626 })).toEqual(['[FG]::Clip(0,454,1920,1080)', '[FG]::Move(960,767)'])
+  })
+  it('retângulo inválido: nada', () => {
+    expect(mod.confineCommands({ x: 0, y: 0, width: 0, height: 10 })).toEqual([])
+    expect(mod.confineCommands(null)).toEqual([])
+  })
+})
+
 describe('hwndFrom e focusCommand', () => {
   it('lê o identificador da janela (HWND) do buffer do Electron', () => {
     const b = Buffer.alloc(8)

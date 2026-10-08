@@ -288,8 +288,18 @@ const textEntry = createTextEntry({
   fgHwnd: probe.hwnd,
   // A volta automática pausa com o teclado aberto (a janela dele é do Laaazy) e retoma
   // depois que o Edge volta para a frente
-  showOverlay: () => { returnWatch.hold(); keyboardOverlay.show() },
-  hideOverlay: () => { keyboardOverlay.hide(); setTimeout(() => returnWatch.release(), 2000) },
+  // O cursor fica preso dentro do teclado: no perfil PC o X também é clique do mouse, e um clique
+  // em cima do Edge tirava o foco do teclado depois da 1ª tecla
+  showOverlay: () => {
+    returnWatch.hold()
+    keyboardOverlay.show()
+    setTimeout(() => cursorLock.confine(keyboardOverlay.screenBounds()), 200)
+  },
+  hideOverlay: () => {
+    keyboardOverlay.hide()
+    cursorLock.unlock()
+    setTimeout(() => returnWatch.release(), 2000)
+  },
   focusWindow: (hwnd) => probe.focus(hwnd),
   typeText: (text) => { const cmd = typeCommand(text); if (!cmd) return false; keySender.send(cmd); return true },
   sleep,

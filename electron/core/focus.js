@@ -18,6 +18,14 @@ function clipCommand(r) {
   return `[FG]::Clip(${r.x},${r.y},${r.x + r.width},${r.y + r.height})`
 }
 
+// Cursor dentro de um retângulo (teclado por cima): prende e leva para o meio.
+// No perfil PC o X também é clique do mouse; fora do teclado, esse clique ativaria o Edge.
+function confineCommands(r) {
+  const clip = clipCommand(r)
+  if (!clip) return []
+  return [clip, `[FG]::Move(${r.x + Math.floor(r.width / 2)},${r.y + Math.floor(r.height / 2)})`]
+}
+
 // O que conta como "voltou para casa": área de trabalho, launchers e o próprio Laaazy
 const HOME = new Set(['', 'explorer', 'steam', 'steamwebhelper', 'epicgameslauncher', 'laaazy', 'electron'])
 const GIVE_UP_MS = 90 * 1000
@@ -43,4 +51,4 @@ function watchStep(state, info, ctx, now) {
   return idle
 }
 
-module.exports = { hwndFrom, focusCommand, clipCommand, UNCLIP, startWatch, watchStep }
+module.exports = { hwndFrom, focusCommand, clipCommand, confineCommands, UNCLIP, startWatch, watchStep }

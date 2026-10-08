@@ -49,7 +49,14 @@ function createKeyboardOverlay({ preload, url, icon, forceFocus = () => {} }) {
   // Ao esconder, o Windows devolve o foco para a janela de antes (o Edge, no campo selecionado)
   const hide = () => { if (win && !win.isDestroyed()) win.hide() }
 
-  return { show, hide }
+  // Retângulo do teclado em pixels de tela (para prender o cursor dentro dele)
+  function screenBounds() {
+    if (!win || win.isDestroyed()) return null
+    const r = screen.dipToScreenRect(win, win.getBounds())
+    return { x: Math.round(r.x), y: Math.round(r.y), width: Math.round(r.width), height: Math.round(r.height) }
+  }
+
+  return { show, hide, screenBounds }
 }
 
 module.exports = { createKeyboardOverlay }

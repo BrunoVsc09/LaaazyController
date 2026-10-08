@@ -18,6 +18,8 @@ const SETUP = "Add-Type -TypeDefinition 'using System;using System.Runtime.Inter
   '[DllImport("user32.dll",EntryPoint="ClipCursor")]public static extern bool ClipNone(IntPtr p);' +
   'public static void Clip(int l,int t,int r,int b){R x;x.l=l;x.t=t;x.r=r;x.b=b;ClipCursor(ref x);}' +
   'public static void Unclip(){ClipNone(IntPtr.Zero);}' +
+  '[DllImport("user32.dll")]public static extern bool SetCursorPos(int x,int y);' +
+  'public static void Move(int x,int y){SetCursorPos(x,y);}' +
   "}'\n"
 const QUERY = '$p=0;[void][FG]::GetWindowThreadProcessId([FG]::GetForegroundWindow(),[ref]$p);$n=(Get-Process -Id $p -ErrorAction SilentlyContinue).ProcessName;"FGPID:${p}:$n"\n'
 const QUERY_HWND = '"FGHWND:" + [FG]::GetForegroundWindow().ToInt64()\n'

@@ -27,4 +27,10 @@ describe('cursorLock', () => {
     lock.unlock()
     expect(deps.send).toHaveBeenCalledWith('[FG]::Unclip()')
   })
+  it('confine: prende o cursor num retângulo e põe ele no meio (teclado por cima), mesmo com a opção desligada', () => {
+    const { lock, deps } = make({ enabled: false })
+    lock.confine({ x: 0, y: 400, width: 1000, height: 600 })
+    expect(deps.send.mock.calls.map((c) => c[0])).toEqual(['[FG]::Clip(0,400,1000,1000)', '[FG]::Move(500,700)'])
+  })
 })
+

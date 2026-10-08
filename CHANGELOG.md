@@ -11,6 +11,9 @@
   força o foco (como a janela principal) e sempre abre com uma tecla selecionada.
 - **Share no Edge voltava ao Início:** o teclado por cima é uma janela do Laaazy, e a volta
   automática achava que você tinha saído do Edge. Agora ela pausa enquanto o teclado está aberto.
+- **Teclado parava depois da 1ª tecla (perfil PC):** o X também é clique do mouse e, com o
+  cursor em cima do Edge, o clique tirava o foco do teclado. Agora, com o teclado aberto, o
+  cursor fica preso dentro dele e é solto quando ele fecha.
 
 ## 3.3.0 — 2026-10-08
 
