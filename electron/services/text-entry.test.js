@@ -9,6 +9,8 @@ function make({ fg = ['111'] } = {}) {
     maskMenu: vi.fn(),
     hideOverlay: vi.fn(),
     sendEdit: vi.fn(() => true),
+    profileIn: vi.fn(),
+    profileOut: vi.fn(),
   }
   return { t: mod.createTextEntry(deps), deps }
 }
@@ -57,6 +59,21 @@ describe('teclado por cima de outro programa (texto em tempo real)', () => {
     expect(await t.edit(0, 'a\nb')).toBe(false)
     expect(await t.edit(0, 'x'.repeat(501))).toBe(false)
     expect(deps.sendEdit).not.toHaveBeenCalled()
+  })
+  // Ideia do Bruno (2026-10-08): no perfil PC o controle vira mouse e atrapalhava o teclado;
+  // com o teclado aberto, o controle fica num perfil sem mouse (Brunera) e volta ao fechar
+  it('abrir troca o controle para o perfil do teclado; fechar devolve o perfil de antes', async () => {
+    const { t, deps } = make()
+    await t.open()
+    expect(deps.profileIn).toHaveBeenCalledTimes(1)
+    expect(deps.profileOut).not.toHaveBeenCalled()
+    t.close()
+    expect(deps.profileOut).toHaveBeenCalledTimes(1)
+  })
+  it('fechar sem ter aberto não mexe no perfil', () => {
+    const { t, deps } = make()
+    t.close()
+    expect(deps.profileOut).not.toHaveBeenCalled()
   })
   it('fechar (Pronto, O ou Cancelar): esconde e para de digitar', async () => {
     const { t, deps } = make()

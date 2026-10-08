@@ -7,6 +7,9 @@
   para o campo do site — a busca da Crunchyroll já vai mostrando os resultados enquanto você
   digita. Pronto (Options) e O só fecham o teclado. O Laaazy só digita enquanto a janela da
   frente for a mesma em que você abriu o teclado.
+- **Controle sem mouse enquanto o teclado está aberto (ideia do Bruno):** ao abrir o teclado por
+  cima, o DS4 troca para o perfil "Teclado por cima" (Brunera por padrão: X é X, nada de mouse) e,
+  ao fechar, volta ao perfil do app aberto (PC na Crunchyroll). Trocável em Perfis do controle.
 
 ### Corrigido
 - **Teclado por cima do Edge não digitava no site:** depois do Pronto, o Laaazy digitava antes

@@ -6,17 +6,23 @@ const CONTROL = /[\u0000-\u001f\u007f]/
 const MAX = 500
 
 // maskMenu: aperta uma tecla neutra para o Alt do atalho não levar o Edge ao menu do navegador
-function createTextEntry({ fgHwnd, showOverlay, hideOverlay, sendEdit, maskMenu = () => {} }) {
+// profileIn/profileOut: controle num perfil sem mouse enquanto o teclado está aberto, e de volta
+function createTextEntry({ fgHwnd, showOverlay, hideOverlay, sendEdit, maskMenu = () => {}, profileIn = () => {}, profileOut = () => {} }) {
   let target = null
+  let opened = false
   let chain = Promise.resolve() // teclas em ordem, mesmo com a consulta ao Windows demorando
 
   async function open() {
     maskMenu() // primeiro de tudo: o Alt do Ctrl+Alt+K ainda está apertado
     target = await fgHwnd()
+    opened = true
+    profileIn()
     showOverlay()
   }
 
   function close() {
+    if (opened) profileOut()
+    opened = false
     target = null
     hideOverlay()
   }

@@ -192,8 +192,13 @@ const myList = createMyList({
   write: (list) => store.writeJson(userFile('my-list.json'), list),
 })
 
+// Perfil do DS4 do app que está aberto (streaming, Área de trabalho): o teclado por cima troca
+// para o perfil dele e devolve este ao fechar
+let appProfileKey = 'menu'
+const ds4ForApps = { ...ds4, applyFor: (key) => { appProfileKey = key; return ds4.applyFor(key) } }
+
 const launcher = createLauncher({
-  services: streaming, locator, ds4, spawnDetached,
+  services: streaming, locator, ds4: ds4ForApps, spawnDetached,
   openPath: (p) => shell.openPath(p),
   openExternal: (url) => shell.openExternal(url),
   openStream: (url) => stream.open(url),
@@ -287,6 +292,9 @@ const psButton = createPsButton({
 const keyboardOverlay = createKeyboardOverlay({ preload: path.join(__dirname, 'preload.js'), url: 'app://local/keyboard.html', icon: ICON })
 const textEntry = createTextEntry({
   maskMenu: () => probe.run(MASK_MENU),
+  // Controle sem mouse enquanto o teclado está aberto (Perfis do controle → Teclado por cima)
+  profileIn: () => ds4.applyFor('keyboard'),
+  profileOut: () => ds4.applyFor(appProfileKey),
   fgHwnd: probe.hwnd,
   // A volta automática pausa com o teclado aberto (a janela dele é do Laaazy) e retoma
   // depois que o Edge volta para a frente
@@ -316,7 +324,7 @@ const returnWatch = createReturnWatch({
 setInterval(() => returnWatch.tick(), 1500).unref()
 
 // Botão "Área de trabalho" do Início
-const desktop = createDesktop({ ds4, returnWatch, minimize: hideLaaazy })
+const desktop = createDesktop({ ds4: ds4ForApps, returnWatch, minimize: hideLaaazy })
 
 registerIpc(ipcMain, {
   launcher, locator, settings, ds4, library: libraryWithCovers, catalog, myList, power, covers, volume, assistant, psButton, textEntry, goHome, desktop, ytTrailers,

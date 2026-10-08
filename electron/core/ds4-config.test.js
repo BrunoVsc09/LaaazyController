@@ -7,6 +7,8 @@ describe('ds4-config', () => {
   it('padrões: Menu = Brunera; navegadores e Crunchyroll = PC', () => {
     expect(DEFAULTS).toMatchObject({ menu: 'Brunera', Crunchyroll: 'PC', 'Google Chrome': 'PC', Firefox: 'PC' })
     expect(DEFAULTS.desktop).toBe('PC') // Área de trabalho: controle vira mouse
+    // Teclado por cima: controle sem mouse (no PC o X é clique e o cursor atrapalhava o teclado)
+    expect(DEFAULTS.keyboard).toBe('Brunera')
     // streamings abrem no Edge, que precisa de mouse
     for (const s of ['Netflix', 'Prime Video', 'HBO Max', 'YouTube', 'Spotify']) expect(DEFAULTS[s], s).toBe('PC')
   })
