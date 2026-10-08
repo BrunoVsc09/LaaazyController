@@ -37,6 +37,10 @@ describe('Início: destaque com trailer sempre à vista', () => {
   it('a tela não vira caixa de rolagem própria (senão o sticky não funciona): overflow-x clip', () => {
     expect(css).toMatch(/\.ps4-screen \{ overflow-x: clip; overflow-y: visible; \}/)
   })
+  // Pedido do Bruno (2026-10-08): prévia maior. Cresce com a tela (46% da altura), entre 380 e 520px
+  it('o destaque (e a prévia dentro dele) cresce com a altura da tela', () => {
+    expect(css).toMatch(/:root \{ --lz-hero-h: clamp\(380px, 46vh, 520px\); \}/)
+  })
   it('o card em foco para abaixo do destaque e acima do rodapé', () => {
     expect(css).toMatch(/html:has\(\.lz-home\) \{ scroll-padding-top: calc\(var\(--lz-hero-h\) \+ 16px\); scroll-padding-bottom: 120px; \}/)
   })

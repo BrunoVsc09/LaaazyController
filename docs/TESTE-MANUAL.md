@@ -137,6 +137,7 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 ## Início: filmes no topo e prévia
 - [ ] Ao abrir, o foco já está no primeiro filme/série; as fileiras de títulos vêm logo abaixo do destaque
 - [ ] Parado num título ~1s, o trailer toca sem som no quadro do destaque; passar para o próximo troca a prévia
+- [ ] A prévia ocupa quase metade da largura (em 1080p, ~833×469) e a primeira fileira aparece inteira
 - [ ] Se aparecer erro do YouTube no quadro (ex.: 153), me avise e desligue em Configurações → Prévia do trailer
 - [ ] "Trailer com som" abre o trailer completo no Edge
 - [ ] Continuar jogando e Seus apps ficam mais abaixo

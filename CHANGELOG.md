@@ -9,6 +9,8 @@
   apagando tudo), **△** espaço, **L1/R1** andam com o cursor (barrinha amarela). Vale para o
   teclado do Laaazy e para o teclado por cima do Edge. Numa TV com escala maior, as teclas
   encolhem para caber na janela.
+- **Prévia do trailer maior no Início:** o destaque cresce com a tela (na de 1080p, a prévia
+  passou de 626×352 para 833×469) e a primeira fileira continua à vista.
 - **Teclado por cima em tempo real:** cada tecla (letra, espaço, apagar, limpar) vai na hora
   para o campo do site — a busca da Crunchyroll já vai mostrando os resultados enquanto você
   digita. Pronto (Options) e O só fecham o teclado. O Laaazy só digita enquanto a janela da

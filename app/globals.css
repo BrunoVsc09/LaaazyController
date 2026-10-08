@@ -317,7 +317,7 @@ html, body, :is(.ps4-screen, .kb-overlay) * { scrollbar-width: none; }
 
 /* Início: o destaque (com o trailer) fica preso no topo e as fileiras rolam por baixo dele.
    A tela não pode ser caixa de rolagem própria (overflow-x: hidden faria isso), senão o sticky não prende. */
-:root { --lz-hero-h: 380px; }
+:root { --lz-hero-h: clamp(380px, 46vh, 520px); }
 .ps4-screen { overflow-x: clip; overflow-y: visible; }
 .lz-hero { position: sticky; top: 0; z-index: 3; height: var(--lz-hero-h); padding: 16px 0 12px; align-items: center; background: linear-gradient(180deg, #0b3f9d 0 90%, rgba(11, 63, 157, 0)); }
 .lz-hero > div:first-child { align-self: center; }
