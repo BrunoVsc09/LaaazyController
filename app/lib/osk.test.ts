@@ -7,24 +7,34 @@ const { BTN } = gamepad
 describe('teclado na tela: layout', () => {
   it('tem números, letras (com ç) e as teclas especiais', () => {
     const all = OSK_ROWS.flat()
-    for (const k of ['1', '0', 'q', 'p', 'a', 'ç', 'z', 'm', 'shift', 'space', 'backspace', 'clear', 'enter', 'left', 'right']) expect(all).toContain(k)
+    for (const k of ['1', '0', 'q', 'p', 'a', 'ç', 'z', 'm', 'shift', 'space', 'backspace', 'clear', 'enter', 'left', 'right', 'caps']) expect(all).toContain(k)
   })
   // Pedido do Bruno (2026-10-08), como no teclado do Hydra: cada tecla mostra o botão que faz o mesmo
   it('as teclas com atalho mostram o botão do controle', () => {
-    expect(KEY_PAD).toEqual({ backspace: '□', space: '△', enter: 'R2', left: 'L1', right: 'R1' })
+    expect(KEY_PAD).toEqual({ backspace: '□', space: '△', enter: 'R2', left: 'L1', right: 'R1', caps: 'L2' })
   })
 })
 
 describe('applyKey', () => {
-  const s = (value: string, caret = value.length, shift = false) => ({ value, caret, shift })
+  const s = (value: string, caret = value.length, shift = false, caps = false) => ({ value, caret, shift, caps })
   it('letra entra no cursor e o cursor anda; o site recebe só a letra', () => {
-    expect(applyKey(s('ab'), 'c')).toEqual({ value: 'abc', caret: 3, shift: false, done: false, edit: { text: 'c' } })
+    expect(applyKey(s('ab'), 'c')).toEqual({ value: 'abc', caret: 3, shift: false, caps: false, done: false, edit: { text: 'c' } })
     expect(applyKey(s('ac', 1), 'b')).toMatchObject({ value: 'abc', caret: 2 })
   })
   it('shift deixa a próxima letra maiúscula e depois desliga', () => {
     const on = applyKey(s('a'), 'shift')
     expect(on).toMatchObject({ value: 'a', shift: true, edit: null })
     expect(applyKey(on, 'b')).toMatchObject({ value: 'aB', shift: false, edit: { text: 'B' } })
+  })
+  // Pedido do Bruno (2026-10-08): L2 é o Caps Lock, maiúsculas até desligar
+  it('Caps Lock: todas as letras maiúsculas até desligar; Shift com Caps dá minúscula', () => {
+    const on = applyKey(s('a'), 'caps')
+    expect(on).toMatchObject({ caps: true, edit: null })
+    const ab = applyKey(applyKey(on, 'b'), 'c')
+    expect(ab).toMatchObject({ value: 'aBC', caps: true })
+    expect(applyKey(applyKey(ab, 'shift'), 'd')).toMatchObject({ value: 'aBCd', caps: true, shift: false })
+    expect(applyKey(ab, 'caps')).toMatchObject({ caps: false })
+    expect(applyKey(applyKey(ab, 'caps'), 'e').value).toBe('aBCe')
   })
   it('espaço entra no cursor', () => {
     expect(applyKey(s('ab'), 'space')).toMatchObject({ value: 'ab ', edit: { text: ' ' } })
@@ -65,13 +75,13 @@ describe('maskValue e splitAtCaret', () => {
   })
 })
 
-describe('controle no teclado: □ apaga, △ espaço, L1/R1 cursor, R2 Enter', () => {
+describe('controle no teclado: □ apaga, △ espaço, L1/R1 cursor, R2 Enter, L2 Caps Lock', () => {
   const frame = (down: number[]) => ({ fired: (b: number) => down.includes(b), down: (b: number) => down.includes(b) })
   it('cada botão aperta a tecla certa', () => {
     const pad = createOskPad()
     expect(pad(frame([BTN.SQUARE]), 0)).toEqual(['backspace'])
     const pad2 = createOskPad()
-    expect(pad2(frame([BTN.TRIANGLE, BTN.L1, BTN.R1, BTN.R2]), 0)).toEqual(['space', 'enter', 'left', 'right'])
+    expect(pad2(frame([BTN.TRIANGLE, BTN.L1, BTN.R1, BTN.R2, BTN.L2]), 0)).toEqual(['space', 'enter', 'caps', 'left', 'right'])
   })
   it('segurar o □ vai apagando (depois de um instante, várias vezes por segundo)', () => {
     const pad = createOskPad()

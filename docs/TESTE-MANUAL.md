@@ -72,6 +72,7 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Teclado preto, letras grandes (dá para ler do sofá); cada tecla de atalho mostra o botão (□ △ L1 R1 R2)
 - [ ] Letras entram no campo; Shift deixa a próxima maiúscula; □ apaga; segurar □ vai apagando tudo; △ dá espaço
 - [ ] L1/R1 andam com a barrinha amarela do cursor; a letra entra onde a barrinha está
+- [ ] L2 liga o Caps Lock (tecla Caps amarela, todas as letras maiúsculas); L2 de novo desliga
 - [ ] Campo de senha mostra bolinhas no teclado
 - [ ] R2 (Enter) ou O fecha e o foco volta ao campo
 
@@ -136,8 +137,8 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 
 ## Início: filmes no topo e prévia
 - [ ] Ao abrir, o foco já está no primeiro filme/série; as fileiras de títulos vêm logo abaixo do destaque
-- [ ] Parado num título ~1s, o trailer toca sem som no quadro do destaque; passar para o próximo troca a prévia
 - [ ] A prévia ocupa quase metade da largura (em 1080p, ~833×469) e a primeira fileira aparece inteira
+- [ ] Parado num título ~1s, o trailer toca sem som no quadro do destaque; passar para o próximo troca a prévia
 - [ ] Se aparecer erro do YouTube no quadro (ex.: 153), me avise e desligue em Configurações → Prévia do trailer
 - [ ] "Trailer com som" abre o trailer completo no Edge
 - [ ] Continuar jogando e Seus apps ficam mais abaixo

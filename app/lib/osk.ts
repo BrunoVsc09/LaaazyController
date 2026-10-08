@@ -10,19 +10,20 @@ export const OSK_ROWS: string[][] = [
   ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'clear'],
   ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'ç', 'enter'],
   ['z', 'x', 'c', 'v', 'b', 'n', 'm', '-', '_', '.'],
-  ['shift', 'space', 'left', 'right'],
+  ['shift', 'caps', 'space', 'left', 'right'],
 ]
 
 export const KEY_LABEL: Record<string, string> = {
-  shift: 'Shift', space: 'Espaço', backspace: '⌫', clear: 'Limpar', enter: 'Enter', left: '←', right: '→',
+  shift: 'Shift', caps: 'Caps', space: 'Espaço', backspace: '⌫', clear: 'Limpar', enter: 'Enter', left: '←', right: '→',
 }
 
 // Botão do controle que faz o mesmo que a tecla (aparece no canto dela)
-export const KEY_PAD: Record<string, string> = { backspace: '□', space: '△', enter: 'R2', left: 'L1', right: 'R1' }
+export const KEY_PAD: Record<string, string> = { backspace: '□', space: '△', enter: 'R2', left: 'L1', right: 'R1', caps: 'L2' }
 
 const MAX = 200
 
-export type OskState = { value: string; caret: number; shift: boolean }
+// shift: só a próxima letra maiúscula; caps: Caps Lock, até desligar (Shift com Caps dá minúscula)
+export type OskState = { value: string; caret: number; shift: boolean; caps: boolean }
 // O que a tecla fez, para repetir no campo de outro programa (teclado por cima; ver core/typing)
 export type OskEdit = { move?: number; back?: number; text?: string; enter?: boolean }
 export type OskResult = OskState & { done: boolean; edit: OskEdit | null }
@@ -30,8 +31,10 @@ export type OskResult = OskState & { done: boolean; edit: OskEdit | null }
 function insert(s: OskState, ch: string): OskResult {
   if (s.value.length >= MAX) return { ...s, done: false, edit: null }
   const value = s.value.slice(0, s.caret) + ch + s.value.slice(s.caret)
-  return { value, caret: s.caret + 1, shift: false, done: false, edit: { text: ch } }
+  return { value, caret: s.caret + 1, shift: false, caps: s.caps, done: false, edit: { text: ch } }
 }
+
+export const upper = (s: { shift: boolean; caps: boolean }) => s.shift !== s.caps
 
 const same = (s: OskState, edit: OskEdit | null = null, done = false): OskResult => ({ ...s, done, edit })
 
@@ -39,6 +42,7 @@ export function applyKey(s: OskState, key: string): OskResult {
   const { value, caret } = s
   switch (key) {
     case 'shift': return same({ ...s, shift: !s.shift })
+    case 'caps': return same({ ...s, caps: !s.caps })
     case 'space': return { ...insert(s, ' '), shift: s.shift }
     case 'backspace':
       if (!caret) return same(s)
@@ -51,7 +55,7 @@ export function applyKey(s: OskState, key: string): OskResult {
       return same({ ...s, value: '', caret: 0 }, toEnd ? { move: toEnd, back: value.length } : { back: value.length })
     }
     case 'enter': return same(s, { enter: true }, true)
-    default: return insert(s, s.shift ? key.toUpperCase() : key)
+    default: return insert(s, upper(s) ? key.toUpperCase() : key)
   }
 }
 
@@ -64,7 +68,7 @@ export const splitAtCaret = (value: string, caret: number, secret: boolean): [st
 // Segurar o botão repete a tecla: primeiro um instante parado (um toque não vale por dois)
 const HOLD_MS = 400
 const EVERY_MS = 60
-const TAP: [number, string][] = [[BTN.TRIANGLE, 'space'], [BTN.R2, 'enter']]
+const TAP: [number, string][] = [[BTN.TRIANGLE, 'space'], [BTN.R2, 'enter'], [BTN.L2, 'caps']]
 const REPEAT: [number, string][] = [[BTN.SQUARE, 'backspace'], [BTN.L1, 'left'], [BTN.R1, 'right']]
 
 export type OskPadFrame = { fired: (button: number) => boolean; down: (button: number) => boolean }

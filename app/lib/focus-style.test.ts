@@ -68,10 +68,10 @@ describe('teclado na tela: preto e letras grandes', () => {
     expect(css).toMatch(/\.osk \{[^}]*background: #0b0b0c;/)
     expect(css).toMatch(/\.osk-key \{[^}]*font-size: 34px;/)
   })
-  it('grade de 11 colunas: Enter ocupa duas linhas, Espaço sete colunas', () => {
+  it('grade de 11 colunas: Enter ocupa duas linhas, Espaço seis (ao lado do Shift e do Caps)', () => {
     expect(css).toMatch(/\.osk-keys \{ display: grid; grid-template-columns: repeat\(11, minmax\(0, 1fr\)\);/)
     expect(css).toMatch(/\.osk-key\[data-key="enter"\] \{ grid-row: span 2; \}/)
-    expect(css).toMatch(/\.osk-key\[data-key="space"\] \{ grid-column: span 7; \}/)
+    expect(css).toMatch(/\.osk-key\[data-key="space"\] \{ grid-column: span 6; \}/)
   })
   it('o teclado por cima também é preto', () => {
     expect(css).toMatch(/\.kb-overlay \{[^}]*background: #000;/)

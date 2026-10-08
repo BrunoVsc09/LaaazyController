@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState, type MutableRefObject } from 'react'
-import { OSK_ROWS, KEY_LABEL, KEY_PAD, applyKey, splitAtCaret, type OskEdit } from '../lib/osk'
+import { OSK_ROWS, KEY_LABEL, KEY_PAD, applyKey, splitAtCaret, upper, type OskEdit } from '../lib/osk'
 import type { Sounds } from '../hooks/useSounds'
 
 // Muda o valor de um <input> controlado pelo React (o onChange da tela recebe normalmente)
@@ -25,7 +25,7 @@ type Props = {
 }
 
 export default function OnScreenKeyboard({ target, onClose, sounds, pressRef, secret = target.type === 'password', onEdit }: Props) {
-  const [state, setState] = useState({ value: target.value, caret: target.value.length, shift: false })
+  const [state, setState] = useState({ value: target.value, caret: target.value.length, shift: false, caps: false })
   const stateRef = useRef(state)
   stateRef.current = state
 
@@ -33,8 +33,8 @@ export default function OnScreenKeyboard({ target, onClose, sounds, pressRef, se
     const next = applyKey(stateRef.current, key)
     if (next.value !== stateRef.current.value) setInputValue(target, next.value)
     setCaret(target, next.caret)
-    const { value, caret, shift } = next
-    stateRef.current = { value, caret, shift } // teclas seguidas no mesmo quadro (□ segurado)
+    const { value, caret, shift, caps } = next
+    stateRef.current = { value, caret, shift, caps } // teclas seguidas no mesmo quadro (□ segurado)
     setState(stateRef.current)
     if (next.edit) onEdit?.(next.edit)
     if (next.done) onClose()
@@ -56,9 +56,9 @@ export default function OnScreenKeyboard({ target, onClose, sounds, pressRef, se
       </div>
       <div className="osk-keys">
         {OSK_ROWS.flat().map((k) => (
-          <button key={k} type="button" data-key={k} className={`osk-key ${KEY_LABEL[k] ? 'special' : ''} ${k === 'shift' && state.shift ? 'on' : ''}`}
+          <button key={k} type="button" data-key={k} className={`osk-key ${KEY_LABEL[k] ? 'special' : ''} ${(k === 'shift' && state.shift) || (k === 'caps' && state.caps) ? 'on' : ''}`}
             onClick={() => { sounds.click(); press(k) }}>
-            {KEY_LABEL[k] ?? (state.shift ? k.toUpperCase() : k)}
+            {KEY_LABEL[k] ?? (upper(state) ? k.toUpperCase() : k)}
             {KEY_PAD[k] && <small className="osk-pad">{KEY_PAD[k]}</small>}
           </button>
         ))}

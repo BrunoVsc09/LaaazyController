@@ -256,7 +256,7 @@ button { font: inherit; }
 .osk-key.special { font-size: 24px; background: #2a2a2e; }
 .osk-key[data-key="enter"] { grid-row: span 2; }
 .osk-key[data-key="shift"] { grid-column: span 2; }
-.osk-key[data-key="space"] { grid-column: span 7; }
+.osk-key[data-key="space"] { grid-column: span 6; }
 .osk-key.on { background: #ffd23f; color: #111; }
 .osk-key:focus-visible { outline: 3px solid #ffd23f; outline-offset: 2px; background: #3a3a40; }
 .osk-pad { position: absolute; right: 9px; bottom: 6px; font-size: 14px; font-weight: 700; opacity: .55; }
