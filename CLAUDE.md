@@ -95,6 +95,9 @@ Regras:
 
 - **Barra invertida em heredoc** do bash some ou vira caractere de controle: para código com
   `\`, use a ferramenta Write/Edit (ou Python com `chr(92)`).
+- **Final de linha misto** (CRLF e LF convivem no repo): `sed -i` e Python em modo texto trocam o
+  final de linha do arquivo inteiro e o diff vira centenas de linhas. Use Edit, ou Python em modo
+  binário mantendo o `\r\n` que o arquivo já tinha; confira com `git diff --stat`.
 - `electron/preload.js` e `stream-preload.js` são **gerados** (não editar; estão no .gitignore).
 - Perfil **PC** do DS4Windows: X = clique esquerdo, O = clique direito, analógico = mouse.
   O Laaazy arbitra isso em `app/lib/input-mode` — não ler o mesmo botão duas vezes.
