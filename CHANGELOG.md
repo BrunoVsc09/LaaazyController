@@ -21,6 +21,10 @@
   ao fechar, volta ao perfil do app aberto (PC na Crunchyroll). Trocável em Perfis do controle.
 
 ### Corrigido
+- **Parecidos (△) "não fazia nada" (achado pelo Bruno):** o Gemini levava ~20s e o aviso ficava
+  numa fileira escondida atrás do destaque. Agora o aviso aparece no destaque, a IA pensa menos
+  (3 a 11s nas medições) e, quando os parecidos chegam, o foco vai para o primeiro deles. Com o
+  foco fora de um título (app, jogo), o △ explica o que fazer em vez de ficar em silêncio.
 - **Teclado por cima do Edge não digitava no site:** depois do Pronto, o Laaazy digitava antes
   de o site reselecionar o campo (busca da Crunchyroll, por exemplo) e as letras se perdiam.
   Agora espera o campo voltar antes de digitar.

@@ -47,3 +47,13 @@ export function shuffled<T>(items: T[], rand: () => number = Math.random, limit 
   }
   return out.slice(0, limit)
 }
+
+// Parecidos (△): o título do card em foco, em qualquer fileira; fora de um título, nenhum
+export const similarSource = (id: string | undefined, lists: Title[][]): Title | null =>
+  (id && lists.flat().find((t) => t.id === id)) || null
+
+// Avisos no destaque (sempre à vista, mesmo com a fileira dos parecidos lá em cima)
+export const SIMILAR_MSG = {
+  pick: 'Para ver parecidos, pare num filme ou série e aperte △.',
+  searching: (title: string) => `Procurando títulos parecidos com "${title}"... a IA leva alguns segundos.`,
+}

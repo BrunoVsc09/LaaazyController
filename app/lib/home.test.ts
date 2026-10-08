@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { DEFAULT_PINNED, togglePin, pinnedCards, buildRows, heroInfo, appsGrid, shuffled } from './home-model'
+import { DEFAULT_PINNED, togglePin, pinnedCards, buildRows, heroInfo, appsGrid, shuffled, similarSource, SIMILAR_MSG } from './home-model'
 import { CATALOG } from './catalog'
 import type { Title } from './lazy-api'
 
@@ -78,5 +78,21 @@ describe('heroInfo', () => {
   })
   it('sem ano e sem serviço conhecido', () => {
     expect(heroInfo(t('a', { year: '', services: ['Outro'] }))).toEqual({ meta: 'Série · Outro', primary: null })
+  })
+})
+
+// Regressão (2026-10-08, achado pelo Bruno: "aperto em Parecidos e não acontece nada")
+describe('Parecidos (△): de qual título e o que avisar', () => {
+  const lists = [[t('a'), t('b')], [t('c')]]
+  it('acha o título do card em foco em qualquer fileira', () => {
+    expect(similarSource('c', lists)?.id).toBe('c')
+  })
+  it('foco fora de um título (app, jogo, botão): nenhum', () => {
+    expect(similarSource(undefined, lists)).toBeNull()
+    expect(similarSource('zzz', lists)).toBeNull()
+  })
+  it('avisos visíveis no destaque: escolher um título e "procurando" (a IA leva uns segundos)', () => {
+    expect(SIMILAR_MSG.pick).toMatch(/filme ou série.*△/)
+    expect(SIMILAR_MSG.searching('Duna')).toMatch(/Duna.*segundos/)
   })
 })

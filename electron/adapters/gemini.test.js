@@ -20,6 +20,18 @@ describe('Gemini adapter', () => {
     expect(body.contents).toEqual([{ role: 'user', parts: [{ text: 'comédia' }] }])
     expect(body.generationConfig).toMatchObject({ responseMimeType: 'application/json', responseSchema: { type: 'OBJECT' } })
   })
+  // Regressão (2026-10-08, achado pelo Bruno: "aperto em Parecidos e não acontece nada"): o Gemini 3
+  // pensava por conta própria e o "Parecido com este" levava ~20s. Pedido curto não precisa pensar muito.
+  it('Gemini 3: pede pouco raciocínio (responde bem mais rápido)', async () => {
+    const fetch = fakeFetch(200, ok('{}'))
+    await mod.createGemini({ fetch }).generate('K', 'gemini-3.8-flash', { system: '', user: 'x', schema: {} })
+    expect(JSON.parse(fetch.mock.calls[0][1].body).generationConfig.thinkingConfig).toEqual({ thinkingLevel: 'low' })
+  })
+  it('outros modelos (ex.: o reserva) vão sem esse ajuste, para não serem recusados', async () => {
+    const fetch = fakeFetch(200, ok('{}'))
+    await mod.createGemini({ fetch }).generate('K', 'gemini-flash-latest', { system: '', user: 'x', schema: {} })
+    expect(JSON.parse(fetch.mock.calls[0][1].body).generationConfig.thinkingConfig).toBeUndefined()
+  })
   it('nome de modelo estranho não vira URL', async () => {
     const fetch = fakeFetch(200, ok('{}'))
     await expect(mod.createGemini({ fetch }).generate('K', '../../evil', { system: '', user: 'x', schema: {} })).rejects.toThrow(/Modelo inválido/)

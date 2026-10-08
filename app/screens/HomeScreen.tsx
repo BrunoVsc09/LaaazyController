@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import streaming from '../../shared/streaming'
 import AppIcon from '../components/AppIcon'
 import { CATALOG, type Card } from '../lib/catalog'
-import { buildRows, heroInfo, pinnedCards, shuffled, type EpisodeNews } from '../lib/home-model'
+import { buildRows, heroInfo, pinnedCards, shuffled, similarSource, SIMILAR_MSG, type EpisodeNews } from '../lib/home-model'
 import { getLazy, type CatalogHome, type Game, type Title } from '../lib/lazy-api'
 import { YT_ORIGIN, nextTitleId, playerCommand, playerEvent, previewStep, titleFocus, trailerEmbedUrl } from '../lib/trailer'
 import type { Sounds } from '../hooks/useSounds'
@@ -101,22 +101,26 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
     const onTriangle = async () => {
       if (!lazy) return
       const id = (document.activeElement as HTMLElement | null)?.closest<HTMLElement>('.lz-title')?.dataset.id
-      const all = [...(similarRef.current?.items ?? []), ...rowsRef.current.flatMap((r) => r.items)]
-      const source = id && all.find((t) => t.id === id)
-      if (!source) return
+      const source = similarSource(id, [similarRef.current?.items ?? [], ...rowsRef.current.map((r) => r.items)])
+      if (!source) { setMsg(SIMILAR_MSG.pick); return }
       setSimilar({ source, mood: '', items: [], loading: true })
+      setMsg(SIMILAR_MSG.searching(source.title))
       const r = await lazy.ai.similar(source)
       if (!r.ok || !r.items.length) { setSimilar(null); setMsg(r.msg || `Não achei títulos parecidos com "${source.title}".`); return }
+      setMsg('')
       setSimilar({ source, mood: r.mood ?? '', items: r.items, loading: false })
-      window.setTimeout(() => {
-        const first = document.querySelector<HTMLElement>('.lz-similar .lz-title')
-        first?.focus()
-        first?.scrollIntoView({ block: 'center', inline: 'nearest' })
-      }, 0)
     }
     window.addEventListener('lz:triangle', onTriangle)
     return () => window.removeEventListener('lz:triangle', onTriangle)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  // Parecidos prontos: o foco vai para o 1º deles depois que a fileira foi desenhada (antes, um
+  // setTimeout chegava antes dos cards e o foco ficava no título de origem)
+  const similarReady = similar && !similar.loading ? similar.source.id : ''
+  useEffect(() => {
+    const first = similarReady ? document.querySelector<HTMLElement>('.lz-similar .lz-title') : null
+    first?.focus()
+    first?.scrollIntoView({ block: 'center', inline: 'nearest' })
+  }, [similarReady])
 
   // Trailer acabou: passa para o próximo título (o foco vai junto se estiver nas fileiras)
   useEffect(() => {

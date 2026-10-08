@@ -7,6 +7,10 @@ const TIMEOUT_MS = 15000
 const RETRY = new Set([500, 502, 503, 504])
 const BACKOFF_MS = [800, 1600]
 
+// Gemini 3 pensa por conta própria e demorava ~20s no "Parecido com este"; pedido curto pensa pouco.
+// Só nele: outros modelos recusam esse campo.
+const thinking = (model) => (/^gemini-3/.test(model) ? { thinkingConfig: { thinkingLevel: 'low' } } : {})
+
 function createGemini({ fetch = globalThis.fetch, sleep = (ms) => new Promise((r) => setTimeout(r, ms)) } = {}) {
   const headers = (key) => ({ 'x-goog-api-key': key, 'Content-Type': 'application/json' })
   const signal = () => (typeof AbortSignal !== 'undefined' && AbortSignal.timeout ? AbortSignal.timeout(TIMEOUT_MS) : undefined)
@@ -28,7 +32,7 @@ function createGemini({ fetch = globalThis.fetch, sleep = (ms) => new Promise((r
     const body = JSON.stringify({
       systemInstruction: { parts: [{ text: system }] },
       contents: [{ role: 'user', parts: [{ text: user }] }],
-      generationConfig: { responseMimeType: 'application/json', responseSchema: schema, temperature: 0.2, maxOutputTokens: 1024 },
+      generationConfig: { responseMimeType: 'application/json', responseSchema: schema, temperature: 0.2, maxOutputTokens: 1024, ...thinking(model) },
     })
     let res
     for (let attempt = 0; ; attempt++) {
