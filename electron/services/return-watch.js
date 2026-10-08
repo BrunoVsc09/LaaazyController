@@ -4,6 +4,8 @@ const { startWatch, watchStep } = require('../core/focus')
 function createReturnWatch({ fgInfo, ownPids, selfPid, onReturn, now = Date.now }) {
   let state = { phase: 'idle' }
   let busy = false
+  // Teclado por cima aberto: a janela dele é do Laaazy, mas o usuário continua no Edge
+  let held = false
 
   const start = () => { state = startWatch(now()) }
   const stop = () => { state = { phase: 'idle' } }
@@ -13,13 +15,18 @@ function createReturnWatch({ fgInfo, ownPids, selfPid, onReturn, now = Date.now 
     if (state.phase === 'idle' || busy) return
     busy = true
     try {
-      const r = watchStep(state, await fgInfo(), { selfPid, ownPids: ownPids() }, now())
+      const info = await fgInfo()
+      if (held) return
+      const r = watchStep(state, info, { selfPid, ownPids: ownPids() }, now())
       state = r.state
       if (r.action === 'return') onReturn()
     } finally { busy = false }
   }
 
-  return { start, stop, tick }
+  const hold = () => { held = true }
+  const release = () => { held = false }
+
+  return { start, stop, tick, hold, release }
 }
 
 module.exports = { createReturnWatch }

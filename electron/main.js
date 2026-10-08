@@ -286,8 +286,10 @@ const psButton = createPsButton({
 const keyboardOverlay = createKeyboardOverlay({ preload: path.join(__dirname, 'preload.js'), url: 'app://local/keyboard.html', icon: ICON, forceFocus: (hwnd) => probe.focus(hwnd) })
 const textEntry = createTextEntry({
   fgHwnd: probe.hwnd,
-  showOverlay: () => keyboardOverlay.show(),
-  hideOverlay: () => keyboardOverlay.hide(),
+  // A volta automática pausa com o teclado aberto (a janela dele é do Laaazy) e retoma
+  // depois que o Edge volta para a frente
+  showOverlay: () => { returnWatch.hold(); keyboardOverlay.show() },
+  hideOverlay: () => { keyboardOverlay.hide(); setTimeout(() => returnWatch.release(), 2000) },
   focusWindow: (hwnd) => probe.focus(hwnd),
   typeText: (text) => { const cmd = typeCommand(text); if (!cmd) return false; keySender.send(cmd); return true },
   sleep,

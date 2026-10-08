@@ -36,4 +36,20 @@ describe('return-watch', () => {
     await w.tick()
     expect(deps.fgInfo).not.toHaveBeenCalled()
   })
+  // Regressão (2026-10-08): o teclado por cima é uma janela do próprio Laaazy; aberto sobre o
+  // Edge, a volta automática achava que o usuário tinha voltado e trazia o Início por cima
+  it('com o teclado por cima aberto (hold), não volta ao Início; depois de release, volta a vigiar', async () => {
+    const { w, deps, advance } = make([{ name: 'msedge', pid: 99 }, { name: 'electron', pid: 10 }, { name: 'msedge', pid: 99 }, { name: 'explorer', pid: 5 }])
+    w.start()
+    advance(1000); await w.tick() // Edge na frente
+    w.hold() // teclado abriu
+    advance(1000); await w.tick() // a janela do teclado (do Laaazy) está na frente
+    expect(deps.onReturn).not.toHaveBeenCalled()
+    w.release() // teclado fechou, o Edge voltou
+    advance(1000); await w.tick()
+    expect(deps.onReturn).not.toHaveBeenCalled()
+    advance(1000); await w.tick() // Edge fechou
+    expect(deps.onReturn).toHaveBeenCalledTimes(1)
+  })
 })
+

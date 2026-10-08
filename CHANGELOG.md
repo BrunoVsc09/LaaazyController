@@ -9,6 +9,8 @@
 - **Borda amarela sumia no teclado por cima:** às vezes o Windows não deixava o teclado pegar
   a frente; sem foco, nenhuma tecla aparecia selecionada e o D-pad não andava. Agora o teclado
   força o foco (como a janela principal) e sempre abre com uma tecla selecionada.
+- **Share no Edge voltava ao Início:** o teclado por cima é uma janela do Laaazy, e a volta
+  automática achava que você tinha saído do Edge. Agora ela pausa enquanto o teclado está aberto.
 
 ## 3.3.0 — 2026-10-08
 
