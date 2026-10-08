@@ -36,14 +36,20 @@ export default function KeyboardOverlay() {
   const submit = () => { void getLazy()?.oskOverlay.submit(input.current?.value ?? '') }
   const cancel = () => { void getLazy()?.oskOverlay.cancel() }
 
-  // Sempre uma tecla com a borda: ao abrir e quando a janela ganha o foco do Windows
+  // Sempre uma tecla com a borda. A janela nunca tem o foco do Windows (o Edge mantém o campo
+  // selecionado), então :focus não é desenhado: a tecla atual ganha data-current e o CSS desenha.
   useEffect(() => {
-    const pick = () => {
+    let current: HTMLElement | null = null
+    const mark = () => {
       if (needsKeyFocus(document.activeElement as HTMLElement | null, '.osk button')) document.querySelector<HTMLElement>('.osk button')?.focus()
+      const active = document.activeElement as HTMLElement | null
+      if (active === current) return
+      current?.removeAttribute('data-current')
+      current = active?.closest('.kb-overlay button') ? active : null
+      current?.setAttribute('data-current', '')
     }
-    const t = window.setTimeout(pick, 50)
-    window.addEventListener('focus', pick)
-    return () => { window.clearTimeout(t); window.removeEventListener('focus', pick) }
+    const t = window.setInterval(mark, 60)
+    return () => { window.clearInterval(t); current?.removeAttribute('data-current') }
   }, [session])
 
   // Mouse e controle sem brigar: a borda só segue o mouse quando ele anda de verdade

@@ -6,9 +6,10 @@
 - **Teclado por cima do Edge não digitava no site:** depois do Pronto, o Laaazy digitava antes
   de o site reselecionar o campo (busca da Crunchyroll, por exemplo) e as letras se perdiam.
   Agora espera o campo voltar antes de digitar.
-- **Borda amarela sumia no teclado por cima:** às vezes o Windows não deixava o teclado pegar
-  a frente; sem foco, nenhuma tecla aparecia selecionada e o D-pad não andava. Agora o teclado
-  força o foco (como a janela principal) e sempre abre com uma tecla selecionada.
+- **Busca do site fechava ao abrir o teclado por cima (achado pelo Bruno):** o teclado pegava o
+  foco do Windows, o Edge perdia o foco e sites como a Crunchyroll fecham a busca nessa hora. Agora
+  o teclado aparece por cima **sem tirar o foco do Edge** (o controle continua sendo lido) e a
+  tecla atual ganha a borda amarela desenhada pelo próprio Laaazy.
 - **Share no Edge voltava ao Início:** o teclado por cima é uma janela do Laaazy, e a volta
   automática achava que você tinha saído do Edge. Agora ela pausa enquanto o teclado está aberto.
 - **Teclado parava depois da 1ª tecla (perfil PC):** o X também é clique do mouse e, com o

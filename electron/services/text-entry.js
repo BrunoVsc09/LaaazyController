@@ -25,7 +25,9 @@ function createTextEntry({ fgHwnd, showOverlay, hideOverlay, focusWindow, typeTe
     hideOverlay()
     if (!to || typeof text !== 'string' || !text || text.length > 500 || CONTROL.test(text)) return false
     await sleep(BACK_MS) // o Windows devolve o foco para a janela de antes
-    if ((await fgHwnd()) !== to) focusWindow(to)
+    // Só puxa o foco se outra janela conhecida estiver na frente (o truque do Alt tira o foco da página)
+    const now = await fgHwnd()
+    if (now && now !== to) focusWindow(to)
     await sleep(SETTLE_MS)
     return typeText(text)
   }

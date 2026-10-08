@@ -322,3 +322,7 @@ html:has(.lz-home) { scroll-padding-top: calc(var(--lz-hero-h) + 16px); scroll-p
 
 /* Usando o controle (ou as setas) o cursor some; mexendo o mouse de verdade ele volta */
 html.lz-pad, html.lz-pad * { cursor: none !important; }
+
+/* Teclado por cima nunca pega o foco do Windows (a busca do site fecharia): a tecla atual é
+   marcada com data-current pela página e ganha a borda aqui (:focus não é desenhado sem foco) */
+.kb-overlay button[data-current] { outline: 3px solid #ffd23f; outline-offset: 2px; background: rgba(255, 255, 255, .28); }

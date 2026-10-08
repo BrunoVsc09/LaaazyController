@@ -49,6 +49,14 @@ describe('teclado por cima de outro programa', () => {
       expect(lastSleep[0]).toBeGreaterThanOrEqual(700)
     }
   })
+  it('janela da frente desconhecida (consulta ao Windows falhou): não puxa o foco à toa', async () => {
+    // puxar o foco usa o truque do Alt, e um Alt no Edge tira o foco da página (a busca fecha)
+    const { t, deps } = make({ fg: ['111', ''] })
+    await t.open()
+    await t.submit('oi')
+    expect(deps.focusWindow).not.toHaveBeenCalled()
+    expect(deps.typeText).toHaveBeenCalledWith('oi')
+  })
   it('cancelar: só esconde, não digita nada', async () => {
     const { t, deps } = make()
     await t.open()

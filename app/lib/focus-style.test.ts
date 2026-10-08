@@ -47,3 +47,12 @@ describe('cursor no modo controle', () => {
     expect(css).toMatch(/html\.lz-pad, html\.lz-pad \* \{ cursor: none !important; \}/)
   })
 })
+
+// Regressão (2026-10-08, achado pelo Bruno): o teclado por cima não pode pegar o foco do Windows
+// (a busca do site fecha quando o Edge perde o foco). Sem foco, :focus não é desenhado; a tecla
+// atual é marcada com data-current e ganha a borda pelo CSS.
+describe('teclado por cima sem foco: borda na tecla atual', () => {
+  it('a tecla marcada com data-current tem a borda amarela', () => {
+    expect(css).toMatch(/\.kb-overlay button\[data-current\] \{ outline: 3px solid #ffd23f;/)
+  })
+})

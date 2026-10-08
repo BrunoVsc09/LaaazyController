@@ -283,7 +283,7 @@ const psButton = createPsButton({
 })
 
 // Teclado do Laaazy por cima do Edge (F19 / Ctrl+Alt+K): digita no campo selecionado
-const keyboardOverlay = createKeyboardOverlay({ preload: path.join(__dirname, 'preload.js'), url: 'app://local/keyboard.html', icon: ICON, forceFocus: (hwnd) => probe.focus(hwnd) })
+const keyboardOverlay = createKeyboardOverlay({ preload: path.join(__dirname, 'preload.js'), url: 'app://local/keyboard.html', icon: ICON })
 const textEntry = createTextEntry({
   fgHwnd: probe.hwnd,
   // A volta automática pausa com o teclado aberto (a janela dele é do Laaazy) e retoma
