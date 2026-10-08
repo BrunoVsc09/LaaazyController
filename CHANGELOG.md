@@ -1,6 +1,6 @@
 # Novidades do Laaazy
 
-## Próxima versão (ainda não lançada)
+## 3.4.0 — 2026-10-08
 
 ### Mudou
 - **Teclado novo (pedido do Bruno, com o do Hydra de referência):** preto, letras grandes para
@@ -14,8 +14,8 @@
   passou de 626×352 para 833×469) e a primeira fileira continua à vista.
 - **Teclado por cima em tempo real:** cada tecla (letra, espaço, apagar, limpar) vai na hora
   para o campo do site — a busca da Crunchyroll já vai mostrando os resultados enquanto você
-  digita. Pronto (Options) e O só fecham o teclado. O Laaazy só digita enquanto a janela da
-  frente for a mesma em que você abriu o teclado.
+  digita. R2 aperta Enter (pesquisa) e fecha; Options e O só fecham. O Laaazy só digita
+  enquanto a janela da frente for a mesma em que você abriu o teclado.
 - **Controle sem mouse enquanto o teclado está aberto (ideia do Bruno):** ao abrir o teclado por
   cima, o DS4 troca para o perfil "Teclado por cima" (Brunera por padrão: X é X, nada de mouse) e,
   ao fechar, volta ao perfil do app aberto (PC na Crunchyroll). Trocável em Perfis do controle.
@@ -25,9 +25,9 @@
   numa fileira escondida atrás do destaque. Agora o aviso aparece no destaque, a IA pensa menos
   (3 a 11s nas medições) e, quando os parecidos chegam, o foco vai para o primeiro deles. Com o
   foco fora de um título (app, jogo), o △ explica o que fazer em vez de ficar em silêncio.
-- **Teclado por cima do Edge não digitava no site:** depois do Pronto, o Laaazy digitava antes
-  de o site reselecionar o campo (busca da Crunchyroll, por exemplo) e as letras se perdiam.
-  Agora espera o campo voltar antes de digitar.
+- **Teclado por cima do Edge não digitava no site:** o texto só ia no Pronto e se perdia
+  enquanto o site reselecionava o campo (busca da Crunchyroll, por exemplo). Agora cada tecla
+  vai na hora, com o campo sempre selecionado.
 - **Busca do site fechava ao abrir o teclado por cima (achado pelo Bruno):** o teclado pegava o
   foco do Windows, o Edge perdia o foco e sites como a Crunchyroll fecham a busca nessa hora. Agora
   o teclado aparece por cima **sem tirar o foco do Edge** (o controle continua sendo lido) e a
