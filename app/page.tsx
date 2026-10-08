@@ -23,7 +23,7 @@ import { padClick, useMouseFocus } from './hooks/useMouseFocus'
 import { inputMode } from './lib/input-mode'
 import { DEFAULT_PINNED, togglePin } from './lib/home-model'
 import { getLazy } from './lib/lazy-api'
-import { OSK_HINTS } from './lib/osk'
+import { OSK_HINTS, createOskPad } from './lib/osk'
 import { createIdle } from './lib/screensaver'
 import { initialScreen, screenReducer, type Screen } from './lib/screen-state'
 
@@ -50,6 +50,7 @@ export default function Page() {
   const oskRef = useRef<HTMLInputElement | null>(null)
   oskRef.current = oskTarget
   const oskPress = useRef<((key: string) => void) | null>(null)
+  const oskPad = useRef(createOskPad())
   const [powerOpen, setPowerOpen] = useState(false)
   // Proteção de tela: liga depois de N minutos parado; qualquer botão desliga (e esse aperto é ignorado)
   const idle = useRef(createIdle())
@@ -124,7 +125,7 @@ export default function Page() {
   const go = (screen: Screen) => dispatch(screen === 'home' ? { type: 'goHome' } : { type: 'open', screen })
   const back = () => { sounds.click(); dispatch({ type: 'leave' }) }
 
-  const padOn = useGamepad(({ fired, dx, dy, active: touched, buttons }) => {
+  const padOn = useGamepad(({ fired, down, dx, dy, active: touched, buttons }) => {
     if (touched) {
       if (buttons || dx || dy) padUsed() // analógico virando mouse não esconde o cursor
       if (saverRef.current) { wake(); return }
@@ -144,8 +145,7 @@ export default function Page() {
     if (!dx && !dy) lastMove.current = 0
     if (osk) {
       if (fired(BTN.X)) padClick()
-      if (fired(BTN.SQUARE)) oskPress.current?.('backspace')
-      if (fired(BTN.TRIANGLE)) oskPress.current?.('space')
+      for (const key of oskPad.current({ fired, down }, now)) oskPress.current?.(key) // □ △ L1 R1 R2
       if (fired(BTN.O)) closeOsk()
       return
     }

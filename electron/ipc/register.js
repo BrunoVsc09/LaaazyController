@@ -2,11 +2,20 @@
 const C = require('../../shared/channels')
 const { isWebUrl } = require('../core/routing')
 const { trustedSender } = require('../core/security')
+const { validEdit } = require('../core/typing')
 
 const PLAYER_KEYS = new Set(['Space', 'Left', 'Right'])
 const VOLUME_ACTIONS = new Set(['up', 'down', 'mute'])
 const isText = (v) => typeof v === 'string'
 const str = (v) => (isText(v) ? v : '')
+// Edição do teclado por cima: só os campos conhecidos, e só se forem válidos
+const EDIT_KEYS = ['move', 'back', 'text', 'enter']
+function toEdit(e) {
+  if (!e || typeof e !== 'object') return null
+  const out = {}
+  for (const k of EDIT_KEYS) if (e[k] !== undefined) out[k] = e[k]
+  return validEdit(out) ? out : null
+}
 
 function registerIpc(ipcMain, h) {
   // Só a tela do app (e, para os comandos do controle, os sites de streaming) são atendidos
@@ -51,7 +60,7 @@ function registerIpc(ipcMain, h) {
   handle(C.YT_CLEAR_KEY, () => h.ytTrailers.clearKey())
   handle(C.CATALOG_SEARCH, (q) => (isText(q) ? h.catalog.search(q) : { ok: false, items: [], msg: 'Busca inválida.' }))
   handle(C.CATALOG_EXPLORE, (sel) => (sel && typeof sel === 'object' && !Array.isArray(sel) ? h.catalog.explore(sel) : { ok: false, items: [], msg: 'Escolha inválida.' }))
-  handle(C.OSK_EDIT, (back, text) => (Number.isInteger(back) && isText(text) ? h.textEntry.edit(back, text) : false))
+  handle(C.OSK_EDIT, (e) => { const edit = toEdit(e); return edit ? h.textEntry.edit(edit) : false })
   handle(C.OSK_CLOSE, () => h.textEntry.close())
   handle(C.CLIPBOARD_READ, () => h.readClipboard())
   handle(C.PS_TEST_START, () => h.psButton.startTest())

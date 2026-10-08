@@ -32,9 +32,11 @@ describe('teclado por cima de outro programa (texto em tempo real)', () => {
   it('cada tecla vai na hora para o campo do site (apagar N + texto)', async () => {
     const { t, deps } = make()
     await t.open()
-    expect(await t.edit(0, 'n')).toBe(true)
-    expect(await t.edit(1, '')).toBe(true)
-    expect(deps.sendEdit.mock.calls).toEqual([[{ back: 0, text: 'n' }], [{ back: 1, text: '' }]])
+    expect(await t.edit({ text: 'n' })).toBe(true)
+    expect(await t.edit({ back: 1 })).toBe(true)
+    expect(await t.edit({ move: -1 })).toBe(true)
+    expect(await t.edit({ enter: true })).toBe(true)
+    expect(deps.sendEdit.mock.calls).toEqual([[{ text: 'n' }], [{ back: 1 }], [{ move: -1 }], [{ enter: true }]])
     expect(deps.hideOverlay).not.toHaveBeenCalled()
   })
   it('teclas rápidas chegam em ordem, mesmo se a consulta ao Windows demorar', async () => {
@@ -42,22 +44,24 @@ describe('teclado por cima de outro programa (texto em tempo real)', () => {
     await t.open()
     let slow = true
     deps.fgHwnd.mockImplementation(async () => { if (slow) { slow = false; await new Promise((r) => setTimeout(r, 20)) } return '111' })
-    await Promise.all([t.edit(0, 'a'), t.edit(0, 'b'), t.edit(0, 'c')])
+    await Promise.all([t.edit({ text: 'a' }), t.edit({ text: 'b' }), t.edit({ text: 'c' })])
     expect(deps.sendEdit.mock.calls.map((c) => c[0].text).join('')).toBe('abc')
   })
   it('outra janela na frente (você trocou de programa): não digita nela', async () => {
     const { t, deps } = make({ fg: ['111', '999'] })
     await t.open()
-    expect(await t.edit(0, 'x')).toBe(false)
+    expect(await t.edit({ text: 'x' })).toBe(false)
     expect(deps.sendEdit).not.toHaveBeenCalled()
   })
   it('teclado fechado ou valores estranhos: não digita', async () => {
     const { t, deps } = make()
-    expect(await t.edit(0, 'x')).toBe(false) // nem abriu
+    expect(await t.edit({ text: 'x' })).toBe(false) // nem abriu
     await t.open()
-    expect(await t.edit(-1, '')).toBe(false)
-    expect(await t.edit(0, 'a\nb')).toBe(false)
-    expect(await t.edit(0, 'x'.repeat(501))).toBe(false)
+    expect(await t.edit({ back: -1 })).toBe(false)
+    expect(await t.edit({ text: 'a\nb' })).toBe(false)
+    expect(await t.edit({ text: 'x'.repeat(501) })).toBe(false)
+    expect(await t.edit({ enter: 'sim' })).toBe(false)
+    expect(await t.edit(null)).toBe(false)
     expect(deps.sendEdit).not.toHaveBeenCalled()
   })
   // Ideia do Bruno (2026-10-08): no perfil PC o controle vira mouse e atrapalhava o teclado;
@@ -75,11 +79,20 @@ describe('teclado por cima de outro programa (texto em tempo real)', () => {
     t.close()
     expect(deps.profileOut).not.toHaveBeenCalled()
   })
-  it('fechar (Pronto, O ou Cancelar): esconde e para de digitar', async () => {
+  // R2 manda o Enter e já fecha o teclado: o Enter pedido antes de fechar ainda tem que chegar
+  it('Enter e fechar logo em seguida: o Enter chega mesmo assim', async () => {
+    const { t, deps } = make()
+    await t.open()
+    const enter = t.edit({ enter: true })
+    t.close()
+    expect(await enter).toBe(true)
+    expect(deps.sendEdit).toHaveBeenCalledWith({ enter: true })
+  })
+  it('fechar (Enter, O ou Options): esconde e para de digitar', async () => {
     const { t, deps } = make()
     await t.open()
     t.close()
     expect(deps.hideOverlay).toHaveBeenCalled()
-    expect(await t.edit(0, 'x')).toBe(false)
+    expect(await t.edit({ text: 'x' })).toBe(false)
   })
 })

@@ -16,7 +16,7 @@ function createKeyboardOverlay({ preload, url, icon }) {
       // Nunca pega o foco do Windows: o Edge continua com o campo selecionado (a busca de sites
       // como a Crunchyroll fecha quando a página perde o foco). O controle é lido mesmo assim.
       focusable: false,
-      backgroundColor: '#08183c',
+      backgroundColor: '#000000',
       icon,
       webPreferences: { preload },
     })

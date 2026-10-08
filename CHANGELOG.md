@@ -3,6 +3,12 @@
 ## Próxima versão (ainda não lançada)
 
 ### Mudou
+- **Teclado novo (pedido do Bruno, com o do Hydra de referência):** preto, letras grandes para
+  ler de longe, Enter alto à direita e Espaço largo embaixo. Cada tecla de atalho mostra o botão
+  do controle: **R2** Enter (pesquisa no site e fecha o teclado), **□** apaga (segurando, vai
+  apagando tudo), **△** espaço, **L1/R1** andam com o cursor (barrinha amarela). Vale para o
+  teclado do Laaazy e para o teclado por cima do Edge. Numa TV com escala maior, as teclas
+  encolhem para caber na janela.
 - **Teclado por cima em tempo real:** cada tecla (letra, espaço, apagar, limpar) vai na hora
   para o campo do site — a busca da Crunchyroll já vai mostrando os resultados enquanto você
   digita. Pronto (Options) e O só fecham o teclado. O Laaazy só digita enquanto a janela da

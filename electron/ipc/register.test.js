@@ -166,13 +166,14 @@ describe('registerIpc', () => {
     send(C.VOLUME, 'up')
     expect(h.volume.step).toHaveBeenCalledWith('up')
   })
-  it('teclado por cima (tempo real): apagar é número inteiro e o texto é texto; fechar não leva nada', async () => {
+  it('teclado por cima (tempo real): a edição só passa com números inteiros e texto; fechar não leva nada', async () => {
     const { invoke, h } = make()
-    expect(await invoke(C.OSK_EDIT, '1', 'a')).toBe(false)
-    expect(await invoke(C.OSK_EDIT, 0, { evil: 1 })).toBe(false)
+    expect(await invoke(C.OSK_EDIT, { back: '1' })).toBe(false)
+    expect(await invoke(C.OSK_EDIT, { text: { evil: 1 } })).toBe(false)
+    expect(await invoke(C.OSK_EDIT, 'a')).toBe(false)
     expect(h.textEntry.edit).not.toHaveBeenCalled()
-    await invoke(C.OSK_EDIT, 1, 'abc')
-    expect(h.textEntry.edit).toHaveBeenCalledWith(1, 'abc')
+    await invoke(C.OSK_EDIT, { move: -1, back: 1, text: 'abc', enter: true, extra: 'fora' })
+    expect(h.textEntry.edit).toHaveBeenCalledWith({ move: -1, back: 1, text: 'abc', enter: true })
     await invoke(C.OSK_CLOSE, 'qualquer')
     expect(h.textEntry.close).toHaveBeenCalledWith()
     expect(C.OSK_SUBMIT).toBeUndefined() // não existe mais o "manda tudo no Pronto"

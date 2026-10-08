@@ -34,24 +34,6 @@ describe('typeCommand (digitar no programa da frente)', () => {
   })
 })
 
-describe('editDiff: o que mudou no teclado vira apagar N + digitar texto (tempo real)', () => {
-  it('letra nova no fim: só digita ela', () => {
-    expect(mod.editDiff('nar', 'naru')).toEqual({ back: 0, text: 'u' })
-  })
-  it('apagar: N backspaces', () => {
-    expect(mod.editDiff('naru', 'nar')).toEqual({ back: 1, text: '' })
-  })
-  it('limpar: apaga tudo', () => {
-    expect(mod.editDiff('naruto', '')).toEqual({ back: 6, text: '' })
-  })
-  it('troca no meio (raro): apaga até onde mudou e digita o resto', () => {
-    expect(mod.editDiff('abc', 'abX')).toEqual({ back: 1, text: 'X' })
-  })
-  it('nada mudou (ex.: Maiúscula): nada a fazer', () => {
-    expect(mod.editDiff('abc', 'abc')).toEqual({ back: 0, text: '' })
-  })
-})
-
 describe('editCommand: comando que aplica a mudança no campo do site', () => {
   it('backspaces e depois o texto (com o mesmo cuidado do typeCommand)', () => {
     const cmd = mod.editCommand({ back: 2, text: 'oi' })
@@ -62,11 +44,38 @@ describe('editCommand: comando que aplica a mudança no campo do site', () => {
     expect(mod.editCommand({ back: 3, text: '' })).toBe("$w.SendKeys('{BACKSPACE 3}')")
     expect(mod.editCommand({ back: 0, text: 'a' })).toBe(mod.typeCommand('a'))
   })
+  // Pedido do Bruno (2026-10-08): L1/R1 andam com o cursor e R2 é o Enter (pesquisar)
+  it('L1/R1: move o cursor do campo para trás ou para a frente', () => {
+    expect(mod.editCommand({ move: -1 })).toBe("$w.SendKeys('{LEFT 1}')")
+    expect(mod.editCommand({ move: 2 })).toBe("$w.SendKeys('{RIGHT 2}')")
+  })
+  it('R2: Enter (depois do resto, para pesquisar o que foi digitado)', () => {
+    expect(mod.editCommand({ enter: true })).toBe("$w.SendKeys('{ENTER}')")
+    expect(mod.editCommand({ back: 1, text: '', enter: true })).toBe("$w.SendKeys('{BACKSPACE 1}');$w.SendKeys('{ENTER}')")
+  })
+  it('limpar com o cursor no meio: vai ao fim e apaga tudo', () => {
+    expect(mod.editCommand({ move: 3, back: 6 })).toBe("$w.SendKeys('{RIGHT 3}');$w.SendKeys('{BACKSPACE 6}')")
+  })
   it('nada a fazer ou valores estranhos: null', () => {
     expect(mod.editCommand({ back: 0, text: '' })).toBeNull()
+    expect(mod.editCommand({})).toBeNull()
     expect(mod.editCommand({ back: -1, text: '' })).toBeNull()
     expect(mod.editCommand({ back: 501, text: '' })).toBeNull()
     expect(mod.editCommand({ back: 1.5, text: '' })).toBeNull()
     expect(mod.editCommand({ back: 0, text: 'a\nb' })).toBeNull()
+    expect(mod.editCommand({ move: 501 })).toBeNull()
+    expect(mod.editCommand({ move: 0.5 })).toBeNull()
+    expect(mod.editCommand({ enter: 'sim' })).toBeNull()
+    expect(mod.editCommand(null)).toBeNull()
+  })
+})
+
+describe('validEdit: o que pode chegar da tela', () => {
+  it('aceita só números inteiros, texto sem controle e enter booleano', () => {
+    expect(mod.validEdit({ move: -2, back: 1, text: 'a', enter: false })).toBe(true)
+    expect(mod.validEdit({ text: 'a' })).toBe(true)
+    expect(mod.validEdit({ back: '1' })).toBe(false)
+    expect(mod.validEdit({ text: 'a\u0007' })).toBe(false)
+    expect(mod.validEdit('a')).toBe(false)
   })
 })

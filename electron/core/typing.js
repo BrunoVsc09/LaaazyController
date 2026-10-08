@@ -22,16 +22,30 @@ function typeCommand(text) {
   ].join(';')
 }
 
-const { editDiff } = require('../../shared/edit-diff')
+const isCount = (n, min) => n === undefined || (Number.isInteger(n) && n >= min && n <= MAX)
 
-// Comando que aplica { back, text } no campo do programa da frente; null se não há o que fazer
-function editCommand({ back, text }) {
-  if (!Number.isInteger(back) || back < 0 || back > MAX) return null
-  const del = back ? `$w.SendKeys('{BACKSPACE ${back}}')` : ''
-  if (!text) return del || null
-  const type = typeCommand(text)
-  if (!type) return null
-  return del ? `${del};${type}` : type
+// Uma tecla do teclado por cima vira { move, back, text, enter }: anda com o cursor (L1/R1),
+// apaga N, digita o texto e aperta Enter (R2), nessa ordem. Tudo opcional.
+function validEdit(e) {
+  if (!e || typeof e !== 'object') return false
+  const { move, back, text, enter } = e
+  return isCount(move, -MAX) && isCount(back, 0) &&
+    (text === undefined || (typeof text === 'string' && text.length <= MAX && !CONTROL.test(text))) &&
+    (enter === undefined || typeof enter === 'boolean')
 }
 
-module.exports = { typeCommand, editDiff, editCommand, MAX }
+// Comando que aplica a edição no campo do programa da frente; null se não há o que fazer
+function editCommand(e) {
+  if (!validEdit(e)) return null
+  const { move = 0, back = 0, text = '', enter = false } = e
+  const keys = (k) => `$w.SendKeys('{${k}}')`
+  const parts = [
+    move ? keys(`${move < 0 ? 'LEFT' : 'RIGHT'} ${Math.abs(move)}`) : '',
+    back ? keys(`BACKSPACE ${back}`) : '',
+    text ? typeCommand(text) : '',
+    enter ? keys('ENTER') : '',
+  ].filter(Boolean)
+  return parts.length ? parts.join(';') : null
+}
+
+module.exports = { typeCommand, validEdit, editCommand, MAX }

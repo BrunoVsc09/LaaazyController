@@ -9,7 +9,7 @@ module.exports = {
   PS_TESTED: 'ps:tested', // principal → tela
   PS_TEST_START: 'ps:testStart',
   OSK_OPENED: 'osk:opened', // principal → teclado por cima
-  OSK_EDIT: 'osk:edit', // tempo real: apagar N + digitar texto no campo do site
+  OSK_EDIT: 'osk:edit', // tempo real: { move, back, text, enter } no campo do site
   OSK_CLOSE: 'osk:close',
   LAUNCH: 'launch',
   EXE_GET: 'exe:get',

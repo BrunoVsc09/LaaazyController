@@ -56,3 +56,29 @@ describe('teclado por cima sem foco: borda na tecla atual', () => {
     expect(css).toMatch(/\.kb-overlay button\[data-current\] \{ outline: 3px solid #ffd23f;/)
   })
 })
+
+// Pedido do Bruno (2026-10-08), com o teclado do Hydra de referência: preto e letras grandes,
+// para ler do sofá; Enter alto à direita e Espaço largo embaixo
+describe('teclado na tela: preto e letras grandes', () => {
+  it('fundo preto e letras de 34px', () => {
+    expect(css).toMatch(/\.osk \{[^}]*background: #0b0b0c;/)
+    expect(css).toMatch(/\.osk-key \{[^}]*font-size: 34px;/)
+  })
+  it('grade de 11 colunas: Enter ocupa duas linhas, Espaço sete colunas', () => {
+    expect(css).toMatch(/\.osk-keys \{ display: grid; grid-template-columns: repeat\(11, minmax\(0, 1fr\)\);/)
+    expect(css).toMatch(/\.osk-key\[data-key="enter"\] \{ grid-row: span 2; \}/)
+    expect(css).toMatch(/\.osk-key\[data-key="space"\] \{ grid-column: span 7; \}/)
+  })
+  it('o teclado por cima também é preto', () => {
+    expect(css).toMatch(/\.kb-overlay \{[^}]*background: #000;/)
+  })
+})
+
+// Numa TV com escala de 125%/150% a janela do teclado por cima fica mais baixa: as teclas encolhem
+// para caber, em vez de o Enter e o Espaço sumirem embaixo
+describe('teclado por cima cabe na janela', () => {
+  it('as linhas dividem a altura da janela', () => {
+    expect(css).toMatch(/\.kb-overlay \{ height: 100vh;[^}]*overflow: hidden;/)
+    expect(css).toMatch(/\.kb-overlay \.osk-keys \{ flex: 1; min-height: 0; grid-auto-rows: minmax\(0, 1fr\); \}/)
+  })
+})

@@ -69,9 +69,11 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 
 ## Teclado na tela
 - [ ] X num campo de texto (busca da Biblioteca, chave do TMDB) abre o teclado
-- [ ] Letras entram no campo; ⇧ deixa a próxima maiúscula; □ apaga; △ dá espaço
+- [ ] Teclado preto, letras grandes (dá para ler do sofá); cada tecla de atalho mostra o botão (□ △ L1 R1 R2)
+- [ ] Letras entram no campo; Shift deixa a próxima maiúscula; □ apaga; segurar □ vai apagando tudo; △ dá espaço
+- [ ] L1/R1 andam com a barrinha amarela do cursor; a letra entra onde a barrinha está
 - [ ] Campo de senha mostra bolinhas no teclado
-- [ ] ✓ Pronto ou O fecha e o foco volta ao campo
+- [ ] R2 (Enter) ou O fecha e o foco volta ao campo
 
 ## Busca
 - [ ] □ no Início ou em Apps (ou a aba ⌕ Buscar) abre a busca com o campo em foco
@@ -145,11 +147,12 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 ## Teclado por cima do Edge
 - [ ] Crunchyroll → clicar na busca → Ctrl+Alt+K (ou Share): o teclado abre com a borda amarela numa tecla; o D-pad anda.
 - [ ] Cada tecla aparece na hora na busca da Crunchyroll (e o Apagar apaga na hora).
-- [ ] Pronto (Options) e O fecham o teclado; o texto continua na busca.
+- [ ] L1/R1 andam com o cursor dentro da busca do site; □ apaga a letra antes dele (segurando, apaga tudo).
+- [ ] R2 aperta Enter no site (pesquisa) e fecha o teclado; Options e O só fecham. O texto continua na busca.
 - [ ] Com o teclado aberto o controle fica no perfil Brunera (X não clica, analógico não mexe o mouse); ao fechar volta ao PC.
 - [ ] No DS4Windows, mapear um botão (Share/touchpad) para F19 em todos os perfis
 - [ ] No Edge (ex.: Netflix), selecionar o campo de busca, apertar o botão: o teclado do Laaazy aparece na metade de baixo da tela
-- [ ] Digitar com o controle e apertar ✓ Pronto (ou Options): o teclado some e o texto aparece no campo do Edge
+- [ ] Digitar com o controle e apertar R2 (Enter) ou Options: o teclado some e o texto está no campo do Edge
 - [ ] Campo de senha: 🙈 Ocultar mostra bolinhas no teclado; a senha é digitada certinha
 - [ ] Texto com acento (ç, ã, é) sai certo; o que estava copiado antes continua copiado depois
 - [ ] O cancela sem digitar nada
