@@ -8,14 +8,18 @@ const make = (initial = {}) => {
 }
 
 describe('settings', () => {
-  it('padrões: fechar DS4 ao apertar PS ligado, biblioteca A→Z, sem modos de streaming', () => {
+  it('padrões: biblioteca A→Z, sem modos de streaming', () => {
     const { s } = make()
-    expect(s.get('closeDs4OnMenu')).toBe(true)
     expect(s.get('librarySort')).toBe('asc')
     expect(s.get('streamModes')).toEqual({})
   })
   it('valor salvo vence o padrão', () => {
-    expect(make({ closeDs4OnMenu: false }).s.get('closeDs4OnMenu')).toBe(false)
+    expect(make({ librarySort: 'desc' }).s.get('librarySort')).toBe('desc')
+  })
+  it('"fechar o DS4Windows ao apertar PS" não existe mais', () => {
+    const { s } = make()
+    expect(s.get('closeDs4OnMenu')).toBeUndefined()
+    expect(s.set('closeDs4OnMenu', true)).toBe(false)
   })
   it('grava chave conhecida com valor válido, mantendo as outras', () => {
     const { s, data } = make({ edgePath: 'C:\\E' })
@@ -85,7 +89,6 @@ describe('settings', () => {
   it('recusa chave desconhecida e valor do tipo errado', () => {
     const { s, data } = make()
     expect(s.set('hacker', 1)).toBe(false)
-    expect(s.set('closeDs4OnMenu', 'sim')).toBe(false)
     expect(s.set('librarySort', 'aleatorio')).toBe(false)
     expect(data()).toEqual({})
   })

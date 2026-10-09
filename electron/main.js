@@ -105,7 +105,7 @@ const windows = createWindowManager({
   forceFocus: (hwnd) => probe.focus(hwnd),
   // Laaazy na frente: cursor preso nele; saiu da frente: cursor solto
   onBlur: () => cursorLock.unlock(),
-  onFocus: () => { cursorLock.lock(); desktop.leave(); if (externalActive) { externalActive = false; if (!closeDs4OnMenu()) ds4.applyFor('menu') } },
+  onFocus: () => { cursorLock.lock(); desktop.leave(); if (externalActive) { externalActive = false; ds4.applyFor('menu') } },
 })
 
 // Cursor preso na janela do Laaazy enquanto ele está na frente (Configurações: lockCursor)
@@ -133,7 +133,6 @@ const settings = createSettings({
   read: () => store.readJsonSync(userFile('settings.json'), {}),
   write: (data) => store.writeJsonSync(userFile('settings.json'), data),
 })
-const closeDs4OnMenu = () => settings.get('closeDs4OnMenu') !== false
 const dialogs = createDialogs({ dialog, getWin: () => windows.get() })
 const locator = createExeLocator({ settings, exists, regAppPath, chooseDir: dialogs.chooseDir, showError: dialogs.showError })
 const ds4 = createDs4({
@@ -142,6 +141,7 @@ const ds4 = createDs4({
   readCfg: () => store.readJson(userFile('ds4-profiles.json'), {}),
   writeCfg: (cfg) => store.writeJson(userFile('ds4-profiles.json'), cfg),
   sleep,
+  readyDelayMs: 300, // o Laaazy-pad aceita comandos ~300 ms depois de abrir (medido)
 })
 
 async function steamRoot() {
@@ -162,7 +162,7 @@ const library = createLibrary({
   openExternal: (url) => shell.openExternal(url),
   openPath: (p) => shell.openPath(p),
   spawnDetached,
-  // Antes de abrir o jogo: DS4Windows aberto com o perfil do jogo (ou o padrão dos jogos)
+  // Antes de abrir o jogo: Laaazy-pad aberto com o perfil do jogo (ou o padrão dos jogos)
   onLaunch: (id) => { ds4.ensureRunning(); ds4.applyForGame(id); returnWatch.start() },
   // Continuar jogando: guarda o jogo aberto na frente da lista
   onLaunched: async (id) => {
@@ -256,7 +256,7 @@ const assistant = createAssistant({
 // ---- Menu e botão PS ----
 function goHome() {
   stream.close()
-  if (!closeDs4OnMenu()) ds4.applyFor('menu')
+  ds4.applyFor('menu')
 }
 
 function showMenu() {
@@ -264,8 +264,6 @@ function showMenu() {
   goHome()
   windows.send(C.GO_HOME) // fecha Biblioteca / telas de configuração
   windows.bringToFront()
-  // Botão PS: fecha o DS4Windows (dá tempo de o F24 chegar antes)
-  if (closeDs4OnMenu()) setTimeout(() => ds4.shutdown(), 500)
 }
 
 const foreground = createForeground({
@@ -280,7 +278,7 @@ const foreground = createForeground({
 // porque fechar com /T levaria o Laaazy junto
 let laaazyAncestors = []
 
-// Botão PS: mata o que está na frente, fecha o DS4Windows (showMenu) e volta ao Início
+// Botão PS: mata o que está na frente e volta ao Início (showMenu)
 const psButton = createPsButton({
   foreground,
   home: () => showMenu(),
@@ -358,7 +356,9 @@ app.whenReady().then(async () => {
   await components.whenReady() // instala o Widevine (DRM)
   handleAppProtocol(OUT)
   windows.create('app://local/index.html')
-  ds4.ensureRunning()  // abre o DS4Windows em segundo plano
+  // O Laaazy-pad abre junto e fica aberto o tempo todo: sem controle virtual, ele não atrapalha a
+  // leitura do controle no menu, e o PS (Ctrl+Alt+Home) funciona sempre
+  ds4.ensureRunning()  // abre o Laaazy-pad em segundo plano
   ds4.applyFor('menu') // e carrega o perfil do Menu
 
   // No DS4Windows, mapeie o botão PS para F24 (menu) e outro botão para F23 (fechar o da frente)
@@ -379,5 +379,15 @@ app.whenReady().then(async () => {
 })
 
 app.on('before-quit', () => cursorLock.unlock())
-app.on('will-quit', () => { globalShortcut.unregisterAll(); probe.dispose(); keySender.dispose() })
+// Fechar o Laaazy fecha o Laaazy-pad junto: segura a saída até ele fechar (no máximo 4 s)
+let padClosed = false
+app.on('will-quit', (e) => {
+  if (!padClosed) {
+    e.preventDefault()
+    padClosed = true
+    Promise.race([ds4.shutdown(), sleep(4000)]).finally(() => app.quit())
+    return
+  }
+  globalShortcut.unregisterAll(); probe.dispose(); keySender.dispose()
+})
 app.on('window-all-closed', () => app.quit())

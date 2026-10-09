@@ -11,7 +11,6 @@ const RULES = {
   firefoxPath: isText,
   hydraPath: isText,
   laaazyPadPath: isText,
-  closeDs4OnMenu: isBool,
   psClosesApp: isBool,
   trailerPreview: isBool,
   trailerSound: isBool,
@@ -24,7 +23,7 @@ const RULES = {
   pinnedApps: (v) => Array.isArray(v) && v.length <= 30 && v.every((x) => isText(x) && x.length > 0 && x.length <= 40),
 }
 
-const DEFAULTS = { closeDs4OnMenu: true, psClosesApp: true, trailerPreview: true, trailerSound: false, lockCursor: true, edgeNoGpu: ['Crunchyroll'], librarySort: 'asc', streamModes: {}, screensaverMinutes: 10, geminiModel: 'gemini-3.8-flash' }
+const DEFAULTS = { psClosesApp: true, trailerPreview: true, trailerSound: false, lockCursor: true, edgeNoGpu: ['Crunchyroll'], librarySort: 'asc', streamModes: {}, screensaverMinutes: 10, geminiModel: 'gemini-3.8-flash' }
 
 function createSettings({ read, write }) {
   const all = () => ({ ...DEFAULTS, ...read() })

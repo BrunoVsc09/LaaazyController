@@ -14,3 +14,17 @@ describe('fechar o Laaazy', () => {
     expect(main).toMatch(/onClosed: \(\) => \{ stream\.forget\(\); app\.quit\(\) \}/)
   })
 })
+
+// O DS4Windows saiu (2026-10-09). O Laaazy-pad não cria controle virtual, então não atrapalha a
+// leitura do controle no menu: fica aberto o tempo todo e fecha junto com o Laaazy
+describe('Laaazy-pad: abre junto, fica aberto e fecha junto', () => {
+  it('abre ao iniciar e carrega o perfil do Menu', () => {
+    expect(main).toMatch(/ds4\.ensureRunning\(\)[^\n]*\n\s*ds4\.applyFor\('menu'\)/)
+  })
+  it('ao sair, espera o Laaazy-pad fechar (no máximo alguns segundos) antes de terminar', () => {
+    expect(main).toMatch(/app\.on\('will-quit', \(e\) => \{[\s\S]*?e\.preventDefault\(\)[\s\S]*?Promise\.race\(\[ds4\.shutdown\(\), sleep\(\d+\)\]\)/)
+  })
+  it('não existe mais "fechar o DS4Windows no menu": o PS não fecha o Laaazy-pad', () => {
+    expect(main).not.toMatch(/closeDs4OnMenu/)
+  })
+})
