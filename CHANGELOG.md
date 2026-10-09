@@ -1,5 +1,20 @@
 # Novidades do Laaazy
 
+## Próxima versão (ainda não lançada)
+
+### Novo
+- **Editor de perfis do controle (pedido do Bruno):** a tela Perfis do controle virou um editor
+  em preto, estilo Hydra. Em cada perfil (Jogos, PC) você vê o controle desenhado e o que cada
+  botão faz, e muda um botão para uma tecla (atalhos comuns ou gravar no teclado), um clique
+  (esquerdo, direito, meio, voltar, avançar) ou nada. Salvar aplica na hora se o perfil estiver
+  ativo. Os comandos de que o Laaazy depende não mudam: PS (voltar ao Início) nos dois perfis e,
+  no PC, Share (teclado por cima) e L2/R2 (volume). O original de cada perfil fica guardado em
+  `<Nome>.json.bak` na primeira vez que ele é salvo. A escolha de perfil por app foi para a aba
+  "Em cada app"; L1/R1 trocam a aba.
+
+### Mudou
+- Sai o botão "Abrir a pasta dos perfis".
+
 ## 3.5.0 — 2026-10-09
 
 ### Mudou

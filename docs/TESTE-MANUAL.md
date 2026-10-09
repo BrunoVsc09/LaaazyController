@@ -49,7 +49,12 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] O volta ao menu
 
 ## Perfis do controle (Laaazy-pad)
-- [ ] Lista os perfis Jogos e PC; "Abrir a pasta dos perfis" abre a pasta dos arquivos .json
+- [ ] Tela preta com abas Jogos, PC e "Em cada app"; L1/R1 trocam a aba; o status mostra o perfil ativo agora
+- [ ] Escolher um botão na lista (ou no desenho) abre "Editar"; o botão fica amarelo no desenho
+- [ ] "Escolher apertando o botão no controle": o próximo botão apertado (inclusive ✕ e ○) é o escolhido, sem clicar nem voltar
+- [ ] Mudar para Tecla (comum ou "Gravar atalho no teclado"), Clique ou Nada: salva e, no perfil ativo, vale na hora
+- [ ] PS (nos dois) e Share/L2/R2 (no PC) aparecem com ● e "Comando fixo do Laaazy"; não dá para mudar
+- [ ] Depois de salvar um perfil, existe `<Nome>.json.bak` com o original na pasta de perfis do Laaazy-pad
 - [ ] X numa linha troca o perfil e mostra a confirmação
 - [ ] Abrir um card aplica o perfil configurado; voltar ao menu aplica o do Menu
 
