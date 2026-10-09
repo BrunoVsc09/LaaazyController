@@ -37,3 +37,11 @@ describe('atalhos globais sem as teclas F do DS4Windows', () => {
     expect(main).not.toMatch(/'F(19|2[0-4])'/)
   })
 })
+
+// Remover jogo da Steam/Epic oculta (pedido do Bruno, 2026-10-09): os ocultos ficam num arquivo próprio
+describe('Biblioteca: jogos ocultos', () => {
+  it('a Biblioteca lê e grava hidden-games.json', () => {
+    expect(main).toMatch(/readHidden: \(\) => store\.readJson\(userFile\('hidden-games\.json'\), \[\]\)/)
+    expect(main).toMatch(/writeHidden: \(ids\) => store\.writeJson\(userFile\('hidden-games\.json'\), ids\)/)
+  })
+})

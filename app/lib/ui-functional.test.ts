@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { formatClock, displayUser } from './header-info'
-import { visibleGames, nextSort } from './library-filter'
+import { visibleGames, nextSort, removeNote } from './library-filter'
 import { hintsFor } from './footer-hints'
 import gamepad from '../../shared/gamepad'
 
@@ -43,9 +43,9 @@ describe('hintsFor (rodapé só com comandos reais)', () => {
     expect(hintsFor('home')[0].button).toBe(gamepad.BTN.X)
     expect(hintsFor('home').find((h) => h.label === 'Parecidos')?.button).toBe(gamepad.BTN.TRIANGLE)
   })
-  it('Biblioteca: Confirmar, Voltar, Buscar (□) e Perfil do controle (△)', () => {
-    expect(labels('library')).toEqual(['Confirmar', 'Voltar', 'Buscar', 'Perfil do controle'])
-    expect(hintsFor('library').find((h) => h.label === 'Perfil do controle')?.button).toBe(gamepad.BTN.TRIANGLE)
+  it('Biblioteca: Confirmar, Voltar, Buscar (□) e Opções do jogo (△: perfil do controle e remover)', () => {
+    expect(labels('library')).toEqual(['Confirmar', 'Voltar', 'Buscar', 'Opções do jogo'])
+    expect(hintsFor('library').find((h) => h.label === 'Opções do jogo')?.button).toBe(gamepad.BTN.TRIANGLE)
     expect(hintsFor('library').find((h) => h.label === 'Buscar')?.button).toBe(gamepad.BTN.SQUARE)
   })
   it('Apps: Confirmar, Voltar e Buscar (□)', () => {
@@ -60,5 +60,16 @@ describe('hintsFor (rodapé só com comandos reais)', () => {
   })
   it('nenhuma tela mostra "Detalhes"', () => {
     for (const s of ['home', 'library', 'ds4', 'settings'] as const) expect(labels(s)).not.toContain('Detalhes')
+  })
+})
+
+// Remover pelo controle (pedido do Bruno, 2026-10-09): a confirmação diz o que vai acontecer
+describe('removeNote', () => {
+  it('jogo do PC sai da lista, sem apagar o arquivo', () => {
+    expect(removeNote({ id: 'pc:x', name: 'Hades', platform: 'Meu PC' })).toBe('"Hades" sai da Biblioteca. O arquivo do jogo não é apagado.')
+  })
+  it('Steam e Epic ficam ocultos e continuam instalados', () => {
+    expect(removeNote({ id: 'steam:1', name: 'Portal', platform: 'Steam' })).toBe('"Portal" fica oculto na Biblioteca. Ele continua instalado na Steam.')
+    expect(removeNote({ id: 'epic:a', name: 'Alan Wake', platform: 'Epic Games' })).toBe('"Alan Wake" fica oculto na Biblioteca. Ele continua instalado na Epic Games.')
   })
 })

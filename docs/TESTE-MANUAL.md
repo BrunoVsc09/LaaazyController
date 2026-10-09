@@ -44,7 +44,10 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] "Nome: A a Z" alterna para Z a A e continua assim ao reabrir o app
 - [ ] Adicionar jogo (.exe) e Adicionar jogo (.lnk) → os dois abrem
 - [ ] Adicionar pasta → mostra quantos jogos entraram
-- [ ] Clique direito num jogo "Meu PC" remove da lista
+- [ ] △ num jogo (ou clique direito) abre o menu: Perfil do controle / Remover da Biblioteca / Cancelar
+- [ ] Remover pelo controle: a confirmação abre com a borda em Cancelar; ↑ Remover → ✕: o jogo sai e a borda vai para o vizinho
+- [ ] Jogo "Meu PC" removido sai de vez; jogo da Steam/Epic removido fica oculto e não volta ao reabrir o app (fica em `hidden-games.json`)
+- [ ] Jogo cuja pasta foi apagada na mão (Steam ou PC) pode ser removido assim
 - [ ] Jogo cujo .exe foi apagado mostra mensagem de erro
 - [ ] O volta ao menu
 
@@ -136,7 +139,7 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Configurações → Botão PS fecha o jogo = Não: PS só volta ao Início com o jogo aberto
 
 ## Perfil do controle por jogo
-- [ ] Biblioteca: △ num jogo abre a lista de perfis (Jogos, PC); escolher mostra 🎮 <perfil> no card
+- [ ] Biblioteca: △ num jogo → Perfil do controle abre a lista de perfis (Jogos, PC); escolher mostra 🎮 <perfil> no card
 - [ ] Abrir esse jogo aplica o perfil escolhido (confira com `LaaazyPadCmd.exe -command Query.1.ProfileName`)
 - [ ] Perfis do controle → "Jogos (padrão)": jogos sem perfil próprio usam esse
 - [ ] O fecha a lista sem mudar nada; o foco volta ao card

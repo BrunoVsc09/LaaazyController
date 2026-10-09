@@ -19,14 +19,14 @@ export const HINT_ICONS: Record<'cross' | 'circle' | 'square' | 'triangle', Hint
 const CONFIRM: Hint = { ...HINT_ICONS.cross, label: 'Confirmar' }
 const BACK: Hint = { ...HINT_ICONS.circle, label: 'Voltar' }
 const SEARCH: Hint = { ...HINT_ICONS.square, label: 'Buscar' }
-const PROFILE: Hint = { ...HINT_ICONS.triangle, label: 'Perfil do controle' }
+const GAME_OPTIONS: Hint = { ...HINT_ICONS.triangle, label: 'Opções do jogo' } // perfil do controle e remover
 const SIMILAR: Hint = { ...HINT_ICONS.triangle, label: 'Parecidos' }
 const PREVIEW: Hint = { ...HINT_ICONS.cross, label: 'Prévia · 2x assistir' }
 const CHOOSE: Hint = { ...HINT_ICONS.cross, label: 'Escolher' }
 
 const BY_SCREEN: Record<Screen, Hint[]> = {
   home: [PREVIEW, SEARCH, SIMILAR],
-  library: [CONFIRM, BACK, SEARCH, PROFILE],
+  library: [CONFIRM, BACK, SEARCH, GAME_OPTIONS],
   apps: [CONFIRM, BACK, SEARCH],
   search: [CONFIRM, BACK],
   ds4: [CONFIRM, BACK],

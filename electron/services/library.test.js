@@ -3,13 +3,16 @@ import mod from './library.js'
 
 const steamGame = { id: 'steam:1', name: 'Portal', platform: 'Steam', launch: { type: 'url', value: 'steam://rungameid/1' } }
 
-function make({ custom = [], files = [], scanned = [], spawnError = '', chosenExe = null, chosenDir = null, writeOk = true } = {}) {
+function make({ custom = [], files = [], scanned = [], spawnError = '', chosenExe = null, chosenDir = null, writeOk = true, hidden = [] } = {}) {
   let list = [...custom]
+  let hiddenIds = [...hidden]
   let t = 0
   const deps = {
     sources: [vi.fn(async () => [steamGame])],
     readCustom: async () => list,
     writeCustom: vi.fn(async (l) => { if (writeOk) list = l; return writeOk }),
+    readHidden: async () => hiddenIds,
+    writeHidden: vi.fn(async (ids) => { if (writeOk) hiddenIds = ids; return writeOk }),
     scanFolder: vi.fn(async () => scanned),
     chooseExe: async () => chosenExe,
     chooseDir: async () => chosenDir,
@@ -22,7 +25,7 @@ function make({ custom = [], files = [], scanned = [], spawnError = '', chosenEx
     now: () => t,
   }
   const lib = mod.createLibrary(deps)
-  return { lib, deps, advance: (ms) => { t += ms }, custom: () => list }
+  return { lib, deps, advance: (ms) => { t += ms }, custom: () => list, hidden: () => hiddenIds }
 }
 
 const hades = { id: 'pc:c:\\j\\hades.exe', name: 'Hades', exe: 'C:\\J\\Hades.exe' }
@@ -150,5 +153,33 @@ describe('library: adicionar e remover', () => {
     expect(custom()).toEqual([])
     await lib.list()
     expect(deps.sources[0]).toHaveBeenCalledTimes(2)
+  })
+})
+
+// Pedido do Bruno (2026-10-09): tirar da Biblioteca o que ele não quer ver, inclusive Steam e Epic
+// (que o Laaazy acha no disco e voltariam sozinhos) e jogo cuja pasta foi apagada na mão
+describe('library: remover Steam e Epic (fica oculto)', () => {
+  it('remover um jogo da Steam oculta: some da lista e não volta na próxima leitura', async () => {
+    const { lib, hidden, custom } = make({ custom: [hades] })
+    expect(await lib.remove('steam:1')).toEqual({ ok: true, msg: '' })
+    expect(hidden()).toEqual(['steam:1'])
+    expect(custom()).toEqual([hades])
+    expect((await lib.list()).map((g) => g.id)).toEqual([hades.id])
+    expect((await lib.list({ fresh: true })).map((g) => g.id)).toEqual([hades.id])
+  })
+  it('ocultar duas vezes não repete o id', async () => {
+    const { lib, hidden } = make({ hidden: ['steam:1'] })
+    await lib.remove('steam:1')
+    expect(hidden()).toEqual(['steam:1'])
+  })
+  it('falha ao salvar os ocultos vira mensagem', async () => {
+    const { lib } = make({ writeOk: false })
+    expect(await lib.remove('steam:1')).toEqual({ ok: false, msg: 'Não consegui salvar a lista de jogos.' })
+  })
+  it('remover jogo do PC apaga da lista (não oculta)', async () => {
+    const { lib, hidden, custom } = make({ custom: [hades] })
+    await lib.remove(hades.id)
+    expect(custom()).toEqual([])
+    expect(hidden()).toEqual([])
   })
 })

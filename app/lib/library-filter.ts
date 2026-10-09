@@ -12,3 +12,10 @@ export function visibleGames(games: Game[], { platform, query, sort = 'asc' }: L
 }
 
 export const nextSort = (s: Sort): Sort => (s === 'asc' ? 'desc' : 'asc')
+
+// Confirmação do "Remover da Biblioteca": jogo do PC sai da lista; Steam e Epic só ficam ocultos
+// (o Laaazy acha esses no disco e eles voltariam sozinhos)
+export const removeNote = (g: Game) =>
+  g.platform === 'Meu PC'
+    ? `"${g.name}" sai da Biblioteca. O arquivo do jogo não é apagado.`
+    : `"${g.name}" fica oculto na Biblioteca. Ele continua instalado na ${g.platform}.`

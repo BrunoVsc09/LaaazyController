@@ -167,6 +167,8 @@ const library = createLibrary({
   sources: [() => sources.scanSteam({ steamRoot }), () => sources.scanEpic(epicManifests)],
   readCustom: () => store.readJson(userFile('games.json'), []),
   writeCustom: (list) => store.writeJson(userFile('games.json'), list),
+  readHidden: () => store.readJson(userFile('hidden-games.json'), []),
+  writeHidden: (ids) => store.writeJson(userFile('hidden-games.json'), ids),
   scanFolder: sources.scanFolder,
   chooseExe: dialogs.chooseExe,
   chooseDir: () => dialogs.chooseDir('Escolha a pasta dos jogos'),

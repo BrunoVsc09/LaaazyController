@@ -30,6 +30,11 @@
   faz o mesmo que o ○.
 
 ### Corrigido
+- **Remover jogo pelo controle (achado pelo Bruno):** remover da Biblioteca só dava com o botão direito
+  do mouse, e só para jogos de "Meu PC". Agora o △ num jogo abre um menu com Perfil do controle e
+  Remover da Biblioteca (com confirmação), e o botão direito abre o mesmo menu. Jogos da Steam e da Epic
+  também podem sair: como o Laaazy acha esses no disco, eles ficam ocultos (inclusive os que tiveram a
+  pasta apagada na mão e continuavam aparecendo).
 - **Cursor do mouse invisível:** uma regra antiga escondia o cursor sempre, mesmo usando o mouse.
   Agora ele aparece ao mexer o mouse e só some quando você usa o controle.
 - **Navegador de pastas com as pastas certas:** Imagens (novo, ao escolher a foto) e Área de trabalho

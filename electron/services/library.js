@@ -1,4 +1,5 @@
 // Biblioteca: lista (Steam + Epic + adicionados à mão), abre, adiciona e remove jogos.
+// Steam e Epic vêm do disco e voltariam sozinhos: remover um deles só o oculta (hidden-games.json).
 const { mergeGames } = require('../core/games/merge')
 const { customGame } = require('../core/games/folder')
 const { isGameFile, isBrowsable } = require('../core/fs-browse')
@@ -8,7 +9,7 @@ const GAME_URL = /^(steam|com\.epicgames\.launcher):\/\//
 const SAVE_FAILED = 'Não consegui salvar a lista de jogos.'
 
 function createLibrary({
-  sources, readCustom, writeCustom, scanFolder, chooseExe, chooseDir,
+  sources, readCustom, writeCustom, readHidden = async () => [], writeHidden = async () => true, scanFolder, chooseExe, chooseDir,
   // onLaunch(id): antes de abrir (Laaazy-pad e perfil do jogo); onLaunched(id): abriu
   exists, openExternal, openPath, spawnDetached, onLaunch = () => {}, onLaunched = () => {}, now = Date.now,
 }) {
@@ -23,7 +24,8 @@ function createLibrary({
       id: g.id, name: g.name, platform: 'Meu PC', launch: { type: 'exe', value: g.exe },
     }))
     const found = await Promise.all(sources.map((s) => s()))
-    cache = mergeGames(...found, custom)
+    const hidden = new Set(await readHidden())
+    cache = mergeGames(...found, custom).filter((g) => !hidden.has(g.id))
     cacheAt = now()
     return cache
   }
@@ -98,7 +100,11 @@ function createLibrary({
   }
 
   async function remove(id) {
-    const ok = await writeCustom((await readCustom()).filter((g) => g.id !== id))
+    const custom = await readCustom()
+    const hidden = await readHidden()
+    const ok = custom.some((g) => g.id === id)
+      ? await writeCustom(custom.filter((g) => g.id !== id))
+      : hidden.includes(id) || await writeHidden([...hidden, id])
     dropCache()
     return { ok, msg: ok ? '' : SAVE_FAILED }
   }

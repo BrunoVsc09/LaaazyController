@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import FileBrowser from '../components/FileBrowser'
+import GameMenu from '../components/GameMenu'
 import { getLazy, type Ds4Data, type Game } from '../lib/lazy-api'
 import { nextSort, visibleGames, type Sort } from '../lib/library-filter'
 import type { Sounds } from '../hooks/useSounds'
@@ -21,7 +22,7 @@ export default function LibraryScreen({ onBack, sounds }: Props) {
   const [busy, setBusy] = useState('')
   const [msg, setMsg] = useState('')
   const [sort, setSort] = useState<Sort>('asc')
-  // Perfil do controle por jogo: △ no jogo abre a lista de perfis do Laaazy-pad
+  // Menu do jogo (△ ou botão direito): perfil do controle do jogo ou remover da Biblioteca
   const [ds4, setDs4] = useState<Ds4Data | null>(null)
   const [picker, setPicker] = useState<Game | null>(null)
   const loadDs4 = () => lazy?.ds4.get().then(setDs4)
@@ -29,6 +30,18 @@ export default function LibraryScreen({ onBack, sounds }: Props) {
   const closePicker = (g: Game | null = picker) => {
     setPicker(null)
     if (g) window.setTimeout(() => document.querySelector<HTMLElement>(`.library-card[data-id="${CSS.escape(g.id)}"]`)?.focus(), 0)
+  }
+  // Remover: jogo do PC sai da lista; Steam/Epic ficam ocultos. A borda vai para o card vizinho
+  const remove = async (g: Game) => {
+    if (!lazy) return
+    const cards = Array.from(document.querySelectorAll<HTMLElement>('.library-card'))
+    const i = cards.findIndex((c) => c.dataset.id === g.id)
+    const neighbor = (cards[i + 1] ?? cards[i - 1])?.dataset.id
+    const r = await lazy.games.remove(g.id)
+    setMsg(r.ok ? `"${g.name}" saiu da Biblioteca.` : r.msg)
+    setPicker(null)
+    await refresh(true)
+    window.setTimeout(() => (document.querySelector<HTMLElement>(`.library-card[data-id="${CSS.escape(neighbor ?? '')}"]`) ?? document.querySelector<HTMLElement>('.find-games-button'))?.focus(), 0)
   }
   const choose = async (g: Game, profile: string) => {
     if (!lazy) return
@@ -49,7 +62,6 @@ export default function LibraryScreen({ onBack, sounds }: Props) {
     window.addEventListener('lz:close-modal', onClose)
     return () => { window.removeEventListener('lz:triangle', onTriangle); window.removeEventListener('lz:close-modal', onClose) }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => { if (picker) document.querySelector<HTMLElement>('.lz-picker button')?.focus() }, [picker])
 
   const toggleSort = () => {
     const next = nextSort(sort)
@@ -88,11 +100,6 @@ export default function LibraryScreen({ onBack, sounds }: Props) {
     if (!lazy) return
     const r = await lazy.games.launch(g.id)
     if (!r.ok) { setMsg(r.msg); refresh(true) }
-  }
-
-  const remove = (g: Game) => {
-    if (g.platform !== 'Meu PC' || !window.confirm(`Remover "${g.name}" da lista?`)) return
-    lazy?.games.remove(g.id).then(() => refresh(true))
   }
 
   useEffect(() => {
@@ -142,7 +149,7 @@ export default function LibraryScreen({ onBack, sounds }: Props) {
         <div className="library-grid">
           {shown.length === 0 && <p style={{ gridColumn: '1 / -1', opacity: 0.75, fontSize: 18 }}>Nenhum jogo encontrado. Use &quot;Adicionar jogo&quot; ou &quot;Adicionar pasta&quot;.</p>}
           {shown.map((g) => (
-            <button key={g.id} className="library-card" data-id={g.id} onClick={tap(() => launch(g))} onContextMenu={(e) => { e.preventDefault(); remove(g) }} onMouseEnter={sounds.hover}>
+            <button key={g.id} className="library-card" data-id={g.id} onClick={tap(() => launch(g))} onContextMenu={(e) => { e.preventDefault(); setPicker(g) }} onMouseEnter={sounds.hover}>
               <div className={`library-cover ${g.cover ? 'has-cover' : ''}`}>
                 <span>{g.name}</span>
                 {g.cover && <img src={g.cover} alt="" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement?.classList.remove('has-cover') }} />}
@@ -155,18 +162,8 @@ export default function LibraryScreen({ onBack, sounds }: Props) {
         </div>
       </div>
       {browse && <FileBrowser mode={browse} sounds={sounds} onPick={pickPath} onClose={() => setBrowse(null)} onWindows={useWindows} />}
-      {picker && (
-        <div className="lz-picker power-menu" data-modal role="dialog" aria-label={`Perfil do controle: ${picker.name}`}>
-          <p><strong>Perfil do controle</strong><br />{picker.name}</p>
-          {['', ...(ds4?.profiles ?? [])].map((p) => (
-            <button key={p || '(padrão)'} type="button" className="lz-btn" onClick={tap(() => choose(picker, p))}>
-              {profileOf(picker) === p ? '✓ ' : ''}{p || `Padrão dos jogos${ds4?.config.games ? ` (${ds4.config.games})` : ' (não mudar)'}`}
-            </button>
-          ))}
-          {ds4 && ds4.profiles.length === 0 && <p>Nenhum perfil achado. Confira a pasta do Laaazy-pad em Configurações.</p>}
-          <button type="button" className="lz-btn" onClick={tap(() => closePicker())}>Cancelar</button>
-        </div>
-      )}
+      {picker && <GameMenu game={picker} ds4={ds4} profile={profileOf(picker)} sounds={sounds}
+        onProfile={(p) => choose(picker, p)} onRemove={() => remove(picker)} onClose={() => closePicker()} />}
     </section>
   )
 }
