@@ -247,3 +247,13 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Configurações → Aceleração de vídeo no Edge → Crunchyroll: Ligada volta ao perfil normal do Edge.
 - [ ] Netflix e os outros continuam abrindo no perfil normal (com os logins de antes).
 
+## Boas-vindas
+- [ ] Sem `user.json` (primeira vez), o Laaazy abre nas boas-vindas, com o foco em "Começar"
+- [ ] Introdução: logo, texto, quem fez com o botão do GitHub (abre github.com/BrunoVsc09) e o hardware recomendado
+- [ ] ✕ avança, ○ volta um passo; os pontinhos do topo mostram o passo
+- [ ] Perfil: ✕ no campo abre o teclado; o nome é salvo ao continuar; as fotos autorais aparecem; "+" abre o navegador de arquivos (só pastas e PNG/JPG) e a foto escolhida aparece marcada
+- [ ] Cor: escolher um tema muda na hora
+- [ ] Controle: mostra se o Laaazy-pad está aberto e o perfil agora
+- [ ] Chaves: "Colar e salvar" com uma chave copiada testa e liga; a etiqueta vira "ligada"
+- [ ] "Ir para o Início": o topo mostra o nome e a foto; reabrir o app não mostra as boas-vindas de novo
+- [ ] Configurações → Ver as boas-vindas de novo: abre do começo

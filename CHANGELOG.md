@@ -12,6 +12,12 @@
   `<Nome>.json.bak` na primeira vez que ele é salvo. A escolha de perfil por app foi para a aba
   "Em cada app"; L1/R1 trocam a aba.
 
+- **Boas-vindas (pedido do Bruno):** na primeira vez que o Laaazy abre, um passo a passo com o
+  controle: introdução (o que é o Laaazy, quem fez, com o GitHub, e o hardware recomendado), seu
+  perfil (nome e foto: uma das autorais ou uma do seu PC, escolhida com o controle), a cor do
+  Laaazy, o controle (perfis Jogos e PC) e as chaves grátis (TMDB recomendada; Gemini, YouTube e
+  SteamGridDB opcionais). O nome e a foto aparecem no topo. Dá para rever em Configurações → Ver
+  as boas-vindas de novo. Fotos autorais: `public/avatars/avatar-NN.png` (512×512).
 - **Cor do Laaazy (pedido do Bruno):** em Configurações → Cor do Laaazy, quatro temas: Azul com
   efeito (o de sempre, padrão), Preto com efeito (ondas e partículas prateadas), Preto e vermelho
   com efeito e Preto moderno com azul (liso, sem efeito). Muda na hora e fica salvo.
