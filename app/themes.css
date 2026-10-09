@@ -30,7 +30,7 @@ html[data-theme="moderno"] :is(.bgfx-glow, .bgfx-wave-a, .bgfx-wave-b, .bgfx-par
 html[data-theme]:not([data-theme="azul"]), html[data-theme]:not([data-theme="azul"]) body { background: var(--t-bg); }
 html[data-theme]:not([data-theme="azul"]) .ps4-screen { background: var(--t-bg); }
 html[data-theme]:not([data-theme="azul"]) .ps4-screen::before { background: none; }
-html[data-theme]:not([data-theme="azul"]) .lz-hero { background: linear-gradient(180deg, var(--t-bg) 0 90%, transparent); }
+html[data-theme]:not([data-theme="azul"]) .lz-hero { --hero-bg: var(--t-bg); }
 html[data-theme]:not([data-theme="azul"]) .ps4-footer { background: linear-gradient(180deg, transparent, rgba(0, 0, 0, .45)); }
 html[data-theme]:not([data-theme="azul"]) .ps4-hints .triangle::after { background: var(--t-bg); }
 html[data-theme]:not([data-theme="azul"]) :is(.ds4-row, .find-games-button, .start-panel, .games .tile-image) { background: var(--t-card); border-color: var(--t-line); }

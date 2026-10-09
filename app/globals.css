@@ -319,7 +319,11 @@ html, body, :is(.ps4-screen, .kb-overlay) * { scrollbar-width: none; }
    A tela não pode ser caixa de rolagem própria (overflow-x: hidden faria isso), senão o sticky não prende. */
 :root { --lz-hero-h: clamp(380px, 46vh, 520px); }
 .ps4-screen { overflow-x: clip; overflow-y: visible; }
-.lz-hero { position: sticky; top: 0; z-index: 3; height: var(--lz-hero-h); padding: 16px 0 12px; align-items: center; background: linear-gradient(180deg, #0b3f9d 0 90%, rgba(11, 63, 157, 0)); }
+.lz-hero { position: sticky; top: 0; z-index: 3; height: var(--lz-hero-h); padding: 16px 0 12px; align-items: center; }
+/* Faixa que esconde as fileiras rolando por baixo do destaque: a tela toda de largura e só quando a
+   página rola (parada no topo, o papel de parede aparece inteiro, sem caixa de outra cor) */
+.lz-hero::before { content: ''; position: absolute; top: 0; bottom: 0; left: calc(50% - 50vw); right: calc(50% - 50vw); z-index: -1; pointer-events: none; background: linear-gradient(180deg, var(--hero-bg, #0b3f9d) 0 90%, transparent); opacity: 0; animation: lz-hero-fill linear both; animation-timeline: scroll(root); animation-range: 0 140px; }
+@keyframes lz-hero-fill { to { opacity: 1; } }
 .lz-hero > div:first-child { align-self: center; }
 .lz-hero-media { height: 100%; width: auto; max-width: 100%; justify-self: end; }
 /* Card em foco para abaixo do destaque e acima do rodapé */

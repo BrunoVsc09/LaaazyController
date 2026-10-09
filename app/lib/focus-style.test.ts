@@ -103,3 +103,14 @@ describe('Perfis do controle: nada do menu por cima', () => {
     expect(css).toMatch(/\.ps4-screen:has\(\.pad-view\) \.pad-badge \{ display: none; \}/)
   })
 })
+
+// Regressão (2026-10-09, achado pelo Bruno: "essa diferença de cor no começo?"): o destaque preso no
+// topo tinha uma caixa azul lisa que aparecia sobre o papel de parede mesmo com a página parada
+describe('destaque sem caixa de cor diferente', () => {
+  it('o destaque não tem fundo próprio', () => {
+    expect(css).not.toMatch(/\.lz-hero \{ position: sticky;[^}]*background:/)
+  })
+  it('a faixa que esconde as fileiras ocupa a tela toda e só aparece quando a página rola', () => {
+    expect(css).toMatch(/\.lz-hero::before \{[^}]*left: calc\(50% - 50vw\); right: calc\(50% - 50vw\);[^}]*background: linear-gradient\(180deg, var\(--hero-bg, #0b3f9d\) 0 90%, transparent\);[^}]*animation-timeline: scroll\(root\);/)
+  })
+})
