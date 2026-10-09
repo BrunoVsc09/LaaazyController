@@ -61,6 +61,22 @@ describe('caminhos', () => {
       { label: 'Arquivos de Programas', path: 'C:\\Program Files' },
     ])
   })
+  it('places no modo foto: Imagens e Área de trabalho primeiro, sem Arquivos de Programas', () => {
+    const env = { USERPROFILE: 'C:\\Users\\ana', ProgramFiles: 'C:\\Program Files' }
+    expect(mod.places(env, () => true, 'image')).toEqual([
+      { label: 'Imagens', path: 'C:\\Users\\ana\\Pictures' },
+      { label: 'Área de trabalho', path: 'C:\\Users\\ana\\Desktop' },
+      { label: 'Downloads', path: 'C:\\Users\\ana\\Downloads' },
+    ])
+  })
+  // Regressão (2026-10-09): no PC do Bruno, Imagens e Área de trabalho ficam no OneDrive; o Windows
+  // sabe onde estão de verdade (o Electron pergunta), e isso vence o palpite pela pasta do usuário
+  it('places usa as pastas de verdade do Windows quando conhecidas (ex.: OneDrive)', () => {
+    const env = { USERPROFILE: 'C:\\Users\\b' }
+    const known = { pictures: 'C:\\Users\\b\\OneDrive\\Imagens', desktop: 'C:\\Users\\b\\OneDrive\\Área de Trabalho', downloads: 'C:\\Users\\b\\Downloads' }
+    expect(mod.places(env, () => true, 'image', known).map((p) => p.path)).toEqual([known.pictures, known.desktop, known.downloads])
+    expect(mod.places(env, () => true, 'file', known).find((p) => p.label === 'Área de trabalho').path).toBe(known.desktop)
+  })
   it('drives: letras que existem', () => {
     expect(mod.drives((p) => p === 'C:\\' || p === 'E:\\')).toEqual(['C:\\', 'E:\\'])
   })

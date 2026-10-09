@@ -23,6 +23,8 @@
   com efeito e Preto moderno com azul (liso, sem efeito). Muda na hora e fica salvo.
 
 ### Corrigido
+- **Navegador de pastas com as pastas certas:** Imagens (novo, ao escolher a foto) e Área de trabalho
+  agora vêm do Windows, então funcionam quando estão no OneDrive.
 - **Caixa de outra cor atrás do destaque (achado pelo Bruno):** o destaque do Início tinha um fundo
   azul liso que aparecia sobre o papel de parede. Agora, parado no topo, o papel de parede aparece
   inteiro; ao rolar, uma faixa da largura da tela esconde as fileiras que passam por baixo.

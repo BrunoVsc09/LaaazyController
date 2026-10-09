@@ -340,7 +340,7 @@ const desktop = createDesktop({ ds4: ds4ForApps, returnWatch, minimize: hideLaaa
 
 registerIpc(ipcMain, {
   launcher, locator, settings, ds4, library: libraryWithCovers, catalog, myList, power, covers, volume, assistant, psButton, textEntry, goHome, desktop, ytTrailers,
-  browse: createFileBrowser(),
+  browse: createFileBrowser({ known: () => ({ pictures: app.getPath('pictures'), desktop: app.getPath('desktop'), downloads: app.getPath('downloads') }) }),
   // Botão Colar das chaves: texto copiado, já limpo de espaços (só quando você aperta)
   readClipboard: () => cleanKey(clipboard.readText()).slice(0, 500),
   recentGames: async () => recentGames(await store.readJson(userFile('recent.json'), []), await libraryWithCovers.list()),

@@ -36,11 +36,23 @@ function shapeEntries(dirents, dir, mode) {
   return [...dirs.sort(byName), ...files.sort(byName)].slice(0, MAX)
 }
 
-// Atalhos que existem neste PC
-function places(env, exists) {
+// Atalhos que existem neste PC (no modo foto: onde ficam as fotos, sem pastas de programas).
+// known: pastas de verdade que o Windows informa (ex.: Imagens e Área de trabalho no OneDrive)
+function places(env, exists, mode, known = {}) {
+  const home = (dir) => env.USERPROFILE && path.win32.join(env.USERPROFILE, dir)
+  const pictures = known.pictures || home('Pictures')
+  const desktop = known.desktop || home('Desktop')
+  const downloads = known.downloads || home('Downloads')
+  if (mode === 'image') {
+    return [
+      { label: 'Imagens', path: pictures },
+      { label: 'Área de trabalho', path: desktop },
+      { label: 'Downloads', path: downloads },
+    ].filter((p) => p.path && exists(p.path))
+  }
   const list = [
-    { label: 'Downloads', path: env.USERPROFILE && path.win32.join(env.USERPROFILE, 'Downloads') },
-    { label: 'Área de trabalho', path: env.USERPROFILE && path.win32.join(env.USERPROFILE, 'Desktop') },
+    { label: 'Downloads', path: downloads },
+    { label: 'Área de trabalho', path: desktop },
     { label: 'Arquivos de Programas', path: env.ProgramFiles },
     { label: 'Arquivos de Programas (x86)', path: env['ProgramFiles(x86)'] },
   ]
