@@ -86,6 +86,11 @@ export type LazyApi = {
     choosePhoto(): Promise<UserResult>
     finish(): Promise<UserResult>
   }
+  // Atualização pelo GitHub; canInstall = falso no portátil (aí "Atualizar" abre a página da versão)
+  update: {
+    check(): Promise<{ available: false } | { available: true; version: string; canInstall: boolean }>
+    install(): Promise<Result>
+  }
   drm: { status(): Promise<DrmStatus> }
   catalog: {
     status(): Promise<{ configured: boolean }>

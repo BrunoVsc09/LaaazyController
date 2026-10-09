@@ -1,5 +1,5 @@
 // Raiz de composição: cria adapters → serviços → IPC → janela. Sem regra de negócio aqui.
-const { app, ipcMain, components, dialog, shell, globalShortcut, safeStorage, clipboard, Menu, session, screen } = require('electron')
+const { app, ipcMain, components, dialog, shell, globalShortcut, safeStorage, clipboard, Menu, session, screen, net } = require('electron')
 const fs = require('fs')
 const os = require('os')
 const { execFile } = require('child_process')
@@ -37,6 +37,8 @@ const { createDesktop } = require('./services/desktop')
 const { createCursorLock } = require('./services/cursor-lock')
 const { createLibrary } = require('./services/library')
 const { createUserProfile } = require('./services/user-profile')
+const { createUpdater } = require('./services/updater')
+const { createGithubReleases, INSTALLER_ARGS } = require('./adapters/github-releases')
 const { createAvatarImage } = require('./adapters/avatar-image')
 const { createLauncher } = require('./services/launcher')
 const { createForeground } = require('./services/foreground')
@@ -154,6 +156,17 @@ const userProfile = createUserProfile({
   avatarFiles: () => fs.promises.readdir(path.join(OUT, 'avatars')),
   image: createAvatarImage({ file: userFile('avatar.png') }),
   choosePhoto: () => dialogs.chooseImage(),
+})
+
+// Atualização pelo GitHub: a tela pergunta ao abrir; "Atualizar" baixa, confere e roda o instalador
+const updater = createUpdater({
+  ...createGithubReleases({ fetch: net.fetch }),
+  currentVersion: () => app.getVersion(),
+  mode: () => (!app.isPackaged ? 'dev' : process.env.PORTABLE_EXECUTABLE_DIR ? 'portable' : 'installer'),
+  tempDir: () => app.getPath('temp'),
+  runInstaller: (file) => spawnDetached(file, INSTALLER_ARGS),
+  quit: () => app.quit(),
+  openExternal: (url) => shell.openExternal(url),
 })
 
 async function steamRoot() {
@@ -351,6 +364,7 @@ registerIpc(ipcMain, {
   quit: () => app.quit(),
   takeWarnings: store.takeWarnings,
   user: userProfile,
+  updater,
   drmStatus: () => widevineStatus(components.status()),
 })
 

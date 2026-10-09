@@ -45,3 +45,15 @@ describe('Biblioteca: jogos ocultos', () => {
     expect(main).toMatch(/writeHidden: \(ids\) => store\.writeJson\(userFile\('hidden-games\.json'\), ids\)/)
   })
 })
+
+// Atualização pelo GitHub (pedido do Bruno, 2026-10-09)
+describe('atualização', () => {
+  it('instalado pelo Setup instala sozinho; portátil só avisa; pnpm app nem pergunta', () => {
+    expect(main).toMatch(/mode: \(\) => \(!app\.isPackaged \? 'dev' : process\.env\.PORTABLE_EXECUTABLE_DIR \? 'portable' : 'installer'\)/)
+  })
+  it('a rede passa pelo Electron (proxy do Windows) e o instalador roda solto, com os argumentos do NSIS', () => {
+    expect(main).toMatch(/createGithubReleases\(\{ fetch: net\.fetch \}\)/)
+    expect(main).toMatch(/runInstaller: \(file\) => spawnDetached\(file, INSTALLER_ARGS\)/)
+    expect(main).toMatch(/ {2}updater,\r?\n {2}drmStatus/)
+  })
+})

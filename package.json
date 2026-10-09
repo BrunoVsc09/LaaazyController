@@ -38,6 +38,7 @@
     "start": "next start",
     "app": "pnpm preloads && next build && electron .",
     "dist": "pnpm preloads && next build && electron-builder && node scripts/package-check.js",
+    "release": "pnpm dist && node scripts/make-release.js",
     "preloads": "node scripts/build-preloads.js",
     "icons": "electron scripts/make-icons.js"
   },

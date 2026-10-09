@@ -38,6 +38,7 @@ contextBridge.exposeInMainWorld('lazy', {
     addFolderPath: invoke(C.GAMES_ADD_FOLDER_PATH),
   },
   user: { get: invoke(C.USER_GET), set: invoke(C.USER_SET), setPhoto: invoke(C.USER_SET_PHOTO), choosePhoto: invoke(C.USER_CHOOSE_PHOTO), finish: invoke(C.USER_FINISH) },
+  update: { check: invoke(C.UPDATE_CHECK), install: invoke(C.UPDATE_INSTALL) },
   desktop: invoke(C.DESKTOP_ENTER),
   ai: { status: invoke(C.AI_STATUS), setKey: invoke(C.AI_SET_KEY), clearKey: invoke(C.AI_CLEAR_KEY), similar: invoke(C.AI_SIMILAR) },
   yt: { status: invoke(C.YT_STATUS), setKey: invoke(C.YT_SET_KEY), clearKey: invoke(C.YT_CLEAR_KEY) },

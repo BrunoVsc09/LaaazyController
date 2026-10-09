@@ -15,6 +15,7 @@ function make() {
     browse: { list: vi.fn(async () => ({ ok: true, entries: [] })), places: vi.fn(() => ({ places: [], drives: [] })) },
     goHome: vi.fn(), back: vi.fn(), sendKey: vi.fn(), quit: vi.fn(),
     takeWarnings: vi.fn(() => []),
+    updater: { check: vi.fn(), install: vi.fn() },
     user: { get: vi.fn(), set: vi.fn(async () => ({ ok: true })), setPhoto: vi.fn(async () => ({ ok: true })), choosePhoto: vi.fn(), finish: vi.fn() },
     drmStatus: vi.fn(() => ({ installed: true })),
     catalog: {
@@ -214,6 +215,14 @@ describe('registerIpc', () => {
     await invoke(C.USER_FINISH)
     expect(h.user.finish).toHaveBeenCalled()
     expect(C.SYSTEM_USER).toBeUndefined() // o topo usa o perfil (nome e foto escolhidos)
+  })
+  // Atualização pelo GitHub (pedido do Bruno, 2026-10-09): a tela só pergunta e pede para instalar
+  it('atualização: conferir e instalar não levam argumento da tela', async () => {
+    const { invoke, h } = make()
+    await invoke(C.UPDATE_CHECK, 'https://outro-lugar')
+    expect(h.updater.check).toHaveBeenCalledWith()
+    await invoke(C.UPDATE_INSTALL, 'C:/virus.exe')
+    expect(h.updater.install).toHaveBeenCalledWith()
   })
   it('capas: chave precisa ser texto', async () => {
     const { invoke, h } = make()

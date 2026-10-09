@@ -34,6 +34,8 @@ module.exports = {
   USER_SET_PHOTO: 'user:setPhoto', // foto do PC escolhida com o controle (caminho)
   USER_CHOOSE_PHOTO: 'user:choosePhoto', // foto do PC pela janela do Windows
   USER_FINISH: 'user:finish', // terminou as boas-vindas
+  UPDATE_CHECK: 'update:check', // há versão nova no GitHub?
+  UPDATE_INSTALL: 'update:install', // baixa, confere e roda o instalador (fecha o Laaazy)
   DRM_STATUS: 'drm:status',
   CATALOG_STATUS: 'catalog:status',
   CATALOG_SET_KEY: 'catalog:setKey',

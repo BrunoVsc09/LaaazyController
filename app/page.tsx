@@ -9,6 +9,7 @@ import Footer from './components/Footer'
 import OnScreenKeyboard from './components/OnScreenKeyboard'
 import PowerMenu from './components/PowerMenu'
 import Screensaver from './components/Screensaver'
+import UpdatePrompt from './components/UpdatePrompt'
 import HomeScreen from './screens/HomeScreen'
 import LibraryScreen from './screens/LibraryScreen'
 import AppsScreen from './screens/AppsScreen'
@@ -230,6 +231,7 @@ export default function Page() {
       {state.screen === 'settings' && <SettingsScreen onBack={back} sounds={sounds} />}
       {state.screen === 'search' && <SearchScreen sounds={sounds} onActivate={activate} onBack={back} />}
       {state.screen === 'welcome' && <WelcomeScreen sounds={sounds} onDone={() => dispatch({ type: 'goHome' })} />}
+      {state.screen !== 'welcome' && <UpdatePrompt sounds={sounds} />}
       {saver && <Screensaver />}
       {powerOpen && <PowerMenu onClose={closePower} sounds={sounds} />}
       {oskTarget && <OnScreenKeyboard target={oskTarget} onClose={closeOsk} sounds={sounds} pressRef={oskPress} />}

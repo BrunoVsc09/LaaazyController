@@ -218,6 +218,14 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] `pnpm dist` termina com "Pacote OK".
 - [ ] Abrir `dist/Laaazy 3.2.0.exe`: Início, Biblioteca, trailer, teclado por cima (Ctrl+Alt+K) e PS funcionam.
 
+## Atualização pelo GitHub
+- [ ] `pnpm release` cria `dist/release-vX.Y.Z` com o instalador, o `.sha256` e o `RELEASE-NOTES.md`
+- [ ] Instalar uma versão pelo `Laaazy-Setup-...exe` (uma vez); publicar no GitHub uma versão mais nova (tag `vX.Y.Z`, com o instalador e o `.sha256`)
+- [ ] Abrir o Laaazy instalado: aparece "Nova versão X.Y.Z" com a borda em "Atualizar agora"; ○ ou "Depois" fecha e a borda volta para onde estava
+- [ ] "Atualizar agora": "Baixando a atualização...", o Laaazy fecha, instala sem janelas e abre de novo na versão nova, com jogos, chaves e configurações intactos
+- [ ] Portátil: o aviso mostra "Abrir no GitHub" e abre a página da versão
+- [ ] Sem internet: o Laaazy abre normal, sem aviso
+
 ## Trailers dublados e legendados (YouTube)
 - [ ] Configurações → Trailers (YouTube): colar a chave e salvar → "Chave do YouTube salva".
 - [ ] Início: em filmes populares aparece o selo "🇧🇷 Trailer dublado" ou "legendado" na prévia.

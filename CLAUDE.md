@@ -77,7 +77,7 @@ Regras:
   `preload.src.js` → `app/lib/lazy-api.ts` → teste no `register.test.js`.
 - Um contexto não importa o `services/` ou `adapters/` de outro; conversa via `main.js`.
 - **Limites**: arquivo > **300 linhas** ou função > **40 linhas** → dividir antes de crescer.
-  Dívida conhecida: `app/screens/HomeScreen.tsx` (~300) e `electron/main.js` (raiz, ~360).
+  Dívida conhecida: `app/screens/HomeScreen.tsx` (~300) e `electron/main.js` (raiz, ~420).
 - Sem dependência nova sem combinar (o pacote não leva `node_modules`; o Electron só usa
   módulos do Node).
 
@@ -88,7 +88,8 @@ Regras:
 | `pnpm test` / `pnpm test:watch` | testes (Vitest) |
 | `pnpm app` | gera preloads + tela e abre o app |
 | `pnpm preloads` | depois de mudar `electron/*.src.js` ou `shared/` |
-| `pnpm dist` | `.exe` portátil + conferência do `app.asar` |
+| `pnpm dist` | instalador + `.exe` portátil + conferência do `app.asar` |
+| `pnpm release` | `pnpm dist` + `dist/release-vX.Y.Z` para a release do GitHub (o Bruno publica; o app avisa quem tem o instalador) |
 | `pnpm icons` | ícones a partir de `docs/assets/logo.svg` |
 
 ## 7. Armadilhas conhecidas

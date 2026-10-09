@@ -32,7 +32,15 @@
   agora mostra as abas, então dá para sair dela com um clique. O botão "voltar" do mouse (o de lado)
   faz o mesmo que o ○.
 
+- **Atualização pelo GitHub (pedido do Bruno):** quem instalou pelo `Laaazy-Setup` vê, ao abrir o
+  Laaazy, "Nova versão X.Y.Z · Atualizar agora / Depois". Atualizar baixa o instalador da release do
+  GitHub, confere a impressão digital (SHA-256) e instala sem janelas; o Laaazy fecha e abre de novo
+  atualizado. O portátil só avisa e abre a página da versão. Para publicar: `pnpm release` prepara os
+  arquivos e as notas, e a release é criada na página do GitHub.
+
 ### Corrigido
+- **○ no menu do jogo perdia a borda:** fechar o menu da Biblioteca com o ○ deixava a tela sem
+  seleção; agora a borda volta para o jogo.
 - **Remover jogo pelo controle (achado pelo Bruno):** remover da Biblioteca só dava com o botão direito
   do mouse, e só para jogos de "Meu PC". Agora o △ num jogo abre um menu com Perfil do controle e
   Remover da Biblioteca (com confirmação), e o botão direito abre o mesmo menu. Jogos da Steam e da Epic
