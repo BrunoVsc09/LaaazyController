@@ -20,6 +20,7 @@
   as boas-vindas de novo. Fotos autorais: `public/avatars/avatar-NN.png` (512×512). A foto padrão
   (pedido do Bruno) é o logo do Laaazy, o controle dormindo: aparece no topo e já vem marcada nas
   boas-vindas para quem ainda não escolheu outra.
+  Vêm junto três fotos autorais em estilo anime (gamers com o moletom do Laaazy).
 - **Cor do Laaazy (pedido do Bruno):** em Configurações → Cor do Laaazy, quatro temas: Azul com
   efeito (o de sempre, padrão), Preto com efeito (ondas e partículas prateadas), Preto e vermelho
   com efeito e Preto moderno com azul (liso, sem efeito). Muda na hora e fica salvo.
