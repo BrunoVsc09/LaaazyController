@@ -36,14 +36,18 @@ describe('exe-locator', () => {
     expect(await make().loc.find('notepad')).toBeNull()
   })
 
-  // B3: o caminho do DS4Windows era fixo em C:\\Users\\bruno\\Downloads\\win-x64
-  it('B3: DS4Windows vem do caminho salvo (ds4Path)', async () => {
-    const { loc } = make({ files: ['F:\\DS4\\DS4Windows.exe'], saved: { ds4Path: 'F:\\DS4' } })
-    expect(await loc.find('ds4windows')).toBe('F:\\DS4\\DS4Windows.exe')
+  // O DS4Windows saiu (2026-10-09): os perfis do controle agora são do Laaazy-pad
+  it('Laaazy-pad: primeiro onde ele se instala, %LOCALAPPDATA%\\Programs\\Laaazy-pad', async () => {
+    const { loc } = make({ files: ['C:\\Users\\ana\\AppData\\Local\\Programs\\Laaazy-pad\\LaaazyPad.exe'] })
+    expect(await loc.find('laaazypad')).toBe('C:\\Users\\ana\\AppData\\Local\\Programs\\Laaazy-pad\\LaaazyPad.exe')
   })
-  it('B3: o padrão do DS4Windows usa a pasta Downloads do usuário atual, não a de um usuário fixo', async () => {
+  it('Laaazy-pad em outra pasta: vem do caminho salvo (laaazyPadPath)', async () => {
+    const { loc } = make({ files: ['F:\\Pad\\LaaazyPad.exe'], saved: { laaazyPadPath: 'F:\\Pad' } })
+    expect(await loc.find('laaazypad')).toBe('F:\\Pad\\LaaazyPad.exe')
+  })
+  it('o DS4Windows não é mais procurado', async () => {
     const { loc } = make({ files: ['C:\\Users\\ana\\Downloads\\win-x64\\DS4Windows.exe'] })
-    expect(await loc.find('ds4windows')).toBe('C:\\Users\\ana\\Downloads\\win-x64\\DS4Windows.exe')
+    expect(await loc.find('ds4windows')).toBeNull()
   })
   it('variável de ambiente ausente não vira caminho relativo', async () => {
     const loc = mod.createExeLocator({ settings: { get: () => undefined }, env: {}, exists: (p) => p === 'Programs\\Hydra\\Hydra.exe', regAppPath: async () => null })

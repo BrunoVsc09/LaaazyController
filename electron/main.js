@@ -12,7 +12,7 @@ const { ancestorsOf, parseProcessTable } = require('./core/processes')
 const { MASK_MENU } = require('./core/focus')
 const { createForegroundProbe } = require('./adapters/ps-foreground')
 const { createDialogs } = require('./adapters/dialogs')
-const { createDs4Cli } = require('./adapters/ds4-cli')
+const { createLaaazyPadCli } = require('./adapters/laaazy-pad-cli')
 const sources = require('./adapters/game-sources')
 const { createTmdb } = require('./adapters/tmdb')
 const { createSecretStore } = require('./adapters/secret-store')
@@ -137,8 +137,8 @@ const closeDs4OnMenu = () => settings.get('closeDs4OnMenu') !== false
 const dialogs = createDialogs({ dialog, getWin: () => windows.get() })
 const locator = createExeLocator({ settings, exists, regAppPath, chooseDir: dialogs.chooseDir, showError: dialogs.showError })
 const ds4 = createDs4({
-  cli: createDs4Cli({ openPath: (p) => shell.openPath(p) }),
-  getExe: () => locator.find('ds4windows'),
+  cli: createLaaazyPadCli({ openPath: (p) => shell.openPath(p) }),
+  getExe: () => locator.find('laaazypad'),
   readCfg: () => store.readJson(userFile('ds4-profiles.json'), {}),
   writeCfg: (cfg) => store.writeJson(userFile('ds4-profiles.json'), cfg),
   sleep,

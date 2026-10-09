@@ -19,8 +19,9 @@ describe('settings', () => {
   })
   it('grava chave conhecida com valor válido, mantendo as outras', () => {
     const { s, data } = make({ edgePath: 'C:\\E' })
-    expect(s.set('ds4Path', 'C:\\DS4')).toBe(true)
-    expect(data()).toEqual({ edgePath: 'C:\\E', ds4Path: 'C:\\DS4' })
+    expect(s.set('laaazyPadPath', 'C:\\Pad')).toBe(true)
+    expect(data()).toEqual({ edgePath: 'C:\\E', laaazyPadPath: 'C:\\Pad' })
+    expect(s.set('ds4Path', 'C:\\DS4')).toBe(false) // o DS4Windows saiu
   })
   it('streamModes só aceita serviços do catálogo com app/edge', () => {
     const { s } = make()

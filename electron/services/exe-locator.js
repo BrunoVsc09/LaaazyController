@@ -33,13 +33,10 @@ const PROGRAMS = {
     label: 'Hydra', exe: 'Hydra.exe', setting: 'hydraPath',
     defaults: (env) => [under(env, 'LOCALAPPDATA', 'Programs', 'Hydra', 'Hydra.exe')],
   },
-  ds4windows: {
-    label: 'DS4Windows', exe: 'DS4Windows.exe', setting: 'ds4Path',
-    defaults: (env) => [
-      under(env, 'USERPROFILE', 'Downloads', 'win-x64', 'DS4Windows.exe'),
-      under(env, 'LOCALAPPDATA', 'DS4Windows', 'DS4Windows.exe'),
-      under(env, 'ProgramFiles', 'DS4Windows', 'DS4Windows.exe'),
-    ],
+  // Perfis do controle (projeto Laaazy-pad, instalado à parte, ao lado do Laaazy)
+  laaazypad: {
+    label: 'Laaazy-pad', exe: 'LaaazyPad.exe', setting: 'laaazyPadPath',
+    defaults: (env) => [under(env, 'LOCALAPPDATA', 'Programs', 'Laaazy-pad', 'LaaazyPad.exe')],
   },
 }
 

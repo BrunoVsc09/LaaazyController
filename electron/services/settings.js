@@ -10,7 +10,7 @@ const RULES = {
   chromePath: isText,
   firefoxPath: isText,
   hydraPath: isText,
-  ds4Path: isText,
+  laaazyPadPath: isText,
   closeDs4OnMenu: isBool,
   psClosesApp: isBool,
   trailerPreview: isBool,
