@@ -39,6 +39,7 @@
     "app": "pnpm preloads && next build && electron .",
     "dist": "pnpm preloads && next build && electron-builder && node scripts/package-check.js",
     "release": "pnpm dist && node scripts/make-release.js",
+    "release-key": "node scripts/make-release.js --nova-chave",
     "preloads": "node scripts/build-preloads.js",
     "icons": "electron scripts/make-icons.js"
   },

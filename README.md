@@ -114,7 +114,7 @@ pnpm app        # gera a tela e abre o Laaazy
 | `pnpm test` | roda os 626 testes (Vitest) |
 | `pnpm dev` | só a tela, no navegador |
 | `pnpm dist` | gera o instalador e o `.exe` portátil em `dist/` e confere o pacote |
-| `pnpm release` | `pnpm dist` + prepara `dist/release-vX.Y.Z` (instalador, `.sha256` e notas) para subir numa release do GitHub |
+| `pnpm release` | `pnpm dist` + prepara `dist/release-vX.Y.Z` (instalador, `.sha256`, assinatura `.sig` e notas) para subir numa release do GitHub |
 
 ### 🔑 Chaves (todas grátis e opcionais)
 

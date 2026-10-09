@@ -34,8 +34,10 @@
 
 - **Atualização pelo GitHub (pedido do Bruno):** quem instalou pelo `Laaazy-Setup` vê, ao abrir o
   Laaazy, "Nova versão X.Y.Z · Atualizar agora / Depois". Atualizar baixa o instalador da release do
-  GitHub, confere a impressão digital (SHA-256) e instala sem janelas; o Laaazy fecha e abre de novo
-  atualizado. O portátil só avisa e abre a página da versão. Para publicar: `pnpm release` prepara os
+  GitHub, confere a impressão digital (SHA-256) e a assinatura do Bruno, e instala sem janelas; o
+  Laaazy fecha e abre de novo atualizado. A assinatura usa uma chave que fica só no PC do Bruno: mesmo
+  com a conta do GitHub invadida, ninguém consegue fazer o Laaazy instalar algo que ele não assinou.
+  O portátil só avisa e abre a página da versão. Para publicar: `pnpm release` prepara e assina os
   arquivos e as notas, e a release é criada na página do GitHub.
 
 ### Corrigido

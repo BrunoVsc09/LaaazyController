@@ -56,4 +56,7 @@ describe('atualização', () => {
     expect(main).toMatch(/runInstaller: \(file\) => spawnDetached\(file, INSTALLER_ARGS\)/)
     expect(main).toMatch(/ {2}updater,\r?\n {2}drmStatus/)
   })
+  it('só instala o que a chave do Bruno assinou (a pública vem dentro do Laaazy)', () => {
+    expect(main).toMatch(/publicKey: \(\) => RELEASE_PUBLIC_KEY,/)
+  })
 })

@@ -89,7 +89,8 @@ Regras:
 | `pnpm app` | gera preloads + tela e abre o app |
 | `pnpm preloads` | depois de mudar `electron/*.src.js` ou `shared/` |
 | `pnpm dist` | instalador + `.exe` portátil + conferência do `app.asar` |
-| `pnpm release` | `pnpm dist` + `dist/release-vX.Y.Z` para a release do GitHub (o Bruno publica; o app avisa quem tem o instalador) |
+| `pnpm release` | `pnpm dist` + `dist/release-vX.Y.Z` assinada para a release do GitHub (o Bruno publica; o app avisa quem tem o instalador) |
+| `pnpm release-key` | uma vez só: cria a chave das atualizações (privada em `%USERPROFILE%\.laaazy`, nunca no projeto) |
 | `pnpm icons` | ícones a partir de `docs/assets/logo.svg` |
 
 ## 7. Armadilhas conhecidas

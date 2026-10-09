@@ -22,6 +22,10 @@ describe('problemsIn: conferência do app.asar do .exe portátil', () => {
       'sobra electron/core/x.test.js', 'sobra electron/preload.src.js', 'sobra out/secrets.json', 'sobra .env',
     ])
   })
+  // Atualização assinada (2026-10-09): a chave privada do Bruno nunca pode ir no .exe
+  it('nenhum arquivo .pem (chave) vai no pacote', () => {
+    expect(check.problemsIn([...GOOD, '/release-key.pem'])).toEqual(['sobra release-key.pem'])
+  })
   it('node_modules não vai no pacote: o Electron só usa módulos do Node e a tela já vem pronta em out/', () => {
     expect(check.problemsIn([...GOOD, '/node_modules/next/dist/server/next.js'])).toEqual(['sobra node_modules/next/dist/server/next.js'])
   })

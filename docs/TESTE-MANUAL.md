@@ -219,7 +219,8 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Abrir `dist/Laaazy 3.2.0.exe`: Início, Biblioteca, trailer, teclado por cima (Ctrl+Alt+K) e PS funcionam.
 
 ## Atualização pelo GitHub
-- [ ] `pnpm release` cria `dist/release-vX.Y.Z` com o instalador, o `.sha256` e o `RELEASE-NOTES.md`
+- [ ] `pnpm release` cria `dist/release-vX.Y.Z` com o instalador, o `.sha256`, o `.sig` e o `RELEASE-NOTES.md`
+- [ ] Release sem o `.sig` (ou com `.sig` de outra chave): o Laaazy instalado não oferece / não instala
 - [ ] Instalar uma versão pelo `Laaazy-Setup-...exe` (uma vez); publicar no GitHub uma versão mais nova (tag `vX.Y.Z`, com o instalador e o `.sha256`)
 - [ ] Abrir o Laaazy instalado: aparece "Nova versão X.Y.Z" com a borda em "Atualizar agora"; ○ ou "Depois" fecha e a borda volta para onde estava
 - [ ] "Atualizar agora": "Baixando a atualização...", o Laaazy fecha, instala sem janelas e abre de novo na versão nova, com jogos, chaves e configurações intactos

@@ -39,6 +39,7 @@ const { createLibrary } = require('./services/library')
 const { createUserProfile } = require('./services/user-profile')
 const { createUpdater } = require('./services/updater')
 const { createGithubReleases, INSTALLER_ARGS } = require('./adapters/github-releases')
+const { RELEASE_PUBLIC_KEY } = require('./core/release-key')
 const { createAvatarImage } = require('./adapters/avatar-image')
 const { createLauncher } = require('./services/launcher')
 const { createForeground } = require('./services/foreground')
@@ -162,6 +163,7 @@ const userProfile = createUserProfile({
 const updater = createUpdater({
   ...createGithubReleases({ fetch: net.fetch }),
   currentVersion: () => app.getVersion(),
+  publicKey: () => RELEASE_PUBLIC_KEY,
   mode: () => (!app.isPackaged ? 'dev' : process.env.PORTABLE_EXECUTABLE_DIR ? 'portable' : 'installer'),
   tempDir: () => app.getPath('temp'),
   runInstaller: (file) => spawnDetached(file, INSTALLER_ARGS),

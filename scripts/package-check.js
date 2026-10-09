@@ -11,7 +11,7 @@ const REQUIRED = [
 ]
 // Testes, fontes dos preloads (o pacote leva os gerados), qualquer segredo e node_modules
 // (o Electron só usa módulos do Node; a tela já vem pronta em out/)
-const FORBIDDEN = [/^node_modules\//, /\.test\.js$/, /\.src\.js$/, /(^|\/)secrets\.json$/, /(^|\/)\.env/]
+const FORBIDDEN = [/^node_modules\//, /\.test\.js$/, /\.src\.js$/, /(^|\/)secrets\.json$/, /(^|\/)\.env/, /\.pem$/]
 
 // Lista de arquivos do pacote → problemas encontrados ([] = tudo certo)
 function problemsIn(files) {

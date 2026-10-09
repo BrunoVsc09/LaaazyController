@@ -1,7 +1,11 @@
 import { describe, it, expect } from 'vitest'
+import crypto from 'node:crypto'
+import os from 'node:os'
+import path from 'node:path'
 import mod from './make-release.js'
+import rules from '../electron/core/update.js'
 
-const { changesFor, shaFile, releaseNotes } = mod
+const { changesFor, shaFile, releaseNotes, signatureFor, keyPath, keyModule } = mod
 
 const CHANGELOG = `# Novidades do Laaazy
 
@@ -40,5 +44,29 @@ describe('make-release', () => {
     expect(notes).toContain('Mais informações → Executar assim mesmo')
     expect(notes).toContain('### Novo\n- x')
     expect(notes).toContain(`${'ab'.repeat(32)}  Laaazy-Setup-3.6.0-x64.exe`)
+  })
+})
+
+// Assinatura (pedido do Bruno, 2026-10-09): a chave privada fica no PC do Bruno, fora do projeto
+describe('make-release: assinatura', () => {
+  const { publicKey, privateKey } = crypto.generateKeyPairSync('ed25519')
+  const priv = privateKey.export({ type: 'pkcs8', format: 'pem' })
+  const pub = publicKey.export({ type: 'spki', format: 'pem' })
+  it('signatureFor: o Laaazy aceita (com a chave pública que leva dentro)', () => {
+    const sha = 'ab'.repeat(32)
+    expect(rules.verifyRelease({ version: '3.6.0', sha, signature: signatureFor(priv, '3.6.0', sha) }, pub)).toBe(true)
+  })
+  it('keyPath: na pasta do usuário, fora do projeto (ou onde LAAAZY_RELEASE_KEY mandar)', () => {
+    expect(keyPath({}, 'C:/Users/b')).toBe(path.join('C:/Users/b', '.laaazy', 'release-key.pem'))
+    expect(keyPath({ LAAAZY_RELEASE_KEY: 'E:/chave.pem' }, 'C:/Users/b')).toBe('E:/chave.pem')
+    expect(keyPath({}, os.homedir())).not.toContain('lazy-ps4')
+  })
+  it('keyModule: o arquivo com a chave pública que vai para electron/core/release-key.js', () => {
+    const text = keyModule(pub)
+    expect(text).toContain('RELEASE_PUBLIC_KEY')
+    expect(text).not.toMatch(/PRIVATE/)
+    const m = { exports: {} }
+    new Function('module', text)(m)
+    expect(m.exports.RELEASE_PUBLIC_KEY).toBe(pub)
   })
 })
