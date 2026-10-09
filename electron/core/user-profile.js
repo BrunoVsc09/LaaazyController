@@ -4,6 +4,8 @@
 const CONTROL = /[\u0000-\u001f\u007f]/
 const AVATAR_ID = /^avatar-[a-z0-9-]{1,30}$/
 const AVATAR_FILE = /^(avatar-[a-z0-9-]{1,30})\.(png|webp|jpe?g)$/i
+// Foto padrão de quem ainda não escolheu (ou perdeu a sua): o logo do Laaazy
+const DEFAULT_AVATAR = 'avatar-01'
 
 function validName(v) {
   if (typeof v !== 'string') return null
@@ -60,4 +62,4 @@ function avatarIds(files) {
     .sort((a, b) => a.id.localeCompare(b.id, 'pt', { numeric: true }))
 }
 
-module.exports = { validName, validAvatar, profileOf, applyChange, avatarIds }
+module.exports = { validName, validAvatar, profileOf, applyChange, avatarIds, DEFAULT_AVATAR }

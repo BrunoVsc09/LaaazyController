@@ -1,6 +1,8 @@
 Fotos de perfil que vêm com o Laaazy (escolhidas nas boas-vindas).
 
 - Nome: avatar-01.png, avatar-02.png ... (também .webp ou .jpg)
+- avatar-01.png é o logo do Laaazy, a foto padrão de quem ainda não escolheu. Ela é gerada
+  pelo `pnpm icons` a partir de docs/assets/logo.svg: as suas fotos começam no avatar-02.
 - Tamanho: 512 x 512 px, quadrada (1:1), até ~200 KB cada
 - Aparece recortada em círculo: deixe o rosto/desenho no centro (uns 80% do meio)
 - Fundo sem transparência fica melhor sobre o menu

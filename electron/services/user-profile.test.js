@@ -18,9 +18,10 @@ function make({ saved = {}, files = ['avatar-01.png', 'avatar-02.webp'], saveErr
 
 // Boas-vindas (pedido do Bruno, 2026-10-09)
 describe('perfil do usuário: serviço', () => {
-  it('primeira vez: nome do Windows, sem foto, boas-vindas por fazer, e as fotos autorais com o endereço', async () => {
+  // Pedido do Bruno (2026-10-09): o logo do Laaazy (avatar-01) é a foto padrão, no lugar da letra
+  it('primeira vez: nome do Windows, o logo como foto padrão, boas-vindas por fazer, e as fotos autorais', async () => {
     expect(await make().u.get()).toEqual({
-      name: 'ana', avatar: null, avatarSrc: '', welcomeDone: false,
+      name: 'ana', avatar: { kind: 'builtin', id: 'avatar-01' }, avatarSrc: 'avatars/avatar-01.png', welcomeDone: false,
       avatars: [{ id: 'avatar-01', src: 'avatars/avatar-01.png' }, { id: 'avatar-02', src: 'avatars/avatar-02.webp' }],
     })
   })
@@ -28,9 +29,13 @@ describe('perfil do usuário: serviço', () => {
     expect((await make({ saved: { avatar: { kind: 'builtin', id: 'avatar-02' } } }).u.get()).avatarSrc).toBe('avatars/avatar-02.webp')
     expect((await make({ saved: { avatar: { kind: 'custom' } } }).u.get()).avatarSrc).toBe('data:image/png;base64,AAA')
   })
-  it('foto que sumiu (autoral apagada ou a do PC perdida): volta a não ter foto', async () => {
-    expect((await make({ saved: { avatar: { kind: 'builtin', id: 'avatar-09' } } }).u.get()).avatar).toBeNull()
-    expect((await make({ saved: { avatar: { kind: 'custom' } }, photo: '' }).u.get()).avatar).toBeNull()
+  it('foto que sumiu (autoral apagada ou a do PC perdida): volta para a foto padrão', async () => {
+    const padrao = { avatar: { kind: 'builtin', id: 'avatar-01' }, avatarSrc: 'avatars/avatar-01.png' }
+    expect(await make({ saved: { avatar: { kind: 'builtin', id: 'avatar-09' } } }).u.get()).toMatchObject(padrao)
+    expect(await make({ saved: { avatar: { kind: 'custom' } }, photo: '' }).u.get()).toMatchObject(padrao)
+  })
+  it('sem o arquivo da foto padrão: sem foto (o topo mostra a letra do nome)', async () => {
+    expect(await make({ files: ['avatar-02.webp'] }).u.get()).toMatchObject({ avatar: null, avatarSrc: '' })
   })
   it('mudar nome e foto autoral grava e devolve o perfil novo', async () => {
     const { u, disk } = make()

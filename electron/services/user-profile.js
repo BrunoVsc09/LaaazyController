@@ -9,14 +9,19 @@ function createUserProfile({ read, write, systemName, avatarFiles, image, choose
   const avatars = async () => rules.avatarIds(await avatarFiles().catch(() => []))
     .map((a) => ({ id: a.id, src: 'avatars/' + a.file }))
 
-  // Perfil para a tela: com o endereço da foto (some se a foto não existe mais)
+  // Perfil para a tela: com o endereço da foto. Sem foto (ou se ela não existe mais): a foto padrão,
+  // o logo do Laaazy; sem o arquivo dela, nenhuma (o topo mostra a letra do nome)
   async function get() {
     const p = rules.profileOf(await read(), systemName())
     const list = await avatars()
+    const builtin = (id) => list.find((a) => a.id === id)?.src ?? ''
     let avatarSrc = ''
-    if (p.avatar?.kind === 'builtin') avatarSrc = list.find((a) => a.id === p.avatar.id)?.src ?? ''
+    if (p.avatar?.kind === 'builtin') avatarSrc = builtin(p.avatar.id)
     if (p.avatar?.kind === 'custom') avatarSrc = await image.dataUrl()
-    return { ...p, avatar: avatarSrc ? p.avatar : null, avatarSrc, avatars: list }
+    if (avatarSrc) return { ...p, avatarSrc, avatars: list }
+    const fallback = builtin(rules.DEFAULT_AVATAR)
+    const avatar = fallback ? { kind: 'builtin', id: rules.DEFAULT_AVATAR } : null
+    return { ...p, avatar, avatarSrc: fallback, avatars: list }
   }
 
   async function set(change) {

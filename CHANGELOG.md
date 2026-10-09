@@ -17,7 +17,9 @@
   perfil (nome e foto: uma das autorais ou uma do seu PC, escolhida com o controle), a cor do
   Laaazy, o controle (perfis Jogos e PC) e as chaves grátis (TMDB recomendada; Gemini, YouTube e
   SteamGridDB opcionais). O nome e a foto aparecem no topo. Dá para rever em Configurações → Ver
-  as boas-vindas de novo. Fotos autorais: `public/avatars/avatar-NN.png` (512×512).
+  as boas-vindas de novo. Fotos autorais: `public/avatars/avatar-NN.png` (512×512). A foto padrão
+  (pedido do Bruno) é o logo do Laaazy, o controle dormindo: aparece no topo e já vem marcada nas
+  boas-vindas para quem ainda não escolheu outra.
 - **Cor do Laaazy (pedido do Bruno):** em Configurações → Cor do Laaazy, quatro temas: Azul com
   efeito (o de sempre, padrão), Preto com efeito (ondas e partículas prateadas), Preto e vermelho
   com efeito e Preto moderno com azul (liso, sem efeito). Muda na hora e fica salvo.
