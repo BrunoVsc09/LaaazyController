@@ -81,7 +81,7 @@
 ## 3.4.0 — 2026-10-08
 
 ### Mudou
-- **Teclado novo (pedido do Bruno, com o do Hydra de referência):** preto, letras grandes para
+- **Teclado novo:** preto, letras grandes para
   ler de longe, Enter alto à direita e Espaço largo embaixo. Cada tecla de atalho mostra o botão
   do controle: **R2** Enter (pesquisa no site e fecha o teclado), **□** apaga (segurando, vai
   apagando tudo), **△** espaço, **L1/R1** andam com o cursor (barrinha amarela). Vale para o
