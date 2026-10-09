@@ -25,9 +25,12 @@ export default function LibraryScreen({ onBack, sounds }: Props) {
   // Menu do jogo (△ ou botão direito): perfil do controle do jogo ou remover da Biblioteca
   const [ds4, setDs4] = useState<Ds4Data | null>(null)
   const [picker, setPicker] = useState<Game | null>(null)
+  // O ○ (lz:close-modal) é ouvido uma vez só: lê o jogo do menu aberto por aqui, não do primeiro render
+  const pickerRef = useRef<Game | null>(null)
+  pickerRef.current = picker
   const loadDs4 = () => lazy?.ds4.get().then(setDs4)
   const profileOf = (g: Game) => ds4?.config[`game:${g.id}`] || ''
-  const closePicker = (g: Game | null = picker) => {
+  const closePicker = (g: Game | null = pickerRef.current) => {
     setPicker(null)
     if (g) window.setTimeout(() => document.querySelector<HTMLElement>(`.library-card[data-id="${CSS.escape(g.id)}"]`)?.focus(), 0)
   }
