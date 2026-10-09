@@ -1,0 +1,40 @@
+/* Cor do Laaazy (Configurações → Cor do Laaazy; lista em shared/themes.js).
+   O azul de hoje é o padrão e não precisa de nada aqui. Os outros temas trocam o fundo, os
+   cartões e as cores do efeito (ondas e partículas). A borda amarela do foco é a mesma em todos. */
+
+html[data-theme="preto"] {
+  --t-bg: #0c0c0e; --t-card: linear-gradient(135deg, rgba(52, 52, 60, .85), rgba(22, 22, 26, .88));
+  --t-line: rgba(255, 255, 255, .16); --t-panel: rgba(16, 16, 20, .97);
+  --t-chip: rgba(255, 255, 255, .08); --t-chip-on: #3a3a42;
+  --fx-glow: 200 200 215; --fx-glow2: 90 90 105; --fx-wave: 170 170 185; --fx-wave2: 70 70 82;
+  --fx-wave3: 210 210 225; --fx-wave4: 40 40 50; --fx-dust: #ffffff; --fx-dust2: #b9b9c4; --fx-dust-glow: 220 220 235;
+}
+html[data-theme="vermelho"] {
+  --t-bg: #0c0909; --t-card: linear-gradient(135deg, rgba(118, 26, 30, .78), rgba(32, 10, 12, .88));
+  --t-line: rgba(240, 149, 149, .28); --t-panel: rgba(20, 10, 11, .97);
+  --t-chip: rgba(226, 75, 74, .16); --t-chip-on: #8f1f22;
+  --fx-glow: 226 75 74; --fx-glow2: 120 20 24; --fx-wave: 226 60 60; --fx-wave2: 140 20 26;
+  --fx-wave3: 255 120 120; --fx-wave4: 70 8 12; --fx-dust: #ffe1e1; --fx-dust2: #ff7a7a; --fx-dust-glow: 255 90 90;
+}
+html[data-theme="moderno"] {
+  --t-bg: #0e0e10; --t-card: #17171a;
+  --t-line: rgba(55, 138, 221, .45); --t-panel: rgba(20, 20, 23, .98);
+  --t-chip: #17171a; --t-chip-on: #1d4f8f;
+}
+
+/* Fundo: a foto azul só no tema azul; o moderno é liso */
+html[data-theme]:not([data-theme="azul"]) .bgfx-image { display: none; }
+html[data-theme="moderno"] :is(.bgfx-glow, .bgfx-wave-a, .bgfx-wave-b, .bgfx-particle) { display: none; }
+
+/* Superfícies que eram azuis */
+html[data-theme]:not([data-theme="azul"]), html[data-theme]:not([data-theme="azul"]) body { background: var(--t-bg); }
+html[data-theme]:not([data-theme="azul"]) .ps4-screen { background: var(--t-bg); }
+html[data-theme]:not([data-theme="azul"]) .ps4-screen::before { background: none; }
+html[data-theme]:not([data-theme="azul"]) .lz-hero { background: linear-gradient(180deg, var(--t-bg) 0 90%, transparent); }
+html[data-theme]:not([data-theme="azul"]) .ps4-footer { background: linear-gradient(180deg, transparent, rgba(0, 0, 0, .45)); }
+html[data-theme]:not([data-theme="azul"]) .ps4-hints .triangle::after { background: var(--t-bg); }
+html[data-theme]:not([data-theme="azul"]) :is(.ds4-row, .find-games-button, .start-panel, .games .tile-image) { background: var(--t-card); border-color: var(--t-line); }
+html[data-theme]:not([data-theme="azul"]) :is(.power-menu, .lz-browser) { background: var(--t-panel); }
+html[data-theme]:not([data-theme="azul"]) :is(.library-tabs button, .sort-button, .library-filter.purchased, .tile-image) { background: var(--t-chip); }
+html[data-theme]:not([data-theme="azul"]) :is(.library-tabs button:hover, .library-tabs button.active, .pc-platform:hover, .pc-platform.active) { background: var(--t-chip-on); }
+html[data-theme]:not([data-theme="azul"]) .library-cover:not([class*=" "]) { background: var(--t-card); }

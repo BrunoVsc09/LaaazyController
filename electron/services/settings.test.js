@@ -16,6 +16,13 @@ describe('settings', () => {
   it('valor salvo vence o padrão', () => {
     expect(make({ librarySort: 'desc' }).s.get('librarySort')).toBe('desc')
   })
+  // Cor do Laaazy (pedido do Bruno, 2026-10-09)
+  it('tema: padrão azul; só os temas conhecidos', () => {
+    const { s } = make()
+    expect(s.get('theme')).toBe('azul')
+    for (const t of ['azul', 'preto', 'vermelho', 'moderno']) expect(s.set('theme', t), t).toBe(true)
+    expect(s.set('theme', 'rosa')).toBe(false)
+  })
   it('"fechar o DS4Windows ao apertar PS" não existe mais', () => {
     const { s } = make()
     expect(s.get('closeDs4OnMenu')).toBeUndefined()

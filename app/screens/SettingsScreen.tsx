@@ -5,6 +5,7 @@ import streaming from '../../shared/streaming'
 import ApiKeySection from '../components/ApiKeySection'
 import { nextMinutes } from '../lib/screensaver'
 import { getLazy, type DrmStatus, type StreamMode } from '../lib/lazy-api'
+import { DEFAULT_THEME, applyTheme, nextTheme, themeLabel, themeOf } from '../lib/theme'
 import type { Sounds } from '../hooks/useSounds'
 
 type Props = { onBack: () => void; sounds: Sounds }
@@ -32,7 +33,7 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
 
   useEffect(() => {
     if (!lazy) return
-    lazy.settings.get().then((s) => { setModes(s.streamModes); setSaverMin(s.screensaverMinutes ?? 10); setPsCloses(s.psClosesApp !== false); setTrailerOn(s.trailerPreview !== false); setLockOn(s.lockCursor !== false); setNoGpu(s.edgeNoGpu ?? []) })
+    lazy.settings.get().then((s) => { setTheme(themeOf(s.theme)); setModes(s.streamModes); setSaverMin(s.screensaverMinutes ?? 10); setPsCloses(s.psClosesApp !== false); setTrailerOn(s.trailerPreview !== false); setLockOn(s.lockCursor !== false); setNoGpu(s.edgeNoGpu ?? []) })
     Promise.all([lazy.exe.get('edge'), lazy.exe.get('laaazypad')]).then(([edge, laaazypad]) => setPaths({ edge, laaazypad }))
     lazy.drm.status().then(setDrm)
     lazy.catalog.status().then((s) => setTmdbOn(s.configured))
@@ -57,6 +58,14 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
     setNoGpu(next)
     lazy?.settings.set('edgeNoGpu', next)
     setMsg(off ? `${label}: aceleração de vídeo ligada no Edge.` : `${label}: aceleração desligada no Edge (para tela preta). Feche o Edge e abra de novo; entre na conta uma vez nesse modo.`)
+  }
+  const [theme, setTheme] = useState(DEFAULT_THEME)
+  const cycleTheme = () => {
+    const next = nextTheme(theme)
+    setTheme(next)
+    applyTheme(next) // muda na hora
+    lazy?.settings.set('theme', next)
+    setMsg(`Cor do Laaazy: ${themeLabel(next)}.`)
   }
   const toggleLock = () => {
     const v = !lockOn
@@ -104,6 +113,7 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
       {msg && <p className="ds4-help" style={{ color: '#ffd23f' }}>{msg}</p>}
       <button className="ds4-row" onClick={tap(() => choose('edge', 'Edge'))} onMouseEnter={sounds.hover}><span>Pasta do Edge</span><b>{paths.edge || 'não encontrado, toque para escolher'}</b></button>
       <button className="ds4-row" onClick={tap(() => choose('laaazypad', 'Laaazy-pad'))} onMouseEnter={sounds.hover}><span>Pasta do Laaazy-pad (perfis do controle)</span><b>{paths.laaazypad || 'não encontrado, toque para escolher'}</b></button>
+      <button className="ds4-row" onClick={tap(cycleTheme)} onMouseEnter={sounds.hover}><span>Cor do Laaazy</span><b>{themeLabel(theme)}</b></button>
       <button className="ds4-row" onClick={tap(toggleLock)} onMouseEnter={sounds.hover}><span>Prender o mouse na tela do Laaazy</span><b>{lockOn ? 'Sim' : 'Não'}</b></button>
       <button className="ds4-row" onClick={tap(toggleTrailer)} onMouseEnter={sounds.hover}><span>Prévia do trailer no Início</span><b>{trailerOn ? 'Ligada' : 'Desligada'}</b></button>
       <button className="ds4-row" onClick={tap(togglePs)} onMouseEnter={sounds.hover}><span>Botão PS fecha o jogo</span><b>{psCloses ? 'Sim (fecha à força)' : 'Não (como console)'}</b></button>

@@ -23,6 +23,7 @@ import { padClick, useMouseFocus } from './hooks/useMouseFocus'
 import { inputMode } from './lib/input-mode'
 import { DEFAULT_PINNED, togglePin } from './lib/home-model'
 import { getLazy } from './lib/lazy-api'
+import { applyTheme } from './lib/theme'
 import { OSK_HINTS, createOskPad } from './lib/osk'
 import { createIdle } from './lib/screensaver'
 import { initialScreen, screenReducer, type Screen } from './lib/screen-state'
@@ -64,7 +65,7 @@ export default function Page() {
   const closePower = () => { setPowerOpen(false); focusFirst('.ps4-icons button') }
   const closeOsk = () => { const t = oskRef.current; setOskTarget(null); t?.focus() }
 
-  useEffect(() => { getLazy()?.settings.get().then((s) => { if (s.pinnedApps) setPinned(s.pinnedApps) }) }, [])
+  useEffect(() => { getLazy()?.settings.get().then((s) => { if (s.pinnedApps) setPinned(s.pinnedApps); applyTheme(s.theme) }) }, [])
   // Relê o tempo da proteção de tela ao sair das Configurações
   useEffect(() => { getLazy()?.settings.get().then((s) => setSaverMinutes(s.screensaverMinutes ?? 10)) }, [state.screen])
   useEffect(() => {

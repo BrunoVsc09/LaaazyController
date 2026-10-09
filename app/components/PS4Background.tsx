@@ -78,7 +78,7 @@ export default function PS4Background({
       {/* 0. Imagem estática */}
       {image && (
         <div
-          className="absolute inset-0 bg-cover bg-center"
+          className="bgfx-image absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${image})` }}
         />
       )}

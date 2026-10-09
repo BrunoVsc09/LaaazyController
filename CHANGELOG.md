@@ -12,6 +12,10 @@
   `<Nome>.json.bak` na primeira vez que ele é salvo. A escolha de perfil por app foi para a aba
   "Em cada app"; L1/R1 trocam a aba.
 
+- **Cor do Laaazy (pedido do Bruno):** em Configurações → Cor do Laaazy, quatro temas: Azul com
+  efeito (o de sempre, padrão), Preto com efeito (ondas e partículas prateadas), Preto e vermelho
+  com efeito e Preto moderno com azul (liso, sem efeito). Muda na hora e fica salvo.
+
 ### Mudou
 - Sai o botão "Abrir a pasta dos perfis".
 

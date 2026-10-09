@@ -59,6 +59,7 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Abrir um card aplica o perfil configurado; voltar ao menu aplica o do Menu
 
 ## Configurações
+- [ ] Cor do Laaazy: ✕ passa por Azul com efeito → Preto com efeito → Preto e vermelho com efeito → Preto moderno com azul; muda na hora e continua depois de reabrir o app
 - [ ] Pasta do Edge: escolher pasta sem msedge.exe mostra erro; pasta certa salva
 - [ ] Pasta do Laaazy-pad: idem com LaaazyPad.exe
 - [ ] Chrome e Firefox abrem (se não achar, pergunta a pasta)

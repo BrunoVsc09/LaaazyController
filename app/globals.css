@@ -154,8 +154,8 @@ button { font: inherit; }
     border-radius: 9999px;
     background: radial-gradient(
       closest-side,
-      rgb(80 170 255 / 0.38),
-      rgb(30 105 235 / 0.16) 55%,
+      rgb(var(--fx-glow, 80 170 255) / 0.38),
+      rgb(var(--fx-glow2, 30 105 235) / 0.16) 55%,
       transparent 78%
     );
     filter: blur(24px);
@@ -170,8 +170,8 @@ button { font: inherit; }
     width: 150%;
     height: 64%;
     background:
-      radial-gradient(ellipse 60% 70% at 32% 45%, rgb(64 160 255 / 0.42), transparent 70%),
-      radial-gradient(ellipse 55% 60% at 78% 62%, rgb(24 96 220 / 0.5), transparent 72%);
+      radial-gradient(ellipse 60% 70% at 32% 45%, rgb(var(--fx-wave, 64 160 255) / 0.42), transparent 70%),
+      radial-gradient(ellipse 55% 60% at 78% 62%, rgb(var(--fx-wave2, 24 96 220) / 0.5), transparent 72%);
     filter: blur(46px);
     mix-blend-mode: screen;
     opacity: 0.85;
@@ -186,8 +186,8 @@ button { font: inherit; }
     width: 170%;
     height: 58%;
     background:
-      radial-gradient(ellipse 55% 65% at 62% 40%, rgb(110 190 255 / 0.3), transparent 70%),
-      radial-gradient(ellipse 60% 60% at 20% 65%, rgb(10 70 190 / 0.55), transparent 72%);
+      radial-gradient(ellipse 55% 65% at 62% 40%, rgb(var(--fx-wave3, 110 190 255) / 0.3), transparent 70%),
+      radial-gradient(ellipse 60% 60% at 20% 65%, rgb(var(--fx-wave4, 10 70 190) / 0.55), transparent 72%);
     filter: blur(34px);
     mix-blend-mode: screen;
     opacity: 0.7;
@@ -199,8 +199,8 @@ button { font: inherit; }
     position: absolute;
     bottom: -12px;
     border-radius: 9999px;
-    background: radial-gradient(circle, #eaf7ff 0%, #8fd0ff 45%, transparent 72%);
-    box-shadow: 0 0 8px 2px rgb(120 190 255 / 0.55);
+    background: radial-gradient(circle, var(--fx-dust, #eaf7ff) 0%, var(--fx-dust2, #8fd0ff) 45%, transparent 72%);
+    box-shadow: 0 0 8px 2px rgb(var(--fx-dust-glow, 120 190 255) / 0.55);
     opacity: 0;
     will-change: transform, opacity;
   }
