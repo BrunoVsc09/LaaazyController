@@ -14,6 +14,7 @@ import LibraryScreen from './screens/LibraryScreen'
 import AppsScreen from './screens/AppsScreen'
 import Ds4Screen from './screens/Ds4Screen'
 import SettingsScreen from './screens/SettingsScreen'
+import WelcomeScreen from './screens/WelcomeScreen'
 import SearchScreen from './screens/SearchScreen'
 import { useGamepad } from './hooks/useGamepad'
 import { useSounds } from './hooks/useSounds'
@@ -66,6 +67,13 @@ export default function Page() {
   const closeOsk = () => { const t = oskRef.current; setOskTarget(null); t?.focus() }
 
   useEffect(() => { getLazy()?.settings.get().then((s) => { if (s.pinnedApps) setPinned(s.pinnedApps); applyTheme(s.theme) }) }, [])
+  // Boas-vindas: na primeira vez que o Laaazy abre, e quando as Configurações pedem (lz:welcome)
+  useEffect(() => {
+    getLazy()?.user.get().then((u) => { if (!u.welcomeDone) go('welcome') })
+    const open = () => go('welcome')
+    window.addEventListener('lz:welcome', open)
+    return () => window.removeEventListener('lz:welcome', open)
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
   // Relê o tempo da proteção de tela ao sair das Configurações
   useEffect(() => { getLazy()?.settings.get().then((s) => setSaverMinutes(s.screensaverMinutes ?? 10)) }, [state.screen])
   useEffect(() => {
@@ -169,7 +177,8 @@ export default function Page() {
       if (active instanceof HTMLInputElement) setOskTarget(active)
       else if (inputMode.padClicks()) (active as HTMLElement | null)?.click()
     }
-    if (fired(BTN.O) && screen !== 'home') back()
+    if (fired(BTN.O) && screen === 'welcome') window.dispatchEvent(new Event('lz:welcome-back')) // passo anterior
+    else if (fired(BTN.O) && screen !== 'home') back()
     if (fired(BTN.TRIANGLE) && (screen === 'library' || screen === 'home')) window.dispatchEvent(new Event('lz:triangle'))
     if (fired(BTN.SQUARE)) {
       if (screen === 'library') focusFirst('.library-search input')
@@ -190,7 +199,7 @@ export default function Page() {
     <main className={`ps4-screen ${state.anim === 'entering' ? 'library-entering' : ''} ${state.anim === 'leaving' ? 'library-leaving' : ''}`}>
       <PS4Background />
       <div className="pad-badge">{padOn ? 'Controle conectado' : 'Controle não detectado. Aperte um botão.'}</div>
-      <Header sounds={sounds} onController={() => go('ds4')} onSettings={() => go('settings')} onPower={() => setPowerOpen(true)} />
+      {state.screen !== 'welcome' && <Header sounds={sounds} onController={() => go('ds4')} onSettings={() => go('settings')} onPower={() => setPowerOpen(true)} />}
       {['home', 'library', 'apps'].includes(state.screen) && <Tabs current={state.screen} onGo={go} sounds={sounds} />}
       {state.screen === 'home' && <HomeScreen pinned={pinned} sounds={sounds} onActivate={activate} onOpenSettings={() => go('settings')} />}
       {state.screen === 'library' && <LibraryScreen onBack={back} sounds={sounds} />}
@@ -198,6 +207,7 @@ export default function Page() {
       {state.screen === 'ds4' && <Ds4Screen onBack={back} sounds={sounds} />}
       {state.screen === 'settings' && <SettingsScreen onBack={back} sounds={sounds} />}
       {state.screen === 'search' && <SearchScreen sounds={sounds} onActivate={activate} onBack={back} />}
+      {state.screen === 'welcome' && <WelcomeScreen sounds={sounds} onDone={() => dispatch({ type: 'goHome' })} />}
       {saver && <Screensaver />}
       {powerOpen && <PowerMenu onClose={closePower} sounds={sounds} />}
       {oskTarget && <OnScreenKeyboard target={oskTarget} onClose={closeOsk} sounds={sounds} pressRef={oskPress} />}

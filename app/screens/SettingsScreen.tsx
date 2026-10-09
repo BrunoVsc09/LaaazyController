@@ -114,6 +114,7 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
       <button className="ds4-row" onClick={tap(() => choose('edge', 'Edge'))} onMouseEnter={sounds.hover}><span>Pasta do Edge</span><b>{paths.edge || 'não encontrado, toque para escolher'}</b></button>
       <button className="ds4-row" onClick={tap(() => choose('laaazypad', 'Laaazy-pad'))} onMouseEnter={sounds.hover}><span>Pasta do Laaazy-pad (perfis do controle)</span><b>{paths.laaazypad || 'não encontrado, toque para escolher'}</b></button>
       <button className="ds4-row" onClick={tap(cycleTheme)} onMouseEnter={sounds.hover}><span>Cor do Laaazy</span><b>{themeLabel(theme)}</b></button>
+      <button className="ds4-row" onClick={tap(() => window.dispatchEvent(new Event('lz:welcome')))} onMouseEnter={sounds.hover}><span>Ver as boas-vindas de novo</span><b>▶</b></button>
       <button className="ds4-row" onClick={tap(toggleLock)} onMouseEnter={sounds.hover}><span>Prender o mouse na tela do Laaazy</span><b>{lockOn ? 'Sim' : 'Não'}</b></button>
       <button className="ds4-row" onClick={tap(toggleTrailer)} onMouseEnter={sounds.hover}><span>Prévia do trailer no Início</span><b>{trailerOn ? 'Ligada' : 'Desligada'}</b></button>
       <button className="ds4-row" onClick={tap(togglePs)} onMouseEnter={sounds.hover}><span>Botão PS fecha o jogo</span><b>{psCloses ? 'Sim (fecha à força)' : 'Não (como console)'}</b></button>

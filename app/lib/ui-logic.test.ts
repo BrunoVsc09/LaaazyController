@@ -6,6 +6,11 @@ import streaming from '../../shared/streaming'
 import DS4_KEYS from '../../shared/ds4-keys'
 
 describe('screenReducer', () => {
+  it('boas-vindas abre como tela própria e sair dela vai ao Início', () => {
+    const s = screenReducer(initialScreen, { type: 'open', screen: 'welcome' })
+    expect(s).toEqual({ screen: 'welcome', anim: 'none' })
+    expect(screenReducer(s, { type: 'leave' })).toEqual({ screen: 'home', anim: 'none' })
+  })
   it('começa no Início', () => {
     expect(initialScreen).toEqual({ screen: 'home', anim: 'none' })
   })

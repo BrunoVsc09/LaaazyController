@@ -1,6 +1,6 @@
 // Qual tela está aberta e a animação da Biblioteca. No Início a navegação é espacial
 // (o foco anda para o elemento mais próximo), então não há "card selecionado" aqui.
-export type Screen = 'home' | 'library' | 'apps' | 'ds4' | 'settings' | 'search'
+export type Screen = 'home' | 'library' | 'apps' | 'ds4' | 'settings' | 'search' | 'welcome'
 export type ScreenState = { screen: Screen; anim: 'none' | 'entering' | 'leaving' }
 export type ScreenAction =
   | { type: 'open'; screen: Exclude<Screen, 'home'> }

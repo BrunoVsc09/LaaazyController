@@ -22,6 +22,7 @@ const SEARCH: Hint = { ...HINT_ICONS.square, label: 'Buscar' }
 const PROFILE: Hint = { ...HINT_ICONS.triangle, label: 'Perfil do controle' }
 const SIMILAR: Hint = { ...HINT_ICONS.triangle, label: 'Parecidos' }
 const PREVIEW: Hint = { ...HINT_ICONS.cross, label: 'Prévia · 2x assistir' }
+const CHOOSE: Hint = { ...HINT_ICONS.cross, label: 'Escolher' }
 
 const BY_SCREEN: Record<Screen, Hint[]> = {
   home: [PREVIEW, SEARCH, SIMILAR],
@@ -30,6 +31,7 @@ const BY_SCREEN: Record<Screen, Hint[]> = {
   search: [CONFIRM, BACK],
   ds4: [CONFIRM, BACK],
   settings: [CONFIRM, BACK],
+  welcome: [CHOOSE, BACK],
 }
 
 export const hintsFor = (screen: Screen): Hint[] => BY_SCREEN[screen]

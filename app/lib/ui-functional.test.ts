@@ -55,6 +55,9 @@ describe('hintsFor (rodapé só com comandos reais)', () => {
     expect(labels('ds4')).toEqual(['Confirmar', 'Voltar'])
     expect(labels('settings')).toEqual(['Confirmar', 'Voltar'])
   })
+  it('Boas-vindas: Escolher e Voltar (passo anterior)', () => {
+    expect(labels('welcome')).toEqual(['Escolher', 'Voltar'])
+  })
   it('nenhuma tela mostra "Detalhes"', () => {
     for (const s of ['home', 'library', 'ds4', 'settings'] as const) expect(labels(s)).not.toContain('Detalhes')
   })

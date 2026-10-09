@@ -1,0 +1,6 @@
+Fotos de perfil que vêm com o Laaazy (escolhidas nas boas-vindas).
+
+- Nome: avatar-01.png, avatar-02.png ... (também .webp ou .jpg)
+- Tamanho: 512 x 512 px, quadrada (1:1), até ~200 KB cada
+- Aparece recortada em círculo: deixe o rosto/desenho no centro (uns 80% do meio)
+- Fundo sem transparência fica melhor sobre o menu
