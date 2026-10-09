@@ -1,7 +1,7 @@
 // Contrato de window.lazy (definido em electron/preload.src.js).
 export type Game = { id: string; name: string; platform: string; cover?: string }
 export type Result = { ok: boolean; msg: string }
-export type FsEntry = { name: string; path: string; type: 'dir' | 'exe' | 'lnk' | 'place' | 'drive' }
+export type FsEntry = { name: string; path: string; type: 'dir' | 'exe' | 'lnk' | 'image' | 'place' | 'drive' }
 export type FsList = { ok: boolean; path?: string; parent?: string | null; entries: FsEntry[]; msg?: string }
 export type StreamMode = 'app' | 'edge'
 export type Settings = {
@@ -39,7 +39,7 @@ export type LazyApi = {
   clipboard: { read(): Promise<string> }
   // Área de trabalho: perfil PC no controle e Laaazy minimizado (o PS traz de volta)
   desktop(): Promise<{ ok: boolean; msg: string }>
-  fs: { list(dir: string, mode: 'file' | 'dir'): Promise<FsList> }
+  fs: { list(dir: string, mode: 'file' | 'dir' | 'image'): Promise<FsList> }
   // Teclado por cima em tempo real: cada mudança vai na hora para o campo do site
   oskOverlay: { edit(change: { move?: number; back?: number; text?: string; enter?: boolean }): Promise<boolean>; close(): Promise<void>; onOpened(cb: () => void): void }
   volume(action: 'up' | 'down' | 'mute'): void

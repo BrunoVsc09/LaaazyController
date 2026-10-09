@@ -1,13 +1,15 @@
 'use client'
 
-// Navegador de pastas do Laaazy: escolher o .exe de um jogo ou uma pasta de jogos com o controle.
+// Navegador de pastas do Laaazy: escolher o .exe de um jogo, uma pasta de jogos ou a foto do perfil com o controle.
 import { useEffect, useState } from 'react'
 import { getLazy, type FsEntry, type FsList } from '../lib/lazy-api'
 import type { Sounds } from '../hooks/useSounds'
 
-type Props = { mode: 'file' | 'dir'; sounds: Sounds; onPick: (path: string) => void; onClose: () => void; onWindows: () => void }
+type Props = { mode: 'file' | 'dir' | 'image'; sounds: Sounds; onPick: (path: string) => void; onClose: () => void; onWindows: () => void }
 
-const ICON: Record<FsEntry['type'], string> = { dir: '📁', place: '⭐', drive: '💽', exe: '🎮', lnk: '🔗' }
+const ICON: Record<FsEntry['type'], string> = { dir: '📁', place: '⭐', drive: '💽', exe: '🎮', lnk: '🔗', image: '🖼️' }
+const TITLE = { file: 'Escolha o jogo (.exe ou atalho)', dir: 'Escolha a pasta dos jogos', image: 'Escolha a sua foto (PNG, JPG ou WebP)' }
+const EMPTY = { file: 'Nenhuma pasta ou jogo aqui.', dir: 'Nenhuma pasta aqui.', image: 'Nenhuma pasta ou foto aqui.' }
 
 export default function FileBrowser({ mode, sounds, onPick, onClose, onWindows }: Props) {
   const [dir, setDir] = useState('')
@@ -25,15 +27,15 @@ export default function FileBrowser({ mode, sounds, onPick, onClose, onWindows }
 
   const open = (e: FsEntry) => {
     sounds.click()
-    if (e.type === 'exe' || e.type === 'lnk') onPick(e.path)
+    if (e.type === 'exe' || e.type === 'lnk' || e.type === 'image') onPick(e.path)
     else setDir(e.path)
   }
   const tap = (fn: () => void) => () => { sounds.click(); fn() }
 
   return (
-    <div className="lz-browser" data-modal role="dialog" aria-label={mode === 'file' ? 'Escolher o jogo' : 'Escolher a pasta dos jogos'}>
+    <div className="lz-browser" data-modal role="dialog" aria-label={TITLE[mode]}>
       <div className="lz-browser-head">
-        <strong>{mode === 'file' ? 'Escolha o jogo (.exe ou atalho)' : 'Escolha a pasta dos jogos'}</strong>
+        <strong>{TITLE[mode]}</strong>
         <span>{dir || 'Atalhos e discos'}</span>
       </div>
       <div className="lz-browser-actions">
@@ -43,7 +45,7 @@ export default function FileBrowser({ mode, sounds, onPick, onClose, onWindows }
         <button type="button" className="lz-btn" onClick={tap(onClose)}>Cancelar</button>
       </div>
       {list && !list.ok && <p className="lz-meta" role="status">{list.msg}</p>}
-      {list && list.ok && list.entries.length === 0 && <p className="lz-meta">{mode === 'file' ? 'Nenhuma pasta ou jogo aqui.' : 'Nenhuma pasta aqui.'}</p>}
+      {list && list.ok && list.entries.length === 0 && <p className="lz-meta">{EMPTY[mode]}</p>}
       <div className="lz-browser-list">
         {list?.entries.map((e) => (
           <button key={e.path} type="button" className="lz-btn lz-entry" onClick={() => open(e)} onFocus={sounds.hover}>

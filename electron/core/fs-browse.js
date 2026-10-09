@@ -4,6 +4,7 @@ const path = require('path')
 
 const MAX = 500
 const GAME_FILE = /\.(exe|lnk)$/i
+const IMAGE_FILE = /\.(png|jpe?g|webp)$/i // foto do perfil (boas-vindas)
 const HIDDEN = /^[.$]/ // .ocultas e $Recycle.Bin, $WinREAgent...
 
 const isGameFile = (p) => GAME_FILE.test(String(p || ''))
@@ -20,7 +21,7 @@ function parentOf(p) {
   return parent === p ? null : parent
 }
 
-// mode 'file': pastas + .exe/.lnk; mode 'dir': só pastas. Pastas primeiro, ordem alfabética.
+// mode 'file': pastas + .exe/.lnk; 'image': pastas + fotos; 'dir': só pastas. Pastas primeiro, ordem alfabética.
 function shapeEntries(dirents, dir, mode) {
   const byName = (a, b) => a.name.localeCompare(b.name, 'pt', { sensitivity: 'base' })
   const dirs = []
@@ -30,6 +31,7 @@ function shapeEntries(dirents, dir, mode) {
     const full = path.win32.join(dir, d.name)
     if (d.isDirectory()) dirs.push({ name: d.name, path: full, type: 'dir' })
     else if (mode === 'file' && d.isFile() && isGameFile(d.name)) files.push({ name: d.name, path: full, type: /\.lnk$/i.test(d.name) ? 'lnk' : 'exe' })
+    else if (mode === 'image' && d.isFile() && IMAGE_FILE.test(d.name)) files.push({ name: d.name, path: full, type: 'image' })
   }
   return [...dirs.sort(byName), ...files.sort(byName)].slice(0, MAX)
 }
@@ -48,4 +50,6 @@ function places(env, exists) {
 const drives = (exists) =>
   'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map((l) => `${l}:\\`).filter((d) => exists(d))
 
-module.exports = { shapeEntries, parentOf, isBrowsable, isGameFile, places, drives, MAX }
+const isImageFile = (p) => IMAGE_FILE.test(String(p || ''))
+
+module.exports = { shapeEntries, parentOf, isBrowsable, isGameFile, isImageFile, places, drives, MAX }

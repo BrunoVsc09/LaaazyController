@@ -114,6 +114,8 @@ describe('registerIpc', () => {
     expect(h.browse.list).not.toHaveBeenCalled()
     await invoke(C.FS_LIST, 'C:\\', 'dir')
     expect(h.browse.list).toHaveBeenCalledWith('C:\\', 'dir')
+    await invoke(C.FS_LIST, 'C:\\', 'image') // foto do perfil (boas-vindas)
+    expect(h.browse.list).toHaveBeenLastCalledWith('C:\\', 'image')
     expect(await invoke(C.GAMES_ADD_EXE_PATH, {})).toMatchObject({ ok: false })
     expect(h.library.addExePath).not.toHaveBeenCalled()
   })

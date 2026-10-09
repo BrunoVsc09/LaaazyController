@@ -17,6 +17,17 @@ describe('shapeEntries', () => {
   it('modo pasta: só pastas', () => {
     expect(mod.shapeEntries(raw, 'C:\\X', 'dir').map((e) => e.name)).toEqual(['Ação', 'Jogos'])
   })
+  // Boas-vindas: escolher a foto do perfil no PC, com o controle
+  it('modo imagem: pastas e fotos (PNG, JPG, WebP), nada de programas', () => {
+    const pics = [...raw, dirent('eu.PNG'), dirent('gato.jpeg'), dirent('fundo.webp'), dirent('anim.gif')]
+    expect(mod.shapeEntries(pics, 'C:\\X', 'image')).toEqual([
+      { name: 'Ação', path: 'C:\\X\\Ação', type: 'dir' },
+      { name: 'Jogos', path: 'C:\\X\\Jogos', type: 'dir' },
+      { name: 'eu.PNG', path: 'C:\\X\\eu.PNG', type: 'image' },
+      { name: 'fundo.webp', path: 'C:\\X\\fundo.webp', type: 'image' },
+      { name: 'gato.jpeg', path: 'C:\\X\\gato.jpeg', type: 'image' },
+    ])
+  })
   it('limite de 500 itens', () => {
     const many = Array.from({ length: 700 }, (_, i) => dirent(`d${i}`, true))
     expect(mod.shapeEntries(many, 'C:\\X', 'dir')).toHaveLength(500)
