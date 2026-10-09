@@ -55,7 +55,7 @@ Bug? Primeiro um **teste de regressão** que reproduz o bug; depois a correção
 | **Streaming** | Abrir serviços no Edge, DRM, aceleração | `core/routing`, `core/drm`, `services/launcher`, `shared/streaming` |
 
 Glossário: **prévia** = trailer no destaque · **destaque** (hero) = topo do Início ·
-**Parecidos** = △ no Início · **perfil** = perfil do DS4Windows · **modo controle/mouse** =
+**Parecidos** = △ no Início · **perfil** = perfil do Laaazy-pad (Jogos ou PC) · **modo controle/mouse** =
 quem está no comando da tela · **Área de trabalho** = Laaazy minimizado com o controle virando mouse.
 
 ## 5. Arquitetura — evitar a big ball of mud
@@ -99,7 +99,9 @@ Regras:
   final de linha do arquivo inteiro e o diff vira centenas de linhas. Use Edit, ou Python em modo
   binário mantendo o `\r\n` que o arquivo já tinha; confira com `git diff --stat`.
 - `electron/preload.js` e `stream-preload.js` são **gerados** (não editar; estão no .gitignore).
-- Perfil **PC** do DS4Windows: X = clique esquerdo, O = clique direito, analógico = mouse.
+- Perfil **PC** do Laaazy-pad: X = clique esquerdo, O = clique direito, analógico = mouse.
+  O Laaazy-pad é outro projeto (`../laaazy-pad`, contrato em `docs/CONTRATO.md` de lá): aqui só
+  o adaptador `adapters/laaazy-pad-cli.js`. Nunca enviar Ctrl+Alt+Home para testar (é o PS).
   O Laaazy arbitra isso em `app/lib/input-mode` — não ler o mesmo botão duas vezes.
 - O PS fecha o programa da frente com `taskkill /T`: nunca fechar ancestrais do Laaazy.
 - Depois de abrir o app para diagnóstico, **soltar o cursor** (`[FG]::Unclip()`) e fechar o app.

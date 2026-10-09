@@ -6,7 +6,7 @@ Rodar com `pnpm app` ao fim de cada fase e antes de gerar o `.exe` (`pnpm dist`)
 Marque cada item com ✅ ou ❌ e anote o que aconteceu.
 
 ## Menu
-- [ ] App abre em tela cheia, com o DS4Windows abrindo minimizado
+- [ ] App abre em tela cheia, e o Laaazy-pad (LaaazyPad.exe) abre junto, sem janela
 - [ ] Primeira vez como Laaazy: jogos adicionados, perfis do DS4 e configurações da versão antiga continuam lá (a chave do TMDB precisa ser colada de novo)
 - [ ] D-pad/analógico ← → move entre os cards; X abre o card
 - [ ] ↑ leva ao cabeçalho; ← → entre Controle, Configurações e Energia; ↓ volta aos cards
@@ -15,11 +15,11 @@ Marque cada item com ✅ ou ❌ e anote o que aconteceu.
 - [ ] Rodapé do menu mostra só "Confirmar"
 
 ## Botão PS e fechar o que está na frente
-- [ ] Com um jogo/site aberto, PS (F24) ou Ctrl+Alt+Home traz o menu para a frente
+- [ ] Com um jogo/site aberto, PS (Ctrl+Alt+Home vindo do Laaazy-pad) traz o menu para a frente
 - [ ] Por cima do Steam, o menu continua na frente
-- [ ] F23 ou Ctrl+Alt+End fecha o programa da frente e volta ao menu
-- [ ] F23 com o Steam/Explorer na frente NÃO fecha eles
-- [ ] "Fechar o DS4Windows ao apertar PS" = Sim → DS4Windows fecha; = Não → volta ao perfil do Menu
+- [ ] Ctrl+Alt+End fecha o programa da frente e volta ao menu
+- [ ] Ctrl+Alt+End com o Steam/Explorer na frente NÃO fecha eles
+- [ ] Fechar o Laaazy fecha o Laaazy-pad junto (o LaaazyPad.exe some do Gerenciador de Tarefas em poucos segundos)
 
 ## Streaming (matriz da fase 6)
 Para cada serviço, em `pnpm app` e no `.exe` portátil:
@@ -48,14 +48,14 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Jogo cujo .exe foi apagado mostra mensagem de erro
 - [ ] O volta ao menu
 
-## Perfis do controle (DS4Windows)
-- [ ] Lista os perfis da pasta do DS4Windows
+## Perfis do controle (Laaazy-pad)
+- [ ] Lista os perfis Jogos e PC; "Abrir a pasta dos perfis" abre a pasta dos arquivos .json
 - [ ] X numa linha troca o perfil e mostra a confirmação
 - [ ] Abrir um card aplica o perfil configurado; voltar ao menu aplica o do Menu
 
 ## Configurações
 - [ ] Pasta do Edge: escolher pasta sem msedge.exe mostra erro; pasta certa salva
-- [ ] Pasta do DS4Windows: idem com DS4Windows.exe
+- [ ] Pasta do Laaazy-pad: idem com LaaazyPad.exe
 - [ ] Chrome e Firefox abrem (se não achar, pergunta a pasta)
 - [ ] Loja Hydra abre
 
@@ -100,7 +100,7 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 ## Volume
 - [ ] No Laaazy: L2 abaixa, R2 aumenta o volume do Windows
 - [ ] Ctrl+Alt+↑/↓/M funcionam mesmo com o Edge na frente
-- [ ] Com F20/F21/F22 mapeados no DS4Windows, o controle muda o volume dentro do Edge e de jogos
+- [ ] No perfil PC (Edge), L2/R2 mudam o volume (Ctrl+Alt+↓/↑)
 
 ## Novos episódios
 - [ ] Com uma série em exibição na Minha lista, aparece a fileira "Novos episódios" com o aviso (episódio novo / data do próximo)
@@ -124,14 +124,14 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 
 ## Botão PS
 - [ ] Perfis do controle → Testar o botão PS → apertar PS em 15s mostra "✓ O PS está funcionando"
-- [ ] Sem o F24 mapeado, depois de 15s aparece a explicação do que mapear no DS4Windows
-- [ ] Com um jogo aberto, PS fecha o jogo À FORÇA, fecha o DS4Windows (some da barra de tarefas) e volta ao Início, com o controle funcionando sem clicar
+- [ ] Se o PS não chegar em 15s, aparece a explicação (controle conectado? Laaazy-pad aberto?)
+- [ ] Com um jogo aberto, PS fecha o jogo À FORÇA e volta ao Início, com o controle funcionando sem clicar; o Laaazy-pad continua aberto
 - [ ] Com um streaming no Edge, PS fecha o Edge e volta ao Início
 - [ ] Configurações → Botão PS fecha o jogo = Não: PS só volta ao Início com o jogo aberto
 
 ## Perfil do controle por jogo
-- [ ] Biblioteca: △ num jogo abre a lista de perfis do DS4Windows; escolher mostra 🎮 <perfil> no card
-- [ ] Abrir esse jogo aplica o perfil escolhido (confira no DS4Windows)
+- [ ] Biblioteca: △ num jogo abre a lista de perfis (Jogos, PC); escolher mostra 🎮 <perfil> no card
+- [ ] Abrir esse jogo aplica o perfil escolhido (confira com `LaaazyPadCmd.exe -command Query.1.ProfileName`)
 - [ ] Perfis do controle → "Jogos (padrão)": jogos sem perfil próprio usam esse
 - [ ] O fecha a lista sem mudar nada; o foco volta ao card
 
@@ -154,8 +154,8 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Cada tecla aparece na hora na busca da Crunchyroll (e o Apagar apaga na hora).
 - [ ] L1/R1 andam com o cursor dentro da busca do site; □ apaga a letra antes dele (segurando, apaga tudo).
 - [ ] R2 aperta Enter no site (pesquisa) e fecha o teclado; Options e O só fecham. O texto continua na busca.
-- [ ] Com o teclado aberto o controle fica no perfil Brunera (X não clica, analógico não mexe o mouse); ao fechar volta ao PC.
-- [ ] No DS4Windows, mapear um botão (Share/touchpad) para F19 em todos os perfis
+- [ ] Com o teclado aberto o controle fica no perfil Jogos (X não clica, analógico não mexe o mouse); ao fechar volta ao PC.
+- [ ] No perfil PC, o Share abre o teclado por cima (Ctrl+Alt+K)
 - [ ] No Edge (ex.: Netflix), selecionar o campo de busca, apertar o botão: o teclado do Laaazy aparece na metade de baixo da tela
 - [ ] Digitar com o controle e apertar R2 (Enter) ou Options: o teclado some e o texto está no campo do Edge
 - [ ] Campo de senha: 🙈 Ocultar mostra bolinhas no teclado; a senha é digitada certinha
@@ -234,7 +234,7 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Navegar com o D-pad até as últimas fileiras: o cursor some e a borda não pula para onde o cursor parou.
 - [ ] Mexer o mouse/analógico (perfil PC): o cursor aparece e a borda segue o cursor.
 - [ ] Perfil PC: mirar com o analógico e clicar (R2/touchpad): a tela não rola nem a seleção pula; o clique abre o que está embaixo do cursor.
-- [ ] Perfil Brunera (analógico não é mouse): o analógico navega entre os cards.
+- [ ] Perfil Jogos (analógico não é mouse): o analógico navega entre os cards.
 
 ## Aceleração de vídeo no Edge
 - [ ] Crunchyroll (aceleração desligada por padrão): abre, pede login uma vez e o vídeo aparece (sem tela preta).

@@ -96,13 +96,13 @@ numa tela só, com cara de console e controlada inteira pelo **DualShock 4**.
 | **□** | Busca |
 | **L2 / R2** | Volume |
 | **PS** | Fecha o jogo/app da frente e volta ao Início — de qualquer lugar |
-| **Share** *(macro no DS4Windows)* | Teclado por cima do Edge |
+| **Share** *(perfil PC do Laaazy-pad)* | Teclado por cima do Edge |
 
 Usando o mouse junto? Sem briga: o cursor some quando você usa o controle e a seleção só segue o mouse quando ele anda de verdade.
 
 ## 🚀 Como rodar
 
-**Requisitos:** Windows 10/11 · [Node.js](https://nodejs.org) 20+ · [pnpm](https://pnpm.io) · Microsoft Edge · [DS4Windows](https://github.com/schmaldeo/DS4Windows) (opcional, para o PS e os perfis)
+**Requisitos:** Windows 10/11 · [Node.js](https://nodejs.org) 20+ · [pnpm](https://pnpm.io) · Microsoft Edge · Laaazy-pad (meu programa de perfis do controle, instalado à parte; opcional, para o PS e os perfis)
 
 ```bash
 pnpm install
@@ -111,7 +111,7 @@ pnpm app        # gera a tela e abre o Laaazy
 
 | Comando | O que faz |
 |---|---|
-| `pnpm test` | roda os 557 testes (Vitest) |
+| `pnpm test` | roda os 626 testes (Vitest) |
 | `pnpm dev` | só a tela, no navegador |
 | `pnpm dist` | gera o `.exe` portátil em `dist/` e confere o pacote |
 
@@ -145,7 +145,7 @@ flowchart LR
   A --> TMDB[(TMDB)]
   A --> GEM[(Gemini)]
   A --> YT[(YouTube)]
-  A --> DS4[[DS4Windows]]
+  A --> PAD[[Laaazy-pad]]
   A --> WIN[[Windows]]
 ```
 
@@ -160,7 +160,7 @@ flowchart LR
 
 ## ✅ Qualidade
 
-- **TDD do começo ao fim** — cada recurso nasceu de um teste vermelho: **557 testes** em 65 arquivos
+- **TDD do começo ao fim** — cada recurso nasceu de um teste vermelho: **626 testes** em 67 arquivos
 - **Nenhuma API real nos testes**: TMDB, Gemini, YouTube e Windows entram como *fakes*
 - **Segurança**: chaves criptografadas, IPC só aceita a tela do app, CSP, janela trancada, permissões negadas
 - **Pacote conferido**: `pnpm dist` verifica o `app.asar` (nada de testes, segredos ou `node_modules`)
@@ -170,7 +170,7 @@ flowchart LR
 
 **TMDB** — Este produto usa a API do TMDB, mas não é endossado nem certificado pelo TMDB. Capas e imagens de filmes e séries pertencem aos seus donos.
 
-DS4Windows · castlabs Electron (Widevine) · YouTube · Google Gemini · SteamGridDB.
+castlabs Electron (Widevine) · YouTube · Google Gemini · SteamGridDB.
 O Laaazy não é afiliado à Sony, à Microsoft nem aos serviços de streaming citados.
 
 ## 📄 Licença
