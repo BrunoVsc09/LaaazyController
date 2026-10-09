@@ -96,3 +96,48 @@ describe('Laaazy-pad (LaaazyPadCmd.exe, docs/CONTRATO.md do Laaazy-pad)', () => 
     expect(make().cli.cmdName(null)).toBe('')
   })
 })
+
+// Editor de perfis do Laaazy: lê e grava o <Nome>.json na pasta de perfis do Laaazy-pad
+describe('Laaazy-pad: arquivo do perfil', () => {
+  const PROF = path.join(APPDATA, 'Laaazy-pad', 'Profiles')
+  function files(initial = {}) {
+    const disk = { ...initial }
+    const fsx = {
+      readFile: vi.fn(async (p) => { if (!(p in disk)) throw new Error('ENOENT'); return disk[p] }),
+      writeFile: vi.fn(async (p, t) => { disk[p] = t }),
+      rename: vi.fn(async (a, b) => { disk[b] = disk[a]; delete disk[a] }),
+      copyFile: vi.fn(async (a, b) => { disk[b] = disk[a] }),
+      exists: (p) => p in disk,
+    }
+    const cli = mod.createLaaazyPadCli({ openPath: vi.fn(), execFile: fakeExec(), spawn: vi.fn(), readdir: vi.fn(), env: { APPDATA }, files: fsx })
+    return { cli, disk, fsx }
+  }
+  const file = (n) => path.join(PROF, n + '.json')
+
+  it('lê o texto do perfil; sem arquivo, null', async () => {
+    const { cli } = files({ [file('PC')]: '{ "versao": 1 }' })
+    expect(await cli.readProfile(PROF, 'PC')).toBe('{ "versao": 1 }')
+    expect(await cli.readProfile(PROF, 'Nada')).toBeNull()
+  })
+  it('grava por um arquivo temporário (nunca fica pela metade) e guarda o original em .bak na 1ª vez', async () => {
+    const { cli, disk, fsx } = files({ [file('PC')]: 'original' })
+    expect(await cli.writeProfile(PROF, 'PC', 'novo')).toBe('')
+    expect(disk[file('PC')]).toBe('novo')
+    expect(disk[file('PC') + '.bak']).toBe('original')
+    expect(fsx.rename).toHaveBeenCalledWith(file('PC') + '.tmp', file('PC'))
+    await cli.writeProfile(PROF, 'PC', 'de novo')
+    expect(disk[file('PC') + '.bak']).toBe('original') // o .bak é sempre o de fábrica
+  })
+  it('nome que não pode ser arquivo é recusado (nada de sair da pasta)', async () => {
+    const { cli, fsx } = files()
+    expect(await cli.writeProfile(PROF, '../x', 'a')).toMatch(/inválido/)
+    expect(await cli.readProfile(PROF, 'a/b')).toBeNull()
+    expect(await cli.writeProfile(PROF, 'a' + String.fromCharCode(92) + '..' + String.fromCharCode(92) + 'x', 'a')).toMatch(/inválido/) // barra invertida do Windows
+    expect(fsx.writeFile).not.toHaveBeenCalled()
+  })
+  it('erro ao gravar vira mensagem', async () => {
+    const { cli, fsx } = files({ [file('PC')]: 'x' })
+    fsx.writeFile.mockRejectedValueOnce(new Error('disco cheio'))
+    expect(await cli.writeProfile(PROF, 'PC', 'y')).toBe('Não consegui salvar o perfil: disco cheio')
+  })
+})

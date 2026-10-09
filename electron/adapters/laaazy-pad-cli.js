@@ -11,6 +11,10 @@ const CMD = 'LaaazyPadCmd.exe' // sempre vem junto, na mesma pasta
 function createLaaazyPadCli({
   openPath, execFile = childProcess.execFile, spawn = childProcess.spawn,
   readdir = (d) => fs.promises.readdir(d), env = process.env,
+  files = {
+    readFile: (p) => fs.promises.readFile(p, 'utf8'), writeFile: (p, t) => fs.promises.writeFile(p, t, 'utf8'),
+    rename: (a, b) => fs.promises.rename(a, b), copyFile: (a, b) => fs.promises.copyFile(a, b), exists: fs.existsSync,
+  },
 }) {
   // Roda um comando no LaaazyPadCmd.exe → { code, out, err } (saídas em UTF-8)
   const run = (exe, command) => new Promise((res) =>
@@ -59,7 +63,29 @@ function createLaaazyPadCli({
   const kill = () => new Promise((res) => execFile('taskkill', ['/IM', PROCESS, '/T', '/F'], { windowsHide: true }, () => res()))
   const cmdName = (exe) => (exe ? CMD : '')
 
-  return { listProfiles, isRunning, start, loadProfile, queryProfile, shutdown, kill, cmdName }
+  // Arquivo <Nome>.json do perfil (editor de perfis do Laaazy). O nome nunca sai da pasta.
+  const NAME = /^[^\\/:*?"<>|.][^\\/:*?"<>|]{0,60}$/
+  const fileOf = (dir, name) => (NAME.test(String(name)) ? path.join(dir, name + '.json') : null)
+
+  async function readProfile(dir, name) {
+    const f = fileOf(dir, name)
+    if (!f) return null
+    try { return await files.readFile(f) } catch { return null }
+  }
+
+  // Grava num .tmp e troca no fim (nunca fica pela metade); na 1ª vez guarda o original em .bak
+  async function writeProfile(dir, name, text) {
+    const f = fileOf(dir, name)
+    if (!f) return 'Nome de perfil inválido.'
+    try {
+      if (files.exists(f) && !files.exists(f + '.bak')) await files.copyFile(f, f + '.bak')
+      await files.writeFile(f + '.tmp', text)
+      await files.rename(f + '.tmp', f)
+      return ''
+    } catch (e) { return 'Não consegui salvar o perfil: ' + e.message }
+  }
+
+  return { listProfiles, isRunning, start, loadProfile, queryProfile, shutdown, kill, cmdName, readProfile, writeProfile }
 }
 
 module.exports = { createLaaazyPadCli }
