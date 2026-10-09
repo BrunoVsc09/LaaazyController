@@ -4,11 +4,13 @@ import mod from './ds4-config.js'
 const { mergeConfig, validateChange, DEFAULTS } = mod
 
 describe('ds4-config', () => {
-  it('padrões: Menu = Brunera; navegadores e Crunchyroll = PC', () => {
-    expect(DEFAULTS).toMatchObject({ menu: 'Brunera', Crunchyroll: 'PC', 'Google Chrome': 'PC', Firefox: 'PC' })
+  // Os perfis agora são os do Laaazy-pad: só Jogos e PC (o "Brunera" do DS4Windows virou Jogos)
+  it('padrões: Menu, jogos e teclado = Jogos; navegadores e Crunchyroll = PC', () => {
+    expect(DEFAULTS).toMatchObject({ menu: 'Jogos', games: 'Jogos', Crunchyroll: 'PC', 'Google Chrome': 'PC', Firefox: 'PC' })
     expect(DEFAULTS.desktop).toBe('PC') // Área de trabalho: controle vira mouse
     // Teclado por cima: controle sem mouse (no PC o X é clique e o cursor atrapalhava o teclado)
-    expect(DEFAULTS.keyboard).toBe('Brunera')
+    expect(DEFAULTS.keyboard).toBe('Jogos')
+    expect(Object.values(DEFAULTS).every((p) => p === 'Jogos' || p === 'PC')).toBe(true)
     // streamings abrem no Edge, que precisa de mouse
     for (const s of ['Netflix', 'Prime Video', 'HBO Max', 'YouTube', 'Spotify']) expect(DEFAULTS[s], s).toBe('PC')
   })

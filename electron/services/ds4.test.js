@@ -3,7 +3,7 @@ import mod from './ds4.js'
 
 const { createDs4 } = mod
 
-function make({ exe = 'C:/P/LaaazyPad.exe', running = true, profiles = ['Brunera', 'PC', 'TV'], query = (n) => n, saved = {}, readyDelayMs, dir = 'C:/P/Profiles' } = {}) {
+function make({ exe = 'C:/P/LaaazyPad.exe', running = true, profiles = ['Jogos', 'PC', 'TV'], query = (n) => n, saved = {}, readyDelayMs, dir = 'C:/P/Profiles' } = {}) {
   let cfg = { ...saved }
   const state = { running, current: '' }
   const cli = {
@@ -73,7 +73,7 @@ describe('ds4.apply', () => {
     await ds4.applyFor('Netflix')
     expect(cli.loadProfile).toHaveBeenCalledWith(expect.anything(), 'TV')
     await ds4.applyFor('menu')
-    expect(cli.loadProfile).toHaveBeenLastCalledWith(expect.anything(), 'Brunera')
+    expect(cli.loadProfile).toHaveBeenLastCalledWith(expect.anything(), 'Jogos')
   })
 })
 
@@ -109,7 +109,7 @@ describe('ds4.set / get', () => {
     expect(cfg()).toEqual({})
   })
   it('get devolve perfis, pasta, configuração com padrões e nome do comando', async () => {
-    expect(await make().ds4.get()).toMatchObject({ profiles: ['Brunera', 'PC', 'TV'], dir: 'C:/P/Profiles', config: { menu: 'Brunera' }, cmd: 'LaaazyPadCmd.exe' })
+    expect(await make().ds4.get()).toMatchObject({ profiles: ['Jogos', 'PC', 'TV'], dir: 'C:/P/Profiles', config: { menu: 'Jogos' }, cmd: 'LaaazyPadCmd.exe' })
   })
   it('get sem o Laaazy-pad devolve lista vazia', async () => {
     expect(await make({ exe: null }).ds4.get()).toMatchObject({ profiles: [], dir: null })

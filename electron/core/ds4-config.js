@@ -1,11 +1,11 @@
-// Qual perfil do DS4Windows usar em cada card e em cada jogo. Sem I/O.
+// Qual perfil do controle (Laaazy-pad) usar em cada card e em cada jogo. Sem I/O.
 const KEYS = require('../../shared/ds4-keys')
 
-// Menu = Brunera; streamings, navegadores e Área de trabalho = PC, porque abrem no Edge ou
+// Menu e jogos = Jogos; streamings, navegadores e Área de trabalho = PC, porque abrem no Edge ou
 // no Windows e precisam de mouse (dá para trocar na tela de perfis)
 const PC = ['desktop', 'Crunchyroll', 'HBO Max', 'Prime Video', 'Netflix', 'YouTube', 'Spotify', 'Google Chrome', 'Firefox']
-// Teclado por cima = Brunera: sem mouse, o X não vira clique e o cursor não atrapalha o teclado
-const DEFAULTS = { menu: 'Brunera', keyboard: 'Brunera', ...Object.fromEntries(PC.map((k) => [k, 'PC'])) }
+// Teclado por cima = Jogos: sem mouse, o X não vira clique e o cursor não atrapalha o teclado
+const DEFAULTS = { menu: 'Jogos', games: 'Jogos', keyboard: 'Jogos', ...Object.fromEntries(PC.map((k) => [k, 'PC'])) }
 
 // Perfil de um jogo específico: "game:" + id do jogo (sem caracteres de controle)
 const GAME_KEY = /^game:[^\u0000-\u001f\u007f]{1,300}$/
