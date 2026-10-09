@@ -21,6 +21,9 @@
   ao fechar, volta ao perfil do app aberto (PC na Crunchyroll). Trocável em Perfis do controle.
 
 ### Corrigido
+- **Laaazy não abria mais pelo atalho (achado pelo Bruno):** depois de usar o teclado por cima e
+  fechar o Laaazy, a janela escondida do teclado deixava o programa rodando sem janela, e clicar
+  no atalho caía nele. Agora fechar a janela principal encerra o Laaazy de verdade.
 - **Parecidos (△) "não fazia nada" (achado pelo Bruno):** o Gemini levava ~20s e o aviso ficava
   numa fileira escondida atrás do destaque. Agora o aviso aparece no destaque, a IA pensa menos
   (3 a 11s nas medições) e, quando os parecidos chegam, o foco vai para o primeiro deles. Com o

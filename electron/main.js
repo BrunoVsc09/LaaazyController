@@ -98,7 +98,9 @@ const windows = createWindowManager({
   preload: path.join(__dirname, 'preload.js'),
   icon: ICON,
   onResize: () => stream.fit(),
-  onClosed: () => stream.forget(),
+  // Fechou a janela principal: fecha o Laaazy (a janela escondida do teclado por cima não pode
+  // deixar o programa vivo sem janela; o atalho cairia nessa instância e nada abriria)
+  onClosed: () => { stream.forget(); app.quit() },
   // Voltou do Edge/navegador para o menu: volta o perfil do Menu
   forceFocus: (hwnd) => probe.focus(hwnd),
   // Laaazy na frente: cursor preso nele; saiu da frente: cursor solto
