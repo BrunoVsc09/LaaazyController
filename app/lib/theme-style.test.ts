@@ -30,3 +30,16 @@ describe('temas de cor no CSS', () => {
     expect(themes).toMatch(/html\[data-theme="moderno"\] :is\(\.bgfx-glow, \.bgfx-wave-a, \.bgfx-wave-b, \.bgfx-particle\) \{ display: none; \}/)
   })
 })
+
+// Regressão (2026-10-09, achado pelo Bruno: "achei pequeno"): o navegador de arquivos (position:
+// fixed) aberto dentro do cartão das boas-vindas ficava preso ao cartão, porque backdrop-filter,
+// filter e transform num ancestral viram o "quadro" do fixed
+describe('boas-vindas: janelinhas por cima ocupam a tela', () => {
+  const welcome = fs.readFileSync(path.join(__dirname, '..', 'welcome.css'), 'utf8')
+  it('o cartão e a tela das boas-vindas não usam backdrop-filter, filter nem transform', () => {
+    for (const sel of ['.welcome', '.welcome-card', '.welcome-body']) {
+      const rule = new RegExp(String.raw`(^|\n)${sel.replace('.', '\.')} \{([^}]*)\}`).exec(welcome)?.[2] ?? ''
+      expect(rule, sel).not.toMatch(/backdrop-filter|(^|;|\s)filter:|transform:/)
+    }
+  })
+})
