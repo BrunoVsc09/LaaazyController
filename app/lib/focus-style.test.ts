@@ -114,3 +114,10 @@ describe('destaque sem caixa de cor diferente', () => {
     expect(css).toMatch(/\.lz-hero::before \{[^}]*left: calc\(50% - 50vw\); right: calc\(50% - 50vw\);[^}]*background: linear-gradient\(180deg, var\(--hero-bg, #0b3f9d\) 0 90%, transparent\);[^}]*animation-timeline: scroll\(root\);/)
   })
 })
+
+// Boas-vindas: a foto do perfil aparece no topo, recortada no quadrado do avatar
+describe('foto do perfil no topo', () => {
+  it('a imagem preenche o avatar sem distorcer', () => {
+    expect(css).toMatch(/\.crash-avatar img \{ width: 100%; height: 100%; object-fit: cover; border-radius: inherit; \}/)
+  })
+})

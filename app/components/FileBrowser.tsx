@@ -8,7 +8,7 @@ import type { Sounds } from '../hooks/useSounds'
 type Props = { mode: 'file' | 'dir' | 'image'; sounds: Sounds; onPick: (path: string) => void; onClose: () => void; onWindows: () => void }
 
 const ICON: Record<FsEntry['type'], string> = { dir: '📁', place: '⭐', drive: '💽', exe: '🎮', lnk: '🔗', image: '🖼️' }
-const TITLE = { file: 'Escolha o jogo (.exe ou atalho)', dir: 'Escolha a pasta dos jogos', image: 'Escolha a sua foto (PNG, JPG ou WebP)' }
+const TITLE = { file: 'Escolha o jogo (.exe ou atalho)', dir: 'Escolha a pasta dos jogos', image: 'Escolha a sua foto (PNG ou JPG)' }
 const EMPTY = { file: 'Nenhuma pasta ou jogo aqui.', dir: 'Nenhuma pasta aqui.', image: 'Nenhuma pasta ou foto aqui.' }
 
 export default function FileBrowser({ mode, sounds, onPick, onClose, onWindows }: Props) {

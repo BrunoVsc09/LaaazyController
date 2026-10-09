@@ -36,6 +36,8 @@ const { createDs4 } = require('./services/ds4')
 const { createDesktop } = require('./services/desktop')
 const { createCursorLock } = require('./services/cursor-lock')
 const { createLibrary } = require('./services/library')
+const { createUserProfile } = require('./services/user-profile')
+const { createAvatarImage } = require('./adapters/avatar-image')
 const { createLauncher } = require('./services/launcher')
 const { createForeground } = require('./services/foreground')
 const { createReturnWatch } = require('./services/return-watch')
@@ -142,6 +144,16 @@ const ds4 = createDs4({
   writeCfg: (cfg) => store.writeJson(userFile('ds4-profiles.json'), cfg),
   sleep,
   readyDelayMs: 300, // o Laaazy-pad aceita comandos ~300 ms depois de abrir (medido)
+})
+
+// Perfil de quem usa o Laaazy (boas-vindas): nome, foto (autoral em out/avatars ou a do PC) e boas-vindas
+const userProfile = createUserProfile({
+  read: () => store.readJson(userFile('user.json'), {}),
+  write: (data) => store.writeJson(userFile('user.json'), data),
+  systemName: () => os.userInfo().username,
+  avatarFiles: () => fs.promises.readdir(path.join(OUT, 'avatars')),
+  image: createAvatarImage({ file: userFile('avatar.png') }),
+  choosePhoto: () => dialogs.chooseImage(),
 })
 
 async function steamRoot() {
@@ -336,7 +348,7 @@ registerIpc(ipcMain, {
   sendKey: (key) => stream.sendKey(key),
   quit: () => app.quit(),
   takeWarnings: store.takeWarnings,
-  systemUser: () => ({ name: os.userInfo().username }),
+  user: userProfile,
   drmStatus: () => widevineStatus(components.status()),
 })
 

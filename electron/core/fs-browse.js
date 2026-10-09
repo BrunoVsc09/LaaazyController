@@ -4,7 +4,7 @@ const path = require('path')
 
 const MAX = 500
 const GAME_FILE = /\.(exe|lnk)$/i
-const IMAGE_FILE = /\.(png|jpe?g|webp)$/i // foto do perfil (boas-vindas)
+const IMAGE_FILE = /\.(png|jpe?g)$/i // foto do perfil (boas-vindas); o Electron só lê PNG e JPG
 const HIDDEN = /^[.$]/ // .ocultas e $Recycle.Bin, $WinREAgent...
 
 const isGameFile = (p) => GAME_FILE.test(String(p || ''))

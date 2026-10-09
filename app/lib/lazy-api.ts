@@ -1,6 +1,10 @@
 // Contrato de window.lazy (definido em electron/preload.src.js).
 export type Game = { id: string; name: string; platform: string; cover?: string }
 export type Result = { ok: boolean; msg: string }
+// Perfil de quem usa o Laaazy (boas-vindas)
+export type UserAvatar = { kind: 'builtin'; id: string } | { kind: 'custom' } | null
+export type UserProfile = { name: string; avatar: UserAvatar; avatarSrc: string; welcomeDone: boolean; avatars: { id: string; src: string }[] }
+export type UserResult = { ok: boolean; msg?: string; profile?: UserProfile }
 export type FsEntry = { name: string; path: string; type: 'dir' | 'exe' | 'lnk' | 'image' | 'place' | 'drive' }
 export type FsList = { ok: boolean; path?: string; parent?: string | null; entries: FsEntry[]; msg?: string }
 export type StreamMode = 'app' | 'edge'
@@ -75,7 +79,13 @@ export type LazyApi = {
     setOpenAtLogin(on: boolean): Promise<void>
   }
   myList: { get(): Promise<Title[]>; toggle(item: Title): Promise<{ ok: boolean; added?: boolean; msg?: string }> }
-  system: { user(): Promise<{ name: string }> }
+  user: {
+    get(): Promise<UserProfile>
+    set(change: { name?: string; avatar?: UserAvatar }): Promise<UserResult>
+    setPhoto(path: string): Promise<UserResult>
+    choosePhoto(): Promise<UserResult>
+    finish(): Promise<UserResult>
+  }
   drm: { status(): Promise<DrmStatus> }
   catalog: {
     status(): Promise<{ configured: boolean }>

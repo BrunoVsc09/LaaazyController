@@ -8,6 +8,7 @@ const PLAYER_KEYS = new Set(['Space', 'Left', 'Right'])
 const VOLUME_ACTIONS = new Set(['up', 'down', 'mute'])
 const isText = (v) => typeof v === 'string'
 const str = (v) => (isText(v) ? v : '')
+const isPlain = (v) => !!v && typeof v === 'object' && !Array.isArray(v)
 // Ação de um botão no editor de perfis: null (nada), { tecla: texto } ou { clique: texto }
 const isPadAction = (a) => a === null || (!!a && typeof a === 'object' && Object.keys(a).length === 1 &&
   (isText(a.tecla) || isText(a.clique)))
@@ -53,7 +54,11 @@ function registerIpc(ipcMain, h) {
   handle(C.GAMES_ADD_FOLDER_PATH, (p) => (isText(p) ? h.library.addFolderPath(p) : { ok: false, added: 0, msg: 'Pasta inválida.' }))
   handle(C.FS_LIST, (dir, mode) => (isText(dir) && ['file', 'dir', 'image'].includes(mode) ? h.browse.list(dir, mode) : { ok: false, entries: [], msg: 'Pasta inválida.' }))
   handle(C.GAMES_REMOVE, (id) => (isText(id) ? h.library.remove(id) : { ok: false, msg: 'Jogo inválido.' }))
-  handle(C.SYSTEM_USER, () => h.systemUser())
+  handle(C.USER_GET, () => h.user.get())
+  handle(C.USER_SET, (change) => (isPlain(change) ? h.user.set({ ...change }) : { ok: false, msg: 'Mudança inválida.' }))
+  handle(C.USER_SET_PHOTO, (file) => (isText(file) ? h.user.setPhoto(file) : { ok: false, msg: 'Foto inválida.' }))
+  handle(C.USER_CHOOSE_PHOTO, () => h.user.choosePhoto())
+  handle(C.USER_FINISH, () => h.user.finish())
   handle(C.DRM_STATUS, () => h.drmStatus())
   handle(C.CATALOG_STATUS, () => h.catalog.status())
   handle(C.CATALOG_SET_KEY, (key) => (isText(key) ? h.catalog.setKey(key) : { ok: false, msg: 'Chave inválida.' }))

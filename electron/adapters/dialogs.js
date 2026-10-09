@@ -13,9 +13,18 @@ function createDialogs({ dialog, getWin }) {
     return r.canceled ? null : r.filePaths[0] || null
   }
 
+  // Foto do perfil (boas-vindas): só o que o Electron lê
+  async function chooseImage() {
+    const r = await dialog.showOpenDialog(getWin(), {
+      title: 'Escolha a sua foto', properties: ['openFile'],
+      filters: [{ name: 'Fotos', extensions: ['png', 'jpg', 'jpeg'] }],
+    })
+    return r.canceled ? null : r.filePaths[0] || null
+  }
+
   const showError = (title, msg) => dialog.showErrorBox(title, msg)
 
-  return { chooseDir, chooseExe, showError }
+  return { chooseDir, chooseExe, chooseImage, showError }
 }
 
 module.exports = { createDialogs }

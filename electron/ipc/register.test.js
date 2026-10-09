@@ -15,7 +15,7 @@ function make() {
     browse: { list: vi.fn(async () => ({ ok: true, entries: [] })), places: vi.fn(() => ({ places: [], drives: [] })) },
     goHome: vi.fn(), back: vi.fn(), sendKey: vi.fn(), quit: vi.fn(),
     takeWarnings: vi.fn(() => []),
-    systemUser: vi.fn(() => ({ name: 'ana', initial: 'A' })),
+    user: { get: vi.fn(), set: vi.fn(async () => ({ ok: true })), setPhoto: vi.fn(async () => ({ ok: true })), choosePhoto: vi.fn(), finish: vi.fn() },
     drmStatus: vi.fn(() => ({ installed: true })),
     catalog: {
       status: vi.fn(() => ({ configured: true })),
@@ -198,6 +198,22 @@ describe('registerIpc', () => {
     await invoke(C.DS4_SET_BUTTON, 'PC', 'R1', null)
     expect(h.ds4.setButton).toHaveBeenLastCalledWith('PC', 'R1', null)
     expect(C.DS4_OPEN_DIR).toBeUndefined() // "Abrir a pasta dos perfis" saiu
+  })
+  // Boas-vindas: perfil do usuário (nome e foto)
+  it('perfil do usuário: mudança é um objeto simples; a foto do PC é um caminho em texto', async () => {
+    const { invoke, h } = make()
+    expect(await invoke(C.USER_SET, 'Bruno')).toMatchObject({ ok: false })
+    expect(await invoke(C.USER_SET, null)).toMatchObject({ ok: false })
+    await invoke(C.USER_SET, { name: 'Bruno' })
+    expect(h.user.set).toHaveBeenCalledWith({ name: 'Bruno' })
+    expect(await invoke(C.USER_SET_PHOTO, { path: 'x' })).toMatchObject({ ok: false })
+    await invoke(C.USER_SET_PHOTO, 'C:/eu.png')
+    expect(h.user.setPhoto).toHaveBeenCalledWith('C:/eu.png')
+    await invoke(C.USER_CHOOSE_PHOTO, 'qualquer')
+    expect(h.user.choosePhoto).toHaveBeenCalledWith()
+    await invoke(C.USER_FINISH)
+    expect(h.user.finish).toHaveBeenCalled()
+    expect(C.SYSTEM_USER).toBeUndefined() // o topo usa o perfil (nome e foto escolhidos)
   })
   it('capas: chave precisa ser texto', async () => {
     const { invoke, h } = make()

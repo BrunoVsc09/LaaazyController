@@ -11,12 +11,15 @@ type Props = { sounds: Sounds; onController: () => void; onSettings: () => void;
 export default function Header({ sounds, onController, onSettings, onPower }: Props) {
   // Hora e usuário só no cliente: o HTML é gerado no build, sem hora nem usuário
   const [now, setNow] = useState<Date | null>(null)
-  const [user, setUser] = useState({ name: '', initial: '' })
+  const [user, setUser] = useState({ name: '', initial: '', src: '' })
   useEffect(() => {
     setNow(new Date())
     const t = window.setInterval(() => setNow(new Date()), 10000)
-    getLazy()?.system.user().then((u) => setUser(displayUser(u.name)))
-    return () => window.clearInterval(t)
+    // Nome e foto do perfil (boas-vindas); atualiza quando o perfil muda
+    const load = () => getLazy()?.user.get().then((u) => setUser({ ...displayUser(u.name), src: u.avatarSrc }))
+    load()
+    window.addEventListener('lz:user-changed', load)
+    return () => { window.clearInterval(t); window.removeEventListener('lz:user-changed', load) }
   }, [])
 
   const actions = [
@@ -26,7 +29,7 @@ export default function Header({ sounds, onController, onSettings, onPower }: Pr
   ]
   return (
     <header className="ps4-header">
-      <div className="ps4-user">{user.name && <><div className="crash-avatar">{user.initial}</div><strong>{user.name}</strong></>}</div>
+      <div className="ps4-user">{user.name && <><div className="crash-avatar">{user.src ? <img src={user.src} alt="" /> : user.initial}</div><strong>{user.name}</strong></>}</div>
       <nav className="ps4-icons" aria-label="Ações do sistema">
         {actions.map(({ label, Icon, run }) => (
           <button key={label} type="button" aria-label={label} title={label} onClick={() => { sounds.click(); run() }} onMouseEnter={sounds.hover}>

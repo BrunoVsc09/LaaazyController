@@ -29,7 +29,11 @@ module.exports = {
   GAMES_ADD_EXE_PATH: 'games:addExePath',
   GAMES_ADD_FOLDER_PATH: 'games:addFolderPath',
   FS_LIST: 'fs:list',
-  SYSTEM_USER: 'system:user',
+  USER_GET: 'user:get', // perfil de quem usa o Laaazy (nome, foto, boas-vindas)
+  USER_SET: 'user:set',
+  USER_SET_PHOTO: 'user:setPhoto', // foto do PC escolhida com o controle (caminho)
+  USER_CHOOSE_PHOTO: 'user:choosePhoto', // foto do PC pela janela do Windows
+  USER_FINISH: 'user:finish', // terminou as boas-vindas
   DRM_STATUS: 'drm:status',
   CATALOG_STATUS: 'catalog:status',
   CATALOG_SET_KEY: 'catalog:setKey',
