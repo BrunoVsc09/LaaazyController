@@ -128,3 +128,15 @@ describe('prévia pausada', () => {
     expect(css).toMatch(/\.lz-paused \{ position: absolute; left: 50%; top: 50%; transform: translate\(-50%, -50%\);/)
   })
 })
+
+// Regressão (2026-10-09, pedido do Bruno: melhorar o mouse): uma regra antiga escondia o cursor
+// sempre, até no modo mouse. Agora ele só some usando o controle (html.lz-pad).
+describe('cursor do mouse', () => {
+  it('nenhuma regra esconde o cursor fora do modo controle', () => {
+    expect(css).not.toMatch(/\*, \*::before, \*::after \{ cursor: none !important; \}/)
+    expect(css).toMatch(/html\.lz-pad, html\.lz-pad \* \{ cursor: none !important; \}/)
+  })
+  it('as setas das fileiras só aparecem no modo mouse', () => {
+    expect(css).toMatch(/html\.lz-pad \.lz-strip-arrow \{ display: none; \}/)
+  })
+})

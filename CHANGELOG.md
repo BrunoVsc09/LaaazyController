@@ -24,8 +24,14 @@
 - **Start pausa a prévia e R1/L1 andam pelas abas (pedido do Bruno):** no Início, Start pausa a
   prévia do trailer (aparece "Pausado") e Start de novo continua. Em Início, Biblioteca, Apps e
   Buscar, R1 vai para a aba da direita e L1 volta.
+- **Mouse melhor em Início, Biblioteca, Apps e Buscar (pedido do Bruno):** as fileiras ganharam
+  setas ‹ › nas pontas para andar para o lado com o mouse (somem quando você usa o controle). Buscar
+  agora mostra as abas, então dá para sair dela com um clique. O botão "voltar" do mouse (o de lado)
+  faz o mesmo que o ○.
 
 ### Corrigido
+- **Cursor do mouse invisível:** uma regra antiga escondia o cursor sempre, mesmo usando o mouse.
+  Agora ele aparece ao mexer o mouse e só some quando você usa o controle.
 - **Navegador de pastas com as pastas certas:** Imagens (novo, ao escolher a foto) e Área de trabalho
   agora vêm do Windows, então funcionam quando estão no OneDrive.
 - **Caixa de outra cor atrás do destaque (achado pelo Bruno):** o destaque do Início tinha um fundo

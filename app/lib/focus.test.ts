@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { hoverTarget, keepsFocusOnPress, needsKeyFocus } from './focus'
+import { hoverTarget, isMouseBack, keepsFocusOnPress, needsKeyFocus, stripEnds, stripTarget } from './focus'
 
 // Elemento falso: closest devolve o que estiver no mapa para o seletor pedido
 type Fake = { tagName: string; closest: (sel: string) => Fake | null }
@@ -47,5 +47,36 @@ describe('needsKeyFocus: o teclado por cima sempre tem uma tecla com a borda', (
     const key = el('BUTTON')
     key.closest = (sel) => (sel === '.kb-overlay button' ? key : null)
     expect(needsKeyFocus(key, '.kb-overlay button')).toBe(false)
+  })
+})
+
+// Fileiras do Início com o mouse: as setas ‹ › andam quase uma tela (sobra um card para não perder o lugar)
+describe('stripTarget: para onde a seta leva a fileira', () => {
+  const s = { left: 0, width: 1000, total: 4000 }
+  it('› anda 85% da largura visível; ‹ volta o mesmo tanto', () => {
+    expect(stripTarget(s, 1)).toBe(850)
+    expect(stripTarget({ ...s, left: 850 }, -1)).toBe(0)
+  })
+  it('não passa das pontas', () => {
+    expect(stripTarget({ ...s, left: 2900 }, 1)).toBe(3000)
+    expect(stripTarget({ ...s, left: 300 }, -1)).toBe(0)
+  })
+})
+
+describe('stripEnds: qual seta aparece', () => {
+  it('no começo só a da direita; no fim só a da esquerda; no meio as duas', () => {
+    expect(stripEnds({ left: 0, width: 1000, total: 4000 })).toEqual({ prev: false, next: true })
+    expect(stripEnds({ left: 3000, width: 1000, total: 4000 })).toEqual({ prev: true, next: false })
+    expect(stripEnds({ left: 1200, width: 1000, total: 4000 })).toEqual({ prev: true, next: true })
+  })
+  it('fileira que cabe na tela: nenhuma seta (folga de 2 px do arredondamento)', () => {
+    expect(stripEnds({ left: 0, width: 1000, total: 1001 })).toEqual({ prev: false, next: false })
+  })
+})
+
+describe('isMouseBack: botão "voltar" do mouse (o de lado) faz o mesmo que o ○', () => {
+  it('só o botão 3 (voltar)', () => {
+    expect(isMouseBack(3)).toBe(true)
+    for (const b of [0, 1, 2, 4]) expect(isMouseBack(b)).toBe(false)
   })
 })

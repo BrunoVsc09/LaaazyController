@@ -28,5 +28,19 @@ export function hoverTarget(target: ElLike | null, active: ElLike | null, select
 // Clique no fundo da tela tiraria o foco (e a borda) de tudo: nesse caso o clique não mexe no foco
 export const keepsFocusOnPress = (target: ElLike | null) => !target?.closest(PRESSABLE)
 
+// Fileiras do Início com o mouse: setas ‹ › que andam quase uma tela (85%: sobra um card visível)
+type Strip = { left: number; width: number; total: number }
+const STRIP_STEP = 0.85
+export function stripTarget({ left, width, total }: Strip, dir: 1 | -1) {
+  return Math.min(Math.max(left + dir * width * STRIP_STEP, 0), Math.max(total - width, 0))
+}
+// Qual seta aparece (2 px de folga: o navegador arredonda a rolagem)
+export function stripEnds({ left, width, total }: Strip) {
+  return { prev: left > 2, next: left + width < total - 2 }
+}
+
+// Botão "voltar" do mouse (o de lado, nº 3) faz o mesmo que o ○
+export const isMouseBack = (button: number) => button === 3
+
 // Teclado por cima: sem uma tecla selecionada não aparece a borda e o D-pad não tem de onde partir
 export const needsKeyFocus = (active: ElLike | null, keys: string) => !active?.closest(keys)

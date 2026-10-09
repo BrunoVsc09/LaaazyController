@@ -19,7 +19,7 @@ import SearchScreen from './screens/SearchScreen'
 import { useGamepad } from './hooks/useGamepad'
 import { useSounds } from './hooks/useSounds'
 import type { Card } from './lib/catalog'
-import { focusMove } from './lib/focus'
+import { focusMove, isMouseBack } from './lib/focus'
 import { padClick, useMouseFocus } from './hooks/useMouseFocus'
 import { inputMode } from './lib/input-mode'
 import { DEFAULT_PINNED, togglePin } from './lib/home-model'
@@ -27,7 +27,7 @@ import { getLazy } from './lib/lazy-api'
 import { applyTheme } from './lib/theme'
 import { OSK_HINTS, createOskPad } from './lib/osk'
 import { createIdle } from './lib/screensaver'
-import { initialScreen, screenReducer, type Screen, tabStep } from './lib/screen-state'
+import { initialScreen, screenReducer, type Screen, showsTabs, tabStep } from './lib/screen-state'
 
 const { BTN } = gamepad
 const REPEAT_MS = 220
@@ -133,6 +133,25 @@ export default function Page() {
 
   const go = (screen: Screen) => dispatch(screen === 'home' ? { type: 'goHome' } : { type: 'open', screen })
   const back = () => { sounds.click(); dispatch({ type: 'leave' }) }
+  // ○ do controle e botão "voltar" do mouse: fecha o que estiver por cima, senão volta uma tela
+  const backPress = () => {
+    if (oskRef.current) return closeOsk()
+    if (powerRef.current) return closePower()
+    if (document.querySelector('[data-modal]')) return void window.dispatchEvent(new Event('lz:close-modal'))
+    const { screen } = stateRef.current
+    if (screen === 'welcome') window.dispatchEvent(new Event('lz:welcome-back')) // passo anterior
+    else if (screen !== 'home') back()
+  }
+  // No modo controle o useMouseFocus já engole os botões do mouse (o perfil PC também gera cliques)
+  useEffect(() => {
+    const onUp = (e: MouseEvent) => {
+      if (!isMouseBack(e.button) || document.querySelector('[data-pad-capture]')) return
+      e.preventDefault()
+      backPress()
+    }
+    window.addEventListener('mouseup', onUp)
+    return () => window.removeEventListener('mouseup', onUp)
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const padOn = useGamepad(({ fired, down, dx, dy, active: touched, buttons }) => {
     if (touched) {
@@ -181,8 +200,7 @@ export default function Page() {
       if (active instanceof HTMLInputElement) setOskTarget(active)
       else if (inputMode.padClicks()) (active as HTMLElement | null)?.click()
     }
-    if (fired(BTN.O) && screen === 'welcome') window.dispatchEvent(new Event('lz:welcome-back')) // passo anterior
-    else if (fired(BTN.O) && screen !== 'home') back()
+    if (fired(BTN.O)) backPress()
     if (fired(BTN.TRIANGLE) && (screen === 'library' || screen === 'home')) window.dispatchEvent(new Event('lz:triangle'))
     if (fired(BTN.SQUARE)) {
       if (screen === 'library') focusFirst('.library-search input')
@@ -204,7 +222,7 @@ export default function Page() {
       <PS4Background />
       <div className="pad-badge">{padOn ? 'Controle conectado' : 'Controle não detectado. Aperte um botão.'}</div>
       {state.screen !== 'welcome' && <Header sounds={sounds} onController={() => go('ds4')} onSettings={() => go('settings')} onPower={() => setPowerOpen(true)} />}
-      {['home', 'library', 'apps'].includes(state.screen) && <Tabs current={state.screen} onGo={go} sounds={sounds} />}
+      {showsTabs(state.screen) && <Tabs current={state.screen} onGo={go} sounds={sounds} />}
       {state.screen === 'home' && <HomeScreen pinned={pinned} sounds={sounds} onActivate={activate} onOpenSettings={() => go('settings')} />}
       {state.screen === 'library' && <LibraryScreen onBack={back} sounds={sounds} />}
       {state.screen === 'apps' && <AppsScreen pinned={pinned} sounds={sounds} onActivate={activate} onTogglePin={onTogglePin} />}

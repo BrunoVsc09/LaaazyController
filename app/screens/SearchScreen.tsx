@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import streaming from '../../shared/streaming'
 import AppIcon from '../components/AppIcon'
+import Strip from '../components/Strip'
 import ExplorePanel from '../components/ExplorePanel'
 import { CATALOG, type Card } from '../lib/catalog'
 import { getLazy, type Game, type Title } from '../lib/lazy-api'
@@ -63,32 +64,32 @@ export default function SearchScreen({ sounds, onActivate, onBack }: Props) {
 
       {local.apps.length > 0 && (
         <div className="lz-row"><h2>Apps</h2>
-          <div className="lz-strip">
+          <Strip>
             {local.apps.map((c) => (
               <button key={c.label} type="button" className="lz-app" style={{ background: c.bg ?? 'rgba(255,255,255,.14)', color: c.fg ?? '#fff' }}
                 onClick={tap(() => onActivate(c))} onFocus={sounds.hover}><AppIcon card={c} size={36} /><span>{c.label}</span></button>
             ))}
-          </div>
+          </Strip>
         </div>
       )}
       {local.games.length > 0 && (
         <div className="lz-row"><h2>Jogos</h2>
-          <div className="lz-strip">
+          <Strip>
             {local.games.map((g) => (
               <button key={g.id} type="button" className="lz-title" style={g.cover ? { backgroundImage: `url(${g.cover})` } : undefined}
                 onClick={tap(() => playGame(g))} onFocus={sounds.hover}><span>{g.name} · {g.platform}</span></button>
             ))}
-          </div>
+          </Strip>
         </div>
       )}
       {titles.length > 0 && (
         <div className="lz-row"><h2>Filmes e séries</h2>
-          <div className="lz-strip">
+          <Strip>
             {titles.map((t) => (
               <button key={t.id} type="button" className="lz-title" style={t.backdrop || t.poster ? { backgroundImage: `url(${t.backdrop || t.poster})` } : undefined}
                 onClick={tap(() => watch(t))} onFocus={sounds.hover}><span>{t.title} · {t.kind}{t.year ? ` · ${t.year}` : ''}</span></button>
             ))}
-          </div>
+          </Strip>
         </div>
       )}
       <ExplorePanel sounds={sounds} onPick={watch} />

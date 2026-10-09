@@ -243,6 +243,10 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Mexer o mouse/analógico (perfil PC): o cursor aparece e a borda segue o cursor.
 - [ ] Perfil PC: mirar com o analógico e clicar (R2/touchpad): a tela não rola nem a seleção pula; o clique abre o que está embaixo do cursor.
 - [ ] Perfil Jogos (analógico não é mouse): o analógico navega entre os cards.
+- [ ] Mouse de verdade: o cursor aparece ao mexer e some ao apertar o controle
+- [ ] Início e Buscar: com o mouse, as fileiras mostram › (e ‹ depois de andar); clicar anda quase uma tela; com o controle as setas somem
+- [ ] Buscar mostra as abas (Buscar marcada); clicar em Início/Biblioteca/Apps vai direto
+- [ ] Botão "voltar" do mouse (o de lado): de Biblioteca, Apps, Buscar ou Configurações volta; fecha o teclado na tela e o menu de energia; no Início não faz nada
 
 ## Aceleração de vídeo no Edge
 - [ ] Crunchyroll (aceleração desligada por padrão): abre, pede login uma vez e o vídeo aparece (sem tela preta).

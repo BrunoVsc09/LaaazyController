@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { initialScreen, screenReducer, tabStep } from './screen-state'
+import { initialScreen, screenReducer, showsTabs, tabStep } from './screen-state'
 import { visibleGames } from './library-filter'
 import { CATALOG } from './catalog'
 import streaming from '../../shared/streaming'
@@ -82,5 +82,15 @@ describe('L1/R1 nas abas', () => {
     expect(tabStep('home', -1)).toBeNull()
     expect(tabStep('settings', 1)).toBeNull()
     expect(tabStep('welcome', -1)).toBeNull()
+  })
+})
+
+// Mouse (pedido do Bruno, 2026-10-09): as abas também aparecem em Buscar, para sair dela com um clique
+describe('showsTabs', () => {
+  it('Início, Biblioteca, Apps e Buscar mostram as abas', () => {
+    for (const s of ['home', 'library', 'apps', 'search'] as const) expect(showsTabs(s)).toBe(true)
+  })
+  it('Configurações, Perfis do controle e boas-vindas não', () => {
+    for (const s of ['settings', 'ds4', 'welcome'] as const) expect(showsTabs(s)).toBe(false)
   })
 })

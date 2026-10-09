@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react'
 import opts from '../../shared/explore-options'
 import { getLazy, type Title } from '../lib/lazy-api'
+import Strip from './Strip'
 import type { Sounds } from '../hooks/useSounds'
 
 type Sel = { kind: string; genre: string; duration: string; sort: string }
@@ -42,22 +43,22 @@ export default function ExplorePanel({ sounds, onPick }: Props) {
       {ROWS.map((row) => (
         <div key={row.key} className="lz-row">
           <h3>{row.title}</h3>
-          <div className="lz-strip">
+          <Strip>
             {row.options.map((o) => (
               <button key={o.id || 'all'} type="button" className={`lz-chip ${sel[row.key] === o.id ? 'on' : ''}`}
                 aria-pressed={sel[row.key] === o.id} onClick={() => choose(row.key, o.id)} onFocus={sounds.hover}>{o.label}</button>
             ))}
-          </div>
+          </Strip>
         </div>
       ))}
       {msg && <p className="lz-meta" role="status">{msg}</p>}
       {items.length > 0 && (
-        <div className="lz-strip">
+        <Strip>
           {items.map((t) => (
             <button key={t.id} type="button" className="lz-title" style={t.backdrop || t.poster ? { backgroundImage: `url(${t.backdrop || t.poster})` } : undefined}
               onClick={() => { sounds.click(); onPick(t) }} onFocus={sounds.hover}><span>{t.title} · {t.kind}{t.year ? ` · ${t.year}` : ''}</span></button>
           ))}
-        </div>
+        </Strip>
       )}
     </section>
   )

@@ -31,6 +31,9 @@ export function screenReducer(state: ScreenState, action: ScreenAction): ScreenS
 
 // L1/R1 andam pelas abas, na ordem da barra (sem dar a volta nas pontas)
 export const TAB_ORDER: Screen[] = ['home', 'library', 'apps', 'search']
+// As abas (e o mouse) valem nessas telas; Buscar também, para sair dela com um clique
+export const showsTabs = (screen: Screen) => TAB_ORDER.includes(screen)
+
 export function tabStep(screen: Screen, step: 1 | -1): Screen | null {
   const i = TAB_ORDER.indexOf(screen)
   if (i < 0) return null

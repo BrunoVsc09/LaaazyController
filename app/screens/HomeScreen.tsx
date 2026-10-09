@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import streaming from '../../shared/streaming'
 import AppIcon from '../components/AppIcon'
+import Strip from '../components/Strip'
 import { CATALOG, type Card } from '../lib/catalog'
 import { buildRows, heroInfo, pinnedCards, shuffled, type EpisodeNews } from '../lib/home-model'
 import { getLazy, type CatalogHome, type Game, type Title } from '../lib/lazy-api'
@@ -220,21 +221,21 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
             {similar.loading ? `Procurando títulos com o clima de ${similar.source.title}...` : `Parecido com ${similar.source.title}`}
             {similar.mood && <small> · {similar.mood}</small>}
           </h2>
-          <div className="lz-strip">
+          <Strip>
             {similar.items.map((t) => (
               <button key={t.id} type="button" className="lz-title" data-id={t.id} style={bg(t)} aria-label={`${t.title} (${t.kind})`}
                 onFocus={() => focusTitle(t)} onClick={tap(() => pressTitle(t))}>
                 <span>{t.title}</span>
               </button>
             ))}
-          </div>
+          </Strip>
         </div>
       )}
 
       {rows.map((row) => (
         <div key={row.id} className="lz-row">
           <h2>{row.title}</h2>
-          <div className="lz-strip">
+          <Strip>
             {row.items.map((t) => (
               <button key={t.id} type="button" className="lz-title" data-id={t.id} style={bg(t)} aria-label={`${t.title} (${t.kind})`}
                 onFocus={() => focusTitle(t)} onClick={tap(() => pressTitle(t))}>
@@ -242,25 +243,25 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
                 <span>{t.title}</span>
               </button>
             ))}
-          </div>
+          </Strip>
         </div>
       ))}
 
       {recent.length > 0 && (
         <div className="lz-row">
           <h2>Continuar jogando</h2>
-          <div className="lz-strip">
+          <Strip>
             {recent.map((g) => (
               <button key={g.id} type="button" className="lz-title" style={g.cover ? { backgroundImage: `url(${g.cover})` } : undefined}
                 onClick={tap(() => play(g))} onFocus={sounds.hover}><span>{g.name}</span></button>
             ))}
-          </div>
+          </Strip>
         </div>
       )}
 
       <div className="lz-row">
         <h2>Seus apps</h2>
-        <div className="lz-strip">
+        <Strip>
           {pinnedCards(CATALOG, pinned).map((card) => (
             <button key={card.label} type="button" className="lz-app" style={{ background: card.bg ?? 'rgba(255,255,255,.14)', color: card.fg ?? '#fff' }}
               aria-label={card.label} onClick={() => { sounds.click(); onActivate(card) }} onFocus={sounds.hover}>
@@ -271,7 +272,7 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
             aria-label="Área de trabalho" onClick={tap(desktop)} onFocus={sounds.hover}>
             <span aria-hidden="true" style={{ fontSize: 30 }}>🖥</span><span>Área de trabalho</span>
           </button>
-        </div>
+        </Strip>
       </div>
     </section>
   )
