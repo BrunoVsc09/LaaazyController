@@ -1,5 +1,26 @@
 # Novidades do Laaazy
 
+## 3.5.0 — 2026-10-09
+
+### Mudou
+- **Sai o DS4Windows, entra o Laaazy-pad:** os perfis do controle agora são do Laaazy-pad, um
+  programa próprio que funciona com qualquer controle (DualShock 4, 8BitDo, Xbox…). Ele é
+  instalado à parte (em `%LOCALAPPDATA%\Programs\Laaazy-pad`), abre junto com o Laaazy, fica
+  aberto o tempo todo e fecha quando o Laaazy fecha. Troca de perfil em ~300 ms (o DS4Windows
+  pedia 5 s depois de abrir).
+- **Só dois perfis, Jogos e PC:** Jogos (o jogo lê o controle direto; o touchpad move o mouse) e
+  PC (o controle vira mouse; Share abre o teclado por cima, L2/R2 mudam o volume). Nos dois, o
+  PS volta ao Início. Menu, Teclado por cima e jogos vêm em Jogos; streamings, navegadores e
+  Área de trabalho em PC. Perfis salvos com nomes antigos (ex.: "Brunera") aparecem como "não
+  encontrado": é só escolher Jogos ou PC de novo em Perfis do controle.
+- **Perfis do controle:** "Abrir o DS4Windows" virou "Abrir a pasta dos perfis", e a ajuda
+  explica os dois perfis. O card "DS4Windows" passa a se chamar "Perfis do controle".
+- **Configurações:** "Pasta do DS4Windows" virou "Pasta do Laaazy-pad", e sai o "Fechar o
+  DS4Windows ao apertar PS" (o Laaazy-pad não atrapalha a leitura do controle no menu, então
+  fica aberto e o PS funciona sempre).
+- **Atalhos:** saem as teclas F19 a F24, que o DS4Windows mandava. Ficam Ctrl+Alt+Home (PS),
+  Ctrl+Alt+K (teclado por cima), Ctrl+Alt+↑/↓/M (volume) e Ctrl+Alt+End (fechar o da frente).
+
 ## 3.4.0 — 2026-10-08
 
 ### Mudou
