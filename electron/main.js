@@ -289,7 +289,7 @@ const psButton = createPsButton({
   desktopActive: () => desktop.isActive(),
 })
 
-// Teclado do Laaazy por cima do Edge (F19 / Ctrl+Alt+K): digita no campo selecionado
+// Teclado do Laaazy por cima do Edge (Share no perfil PC / Ctrl+Alt+K): digita no campo selecionado
 const keyboardOverlay = createKeyboardOverlay({ preload: path.join(__dirname, 'preload.js'), url: 'app://local/keyboard.html', icon: ICON })
 const textEntry = createTextEntry({
   maskMenu: () => probe.run(MASK_MENU),
@@ -362,15 +362,15 @@ app.whenReady().then(async () => {
   ds4.ensureRunning()  // abre o Laaazy-pad em segundo plano
   ds4.applyFor('menu') // e carrega o perfil do Menu
 
-  // No DS4Windows, mapeie o botão PS para F24 (menu) e outro botão para F23 (fechar o da frente)
-  for (const key of ['F24', 'CommandOrControl+Alt+Home']) {
-    try { globalShortcut.register(key, () => psButton.press()) } catch {}
-  }
-  for (const key of ['F23', 'CommandOrControl+Alt+End']) {
-    try { globalShortcut.register(key, () => foreground.closeCurrent()) } catch {}
-  }
-  for (const key of ['F19', 'CommandOrControl+Alt+K']) {
-    try { globalShortcut.register(key, () => textEntry.open()) } catch {}
+  // O Laaazy-pad manda o PS como Ctrl+Alt+Home e o Share (perfil PC) como Ctrl+Alt+K;
+  // Ctrl+Alt+End (fechar o que está na frente) fica para o teclado
+  const shortcuts = [
+    ['CommandOrControl+Alt+Home', () => psButton.press()],
+    ['CommandOrControl+Alt+End', () => foreground.closeCurrent()],
+    ['CommandOrControl+Alt+K', () => textEntry.open()],
+  ]
+  for (const [key, fn] of shortcuts) {
+    try { globalShortcut.register(key, fn) } catch {}
   }
   for (const { accel, action } of VOLUME_SHORTCUTS) {
     try { globalShortcut.register(accel, () => volume.step(action)) } catch {}

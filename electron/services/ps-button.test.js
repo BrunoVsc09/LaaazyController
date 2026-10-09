@@ -31,7 +31,7 @@ describe('botão PS', () => {
   it('modo teste: o aperto só confirma que o PS chegou, sem fechar nada', async () => {
     const { ps, deps } = make()
     ps.startTest()
-    expect(deps.ensureDs4).toHaveBeenCalled() // o PS só chega se o DS4Windows estiver aberto
+    expect(deps.ensureDs4).toHaveBeenCalled() // o PS só chega se o Laaazy-pad estiver aberto
     expect(await ps.press()).toBe('tested')
     expect(deps.notifyTested).toHaveBeenCalled()
     expect(deps.foreground.closeAndHome).not.toHaveBeenCalled()

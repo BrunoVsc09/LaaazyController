@@ -9,7 +9,7 @@ const SAVE_FAILED = 'Não consegui salvar a lista de jogos.'
 
 function createLibrary({
   sources, readCustom, writeCustom, scanFolder, chooseExe, chooseDir,
-  // onLaunch(id): antes de abrir (DS4Windows e perfil do jogo); onLaunched(id): abriu
+  // onLaunch(id): antes de abrir (Laaazy-pad e perfil do jogo); onLaunched(id): abriu
   exists, openExternal, openPath, spawnDetached, onLaunch = () => {}, onLaunched = () => {}, now = Date.now,
 }) {
   // Varrer Steam e Epic lê o disco: o resultado vale por 15s e cai quando a lista muda

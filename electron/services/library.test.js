@@ -49,7 +49,7 @@ describe('library.launch', () => {
   it('jogo que não está na lista', async () => {
     expect(await make().lib.launch('x')).toMatchObject({ ok: false })
   })
-  it('Steam abre pela URL e garante o DS4Windows', async () => {
+  it('Steam abre pela URL e garante o Laaazy-pad', async () => {
     const { lib, deps } = make()
     expect(await lib.launch('steam:1')).toEqual({ ok: true, msg: '' })
     expect(deps.openExternal).toHaveBeenCalledWith('steam://rungameid/1')

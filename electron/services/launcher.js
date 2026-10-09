@@ -2,7 +2,7 @@
 const { openMode, serviceForUrl } = require('../core/routing')
 
 const BROWSERS = ['chrome', 'firefox']
-const PROGRAMS = ['hydra', 'ds4windows']
+const PROGRAMS = ['hydra'] // abrem pelo Windows
 
 function createLauncher({
   services, locator, ds4, spawnDetached, openPath, openExternal, openStream, setExternalActive, edgeProfileDir,
@@ -61,7 +61,7 @@ function createLauncher({
     const exe = await locator.findOrChoose(name)
     if (!exe) return `Não achei o ${program.label}.`
     if (PROGRAMS.includes(name)) return (await openPath(exe)) || ''
-    // Navegador precisa do perfil de mouse do DS4Windows
+    // Navegador precisa do perfil de mouse (PC) do Laaazy-pad
     setExternalActive(true)
     ds4.ensureRunning()
     ds4.applyFor(program.label)

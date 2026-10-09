@@ -6,9 +6,10 @@ describe('volume', () => {
   it('teclas de volume do Windows (virtual-key)', () => {
     expect(mod.VK).toEqual({ up: 175, down: 174, mute: 173 })
   })
-  it('atalhos globais: F20 silencia, F21 abaixa, F22 aumenta (e Ctrl+Alt no teclado)', () => {
+  // O F20–F22 eram teclas do DS4Windows; no perfil PC do Laaazy-pad, L2/R2 mandam Ctrl+Alt+↓/↑
+  it('atalhos globais: só Ctrl+Alt (↑ aumenta, ↓ abaixa, M silencia)', () => {
     const map = Object.fromEntries(mod.SHORTCUTS.map((s) => [s.accel, s.action]))
-    expect(map).toMatchObject({ F20: 'mute', F21: 'down', F22: 'up', 'CommandOrControl+Alt+Up': 'up', 'CommandOrControl+Alt+Down': 'down', 'CommandOrControl+Alt+M': 'mute' })
+    expect(map).toEqual({ 'CommandOrControl+Alt+Up': 'up', 'CommandOrControl+Alt+Down': 'down', 'CommandOrControl+Alt+M': 'mute' })
   })
   it('psLine: cada passo aperta a tecla 2 vezes (4%); mudo aperta 1 vez', () => {
     expect(mod.psLine('up')).toBe('$w.SendKeys([char]175);$w.SendKeys([char]175)')

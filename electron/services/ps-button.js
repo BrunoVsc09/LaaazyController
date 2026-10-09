@@ -1,6 +1,6 @@
-// Botão PS (F24 vindo do DS4Windows): mata o que está na frente e volta ao Início.
+// Botão PS (Ctrl+Alt+Home vindo do Laaazy-pad): mata o que está na frente e volta ao Início.
 // Opção "como console" (psClosesApp = false): só volta ao Início.
-// Modo teste (tela Perfis do controle): o próximo aperto só confirma que o F24 chegou.
+// Modo teste (tela Perfis do controle): o próximo aperto só confirma que o atalho chegou.
 const TEST_MS = 15000
 
 function createPsButton({ foreground, home, psClosesApp, ensureDs4, notifyTested, desktopActive = () => false, now = Date.now }) {
@@ -8,7 +8,7 @@ function createPsButton({ foreground, home, psClosesApp, ensureDs4, notifyTested
 
   function startTest() {
     testUntil = now() + TEST_MS
-    ensureDs4() // o PS só vira F24 com o DS4Windows aberto
+    ensureDs4() // o PS só vira Ctrl+Alt+Home com o Laaazy-pad aberto
     return true
   }
 

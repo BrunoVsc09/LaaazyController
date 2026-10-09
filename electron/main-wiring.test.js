@@ -28,3 +28,12 @@ describe('Laaazy-pad: abre junto, fica aberto e fecha junto', () => {
     expect(main).not.toMatch(/closeDs4OnMenu/)
   })
 })
+
+// F19–F24 eram teclas que o DS4Windows mandava; o Laaazy-pad manda Ctrl+Alt (PS = Home,
+// Share = K, L2/R2 = ↓/↑). Fica só a versão com Ctrl+Alt de cada atalho.
+describe('atalhos globais sem as teclas F do DS4Windows', () => {
+  it('PS, fechar o da frente e teclado por cima só com Ctrl+Alt', () => {
+    for (const key of ['Home', 'End', 'K']) expect(main).toContain(`'CommandOrControl+Alt+${key}'`)
+    expect(main).not.toMatch(/'F(19|2[0-4])'/)
+  })
+})

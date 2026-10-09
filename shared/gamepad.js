@@ -32,7 +32,7 @@ function direction(pad) {
   return { dx, dy }
 }
 
-// Separados: no perfil PC do DS4Windows o analógico vira mouse, e aí ele não pode navegar
+// Separados: no perfil PC do Laaazy-pad o analógico vira mouse, e aí ele não pode navegar
 function dpadDirection(pad) {
   const dx = isDown(pad, BTN.RIGHT) ? 1 : isDown(pad, BTN.LEFT) ? -1 : 0
   const dy = isDown(pad, BTN.DOWN) ? 1 : isDown(pad, BTN.UP) ? -1 : 0

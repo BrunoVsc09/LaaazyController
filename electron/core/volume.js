@@ -2,11 +2,9 @@
 const VK = { up: 175, down: 174, mute: 173 } // VK_VOLUME_UP / DOWN / MUTE
 const PRESSES = { up: 2, down: 2, mute: 1 }   // cada tecla de volume = 2%
 
-// No DS4Windows, mapeie botões para F20–F22 para mudar o volume com o Edge ou um jogo na frente
+// Atalhos globais: valem com o Edge ou um jogo na frente (no perfil PC do Laaazy-pad, L2/R2
+// mandam Ctrl+Alt+↓/↑)
 const SHORTCUTS = [
-  { accel: 'F22', action: 'up' },
-  { accel: 'F21', action: 'down' },
-  { accel: 'F20', action: 'mute' },
   { accel: 'CommandOrControl+Alt+Up', action: 'up' },
   { accel: 'CommandOrControl+Alt+Down', action: 'down' },
   { accel: 'CommandOrControl+Alt+M', action: 'mute' },

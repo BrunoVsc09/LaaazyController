@@ -56,7 +56,7 @@ describe('launcher', () => {
       services,
       locator: {
         findOrChoose: vi.fn(async (k) => found[k] || chosen[k] || null),
-        programs: { chrome: { label: 'Google Chrome' }, firefox: { label: 'Firefox' }, hydra: { label: 'Hydra' }, ds4windows: { label: 'DS4Windows' }, edge: { label: 'Microsoft Edge' } },
+        programs: { chrome: { label: 'Google Chrome' }, firefox: { label: 'Firefox' }, hydra: { label: 'Hydra' }, edge: { label: 'Microsoft Edge' } },
       },
       ds4: { applyFor: vi.fn(), ensureRunning: vi.fn() },
       spawnDetached: vi.fn(async () => ''),
@@ -148,11 +148,11 @@ describe('launcher', () => {
   it('navegador não encontrado', async () => {
     expect(await make().l.launch('firefox')).toBe('Não achei o Firefox.')
   })
-  it('Hydra e DS4Windows abrem pelo Windows', async () => {
+  it('Hydra abre pelo Windows; o DS4Windows não existe mais', async () => {
     const { l, deps } = make({ found: { hydra: 'C:\\H\\Hydra.exe' } })
     expect(await l.launch('hydra')).toBe('')
     expect(deps.openPath).toHaveBeenCalledWith('C:\\H\\Hydra.exe')
-    expect(await l.launch('ds4windows')).toBe('Não achei o DS4Windows.')
+    expect(await l.launch('ds4windows')).toBe('Programa desconhecido.')
   })
   it('YouTube também abre no Edge por padrão', async () => {
     const { l, deps } = make({ found: { edge: 'C:\\E\\msedge.exe' } })
