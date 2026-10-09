@@ -8,6 +8,9 @@ const PLAYER_KEYS = new Set(['Space', 'Left', 'Right'])
 const VOLUME_ACTIONS = new Set(['up', 'down', 'mute'])
 const isText = (v) => typeof v === 'string'
 const str = (v) => (isText(v) ? v : '')
+// Ação de um botão no editor de perfis: null (nada), { tecla: texto } ou { clique: texto }
+const isPadAction = (a) => a === null || (!!a && typeof a === 'object' && Object.keys(a).length === 1 &&
+  (isText(a.tecla) || isText(a.clique)))
 // Edição do teclado por cima: só os campos conhecidos, e só se forem válidos
 const EDIT_KEYS = ['move', 'back', 'text', 'enter']
 function toEdit(e) {
@@ -37,7 +40,10 @@ function registerIpc(ipcMain, h) {
   handle(C.SETTINGS_SET, (key, value) => isText(key) && h.settings.set(key, value))
   handle(C.DS4_GET, () => h.ds4.get())
   handle(C.DS4_SET, (key, value) => (isText(key) ? h.ds4.set(key, isText(value) ? value : '') : { ok: false, msg: 'Card desconhecido.' }))
-  handle(C.DS4_OPEN_DIR, () => h.ds4.openDir()) // a pasta vem do serviço, nunca da tela
+  handle(C.DS4_PROFILE, (name) => (isText(name) ? h.ds4.profile(name) : { ok: false, msg: 'Perfil inválido.' }))
+  handle(C.DS4_SET_BUTTON, (name, id, action) => (isText(name) && isText(id) && isPadAction(action)
+    ? h.ds4.setButton(name, id, action === null ? null : { ...action })
+    : { ok: false, msg: 'Mudança inválida.' }))
   handle(C.STORE_WARNINGS, () => h.takeWarnings())
   handle(C.GAMES_LIST, (opts) => h.library.list({ fresh: !!(opts && opts.fresh) }))
   handle(C.GAMES_LAUNCH, (id) => (isText(id) ? h.library.launch(id) : { ok: false, msg: 'Jogo inválido.' }))

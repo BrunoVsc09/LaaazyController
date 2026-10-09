@@ -10,7 +10,7 @@ function make() {
     launcher: { open: vi.fn(), launch: vi.fn(async () => '') },
     locator: { find: vi.fn(async () => 'C:\\E\\msedge.exe'), choose: vi.fn(async () => null) },
     settings: { all: vi.fn(() => ({ a: 1 })), set: vi.fn(() => true) },
-    ds4: { get: vi.fn(), set: vi.fn(async () => ({ ok: true })), openDir: vi.fn(async () => ({ ok: true })) },
+    ds4: { get: vi.fn(), set: vi.fn(async () => ({ ok: true })), profile: vi.fn(async () => ({ ok: true })), setButton: vi.fn(async () => ({ ok: true })) },
     library: { list: vi.fn(), launch: vi.fn(async () => ({ ok: true })), addExe: vi.fn(), addFolder: vi.fn(), remove: vi.fn(), addExePath: vi.fn(async () => ({ ok: true })), addFolderPath: vi.fn(async () => ({ ok: true })) },
     browse: { list: vi.fn(async () => ({ ok: true, entries: [] })), places: vi.fn(() => ({ places: [], drives: [] })) },
     goHome: vi.fn(), back: vi.fn(), sendKey: vi.fn(), quit: vi.fn(),
@@ -178,11 +178,24 @@ describe('registerIpc', () => {
     expect(h.textEntry.close).toHaveBeenCalledWith()
     expect(C.OSK_SUBMIT).toBeUndefined() // não existe mais o "manda tudo no Pronto"
   })
-  // A tela só pede; o caminho da pasta vem do serviço, nunca da tela
-  it('abrir a pasta dos perfis: não leva nenhum argumento da tela', async () => {
+  // Editor de perfis: a tela manda só nome, botão e uma ação simples (tecla ou clique, em texto)
+  it('perfil: nome precisa ser texto', async () => {
     const { invoke, h } = make()
-    await invoke(C.DS4_OPEN_DIR, 'C:\Windows\System32')
-    expect(h.ds4.openDir).toHaveBeenCalledWith()
+    expect(await invoke(C.DS4_PROFILE, { x: 1 })).toMatchObject({ ok: false })
+    await invoke(C.DS4_PROFILE, 'PC')
+    expect(h.ds4.profile).toHaveBeenCalledWith('PC')
+  })
+  it('mudar botão: só tecla ou clique em texto (ou null = nada), sem campos a mais', async () => {
+    const { invoke, h } = make()
+    expect(await invoke(C.DS4_SET_BUTTON, 'PC', 'R1', { tecla: 1 })).toMatchObject({ ok: false })
+    expect(await invoke(C.DS4_SET_BUTTON, 'PC', 'R1', { tecla: 'A', clique: 'meio' })).toMatchObject({ ok: false })
+    expect(await invoke(C.DS4_SET_BUTTON, 'PC', 5, null)).toMatchObject({ ok: false })
+    expect(h.ds4.setButton).not.toHaveBeenCalled()
+    await invoke(C.DS4_SET_BUTTON, 'PC', 'R1', { tecla: 'Alt+Right' })
+    expect(h.ds4.setButton).toHaveBeenLastCalledWith('PC', 'R1', { tecla: 'Alt+Right' })
+    await invoke(C.DS4_SET_BUTTON, 'PC', 'R1', null)
+    expect(h.ds4.setButton).toHaveBeenLastCalledWith('PC', 'R1', null)
+    expect(C.DS4_OPEN_DIR).toBeUndefined() // "Abrir a pasta dos perfis" saiu
   })
   it('capas: chave precisa ser texto', async () => {
     const { invoke, h } = make()

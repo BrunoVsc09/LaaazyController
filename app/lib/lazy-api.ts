@@ -16,7 +16,12 @@ export type Settings = {
   screensaverMinutes?: number
   geminiModel?: string
 }
-export type Ds4Data = { profiles: string[]; config: Record<string, string>; dir: string | null; cmd: string }
+export type Ds4Data = { profiles: string[]; config: Record<string, string>; dir: string | null; cmd: string; current?: string }
+// Editor de perfis do Laaazy-pad
+export type PadAction = { tecla: string } | { clique: string } | null
+export type PadButton = { id: string; label: string; action: PadAction; locked: boolean }
+export type PadProfile = { name: string; buttons: PadButton[]; sticks: { esquerdo: string; direito: string; touchpad: string } }
+export type PadResult = { ok: boolean; msg?: string; profile?: PadProfile }
 export type DrmStatus = { installed: boolean; version: string; msg: string }
 export type Title = {
   id: string; kind: 'Série' | 'Filme'; title: string; year: string; overview: string
@@ -41,7 +46,7 @@ export type LazyApi = {
   ps: { startTest(): Promise<boolean>; onTested(cb: () => void): void }
   settings: { get(): Promise<Settings>; set(key: string, value: unknown): Promise<boolean> }
   exe: { get(key: string): Promise<string>; choose(key: string): Promise<string> }
-  ds4: { get(): Promise<Ds4Data>; set(key: string, value: string): Promise<Result>; openDir(): Promise<Result> }
+  ds4: { get(): Promise<Ds4Data>; set(key: string, value: string): Promise<Result>; profile(name: string): Promise<PadResult>; setButton(name: string, id: string, action: PadAction): Promise<PadResult> }
   store: { warnings(): Promise<{ at: number; msg: string }[]> }
   games: {
     list(opts?: { fresh: boolean }): Promise<Game[]>

@@ -35,7 +35,6 @@ export default function Ds4Screen({ onBack, sounds }: Props) {
     setData({ ...data, config: { ...data.config, [key]: next } })
     setMsg((await lazy.ds4.set(key, next)).msg)
   }
-  const openDir = async () => { if (lazy) setMsg((await lazy.ds4.openDir()).msg) }
   const tap = (fn: () => void) => () => { sounds.click(); fn() }
 
   return (
@@ -46,7 +45,6 @@ export default function Ds4Screen({ onBack, sounds }: Props) {
       <p className="ds4-help">Os perfis são do Laaazy-pad, que abre junto com o Laaazy: <b>Jogos</b> (o jogo lê o controle direto; o touchpad move o mouse) e <b>PC</b> (o controle vira mouse: ✕ clica, ○ é o botão direito, Share abre o teclado por cima, L2/R2 mudam o volume). Nos dois, o PS volta ao Início.</p>
       <button className="ds4-row" onClick={tap(testPs)} onMouseEnter={sounds.hover}><span>Testar o botão PS</span><b>▶</b></button>
       {psMsg && <p className="ds4-help" role="status" style={{ color: '#ffd23f' }}>{psMsg}</p>}
-      <button className="ds4-row" onClick={tap(openDir)} onMouseEnter={sounds.hover}><span>Abrir a pasta dos perfis</span><b>▶</b></button>
       {msg && <p className="ds4-help" style={{ color: '#ffd23f' }}>{msg}</p>}
       {data && data.profiles.length === 0 && <p className="ds4-help">Não achei perfis. Confira a pasta do Laaazy-pad em Configurações (os perfis Jogos e PC aparecem depois que ele abre a primeira vez).</p>}
       {DS4_KEYS.map((k: string) => (

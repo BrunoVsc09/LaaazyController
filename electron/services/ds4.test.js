@@ -3,7 +3,7 @@ import mod from './ds4.js'
 
 const { createDs4 } = mod
 
-function make({ exe = 'C:/P/LaaazyPad.exe', running = true, profiles = ['Jogos', 'PC', 'TV'], query = (n) => n, saved = {}, readyDelayMs, dir = 'C:/P/Profiles' } = {}) {
+function make({ exe = 'C:/P/LaaazyPad.exe', running = true, profiles = ['Jogos', 'PC', 'TV'], query = (n) => n, saved = {}, readyDelayMs, dir = 'C:/P/Profiles', disk = {} } = {}) {
   let cfg = { ...saved }
   const state = { running, current: '' }
   const cli = {
@@ -15,14 +15,15 @@ function make({ exe = 'C:/P/LaaazyPad.exe', running = true, profiles = ['Jogos',
     shutdown: vi.fn(async () => { state.running = false }),
     kill: vi.fn(async () => { state.running = false }),
     cmdName: () => 'LaaazyPadCmd.exe',
+    readProfile: vi.fn(async (_dir, name) => disk[name] ?? null),
+    writeProfile: vi.fn(async (_dir, name, text) => { disk[name] = text; return '' }),
   }
   const sleep = vi.fn(async () => {})
-  const openPath = vi.fn(async () => '')
   const ds4 = createDs4({
-    cli, getExe: async () => exe, sleep, readyDelayMs, openPath,
+    cli, getExe: async () => exe, sleep, readyDelayMs,
     readCfg: async () => cfg, writeCfg: vi.fn(async (c) => { cfg = c; return true }),
   })
-  return { ds4, cli, state, sleep, openPath, cfg: () => cfg }
+  return { ds4, cli, state, sleep, disk, cfg: () => cfg }
 }
 
 describe('ds4.apply', () => {
@@ -134,17 +135,48 @@ describe('ds4: abrir e fechar', () => {
   })
 })
 
-// Tela Perfis do controle: "Abrir a pasta dos perfis" (no lugar de "Abrir o DS4Windows")
-describe('ds4.openDir', () => {
-  it('abre a pasta dos perfis que o próprio serviço achou', async () => {
-    const { ds4, openPath } = make()
-    expect(await ds4.openDir()).toEqual({ ok: true, msg: 'Pasta dos perfis aberta: C:/P/Profiles' })
-    expect(openPath).toHaveBeenCalledWith('C:/P/Profiles')
+// Editor de perfis (pedido do Bruno, 2026-10-09): personalizar sem tirar os comandos fixos
+describe('ds4: editor de perfis', () => {
+  const PC = '{ "versao": 1, "botoes": { "PS": { "tecla": "Ctrl+Alt+Home" }, "Share": { "tecla": "Ctrl+Alt+K" }, "R1": { "clique": "avancar" } } }'
+  it('get também diz o perfil ativo agora (para a tela)', async () => {
+    const { ds4 } = make()
+    await ds4.apply('PC')
+    expect(await ds4.get()).toMatchObject({ current: 'PC' })
+    expect(await make({ running: false }).ds4.get()).toMatchObject({ current: '' })
   })
-  it('sem o Laaazy-pad ou sem pasta de perfis: explica', async () => {
-    expect((await make({ exe: null }).ds4.openDir()).msg).toMatch(/Não achei o Laaazy-pad/)
-    const { ds4, openPath } = make({ dir: null })
-    expect(await ds4.openDir()).toEqual({ ok: false, msg: 'Não achei a pasta dos perfis do Laaazy-pad.' })
-    expect(openPath).not.toHaveBeenCalled()
+  it('abre um perfil: cada botão com a ação e se é fixo', async () => {
+    const r = await make({ disk: { PC } }).ds4.profile('PC')
+    expect(r.ok).toBe(true)
+    expect(r.profile.buttons.find((b) => b.id === 'R1')).toMatchObject({ action: { clique: 'avancar' }, locked: false })
+    expect(r.profile.buttons.find((b) => b.id === 'Share').locked).toBe(true)
+  })
+  it('perfil que não existe ou arquivo ilegível: explica', async () => {
+    expect(await make({ disk: { PC } }).ds4.profile('Brunera')).toEqual({ ok: false, msg: 'Perfil "Brunera" não encontrado na pasta de perfis.' })
+    expect((await make({ disk: { PC: '{ quebrado' } }).ds4.profile('PC')).msg).toMatch(/com erro/)
+  })
+  it('mudar um botão grava o arquivo e, se for o perfil ativo, reaplica na hora', async () => {
+    const { ds4, cli, disk } = make({ disk: { PC } })
+    await ds4.apply('PC')
+    cli.loadProfile.mockClear()
+    const r = await ds4.setButton('PC', 'R1', { tecla: 'Alt+Right' })
+    expect(r).toMatchObject({ ok: true, msg: 'R1 salvo no perfil PC.' })
+    expect(JSON.parse(disk.PC).botoes.R1).toEqual({ tecla: 'Alt+Right' })
+    expect(r.profile.buttons.find((b) => b.id === 'R1').action).toEqual({ tecla: 'Alt+Right' })
+    expect(cli.loadProfile).toHaveBeenCalledWith('C:/P/LaaazyPad.exe', 'PC')
+  })
+  it('perfil que não está ativo: só grava (vale na próxima vez que ele for usado)', async () => {
+    const { ds4, cli } = make({ disk: { PC, Jogos: '{ "versao": 1, "botoes": {} }' } })
+    await ds4.apply('PC')
+    cli.loadProfile.mockClear()
+    expect((await ds4.setButton('Jogos', 'Cruz', { tecla: 'Enter' })).ok).toBe(true)
+    expect(cli.loadProfile).not.toHaveBeenCalled()
+  })
+  it('comando fixo, perfil que não existe ou erro ao gravar: nada muda', async () => {
+    const { ds4, cli, disk } = make({ disk: { PC } })
+    expect((await ds4.setButton('PC', 'Share', null)).msg).toMatch(/comando fixo/)
+    expect((await ds4.setButton('Fantasma', 'R1', null)).ok).toBe(false)
+    cli.writeProfile.mockResolvedValueOnce('Não consegui salvar o perfil: disco cheio')
+    expect(await ds4.setButton('PC', 'R1', null)).toEqual({ ok: false, msg: 'Não consegui salvar o perfil: disco cheio' })
+    expect(disk.PC).toBe(PC)
   })
 })
