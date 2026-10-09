@@ -8,7 +8,7 @@ const NOT_FOUND = 'Não achei o Laaazy-pad. Escolha a pasta dele em Configuraç�
 const HINT = 'Se nada mudou, veja se o controle está conectado e se o Laaazy-pad está aberto.'
 
 // readyDelayMs: quanto esperar depois de abrir até o programa aceitar comandos
-function createDs4({ cli, getExe, readCfg, writeCfg, sleep, readyDelayMs = 300 }) {
+function createDs4({ cli, getExe, readCfg, writeCfg, sleep, readyDelayMs = 300, openPath = async () => '' }) {
   const queue = createQueue({ timeoutMs: 20000, onTimeout: () => ({ ok: false, msg: 'A troca demorou demais e foi cancelada.' }) })
   const config = async () => mergeConfig(await readCfg())
 
@@ -67,7 +67,17 @@ function createDs4({ cli, getExe, readCfg, writeCfg, sleep, readyDelayMs = 300 }
     if (await cli.isRunning()) await cli.kill()
   }).catch(() => {})
 
-  return { apply, applyFor, applyForGame, get, set, ensureRunning, shutdown }
+  // Pasta dos perfis (*.json) do Laaazy-pad, para editar ou conferir
+  async function openDir() {
+    const exe = await getExe()
+    if (!exe) return { ok: false, msg: NOT_FOUND }
+    const { dir } = await cli.listProfiles(exe)
+    if (!dir) return { ok: false, msg: 'Não achei a pasta dos perfis do Laaazy-pad.' }
+    const err = await openPath(dir)
+    return err ? { ok: false, msg: 'Não consegui abrir a pasta: ' + err } : { ok: true, msg: 'Pasta dos perfis aberta: ' + dir }
+  }
+
+  return { apply, applyFor, applyForGame, get, set, ensureRunning, shutdown, openDir }
 }
 
 module.exports = { createDs4 }

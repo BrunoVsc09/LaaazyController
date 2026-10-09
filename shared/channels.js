@@ -18,6 +18,7 @@ module.exports = {
   SETTINGS_SET: 'settings:set',
   DS4_GET: 'ds4:get',
   DS4_SET: 'ds4:set',
+  DS4_OPEN_DIR: 'ds4:openDir', // abre a pasta dos perfis do Laaazy-pad (sem argumentos)
   STORE_WARNINGS: 'store:warnings',
   GAMES_LIST: 'games:list',
   GAMES_LAUNCH: 'games:launch',

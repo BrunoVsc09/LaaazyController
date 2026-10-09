@@ -42,7 +42,7 @@ export type LazyApi = {
   ps: { startTest(): Promise<boolean>; onTested(cb: () => void): void }
   settings: { get(): Promise<Settings>; set(key: string, value: unknown): Promise<boolean> }
   exe: { get(key: string): Promise<string>; choose(key: string): Promise<string> }
-  ds4: { get(): Promise<Ds4Data>; set(key: string, value: string): Promise<Result> }
+  ds4: { get(): Promise<Ds4Data>; set(key: string, value: string): Promise<Result>; openDir(): Promise<Result> }
   store: { warnings(): Promise<{ at: number; msg: string }[]> }
   games: {
     list(opts?: { fresh: boolean }): Promise<Game[]>

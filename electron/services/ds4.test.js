@@ -3,11 +3,11 @@ import mod from './ds4.js'
 
 const { createDs4 } = mod
 
-function make({ exe = 'C:/P/LaaazyPad.exe', running = true, profiles = ['Brunera', 'PC', 'TV'], query = (n) => n, saved = {}, readyDelayMs } = {}) {
+function make({ exe = 'C:/P/LaaazyPad.exe', running = true, profiles = ['Brunera', 'PC', 'TV'], query = (n) => n, saved = {}, readyDelayMs, dir = 'C:/P/Profiles' } = {}) {
   let cfg = { ...saved }
   const state = { running, current: '' }
   const cli = {
-    listProfiles: vi.fn(async () => ({ dir: 'C:/P/Profiles', profiles })),
+    listProfiles: vi.fn(async () => ({ dir, profiles })),
     isRunning: vi.fn(async () => state.running),
     start: vi.fn(async () => { state.running = true; return '' }),
     loadProfile: vi.fn(async (_exe, name) => { state.current = name; return '' }),
@@ -17,11 +17,12 @@ function make({ exe = 'C:/P/LaaazyPad.exe', running = true, profiles = ['Brunera
     cmdName: () => 'LaaazyPadCmd.exe',
   }
   const sleep = vi.fn(async () => {})
+  const openPath = vi.fn(async () => '')
   const ds4 = createDs4({
-    cli, getExe: async () => exe, sleep, readyDelayMs,
+    cli, getExe: async () => exe, sleep, readyDelayMs, openPath,
     readCfg: async () => cfg, writeCfg: vi.fn(async (c) => { cfg = c; return true }),
   })
-  return { ds4, cli, state, sleep, cfg: () => cfg }
+  return { ds4, cli, state, sleep, openPath, cfg: () => cfg }
 }
 
 describe('ds4.apply', () => {
@@ -130,5 +131,20 @@ describe('ds4: abrir e fechar', () => {
     const { ds4, cli } = make({ running: false })
     await ds4.shutdown()
     expect(cli.shutdown).not.toHaveBeenCalled()
+  })
+})
+
+// Tela Perfis do controle: "Abrir a pasta dos perfis" (no lugar de "Abrir o DS4Windows")
+describe('ds4.openDir', () => {
+  it('abre a pasta dos perfis que o próprio serviço achou', async () => {
+    const { ds4, openPath } = make()
+    expect(await ds4.openDir()).toEqual({ ok: true, msg: 'Pasta dos perfis aberta: C:/P/Profiles' })
+    expect(openPath).toHaveBeenCalledWith('C:/P/Profiles')
+  })
+  it('sem o Laaazy-pad ou sem pasta de perfis: explica', async () => {
+    expect((await make({ exe: null }).ds4.openDir()).msg).toMatch(/Não achei o Laaazy-pad/)
+    const { ds4, openPath } = make({ dir: null })
+    expect(await ds4.openDir()).toEqual({ ok: false, msg: 'Não achei a pasta dos perfis do Laaazy-pad.' })
+    expect(openPath).not.toHaveBeenCalled()
   })
 })

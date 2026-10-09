@@ -142,6 +142,7 @@ const ds4 = createDs4({
   writeCfg: (cfg) => store.writeJson(userFile('ds4-profiles.json'), cfg),
   sleep,
   readyDelayMs: 300, // o Laaazy-pad aceita comandos ~300 ms depois de abrir (medido)
+  openPath: (p) => shell.openPath(p),
 })
 
 async function steamRoot() {

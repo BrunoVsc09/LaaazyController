@@ -10,7 +10,7 @@ function make() {
     launcher: { open: vi.fn(), launch: vi.fn(async () => '') },
     locator: { find: vi.fn(async () => 'C:\\E\\msedge.exe'), choose: vi.fn(async () => null) },
     settings: { all: vi.fn(() => ({ a: 1 })), set: vi.fn(() => true) },
-    ds4: { get: vi.fn(), set: vi.fn(async () => ({ ok: true })) },
+    ds4: { get: vi.fn(), set: vi.fn(async () => ({ ok: true })), openDir: vi.fn(async () => ({ ok: true })) },
     library: { list: vi.fn(), launch: vi.fn(async () => ({ ok: true })), addExe: vi.fn(), addFolder: vi.fn(), remove: vi.fn(), addExePath: vi.fn(async () => ({ ok: true })), addFolderPath: vi.fn(async () => ({ ok: true })) },
     browse: { list: vi.fn(async () => ({ ok: true, entries: [] })), places: vi.fn(() => ({ places: [], drives: [] })) },
     goHome: vi.fn(), back: vi.fn(), sendKey: vi.fn(), quit: vi.fn(),
@@ -177,6 +177,12 @@ describe('registerIpc', () => {
     await invoke(C.OSK_CLOSE, 'qualquer')
     expect(h.textEntry.close).toHaveBeenCalledWith()
     expect(C.OSK_SUBMIT).toBeUndefined() // não existe mais o "manda tudo no Pronto"
+  })
+  // A tela só pede; o caminho da pasta vem do serviço, nunca da tela
+  it('abrir a pasta dos perfis: não leva nenhum argumento da tela', async () => {
+    const { invoke, h } = make()
+    await invoke(C.DS4_OPEN_DIR, 'C:\Windows\System32')
+    expect(h.ds4.openDir).toHaveBeenCalledWith()
   })
   it('capas: chave precisa ser texto', async () => {
     const { invoke, h } = make()
