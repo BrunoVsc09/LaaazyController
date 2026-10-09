@@ -13,7 +13,7 @@ export function focusMove(selector: string, dx: number, dy: number) {
   next.scrollIntoView({ block: 'nearest' })
 }
 
-// Cursor do analógico (perfil PC do DS4Windows): o foco acompanha o cursor, senão a borda
+// Cursor do analógico (perfil PC do Laaazy-pad): o foco acompanha o cursor, senão a borda
 // fica num item e o cursor em outro, e parece que a seleção sumiu.
 type ElLike = { tagName: string; closest: (sel: string) => ElLike | null }
 const PRESSABLE = 'button, input, textarea, select, a, label, iframe, [tabindex]'

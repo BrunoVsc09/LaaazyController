@@ -27,5 +27,5 @@ export const CATALOG: Card[] = [
   { label: 'Spotify', brand: 'spotify', bg: '#1ED760', fg: '#000', url: urlOf('Spotify'), icon: Music2, kind: 'utility' },
   { label: 'Google Chrome', app: 'chrome', brand: 'chrome', bg: '#1A73E8', icon: MonitorPlay, kind: 'utility' },
   { label: 'Firefox', app: 'firefox', brand: 'firefox', bg: '#E66000', icon: MonitorPlay, kind: 'utility' },
-  { label: 'DS4Windows', screen: 'ds4', icon: Gamepad2, kind: 'utility' },
+  { label: 'Perfis do controle', screen: 'ds4', icon: Gamepad2, kind: 'utility' },
 ]

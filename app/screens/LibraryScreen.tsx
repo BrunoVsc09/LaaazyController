@@ -21,7 +21,7 @@ export default function LibraryScreen({ onBack, sounds }: Props) {
   const [busy, setBusy] = useState('')
   const [msg, setMsg] = useState('')
   const [sort, setSort] = useState<Sort>('asc')
-  // Perfil do controle por jogo: △ no jogo abre a lista de perfis do DS4Windows
+  // Perfil do controle por jogo: △ no jogo abre a lista de perfis do Laaazy-pad
   const [ds4, setDs4] = useState<Ds4Data | null>(null)
   const [picker, setPicker] = useState<Game | null>(null)
   const loadDs4 = () => lazy?.ds4.get().then(setDs4)
@@ -163,7 +163,7 @@ export default function LibraryScreen({ onBack, sounds }: Props) {
               {profileOf(picker) === p ? '✓ ' : ''}{p || `Padrão dos jogos${ds4?.config.games ? ` (${ds4.config.games})` : ' (não mudar)'}`}
             </button>
           ))}
-          {ds4 && ds4.profiles.length === 0 && <p>Nenhum perfil achado. Confira a pasta do DS4Windows em Configurações.</p>}
+          {ds4 && ds4.profiles.length === 0 && <p>Nenhum perfil achado. Confira a pasta do Laaazy-pad em Configurações.</p>}
           <button type="button" className="lz-btn" onClick={tap(() => closePicker())}>Cancelar</button>
         </div>
       )}

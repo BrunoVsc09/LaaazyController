@@ -29,7 +29,7 @@ export function createInputMode(now: () => number = () => performance.now()) {
       return true
     },
     padUsed() { if (now() - movedAt >= MOUSE_HOLD_MS) mode = 'pad' },
-    // Perfil PC do DS4Windows: o X também vira clique do mouse. Para não clicar duas vezes,
+    // Perfil PC do Laaazy-pad: o X também vira clique do mouse. Para não clicar duas vezes,
     // no modo controle só o X do controle clica; no modo mouse só o mouse.
     padClicks: () => mode === 'pad',
     mouseButtonsWork: () => mode === 'mouse',

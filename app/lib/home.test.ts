@@ -21,7 +21,8 @@ describe('apps fixados no Início', () => {
   it('a grade de Apps tem todos os cards menos a Biblioteca (que virou aba)', () => {
     const labels = appsGrid(CATALOG).map((c) => c.label)
     expect(labels).not.toContain('Biblioteca')
-    expect(labels).toContain('DS4Windows')
+    expect(labels).toContain('Perfis do controle') // era "DS4Windows"; o DS4Windows saiu (2026-10-09)
+    expect(labels).not.toContain('DS4Windows')
     expect(labels).toHaveLength(CATALOG.length - 1)
   })
 })

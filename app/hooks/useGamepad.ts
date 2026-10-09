@@ -6,7 +6,7 @@ import { padActive } from '../lib/screensaver'
 import { inputMode } from '../lib/input-mode'
 
 // buttons: algum botão apertado (D-pad incluso). dx/dy: D-pad, ou o analógico quando ele não está
-// fazendo o papel de mouse (perfil PC do DS4Windows)
+// fazendo o papel de mouse (perfil PC do Laaazy-pad)
 // down: o botão está apertado agora (para repetir segurando)
 export type PadFrame = { fired: (button: number) => boolean; down: (button: number) => boolean; dx: number; dy: number; active: boolean; buttons: boolean }
 

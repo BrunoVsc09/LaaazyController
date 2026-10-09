@@ -25,7 +25,7 @@ export function useMouseFocus(selector: () => string) {
       el?.focus({ preventScroll: true })
     }
     const onDown = (e: MouseEvent) => { if (keepsFocusOnPress(e.target as HTMLElement)) e.preventDefault() }
-    // Modo controle: cliques do mouse (o DS4Windows transforma X/O em clique) são ignorados;
+    // Modo controle: cliques do mouse (o perfil PC do Laaazy-pad transforma X/O em clique) são ignorados;
     // quem aperta é o X do controle, no item com a borda. Mexer o mouse de verdade libera.
     const swallow = (e: MouseEvent) => {
       if (!e.isTrusted || mode.current.mouseButtonsWork()) return

@@ -1,6 +1,6 @@
 'use client'
 
-// Teclado do Laaazy que aparece por cima de outros programas (F19 / Ctrl+Alt+K).
+// Teclado do Laaazy que aparece por cima de outros programas (Share no perfil PC / Ctrl+Alt+K).
 // Cada tecla vai na hora para o campo selecionado do outro programa; R2 aperta Enter e fecha.
 import { useEffect, useRef, useState } from 'react'
 import gamepad from '../../shared/gamepad'

@@ -13,8 +13,7 @@ const MODE_LABEL: Record<StreamMode, string> = { app: 'No app', edge: 'No Edge (
 export default function SettingsScreen({ onBack, sounds }: Props) {
   const lazy = getLazy()
   const [msg, setMsg] = useState('')
-  const [paths, setPaths] = useState({ edge: '', ds4windows: '' })
-  const [closeDs4, setCloseDs4] = useState(true)
+  const [paths, setPaths] = useState({ edge: '', laaazypad: '' })
   const [modes, setModes] = useState<Record<string, StreamMode>>({})
   const [drm, setDrm] = useState<DrmStatus | null>(null)
   const [tmdbOn, setTmdbOn] = useState(false)
@@ -33,8 +32,8 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
 
   useEffect(() => {
     if (!lazy) return
-    lazy.settings.get().then((s) => { setCloseDs4(s.closeDs4OnMenu); setModes(s.streamModes); setSaverMin(s.screensaverMinutes ?? 10); setPsCloses(s.psClosesApp !== false); setTrailerOn(s.trailerPreview !== false); setLockOn(s.lockCursor !== false); setNoGpu(s.edgeNoGpu ?? []) })
-    Promise.all([lazy.exe.get('edge'), lazy.exe.get('ds4windows')]).then(([edge, ds4windows]) => setPaths({ edge, ds4windows }))
+    lazy.settings.get().then((s) => { setModes(s.streamModes); setSaverMin(s.screensaverMinutes ?? 10); setPsCloses(s.psClosesApp !== false); setTrailerOn(s.trailerPreview !== false); setLockOn(s.lockCursor !== false); setNoGpu(s.edgeNoGpu ?? []) })
+    Promise.all([lazy.exe.get('edge'), lazy.exe.get('laaazypad')]).then(([edge, laaazypad]) => setPaths({ edge, laaazypad }))
     lazy.drm.status().then(setDrm)
     lazy.catalog.status().then((s) => setTmdbOn(s.configured))
     lazy.covers.status().then((s) => setGridOn(s.configured))
@@ -43,15 +42,9 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
     lazy.power.openAtLogin().then(setAtLogin)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const choose = async (key: 'edge' | 'ds4windows', label: string) => {
+  const choose = async (key: 'edge' | 'laaazypad', label: string) => {
     const p = await lazy?.exe.choose(key)
     if (p) { setPaths((cur) => ({ ...cur, [key]: p })); setMsg(`Pasta do ${label} salva.`) }
-  }
-  const toggleClose = () => {
-    const v = !closeDs4
-    setCloseDs4(v)
-    lazy?.settings.set('closeDs4OnMenu', v)
-    setMsg(v ? 'Ao apertar PS, o DS4Windows será fechado.' : 'O DS4Windows continuará aberto ao apertar PS.')
   }
   const saveModel = async () => {
     const ok = await lazy?.settings.set('geminiModel', aiModel.trim())
@@ -110,8 +103,7 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
       <h1>Configurações</h1>
       {msg && <p className="ds4-help" style={{ color: '#ffd23f' }}>{msg}</p>}
       <button className="ds4-row" onClick={tap(() => choose('edge', 'Edge'))} onMouseEnter={sounds.hover}><span>Pasta do Edge</span><b>{paths.edge || 'não encontrado, toque para escolher'}</b></button>
-      <button className="ds4-row" onClick={tap(() => choose('ds4windows', 'DS4Windows'))} onMouseEnter={sounds.hover}><span>Pasta do DS4Windows</span><b>{paths.ds4windows || 'não encontrado, toque para escolher'}</b></button>
-      <button className="ds4-row" onClick={tap(toggleClose)} onMouseEnter={sounds.hover}><span>Fechar o DS4Windows ao apertar PS</span><b>{closeDs4 ? 'Sim' : 'Não'}</b></button>
+      <button className="ds4-row" onClick={tap(() => choose('laaazypad', 'Laaazy-pad'))} onMouseEnter={sounds.hover}><span>Pasta do Laaazy-pad (perfis do controle)</span><b>{paths.laaazypad || 'não encontrado, toque para escolher'}</b></button>
       <button className="ds4-row" onClick={tap(toggleLock)} onMouseEnter={sounds.hover}><span>Prender o mouse na tela do Laaazy</span><b>{lockOn ? 'Sim' : 'Não'}</b></button>
       <button className="ds4-row" onClick={tap(toggleTrailer)} onMouseEnter={sounds.hover}><span>Prévia do trailer no Início</span><b>{trailerOn ? 'Ligada' : 'Desligada'}</b></button>
       <button className="ds4-row" onClick={tap(togglePs)} onMouseEnter={sounds.hover}><span>Botão PS fecha o jogo</span><b>{psCloses ? 'Sim (fecha à força)' : 'Não (como console)'}</b></button>

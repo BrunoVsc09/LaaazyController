@@ -5,7 +5,6 @@ export type FsEntry = { name: string; path: string; type: 'dir' | 'exe' | 'lnk' 
 export type FsList = { ok: boolean; path?: string; parent?: string | null; entries: FsEntry[]; msg?: string }
 export type StreamMode = 'app' | 'edge'
 export type Settings = {
-  closeDs4OnMenu: boolean
   psClosesApp?: boolean
   trailerPreview?: boolean
   trailerSound?: boolean
