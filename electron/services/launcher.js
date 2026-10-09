@@ -6,8 +6,19 @@ const PROGRAMS = ['hydra', 'ds4windows']
 
 function createLauncher({
   services, locator, ds4, spawnDetached, openPath, openExternal, openStream, setExternalActive, edgeProfileDir,
-  streamModes = () => ({}), widevine = () => ({ installed: true }), edgeNoGpu = () => [],
+  streamModes = () => ({}), widevine = () => ({ installed: true }), edgeNoGpu = () => [], now = Date.now,
 }) {
+  // O Edge leva alguns segundos para aparecer; um X a mais nesse meio-tempo abria outra janela do
+  // mesmo serviço. O mesmo endereço pedido de novo dentro desse tempo é ignorado.
+  const OPENING_MS = 8000
+  const lastOpen = new Map()
+  function alreadyOpening(url) {
+    const t = now()
+    if (t - (lastOpen.get(url) ?? -Infinity) < OPENING_MS) return true
+    lastOpen.set(url, t)
+    return false
+  }
+
   // Perfil próprio do Laaazy (guarda os logins), janela de app em tela cheia (Alt+F4 fecha).
   // Sem --kiosk: o modo quiosque do Edge é sempre InPrivate e esquece os logins.
   // Aceleração de vídeo desligada (tela preta em alguns serviços): Edge sem GPU. O Edge só lê
@@ -20,8 +31,15 @@ function createLauncher({
     return spawnDetached(edge, [...profile, ...(noGpu ? ['--disable-gpu'] : []), '--no-first-run', '--start-fullscreen', '--app=' + url])
   }
 
-  // Devolve '' quando abriu, ou a mensagem para mostrar na tela
+  // Devolve '' quando abriu, ou a mensagem para mostrar na tela (e aí pode tentar de novo na hora)
   async function open(url, label) {
+    if (alreadyOpening(url)) return ''
+    const msg = await openNow(url, label)
+    if (msg) lastOpen.delete(url)
+    return msg
+  }
+
+  async function openNow(url, label) {
     if (openMode(url, services, streamModes()) === 'edge') {
       ds4.applyFor(label)
       setExternalActive(true)

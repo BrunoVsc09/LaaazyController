@@ -84,6 +84,31 @@ describe('launcher', () => {
     expect(deps.openStream).not.toHaveBeenCalled()
     expect(deps.spawnDetached).toHaveBeenCalledWith('C:\\E\\msedge.exe', expect.arrayContaining(['--app=https://www.netflix.com']))
   })
+  // Regressão (2026-10-09, achado pelo Bruno): apertar X mais uma vez enquanto o Edge ainda abria
+  // abria uma segunda janela do mesmo serviço (e o PS só fechava uma delas)
+  it('o mesmo serviço pedido de novo enquanto ainda abre: não abre outra janela', async () => {
+    const { deps } = make({ found: { edge: 'C:\\E\\msedge.exe' } })
+    let t = 1000
+    deps.now = () => t
+    const l = launcherMod.createLauncher(deps)
+    expect(await l.open('https://www.netflix.com', 'Netflix')).toBe('')
+    t += 3000
+    expect(await l.open('https://www.netflix.com', 'Netflix')).toBe('')
+    expect(deps.spawnDetached).toHaveBeenCalledTimes(1)
+    await l.open('https://www.crunchyroll.com', 'Crunchyroll') // outro serviço abre normalmente
+    expect(deps.spawnDetached).toHaveBeenCalledTimes(2)
+    t += 10000 // passou o tempo de abrir: pedir de novo abre de novo
+    await l.open('https://www.netflix.com', 'Netflix')
+    expect(deps.spawnDetached).toHaveBeenCalledTimes(3)
+  })
+  it('se não abriu (erro), tentar de novo logo em seguida funciona', async () => {
+    const { deps } = make({ found: { edge: 'C:\\E\\msedge.exe' } })
+    deps.spawnDetached = vi.fn(async () => 'O Edge não abriu.')
+    const l = launcherMod.createLauncher(deps)
+    expect(await l.open('https://www.netflix.com', 'Netflix')).toBe('O Edge não abriu.')
+    expect(await l.open('https://www.netflix.com', 'Netflix')).toBe('O Edge não abriu.')
+    expect(deps.spawnDetached).toHaveBeenCalledTimes(2)
+  })
   it('Crunchyroll abre no Edge em tela cheia com perfil próprio', async () => {
     const { l, deps } = make({ found: { edge: 'C:\\E\\msedge.exe' } })
     await l.open('https://www.crunchyroll.com', 'Crunchyroll')

@@ -21,6 +21,9 @@
   ao fechar, volta ao perfil do app aberto (PC na Crunchyroll). Trocável em Perfis do controle.
 
 ### Corrigido
+- **Duas janelas do mesmo streaming (achado pelo Bruno):** um X a mais enquanto o Edge ainda abria
+  abria outra janela, e o PS só fechava uma. Agora o mesmo serviço pedido de novo nos segundos em
+  que ele está abrindo é ignorado.
 - **Laaazy não abria mais pelo atalho (achado pelo Bruno):** depois de usar o teclado por cima e
   fechar o Laaazy, a janela escondida do teclado deixava o programa rodando sem janela, e clicar
   no atalho caía nele. Agora fechar a janela principal encerra o Laaazy de verdade.
