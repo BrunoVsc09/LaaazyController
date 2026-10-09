@@ -21,6 +21,9 @@
 - **Cor do Laaazy (pedido do Bruno):** em Configurações → Cor do Laaazy, quatro temas: Azul com
   efeito (o de sempre, padrão), Preto com efeito (ondas e partículas prateadas), Preto e vermelho
   com efeito e Preto moderno com azul (liso, sem efeito). Muda na hora e fica salvo.
+- **Start pausa a prévia e R1/L1 andam pelas abas (pedido do Bruno):** no Início, Start pausa a
+  prévia do trailer (aparece "Pausado") e Start de novo continua. Em Início, Biblioteca, Apps e
+  Buscar, R1 vai para a aba da direita e L1 volta.
 
 ### Corrigido
 - **Navegador de pastas com as pastas certas:** Imagens (novo, ao escolher a foto) e Área de trabalho

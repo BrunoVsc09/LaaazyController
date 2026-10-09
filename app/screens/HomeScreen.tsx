@@ -9,6 +9,7 @@ import { getLazy, type CatalogHome, type Game, type Title } from '../lib/lazy-ap
 import { YT_ORIGIN, nextTitleId, playerCommand, playerEvent, previewStep, titleFocus, trailerEmbedUrl } from '../lib/trailer'
 import type { Sounds } from '../hooks/useSounds'
 import { useSimilar } from '../hooks/useSimilar'
+import { usePreviewPause } from '../hooks/usePreviewPause'
 
 type Props = { pinned: string[]; sounds: Sounds; onActivate: (card: Card) => void; onOpenSettings: () => void }
 
@@ -40,6 +41,7 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
   const heroId = useRef<string | null>(null)
   heroId.current = hero?.id ?? null
   const send = (func: string) => frame.current?.contentWindow?.postMessage(playerCommand(func), YT_ORIGIN)
+  const paused = usePreviewPause(send, preview) // Start pausa e continua
 
   useEffect(() => {
     if (!lazy) return
@@ -198,6 +200,7 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
           </div>
           <div className="lz-hero-media" style={bg(hero)} aria-hidden="true">
             {preview && trailerLabel && <span className="lz-trailer-label">🇧🇷 {trailerLabel}</span>}
+            {preview && paused && <span className="lz-paused">⏸ Pausado · Start continua</span>}
             {preview && <iframe key={preview} ref={frame} src={preview} title="Prévia do trailer" tabIndex={-1} allow="autoplay; encrypted-media" onLoad={() => send('listening')} />}
           </div>
         </div>

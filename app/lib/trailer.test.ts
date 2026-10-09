@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { trailerEmbedUrl, homeSections, playerEvent, playerCommand, nextTitleId, YT_ORIGIN, titlePress, titleFocus, previewStep } from './trailer'
+import { trailerEmbedUrl, homeSections, playerEvent, playerCommand, nextTitleId, YT_ORIGIN, titlePress, titleFocus, previewStep, startPress } from './trailer'
 
 describe('trailerEmbedUrl', () => {
   it('player do YouTube sem controles, aceitando comandos e avisando quando acaba (sem repetir)', () => {
@@ -101,5 +101,16 @@ describe('previewStep: quando a prévia toca e quando para', () => {
   })
   it('botão "Assistir" do destaque: abre e para a prévia', () => {
     expect(previewStep({ playingId: 'tv:1' }, { type: 'watch' })).toEqual({ state: { playingId: null }, open: true })
+  })
+})
+
+// Pedido do Bruno (2026-10-09): Start pausa a prévia no Início (e continua no próximo aperto)
+describe('startPress: Start pausa e continua a prévia', () => {
+  it('com a prévia tocando: pausa; pausada: continua', () => {
+    expect(startPress({ playing: true, paused: false })).toEqual({ paused: true, command: 'pauseVideo' })
+    expect(startPress({ playing: true, paused: true })).toEqual({ paused: false, command: 'playVideo' })
+  })
+  it('sem prévia tocando: nada', () => {
+    expect(startPress({ playing: false, paused: false })).toEqual({ paused: false, command: null })
   })
 })

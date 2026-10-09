@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { initialScreen, screenReducer } from './screen-state'
+import { initialScreen, screenReducer, tabStep } from './screen-state'
 import { visibleGames } from './library-filter'
 import { CATALOG } from './catalog'
 import streaming from '../../shared/streaming'
@@ -65,5 +65,22 @@ describe('CATALOG', () => {
     for (const k of DS4_KEYS.filter((k: string) => !['menu', 'games', 'desktop', 'keyboard'].includes(k))) {
       expect(CATALOG.some((c) => c.label === k), k).toBe(true)
     }
+  })
+})
+
+// Pedido do Bruno (2026-10-09): R1 anda para a direita nas abas e L1 volta
+describe('L1/R1 nas abas', () => {
+  it('Início → Biblioteca → Apps → Buscar, e de volta', () => {
+    expect(tabStep('home', 1)).toBe('library')
+    expect(tabStep('library', 1)).toBe('apps')
+    expect(tabStep('apps', 1)).toBe('search')
+    expect(tabStep('search', -1)).toBe('apps')
+    expect(tabStep('library', -1)).toBe('home')
+  })
+  it('nas pontas não dá a volta; fora das abas não faz nada', () => {
+    expect(tabStep('search', 1)).toBeNull()
+    expect(tabStep('home', -1)).toBeNull()
+    expect(tabStep('settings', 1)).toBeNull()
+    expect(tabStep('welcome', -1)).toBeNull()
   })
 })

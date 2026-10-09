@@ -27,7 +27,7 @@ import { getLazy } from './lib/lazy-api'
 import { applyTheme } from './lib/theme'
 import { OSK_HINTS, createOskPad } from './lib/osk'
 import { createIdle } from './lib/screensaver'
-import { initialScreen, screenReducer, type Screen } from './lib/screen-state'
+import { initialScreen, screenReducer, type Screen, tabStep } from './lib/screen-state'
 
 const { BTN } = gamepad
 const REPEAT_MS = 220
@@ -170,6 +170,10 @@ export default function Page() {
       if (fired(BTN.O)) closePower()
       return
     }
+    // R1/L1 andam pelas abas (Início, Biblioteca, Apps, Buscar); Start pausa a prévia do Início
+    const tab = fired(BTN.R1) ? tabStep(screen, 1) : fired(BTN.L1) ? tabStep(screen, -1) : null
+    if (tab) { sounds.click(); go(tab) }
+    if (fired(BTN.OPTIONS) && screen === 'home') window.dispatchEvent(new Event('lz:start'))
     if (fired(BTN.L2)) getLazy()?.volume('down')
     if (fired(BTN.R2)) getLazy()?.volume('up')
     const active = document.activeElement

@@ -72,3 +72,9 @@ export function previewStep(state: PreviewState, ev: PreviewEvent): { state: Pre
   return { state: { playingId: ev.id }, open: false }
 }
 
+
+// Start no Início: pausa a prévia que está tocando; apertar de novo continua
+export function startPress({ playing, paused }: { playing: boolean; paused: boolean }): { paused: boolean; command: 'pauseVideo' | 'playVideo' | null } {
+  if (!playing) return { paused: false, command: null }
+  return paused ? { paused: false, command: 'playVideo' } : { paused: true, command: 'pauseVideo' }
+}

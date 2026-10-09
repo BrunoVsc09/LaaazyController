@@ -28,3 +28,11 @@ export function screenReducer(state: ScreenState, action: ScreenAction): ScreenS
       return { screen: 'home', anim: 'none' }
   }
 }
+
+// L1/R1 andam pelas abas, na ordem da barra (sem dar a volta nas pontas)
+export const TAB_ORDER: Screen[] = ['home', 'library', 'apps', 'search']
+export function tabStep(screen: Screen, step: 1 | -1): Screen | null {
+  const i = TAB_ORDER.indexOf(screen)
+  if (i < 0) return null
+  return TAB_ORDER[i + step] ?? null
+}

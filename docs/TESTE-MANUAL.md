@@ -154,6 +154,8 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] "🔇 Trailer sem som" / "🔊 Trailer com som" liga e desliga o som da prévia na hora, sem abrir o Edge; a escolha vale para as próximas prévias
 - [ ] Quando o trailer acaba, a prévia passa sozinha para o próximo título (e o foco vai junto)
 - [ ] "Assistir na <serviço>" abre o serviço no Edge
+- [ ] Com a prévia tocando, Start pausa (aparece "⏸ Pausado") e Start de novo continua; passar para outro título tira o "Pausado"
+- [ ] R1 vai Início → Biblioteca → Apps → Buscar (para em Buscar); L1 volta até o Início
 
 ## Teclado por cima do Edge
 - [ ] Crunchyroll → clicar na busca → Ctrl+Alt+K (ou Share): o teclado abre com a borda amarela numa tecla; o D-pad anda.

@@ -121,3 +121,10 @@ describe('foto do perfil no topo', () => {
     expect(css).toMatch(/\.crash-avatar img \{ width: 100%; height: 100%; object-fit: cover; border-radius: inherit; \}/)
   })
 })
+
+// Start pausa a prévia (pedido do Bruno, 2026-10-09): o aviso fica sobre o vídeo, no meio
+describe('prévia pausada', () => {
+  it('aviso "Pausado" centralizado sobre a prévia', () => {
+    expect(css).toMatch(/\.lz-paused \{ position: absolute; left: 50%; top: 50%; transform: translate\(-50%, -50%\);/)
+  })
+})

@@ -380,3 +380,4 @@ html.lz-pad, html.lz-pad * { cursor: none !important; }
 .ps4-screen:has(.pad-view) .pad-badge { display: none; }
 .crash-avatar { overflow: hidden; }
 .crash-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+.lz-paused { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2; padding: 12px 22px; border-radius: 14px; background: rgba(0, 0, 0, .62); color: #fff; font-size: 22px; white-space: nowrap; pointer-events: none; }
