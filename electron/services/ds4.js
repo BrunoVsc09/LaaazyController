@@ -1,19 +1,21 @@
-// Troca o perfil do DS4Windows por card, abre e fecha o DS4Windows.
+// Troca o perfil do controle (Laaazy-pad) por card e por jogo, abre e fecha o Laaazy-pad.
 // Tudo passa por uma fila: duas trocas nunca rodam ao mesmo tempo.
+// (O nome "ds4" ficou do tempo do DS4Windows; renomear é outra refatoração.)
 const { createQueue } = require('../core/queue')
 const { mergeConfig, validateChange, gameProfileFor, profileMissing } = require('../core/ds4-config')
 
-const NOT_FOUND = 'Não achei o DS4Windows. Escolha a pasta dele em Configurações.'
-const HINT = 'Se nada mudou, veja se o controle 1 está conectado e se o DS4Windows não está rodando como administrador.'
+const NOT_FOUND = 'Não achei o Laaazy-pad. Escolha a pasta dele em Configurações.'
+const HINT = 'Se nada mudou, veja se o controle está conectado e se o Laaazy-pad está aberto.'
 
-function createDs4({ cli, getExe, readCfg, writeCfg, sleep }) {
+// readyDelayMs: quanto esperar depois de abrir até o programa aceitar comandos
+function createDs4({ cli, getExe, readCfg, writeCfg, sleep, readyDelayMs = 300 }) {
   const queue = createQueue({ timeoutMs: 20000, onTimeout: () => ({ ok: false, msg: 'A troca demorou demais e foi cancelada.' }) })
   const config = async () => mergeConfig(await readCfg())
 
   async function startIfNeeded(exe) {
     if (await cli.isRunning()) return ''
     const err = await cli.start(exe)
-    if (!err) await sleep(5000) // o DS4Windows demora para aceitar comandos
+    if (!err) await sleep(readyDelayMs)
     return err
   }
 
@@ -24,13 +26,13 @@ function createDs4({ cli, getExe, readCfg, writeCfg, sleep }) {
     const { profiles } = await cli.listProfiles(exe)
     if (!profiles.includes(name)) return { ok: false, msg: profileMissing(name) }
     const startErr = await startIfNeeded(exe)
-    if (startErr) return { ok: false, msg: 'Não consegui abrir o DS4Windows: ' + startErr }
+    if (startErr) return { ok: false, msg: 'Não consegui abrir o Laaazy-pad: ' + startErr }
     const sendErr = await cli.loadProfile(exe, name)
-    if (sendErr) return { ok: false, msg: 'Erro ao enviar o comando: ' + sendErr }
+    if (sendErr) return { ok: false, msg: 'Erro ao trocar o perfil: ' + sendErr }
     const now = await cli.queryProfile(exe)
     if (now === null) return { ok: true, msg: `Enviei o perfil "${name}", mas não consegui confirmar. ${HINT}` }
-    if (now.toLowerCase().includes(name.toLowerCase())) return { ok: true, msg: `Perfil "${name}" ativo no DS4Windows.` }
-    return { ok: false, msg: `Enviei "${name}", mas o DS4Windows respondeu "${now.slice(0, 60)}". ${HINT}` }
+    if (now.toLowerCase().includes(name.toLowerCase())) return { ok: true, msg: `Perfil "${name}" ativo no Laaazy-pad.` }
+    return { ok: false, msg: `Enviei "${name}", mas o Laaazy-pad respondeu "${now.slice(0, 60)}". ${HINT}` }
   }
 
   const apply = (name) => queue.run(() => load(name))

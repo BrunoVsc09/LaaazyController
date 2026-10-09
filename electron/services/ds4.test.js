@@ -3,24 +3,25 @@ import mod from './ds4.js'
 
 const { createDs4 } = mod
 
-function make({ exe = 'C:/DS4/DS4Windows.exe', running = true, profiles = ['Brunera', 'PC', 'TV'], query = (n) => n, saved = {} } = {}) {
+function make({ exe = 'C:/P/LaaazyPad.exe', running = true, profiles = ['Brunera', 'PC', 'TV'], query = (n) => n, saved = {}, readyDelayMs } = {}) {
   let cfg = { ...saved }
   const state = { running, current: '' }
   const cli = {
-    listProfiles: vi.fn(async () => ({ dir: 'C:/DS4/Profiles', profiles })),
+    listProfiles: vi.fn(async () => ({ dir: 'C:/P/Profiles', profiles })),
     isRunning: vi.fn(async () => state.running),
     start: vi.fn(async () => { state.running = true; return '' }),
     loadProfile: vi.fn(async (_exe, name) => { state.current = name; return '' }),
     queryProfile: vi.fn(async () => (query ? query(state.current) : null)),
     shutdown: vi.fn(async () => { state.running = false }),
     kill: vi.fn(async () => { state.running = false }),
-    cmdName: () => 'DS4WindowsCmd.exe',
+    cmdName: () => 'LaaazyPadCmd.exe',
   }
+  const sleep = vi.fn(async () => {})
   const ds4 = createDs4({
-    cli, getExe: async () => exe, sleep: async () => {},
+    cli, getExe: async () => exe, sleep, readyDelayMs,
     readCfg: async () => cfg, writeCfg: vi.fn(async (c) => { cfg = c; return true }),
   })
-  return { ds4, cli, state, cfg: () => cfg }
+  return { ds4, cli, state, sleep, cfg: () => cfg }
 }
 
 describe('ds4.apply', () => {
@@ -29,22 +30,39 @@ describe('ds4.apply', () => {
     expect(await ds4.apply('')).toEqual({ ok: true, msg: 'Sem troca de perfil.' })
     expect(cli.loadProfile).not.toHaveBeenCalled()
   })
-  it('DS4Windows não encontrado', async () => {
-    expect((await make({ exe: null }).ds4.apply('PC')).msg).toMatch(/Não achei o DS4Windows/)
+  it('Laaazy-pad não encontrado', async () => {
+    expect((await make({ exe: null }).ds4.apply('PC')).msg).toMatch(/Não achei o Laaazy-pad/)
   })
   it('perfil inexistente', async () => {
     expect(await make().ds4.apply('X')).toEqual({ ok: false, msg: 'Perfil "X" não encontrado na pasta de perfis.' })
   })
-  it('abre o DS4Windows se estiver fechado e confirma o perfil', async () => {
+  it('abre o Laaazy-pad se estiver fechado e confirma o perfil', async () => {
     const { ds4, cli } = make({ running: false })
-    expect(await ds4.apply('PC')).toEqual({ ok: true, msg: 'Perfil "PC" ativo no DS4Windows.' })
+    expect(await ds4.apply('PC')).toEqual({ ok: true, msg: 'Perfil "PC" ativo no Laaazy-pad.' })
     expect(cli.start).toHaveBeenCalled()
-    expect(cli.loadProfile).toHaveBeenCalledWith('C:/DS4/DS4Windows.exe', 'PC')
+    expect(cli.loadProfile).toHaveBeenCalledWith('C:/P/LaaazyPad.exe', 'PC')
   })
-  it('sem como confirmar (sem DS4WindowsCmd) avisa', async () => {
+  // O DS4Windows pedia 5 s depois de abrir; o Laaazy-pad aceita comandos em ~300 ms
+  it('depois de abrir, espera só o tempo combinado (readyDelayMs) antes do comando', async () => {
+    const { ds4, sleep, cli } = make({ running: false, readyDelayMs: 300 })
+    await ds4.apply('PC')
+    expect(sleep).toHaveBeenCalledWith(300)
+    expect(sleep.mock.invocationCallOrder[0]).toBeLessThan(cli.loadProfile.mock.invocationCallOrder[0])
+  })
+  it('já aberto: não espera nada', async () => {
+    const { ds4, sleep } = make({ running: true, readyDelayMs: 300 })
+    await ds4.apply('PC')
+    expect(sleep).not.toHaveBeenCalled()
+  })
+  it('erro do Laaazy-pad ao carregar: mostra a mensagem dele', async () => {
+    const { ds4, cli } = make()
+    cli.loadProfile.mockResolvedValueOnce('PC.json: botão L2: Tecla "Baixo" não existe.')
+    expect(await ds4.apply('PC')).toEqual({ ok: false, msg: 'Erro ao trocar o perfil: PC.json: botão L2: Tecla "Baixo" não existe.' })
+  })
+  it('sem como confirmar (Laaazy-pad não respondeu) avisa', async () => {
     expect((await make({ query: null }).ds4.apply('PC')).msg).toMatch(/não consegui confirmar/)
   })
-  it('DS4Windows respondeu outro perfil', async () => {
+  it('Laaazy-pad respondeu outro perfil', async () => {
     const r = await make({ query: () => 'Outro' }).ds4.apply('PC')
     expect(r.ok).toBe(false)
     expect(r.msg).toMatch(/respondeu "Outro"/)
@@ -90,9 +108,9 @@ describe('ds4.set / get', () => {
     expect(cfg()).toEqual({})
   })
   it('get devolve perfis, pasta, configuração com padrões e nome do comando', async () => {
-    expect(await make().ds4.get()).toMatchObject({ profiles: ['Brunera', 'PC', 'TV'], dir: 'C:/DS4/Profiles', config: { menu: 'Brunera' }, cmd: 'DS4WindowsCmd.exe' })
+    expect(await make().ds4.get()).toMatchObject({ profiles: ['Brunera', 'PC', 'TV'], dir: 'C:/P/Profiles', config: { menu: 'Brunera' }, cmd: 'LaaazyPadCmd.exe' })
   })
-  it('get sem DS4Windows devolve lista vazia', async () => {
+  it('get sem o Laaazy-pad devolve lista vazia', async () => {
     expect(await make({ exe: null }).ds4.get()).toMatchObject({ profiles: [], dir: null })
   })
 })
@@ -108,7 +126,7 @@ describe('ds4: abrir e fechar', () => {
     await ds4.shutdown()
     expect(cli.kill).toHaveBeenCalled()
   })
-  it('shutdown com o DS4Windows fechado não faz nada', async () => {
+  it('shutdown com o Laaazy-pad fechado não faz nada', async () => {
     const { ds4, cli } = make({ running: false })
     await ds4.shutdown()
     expect(cli.shutdown).not.toHaveBeenCalled()
