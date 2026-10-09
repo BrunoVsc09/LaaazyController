@@ -86,3 +86,20 @@ describe('teclado por cima cabe na janela', () => {
     expect(css).toMatch(/\.kb-overlay \.osk-keys \{ flex: 1; min-height: 0; grid-auto-rows: minmax\(0, 1fr\); \}/)
   })
 })
+
+// Pedido do Bruno (2026-10-09): Perfis do controle em preto moderno, estilo Hydra
+describe('Perfis do controle: preto, tela inteira', () => {
+  it('fundo preto cobrindo a tela (por cima do fundo azul do menu)', () => {
+    expect(css).toMatch(/\.pad-view \{ position: fixed; inset: 0;[^}]*background: #0e0e10;/)
+  })
+  it('o botão escolhido (na lista e no desenho do controle) fica amarelo', () => {
+    expect(css).toMatch(/\.pad-row\.sel \{[^}]*outline: 2px solid #ffd23f;/)
+    expect(css).toMatch(/\.pad-key\.sel rect, \.pad-key\.sel circle \{[^}]*stroke: #ffd23f;/)
+  })
+})
+
+describe('Perfis do controle: nada do menu por cima', () => {
+  it('o aviso "Controle conectado/não detectado" do menu some nessa tela (ela tem o próprio status)', () => {
+    expect(css).toMatch(/\.ps4-screen:has\(\.pad-view\) \.pad-badge \{ display: none; \}/)
+  })
+})

@@ -334,3 +334,43 @@ html.lz-pad, html.lz-pad * { cursor: none !important; }
 /* Teclado por cima nunca pega o foco do Windows (a busca do site fecharia): a tecla atual é
    marcada com data-current pela página e ganha a borda aqui (:focus não é desenhado sem foco) */
 .kb-overlay button[data-current] { outline: 3px solid #ffd23f; outline-offset: 2px; background: #3a3a40; }
+/* Perfis do controle: editor dos perfis do Laaazy-pad, preto moderno (estilo Hydra) */
+.pad-view { position: fixed; inset: 0; z-index: 6; overflow-y: auto; background: #0e0e10; color: #e8e8ea; padding: 28px 4vw 96px; }
+.pad-top { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 18px; }
+.pad-top h1 { margin: 0; font-size: 28px; font-weight: 500; color: #fff; }
+.pad-back { width: 42px; height: 42px; border: 1px solid #2c2c31; border-radius: 10px; background: none; color: #cfcfd4; font-size: 24px; cursor: pointer; }
+.pad-status { padding: 4px 12px; border: 1px solid #2a2a2e; border-radius: 14px; background: #17171a; color: #8d8d96; font-size: 14px; }
+.pad-status.on { border-color: rgba(93, 202, 165, .35); background: rgba(93, 202, 165, .1); color: #5dcaa5; }
+.pad-tabs { display: flex; gap: 8px; margin-left: auto; flex-wrap: wrap; }
+.pad-tab { padding: 9px 18px; border: 1px solid #2c2c31; border-radius: 10px; background: #17171a; color: #cfcfd4; font-size: 16px; cursor: pointer; }
+.pad-tab.on { border-color: #ffd23f; background: #ffd23f; color: #1a1400; }
+.pad-msg { margin: 0 0 12px; color: #ffd23f; font-size: 15px; }
+.pad-hint { color: #8d8d96; font-size: 15px; }
+.pad-editor { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 24px; align-items: start; }
+.pad-left { display: flex; flex-direction: column; gap: 12px; }
+.pad-art { width: 100%; max-width: 560px; }
+.pad-body { fill: #141417; stroke: #3a3a40; stroke-width: 1.2; }
+.pad-key rect, .pad-key circle { fill: #141417; stroke: #4a4a52; stroke-width: 1.2; cursor: pointer; }
+.pad-key text { fill: #8d8d96; font-size: 8px; pointer-events: none; }
+.pad-key.lock rect, .pad-key.lock circle { fill: #1b1b1f; stroke: #2c2c31; }
+.pad-key.sel rect, .pad-key.sel circle { fill: #2a2410; stroke: #ffd23f; stroke-width: 2; }
+.pad-key.sel text { fill: #ffd23f; }
+.pad-panel { padding: 14px 16px; border: 1px solid #2a2a2e; border-radius: 12px; background: #17171a; }
+.pad-panel-title { margin: 0 0 10px; color: #cfcfd4; font-size: 16px; }
+.pad-panel-title b { color: #fff; }
+.pad-opts { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.pad-opt { padding: 8px 14px; border: 1px solid #2c2c31; border-radius: 9px; background: #0e0e10; color: #cfcfd4; font-size: 15px; cursor: pointer; }
+.pad-opt.on { border-color: #ffd23f; color: #ffd23f; }
+.pad-detect { align-self: flex-start; }
+.pad-list { display: flex; flex-direction: column; padding: 4px; border: 1px solid #2a2a2e; border-radius: 12px; background: #17171a; }
+.pad-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) 18px; gap: 10px; align-items: center; padding: 11px 14px; border: 0; border-top: 1px solid #222226; border-radius: 0; background: none; color: #e8e8ea; font-size: 16px; text-align: left; cursor: pointer; }
+.pad-row:first-child { border-top: 0; }
+.pad-row span:nth-child(2) { color: #a9a9b1; }
+.pad-row i { color: #6f6f78; font-size: 11px; font-style: normal; }
+.pad-row.locked span, .pad-row.ro span { color: #7d7d86; }
+.pad-row.ro { cursor: default; }
+.pad-row.sel { border-radius: 8px; background: #24242a; outline: 2px solid #ffd23f; outline-offset: -2px; }
+.pad-row .warn { color: #f09595; }
+.pad-foot { position: fixed; left: 0; right: 0; bottom: 0; z-index: 7; display: flex; gap: 28px; padding: 14px 4vw; border-top: 1px solid #222226; background: #0e0e10; color: #8d8d96; font-size: 15px; }
+@media (max-width: 1100px) { .pad-editor { grid-template-columns: 1fr; } }
+.ps4-screen:has(.pad-view) .pad-badge { display: none; }

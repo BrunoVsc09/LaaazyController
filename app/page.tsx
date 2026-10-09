@@ -132,6 +132,8 @@ export default function Page() {
       idle.current.touch()
     }
     if (saverRef.current) return
+    // Editor de perfis esperando "aperte um botão": o controle é todo dele (✕ e ○ não clicam nem voltam)
+    if (document.querySelector('[data-pad-capture]')) return
     const { screen } = stateRef.current
     const osk = !!oskRef.current
     const modal = powerRef.current
