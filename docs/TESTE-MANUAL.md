@@ -217,7 +217,9 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Colar a chave do Gemini (AIza…) no campo do TMDB: aviso dizendo que é a do Gemini.
 
 ## .exe portátil
-- [ ] `pnpm dist` termina com "Pacote OK".
+- [ ] `pnpm dist` termina com "Pacote OK (com o Laaazy-pad)".
+- [ ] PC sem o Laaazy-pad: instalar pelo `Laaazy-Setup`; Perfis do controle mostra o Laaazy-pad aberto, os perfis Jogos e PC, e "Testar o PS" funciona (com 8BitDo: o Home é o PS)
+- [ ] Atualizar pelo aviso com o Laaazy-pad aberto: o instalador troca o Laaazy-pad sem erro e ele volta a abrir com o Laaazy
 - [ ] Abrir `dist/Laaazy 3.2.0.exe`: Início, Biblioteca, trailer, teclado por cima (Ctrl+Alt+K) e PS funcionam.
 
 ## Atualização pelo GitHub

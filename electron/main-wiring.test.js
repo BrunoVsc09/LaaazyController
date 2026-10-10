@@ -60,3 +60,13 @@ describe('atualização', () => {
     expect(main).toMatch(/publicKey: \(\) => RELEASE_PUBLIC_KEY,/)
   })
 })
+
+// Laaazy-pad junto no instalador (pedido do Bruno, 2026-10-09)
+describe('Laaazy-pad que vem junto', () => {
+  it('o localizador procura em resources/laaazy-pad do Laaazy instalado (no pnpm app, não)', () => {
+    expect(main).toMatch(/bundledDir: app\.isPackaged \? process\.resourcesPath : null/)
+  })
+  it('antes de rodar o instalador, o Laaazy-pad fecha (no máximo 4 s de espera)', () => {
+    expect(main).toMatch(/beforeInstall: \(\) => Promise\.race\(\[ds4\.shutdown\(\), sleep\(4000\)\]\)/)
+  })
+})

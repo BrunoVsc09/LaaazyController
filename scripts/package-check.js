@@ -50,8 +50,12 @@ if (require.main === module) {
   const files = listAsar(file)
   const problems = problemsIn(files)
   console.log(`${files.length} arquivos em ${file}`)
+  // O Laaazy-pad que vai junto (fora do asar, em resources\laaazy-pad)
+  const { padProblems, listFiles } = require('./laaazy-pad-bundle')
+  const pad = path.join(path.dirname(file), 'laaazy-pad')
+  problems.push(...(fs.existsSync(pad) ? padProblems(listFiles(pad)) : ['falta resources/laaazy-pad']).map((p) => `Laaazy-pad: ${p}`))
   if (problems.length) { console.log(problems.join('\n')); process.exit(1) }
-  console.log('Pacote OK')
+  console.log('Pacote OK (com o Laaazy-pad)')
 }
 
 module.exports = { problemsIn, listAsar, REQUIRED }

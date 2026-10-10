@@ -27,6 +27,7 @@ function make({ version = '3.5.0', mode = 'installer', release = latest, fetchFa
     hashFile: vi.fn(async () => fileHash),
     removeFile: vi.fn(async () => {}),
     tempDir: () => 'C:\\Temp',
+    beforeInstall: vi.fn(async () => {}),
     runInstaller: vi.fn(async () => ''),
     quit: vi.fn(),
     openExternal: vi.fn(async () => {}),
@@ -139,5 +140,25 @@ describe('updater: assinatura', () => {
     await up.install()
     expect(deps.fetchText).toHaveBeenCalledWith(BASE + SETUP + '.sig')
     expect(deps.runInstaller).toHaveBeenCalled()
+  })
+})
+
+// Laaazy-pad junto no instalador (2026-10-09): ele roda de dentro da pasta do Laaazy; aberto, o
+// instalador não conseguiria trocar o LaaazyPad.exe
+describe('updater: antes de instalar', () => {
+  it('fecha o Laaazy-pad antes de rodar o instalador', async () => {
+    const order = []
+    const { up, deps } = make()
+    deps.beforeInstall.mockImplementation(async () => { order.push('fecha o Laaazy-pad') })
+    deps.runInstaller.mockImplementation(async () => { order.push('instalador'); return '' })
+    await up.check()
+    await up.install()
+    expect(order).toEqual(['fecha o Laaazy-pad', 'instalador'])
+  })
+  it('download ou assinatura ruim: não mexe no Laaazy-pad', async () => {
+    const { up, deps } = make({ fileHash: 'cd'.repeat(32) })
+    await up.check()
+    await up.install()
+    expect(deps.beforeInstall).not.toHaveBeenCalled()
   })
 })

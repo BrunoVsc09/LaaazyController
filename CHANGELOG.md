@@ -1,5 +1,14 @@
 # Novidades do Laaazy
 
+## Próxima versão (ainda não lançada)
+
+### Mudou
+- **O Laaazy-pad vem junto no instalador (pedido do Bruno):** quem instala o Laaazy num PC novo já
+  ganha os perfis do controle e o botão PS, com qualquer controle (DualShock, 8BitDo, Xbox…), sem
+  instalar nada à parte; as atualizações trazem o Laaazy-pad junto. Os perfis continuam em
+  `%APPDATA%\Laaazy-pad\Profiles` (as atualizações não mexem neles). Antes de instalar uma
+  atualização, o Laaazy fecha o Laaazy-pad para o instalador conseguir trocá-lo.
+
 ## 3.6.2 — 2026-10-09
 
 ### Mudou

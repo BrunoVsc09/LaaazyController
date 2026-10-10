@@ -102,7 +102,7 @@ Usando o mouse junto? Sem briga: o cursor some quando você usa o controle e a s
 
 ## 🚀 Como rodar
 
-**Requisitos:** Windows 10/11 · [Node.js](https://nodejs.org) 20+ · [pnpm](https://pnpm.io) · Microsoft Edge · Laaazy-pad (meu programa de perfis do controle, instalado à parte; opcional, para o PS e os perfis)
+**Requisitos:** Windows 10/11 · [Node.js](https://nodejs.org) 20+ · [pnpm](https://pnpm.io) · Microsoft Edge · para o `pnpm dist`: o projeto [Laaazy-pad](../laaazy-pad) ao lado e o .NET SDK (o Laaazy-pad vai junto no instalador)
 
 ```bash
 pnpm install

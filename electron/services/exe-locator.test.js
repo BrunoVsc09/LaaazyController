@@ -45,6 +45,31 @@ describe('exe-locator', () => {
     const { loc } = make({ files: ['F:\\Pad\\LaaazyPad.exe'], saved: { laaazyPadPath: 'F:\\Pad' } })
     expect(await loc.find('laaazypad')).toBe('F:\\Pad\\LaaazyPad.exe')
   })
+  // Laaazy-pad junto no instalador (pedido do Bruno, 2026-10-09): fica em resources\laaazy-pad
+  describe('Laaazy-pad que vem junto no instalador', () => {
+    const RES = 'C:\\Users\\ana\\AppData\\Local\\Programs\\Laaazy\\resources'
+    const BUNDLED = RES + '\\laaazy-pad\\LaaazyPad.exe'
+    const ALONE = 'C:\\Users\\ana\\AppData\\Local\\Programs\\Laaazy-pad\\LaaazyPad.exe'
+    const withBundle = (files, saved = {}) => {
+      const store = { ...saved }
+      return mod.createExeLocator({
+        settings: { get: (k) => store[k], set: () => true }, env, showError: vi.fn(), bundledDir: RES,
+        exists: (p) => files.includes(p), regAppPath: async () => null,
+      })
+    }
+    it('vence o Laaazy-pad avulso (os dois vêm na mesma versão do contrato)', async () => {
+      expect(await withBundle([BUNDLED, ALONE]).find('laaazypad')).toBe(BUNDLED)
+    })
+    it('a pasta escolhida em Configurações vence o que veio junto', async () => {
+      expect(await withBundle([BUNDLED, 'F:\\Pad\\LaaazyPad.exe'], { laaazyPadPath: 'F:\\Pad' }).find('laaazypad')).toBe('F:\\Pad\\LaaazyPad.exe')
+    })
+    it('sem o que veio junto (pnpm app ou portátil antigo): o avulso, como antes', async () => {
+      expect(await withBundle([ALONE]).find('laaazypad')).toBe(ALONE)
+    })
+    it('só vale para o Laaazy-pad (os outros programas não vêm no instalador)', async () => {
+      expect(await withBundle([RES + '\\laaazy-pad\\msedge.exe']).find('edge')).toBeNull()
+    })
+  })
   it('o DS4Windows não é mais procurado', async () => {
     const { loc } = make({ files: ['C:\\Users\\ana\\Downloads\\win-x64\\DS4Windows.exe'] })
     expect(await loc.find('ds4windows')).toBeNull()

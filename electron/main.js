@@ -139,7 +139,8 @@ const settings = createSettings({
   write: (data) => store.writeJsonSync(userFile('settings.json'), data),
 })
 const dialogs = createDialogs({ dialog, getWin: () => windows.get() })
-const locator = createExeLocator({ settings, exists, regAppPath, chooseDir: dialogs.chooseDir, showError: dialogs.showError })
+// O Laaazy-pad vem junto no instalador (resources\laaazy-pad); no pnpm app, só o avulso
+const locator = createExeLocator({ settings, exists, regAppPath, chooseDir: dialogs.chooseDir, showError: dialogs.showError, bundledDir: app.isPackaged ? process.resourcesPath : null })
 const ds4 = createDs4({
   cli: createLaaazyPadCli({ openPath: (p) => shell.openPath(p) }),
   getExe: () => locator.find('laaazypad'),
@@ -166,6 +167,8 @@ const updater = createUpdater({
   publicKey: () => RELEASE_PUBLIC_KEY,
   mode: () => (!app.isPackaged ? 'dev' : process.env.PORTABLE_EXECUTABLE_DIR ? 'portable' : 'installer'),
   tempDir: () => app.getPath('temp'),
+  // O Laaazy-pad que veio junto roda de dentro da pasta do Laaazy: fecha antes de o instalador trocá-lo
+  beforeInstall: () => Promise.race([ds4.shutdown(), sleep(4000)]),
   runInstaller: (file) => spawnDetached(file, INSTALLER_ARGS),
   quit: () => app.quit(),
   openExternal: (url) => shell.openExternal(url),

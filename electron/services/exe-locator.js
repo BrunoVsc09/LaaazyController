@@ -1,4 +1,5 @@
 // Acha o .exe de um programa: caminho salvo → caminhos padrão → registro do Windows.
+// bundledDir: a pasta resources do Laaazy instalado (o Laaazy-pad vem junto no instalador)
 // Se não achar, pode perguntar a pasta (choose) e salvar a escolha.
 const path = require('path')
 const { resolveExeIn } = require('../core/paths')
@@ -33,20 +34,23 @@ const PROGRAMS = {
     label: 'Hydra', exe: 'Hydra.exe', setting: 'hydraPath',
     defaults: (env) => [under(env, 'LOCALAPPDATA', 'Programs', 'Hydra', 'Hydra.exe')],
   },
-  // Perfis do controle (projeto Laaazy-pad, instalado à parte, ao lado do Laaazy)
+  // Perfis do controle (projeto Laaazy-pad): o que vem junto no instalador e, depois, o avulso
   laaazypad: {
     label: 'Laaazy-pad', exe: 'LaaazyPad.exe', setting: 'laaazyPadPath',
-    defaults: (env) => [under(env, 'LOCALAPPDATA', 'Programs', 'Laaazy-pad', 'LaaazyPad.exe')],
+    defaults: (env, bundledDir) => [
+      bundledDir ? path.join(bundledDir, 'laaazy-pad', 'LaaazyPad.exe') : null,
+      under(env, 'LOCALAPPDATA', 'Programs', 'Laaazy-pad', 'LaaazyPad.exe'),
+    ],
   },
 }
 
-function createExeLocator({ settings, exists, regAppPath, chooseDir, showError, env = process.env }) {
+function createExeLocator({ settings, exists, regAppPath, chooseDir, showError, env = process.env, bundledDir = null }) {
   async function find(key) {
     const p = PROGRAMS[key]
     if (!p) return null
     const saved = resolveExeIn(settings.get(p.setting), p.exe, exists)
     if (saved) return saved
-    for (const c of p.defaults(env)) if (c && exists(c)) return c
+    for (const c of p.defaults(env, bundledDir)) if (c && exists(c)) return c
     const reg = await regAppPath(p.exe)
     return reg && exists(reg) ? reg : null
   }

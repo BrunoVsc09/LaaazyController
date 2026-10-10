@@ -2,13 +2,14 @@
 // instalador, confere a impressão digital (SHA-256 publicada junto) e a assinatura do Bruno (chave
 // Ed25519; a pública vem dentro do Laaazy) e só então roda o instalador.
 // mode(): 'installer' (instalado pelo Setup), 'portable' (o .exe portátil) ou 'dev' (pnpm app)
+// beforeInstall(): fecha o Laaazy-pad que veio junto (aberto, o instalador não troca o LaaazyPad.exe)
 const path = require('path')
 const rules = require('../core/update')
 
 const MISMATCH = 'O instalador baixado não confere com o publicado. Nada foi instalado; tente de novo mais tarde.'
 const UNSIGNED = 'A atualização não tem a assinatura do Laaazy. Nada foi instalado.'
 
-function createUpdater({ currentVersion, mode, publicKey, fetchJson, fetchText, download, hashFile, removeFile, tempDir, runInstaller, quit, openExternal }) {
+function createUpdater({ currentVersion, mode, publicKey, fetchJson, fetchText, download, hashFile, removeFile, tempDir, beforeInstall = async () => {}, runInstaller, quit, openExternal }) {
   let offer = null // a release mais nova achada pelo check()
   let busy = null
 
@@ -44,6 +45,7 @@ function createUpdater({ currentVersion, mode, publicKey, fetchJson, fetchText, 
       await removeFile(file)
       return { ok: false, msg: UNSIGNED }
     }
+    await beforeInstall()
     const err = await runInstaller(file)
     if (err) return { ok: false, msg: `Não consegui abrir o instalador: ${err}` }
     quit()

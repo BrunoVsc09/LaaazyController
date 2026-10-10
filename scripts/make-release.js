@@ -39,7 +39,7 @@ function releaseNotes({ version, changes, sha }) {
 | **${setupOf(version)}** | Instalador (recomendado). Windows 10 e 11, 64 bits. Não pede administrador. Quem já tem o Laaazy instalado recebe esta versão pelo aviso de atualização. |
 | **${portableOf(version)}** | Versão portátil, sem instalar (não se atualiza sozinha). |
 
-> Os perfis do controle são do **Laaazy-pad**, instalado à parte. Sem ele, o Laaazy funciona, mas sem o PS e sem a troca de perfis.
+> O **Laaazy-pad** (perfis do controle e o botão PS, para qualquer controle: DualShock, 8BitDo, Xbox…) já vem junto e abre com o Laaazy.
 
 > O instalador não tem assinatura digital paga. Se o Windows mostrar "O Windows protegeu o computador", clique em **Mais informações → Executar assim mesmo**.
 

@@ -37,7 +37,7 @@
     "build": "next build",
     "start": "next start",
     "app": "pnpm preloads && next build && electron .",
-    "dist": "pnpm preloads && next build && electron-builder && node scripts/package-check.js",
+    "dist": "pnpm preloads && next build && node scripts/laaazy-pad-bundle.js && electron-builder && node scripts/package-check.js",
     "release": "pnpm dist && node scripts/make-release.js",
     "release-key": "node scripts/make-release.js --nova-chave",
     "preloads": "node scripts/build-preloads.js",
@@ -68,6 +68,12 @@
     "appId": "com.bruno.laaazy",
     "productName": "Laaazy",
     "electronDist": "node_modules/electron/dist",
+    "extraResources": [
+      {
+        "from": "build/laaazy-pad",
+        "to": "laaazy-pad"
+      }
+    ],
     "files": [
       "electron/**",
       "!electron/**/*.test.js",

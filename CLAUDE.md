@@ -103,7 +103,8 @@ Regras:
 - `electron/preload.js` e `stream-preload.js` são **gerados** (não editar; estão no .gitignore).
 - Perfil **PC** do Laaazy-pad: X = clique esquerdo, O = clique direito, analógico = mouse.
   O Laaazy-pad é outro projeto (`../laaazy-pad`, contrato em `docs/CONTRATO.md` de lá): aqui só
-  o adaptador `adapters/laaazy-pad-cli.js`. Nunca enviar Ctrl+Alt+Home para testar (é o PS).
+  o adaptador `adapters/laaazy-pad-cli.js`. Ele vai **junto no instalador** (`resources\laaazy-pad`):
+  o `pnpm dist` roda o `publicar.ps1` de lá (precisa do `dotnet`) e copia para `build/laaazy-pad`. Nunca enviar Ctrl+Alt+Home para testar (é o PS).
   O Laaazy arbitra isso em `app/lib/input-mode` — não ler o mesmo botão duas vezes.
 - O PS fecha o programa da frente com `taskkill /T`: nunca fechar ancestrais do Laaazy.
 - Depois de abrir o app para diagnóstico, **soltar o cursor** (`[FG]::Unclip()`) e fechar o app.
