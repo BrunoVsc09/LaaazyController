@@ -1,5 +1,5 @@
 // Editor de perfis do controle (Laaazy-pad): regras da tela, sem DOM.
-import type { PadAction } from './lazy-api'
+import type { PadAction, PadProfile } from './lazy-api'
 
 // Gamepad API ("standard") → nome do botão no perfil do Laaazy-pad
 const PAD_BUTTONS = ['Cruz', 'Circulo', 'Quadrado', 'Triangulo', 'L1', 'R1', 'L2', 'R2', 'Share', 'Options',
@@ -61,3 +61,30 @@ export function nextProfile(profiles: string[], current: string, step: 1 | -1): 
   const i = profiles.indexOf(current)
   return profiles[(i + step + profiles.length) % profiles.length]
 }
+
+// Botão de voltar ao Laaazy gravado no controle (para controle sem PS que funcione, ex.: 8BitDo):
+// faz o mesmo que o PS nos dois perfis. Só botões que o Laaazy não usa para navegar
+export const BACK_KEY = 'Ctrl+Alt+Home'
+const BACK_CHOICES = ['L3', 'R3', 'Options']
+const isBack = (a: PadAction) => !!a && 'tecla' in a && a.tecla.toLowerCase() === BACK_KEY.toLowerCase()
+
+export function backChoiceError(id: string): string {
+  if (BACK_CHOICES.includes(id)) return ''
+  if (id === 'PS') return 'Esse é o PS: ele já volta ao Laaazy. Escolha L3, R3 ou Start.'
+  return 'Use L3 ou R3 (apertar um dos analógicos) ou Start: os outros botões o Laaazy usa para navegar.'
+}
+
+// O que mudar em cada perfil: o escolhido passa a voltar; o gravado antes (outro da lista) sai
+export function backChanges(profiles: PadProfile[], chosen: string) {
+  const changes: { profile: string; id: string; action: PadAction }[] = []
+  for (const p of profiles) {
+    for (const b of p.buttons) {
+      if (b.id === chosen && !isBack(b.action)) changes.push({ profile: p.name, id: b.id, action: { tecla: BACK_KEY } })
+      else if (b.id !== chosen && BACK_CHOICES.includes(b.id) && isBack(b.action)) changes.push({ profile: p.name, id: b.id, action: null })
+    }
+  }
+  return changes
+}
+
+export const backButtonOf = (profiles: PadProfile[]) =>
+  BACK_CHOICES.find((id) => profiles.some((p) => p.buttons.some((b) => b.id === id && isBack(b.action)))) ?? null

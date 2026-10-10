@@ -5,6 +5,7 @@
 import { useEffect, useState } from 'react'
 import gamepad from '../../shared/gamepad'
 import AppProfiles from '../components/AppProfiles'
+import BackButtonRecorder from '../components/BackButtonRecorder'
 import ProfileEditor from '../components/ProfileEditor'
 import { useGamepad } from '../hooks/useGamepad'
 import { nextProfile } from '../lib/pad-editor'
@@ -19,6 +20,7 @@ export default function Ds4Screen({ onBack, sounds }: Props) {
   const [data, setData] = useState<Ds4Data | null>(null)
   const [tab, setTab] = useState('')
   const [msg, setMsg] = useState('')
+  const [rev, setRev] = useState(0) // muda quando o botão de voltar é gravado: o editor relê o perfil
 
   useEffect(() => {
     lazy?.ds4.get().then((d) => {
@@ -70,12 +72,13 @@ export default function Ds4Screen({ onBack, sounds }: Props) {
             <button key={t} type="button" className={`pad-tab ${tab === t ? 'on' : ''}`} onClick={tap(() => setTab(t))}>{t}</button>
           ))}
           <button type="button" className="pad-tab" onClick={tap(testPs)}>Testar o PS</button>
+          {!!data?.profiles.length && <BackButtonRecorder profiles={data.profiles} sounds={sounds} onMsg={(m) => { setPsMsg(''); setMsg(m) }} onSaved={() => setRev((n) => n + 1)} />}
         </nav>
       </header>
       {(psMsg || msg) && <p className="pad-msg" role="status">{psMsg || msg}</p>}
       {data && data.profiles.length === 0 && <p className="pad-hint">Não achei perfis. Confira a pasta do Laaazy-pad em Configurações.</p>}
       {tab === APPS && data && <AppProfiles data={data} sounds={sounds} onCycle={cycle} />}
-      {tab && tab !== APPS && <ProfileEditor key={tab} name={tab} sounds={sounds} onMsg={setMsg} />}
+      {tab && tab !== APPS && <ProfileEditor key={`${tab}-${rev}`} name={tab} sounds={sounds} onMsg={setMsg} />}
       <footer className="pad-foot">
         <span>✕ Escolher</span><span>○ Voltar</span><span>L1/R1 Trocar perfil</span><span>● Fixo do Laaazy</span>
       </footer>

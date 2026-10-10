@@ -2,6 +2,12 @@
 
 ## Próxima versão (ainda não lançada)
 
+### Novo
+- **Botão de voltar gravado no controle (pedido do Bruno):** para controle em que o PS (Home) não
+  funciona, como o 8BitDo: em Perfis do controle, "Botão de voltar", e aperte no controle L3, R3
+  (apertar um analógico) ou Start. Esse botão passa a voltar ao Laaazy nos perfis Jogos e PC, como
+  o PS (que continua valendo). Gravar de novo troca o botão. Nos jogos, ele também volta ao Laaazy.
+
 ### Mudou
 - **Analógico mais fluido no Início (pedido do Bruno):** um toque anda um card; segurando, o 2º passo
   espera um pouco e depois acelera (até um card a cada 0,11 s), em vez de 0,22 s fixo. O analógico

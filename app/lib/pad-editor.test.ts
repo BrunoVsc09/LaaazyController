@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { padButtonAt, shortcutFromKey, actionLabel, COMMON_KEYS, CLICK_OPTIONS, nextProfile } from './pad-editor'
+import { padButtonAt, shortcutFromKey, actionLabel, COMMON_KEYS, CLICK_OPTIONS, nextProfile, backChoiceError, backChanges, backButtonOf, BACK_KEY } from './pad-editor'
+import type { PadProfile } from './lazy-api'
 
 // Editor de perfis (pedido do Bruno, 2026-10-09): personalizar sem tirar os comandos fixos
 describe('qual botão do controle foi apertado (Gamepad API padrão → nome no Laaazy-pad)', () => {
@@ -60,5 +61,36 @@ describe('L1/R1 trocam o perfil em edição', () => {
     expect(nextProfile(['Jogos', 'PC'], 'PC', 1)).toBe('Jogos')
     expect(nextProfile(['Jogos', 'PC'], 'Jogos', -1)).toBe('PC')
     expect(nextProfile([], 'PC', 1)).toBe('PC')
+  })
+})
+
+// "Ela não tem PS" (Bruno, 2026-10-10, 8BitDo): gravar no controle outro botão que volta ao Laaazy
+const prof = (name: string, actions: Record<string, { tecla: string } | null>): PadProfile => ({
+  name, sticks: { esquerdo: '', direito: '', touchpad: '' },
+  buttons: ['L3', 'R3', 'Options', 'Cruz', 'PS'].map((id) => ({ id, label: id, action: actions[id] ?? null, locked: id === 'PS' })),
+})
+const VOLTA = { tecla: 'Ctrl+Alt+Home' }
+
+describe('botão de voltar ao Laaazy gravado no controle', () => {
+  it('vale L3, R3 ou Start (os outros o Laaazy usa para navegar)', () => {
+    for (const id of ['L3', 'R3', 'Options']) expect(backChoiceError(id)).toBe('')
+    expect(backChoiceError('Cruz')).toBe('Use L3 ou R3 (apertar um dos analógicos) ou Start: os outros botões o Laaazy usa para navegar.')
+    expect(backChoiceError('PS')).toBe('Esse é o PS: ele já volta ao Laaazy. Escolha L3, R3 ou Start.')
+  })
+  it('vale nos dois perfis; gravar de novo tira do botão anterior; o PS fica como está', () => {
+    const jogos = prof('Jogos', { R3: VOLTA, PS: VOLTA })
+    const pc = prof('PC', { PS: VOLTA })
+    expect(backChanges([jogos, pc], 'L3')).toEqual([
+      { profile: 'Jogos', id: 'L3', action: { tecla: BACK_KEY } },
+      { profile: 'Jogos', id: 'R3', action: null },
+      { profile: 'PC', id: 'L3', action: { tecla: BACK_KEY } },
+    ])
+  })
+  it('já gravado nesse botão: nada a mudar', () => {
+    expect(backChanges([prof('Jogos', { L3: VOLTA })], 'L3')).toEqual([])
+  })
+  it('qual botão está gravado agora (para mostrar na tela)', () => {
+    expect(backButtonOf([prof('Jogos', { R3: { tecla: 'ctrl+alt+home' } })])).toBe('R3')
+    expect(backButtonOf([prof('Jogos', {})])).toBeNull()
   })
 })

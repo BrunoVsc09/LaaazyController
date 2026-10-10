@@ -52,6 +52,9 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] O volta ao menu
 
 ## Perfis do controle (Laaazy-pad)
+- [ ] "Botão de voltar" → apertar ✕ no controle avisa que não vale; apertar R3 grava: o botão mostra "Botão de voltar: R3" e a lista mostra R3 = Voltar ao Início (Jogos e PC)
+- [ ] "Testar o PS" apertando o R3 gravado: ✓; no Edge, R3 volta ao Laaazy
+- [ ] Gravar L3 depois: R3 volta a "Nada" e L3 passa a voltar
 - [ ] Tela preta com abas Jogos, PC e "Em cada app"; L1/R1 trocam a aba; o status mostra o perfil ativo agora
 - [ ] Escolher um botão na lista (ou no desenho) abre "Editar"; o botão fica amarelo no desenho
 - [ ] "Escolher apertando o botão no controle": o próximo botão apertado (inclusive ✕ e ○) é o escolhido, sem clicar nem voltar
