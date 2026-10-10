@@ -147,9 +147,9 @@ describe('foto do perfil no topo sem moldura', () => {
     expect(css).toMatch(/\.crash-avatar:has\(img\) \{ border: 0; background: none;/)
   })
   // "Achei o ícone muito pequeno" (Bruno, 2026-10-09): a foto cresce; a letra sem foto fica como era
-  it('com foto: 64 px em tela grande e 54 px em tela média (era 42 e 35)', () => {
-    expect(css).toMatch(/\.crash-avatar:has\(img\) \{ border: 0; background: none; width: 64px; height: 64px; \}/)
-    expect(css).toMatch(/@media \(max-width: 1400px\) and \(min-width: 761px\) \{ \.crash-avatar:has\(img\) \{ width: 54px; height: 54px; \} \}/)
+  it('com foto: 80 px em tela grande e 68 px em tela média (era 42 e 35; "deixa maior")', () => {
+    expect(css).toMatch(/\.crash-avatar:has\(img\) \{ border: 0; background: none; width: 80px; height: 80px; \}/)
+    expect(css).toMatch(/@media \(max-width: 1400px\) and \(min-width: 761px\) \{ \.crash-avatar:has\(img\) \{ width: 68px; height: 68px; \} \}/)
   })
 })
 

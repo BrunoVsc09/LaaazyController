@@ -389,7 +389,7 @@ html.lz-pad, html.lz-pad * { cursor: none !important; }
 html.lz-pad .lz-strip-arrow { display: none; }
 
 /* Foto do perfil no topo: sem a moldura laranja da letra (pedido do Bruno) */
-.crash-avatar:has(img) { border: 0; background: none; width: 64px; height: 64px; }
-@media (max-width: 1400px) and (min-width: 761px) { .crash-avatar:has(img) { width: 54px; height: 54px; } }
+.crash-avatar:has(img) { border: 0; background: none; width: 80px; height: 80px; }
+@media (max-width: 1400px) and (min-width: 761px) { .crash-avatar:has(img) { width: 68px; height: 68px; } }
 /* Avatar do topo redondo, como nas boas-vindas (pedido do Bruno) */
 .crash-avatar { border-radius: 50%; }
