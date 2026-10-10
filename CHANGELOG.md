@@ -1,5 +1,14 @@
 # Novidades do Laaazy
 
+## Próxima versão (ainda não lançada)
+
+### Mudou
+- **Analógico mais fluido no Início (pedido do Bruno):** um toque anda um card; segurando, o 2º passo
+  espera um pouco e depois acelera (até um card a cada 0,11 s), em vez de 0,22 s fixo. O analógico
+  segue só a direção mais forte (meio na diagonal não pula de fileira), responde mais rápido e as
+  fileiras rolam suave. Andando para os lados, a borda fica na fileira e para no último card, em vez
+  de pular para outra fileira.
+
 ## 3.6.3 — 2026-10-09
 
 ### Mudou

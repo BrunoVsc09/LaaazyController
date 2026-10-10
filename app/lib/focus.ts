@@ -2,9 +2,10 @@ import gamepad from '../../shared/gamepad'
 
 // Move o foco entre os elementos de `selector` pelo D-pad/analógico
 export function focusMove(selector: string, dx: number, dy: number) {
+  const row = rowScope(document.activeElement as HTMLElement | null, dx) as HTMLElement | null
   const els = Array.from(document.querySelectorAll<HTMLElement>(selector)).filter((el) => {
     const r = el.getBoundingClientRect()
-    return r.width > 0 && r.height > 0
+    return r.width > 0 && r.height > 0 && (!row || row.contains(el))
   })
   const i = gamepad.pickNext(els.map((e) => e.getBoundingClientRect()), els.indexOf(document.activeElement as HTMLElement), dx, dy)
   const next = els[i]
@@ -24,6 +25,10 @@ export function hoverTarget(target: ElLike | null, active: ElLike | null, select
   if (active?.tagName === 'INPUT' || active?.tagName === 'TEXTAREA') return null
   return el
 }
+
+// Andando para os lados num card de fileira: só a mesma fileira (no fim dela a borda para, em vez de
+// pular para outra fileira). Para cima/baixo, ou fora de fileira: null = a tela toda
+export const rowScope = (active: ElLike | null, dx: number) => (dx ? active?.closest('.lz-strip') ?? null : null)
 
 // Clique no fundo da tela tiraria o foco (e a borda) de tudo: nesse caso o clique não mexe no foco
 export const keepsFocusOnPress = (target: ElLike | null) => !target?.closest(PRESSABLE)

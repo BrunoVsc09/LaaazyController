@@ -50,6 +50,15 @@ describe('dpadDirection e stickDirection (separados: o analógico pode estar vir
     expect(gp.stickDirection(pad([], [0, 0.9]))).toEqual({ dx: 0, dy: 1 })
     expect(gp.stickDirection(pad([15]))).toEqual({ dx: 0, dy: 0 })
   })
+  // "Deixe mais fluido" (Bruno, 2026-10-10): inclinar meio na diagonal pulava de fileira sem querer
+  it('analógico: só a direção mais forte (diagonal não anda nos dois eixos)', () => {
+    expect(gp.stickDirection(pad([], [0.7, 0.65]))).toEqual({ dx: 1, dy: 0 })
+    expect(gp.stickDirection(pad([], [0.62, -0.9]))).toEqual({ dx: 0, dy: -1 })
+  })
+  it('analógico: responde a partir de meia inclinação (zona morta 0,5)', () => {
+    expect(gp.stickDirection(pad([], [-0.55, 0.1]))).toEqual({ dx: -1, dy: 0 })
+    expect(gp.stickDirection(pad([], [0.45, 0.3]))).toEqual({ dx: 0, dy: 0 })
+  })
   it('algum botão apertado (inclui D-pad; analógico não conta)', () => {
     expect(gp.anyButton(pad([0]))).toBe(true)
     expect(gp.anyButton(pad([], [1, 1]))).toBe(false)

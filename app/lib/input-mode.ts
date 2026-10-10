@@ -5,10 +5,10 @@ const MIN_MOVE = 4 // px
 // Analógico que mexe o mouse e também aparece como controle: logo depois de um movimento
 // real do mouse, sinal do controle não troca o modo (senão o cursor fica piscando)
 const MOUSE_HOLD_MS = 250
-// Analógico só navega com o mouse parado há 1 s e depois de 150 ms inclinado: no perfil PC
+// Analógico só navega com o mouse parado há 1 s e depois de 80 ms inclinado: no perfil PC
 // ele move o cursor, e o 1º quadro chega antes do movimento do mouse
 const STICK_QUIET_MS = 1000
-const STICK_HOLD_MS = 150
+const STICK_HOLD_MS = 80
 
 export type InputMode = 'pad' | 'mouse'
 

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { hoverTarget, isMouseBack, keepsFocusOnPress, needsKeyFocus, stripEnds, stripTarget } from './focus'
+import { hoverTarget, isMouseBack, keepsFocusOnPress, needsKeyFocus, rowScope, stripEnds, stripTarget } from './focus'
 
 // Elemento falso: closest devolve o que estiver no mapa para o seletor pedido
 type Fake = { tagName: string; closest: (sel: string) => Fake | null }
@@ -78,5 +78,21 @@ describe('isMouseBack: botão "voltar" do mouse (o de lado) faz o mesmo que o �
   it('só o botão 3 (voltar)', () => {
     expect(isMouseBack(3)).toBe(true)
     for (const b of [0, 1, 2, 4]) expect(isMouseBack(b)).toBe(false)
+  })
+})
+
+// "Deixe mais fluido" (Bruno, 2026-10-10): segurando → no fim de uma fileira, a borda pulava para outra
+describe('rowScope: andando para os lados, a borda fica na fileira', () => {
+  const strip = el('DIV')
+  const card = el('BUTTON', { '.lz-strip': strip })
+  const hero = el('BUTTON')
+  it('card numa fileira, indo para o lado: só os da mesma fileira', () => {
+    expect(rowScope(card, 1)).toBe(strip)
+    expect(rowScope(card, -1)).toBe(strip)
+  })
+  it('para cima/baixo, ou fora de fileira (botões do destaque): a tela toda', () => {
+    expect(rowScope(card, 0)).toBeNull()
+    expect(rowScope(hero, 1)).toBeNull()
+    expect(rowScope(null, 1)).toBeNull()
   })
 })

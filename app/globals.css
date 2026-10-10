@@ -393,3 +393,7 @@ html.lz-pad .lz-strip-arrow { display: none; }
 @media (max-width: 1400px) and (min-width: 761px) { .crash-avatar:has(img) { width: 38px; height: 38px; } }
 /* Avatar do topo redondo, como nas boas-vindas (pedido do Bruno) */
 .crash-avatar { border-radius: 50%; }
+
+/* Andar com o controle rola suave (fileiras e a página do Início) */
+.lz-strip { scroll-behavior: smooth; }
+html:has(.lz-home) { scroll-behavior: smooth; }

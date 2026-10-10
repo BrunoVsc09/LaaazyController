@@ -161,3 +161,11 @@ describe('avatar do topo redondo', () => {
     expect(css).toMatch(/\.crash-avatar img \{[^}]*border-radius: inherit;/)
   })
 })
+
+// "Deixe mais fluido" (Bruno, 2026-10-10): andar com o controle rola as fileiras e o Início suave
+describe('rolagem suave no Início', () => {
+  it('fileiras e a página do Início rolam suave (o foco leva a tela junto)', () => {
+    expect(css).toMatch(/\.lz-strip \{ scroll-behavior: smooth; \}/)
+    expect(css).toMatch(/html:has\(\.lz-home\) \{ scroll-behavior: smooth; \}/)
+  })
+})

@@ -38,10 +38,14 @@ function dpadDirection(pad) {
   const dy = isDown(pad, BTN.DOWN) ? 1 : isDown(pad, BTN.UP) ? -1 : 0
   return { dx, dy }
 }
+// Analógico navegando: só a direção mais forte (meio na diagonal não pula de fileira) e a partir
+// de meia inclinação
+const STICK_DEAD_ZONE = 0.5
 function stickDirection(pad) {
   const x = pad.axes[0] || 0
   const y = pad.axes[1] || 0
-  return { dx: x > DEAD_ZONE ? 1 : x < -DEAD_ZONE ? -1 : 0, dy: y > DEAD_ZONE ? 1 : y < -DEAD_ZONE ? -1 : 0 }
+  if (Math.max(Math.abs(x), Math.abs(y)) <= STICK_DEAD_ZONE) return { dx: 0, dy: 0 }
+  return Math.abs(x) >= Math.abs(y) ? { dx: Math.sign(x), dy: 0 } : { dx: 0, dy: Math.sign(y) }
 }
 const anyButton = (pad) => (pad.buttons || []).some((b) => b && b.pressed)
 

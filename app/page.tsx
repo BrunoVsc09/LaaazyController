@@ -28,10 +28,10 @@ import { getLazy } from './lib/lazy-api'
 import { applyTheme } from './lib/theme'
 import { OSK_HINTS, createOskPad } from './lib/osk'
 import { createIdle } from './lib/screensaver'
+import { repeatDelay } from './lib/nav-repeat'
 import { initialScreen, screenReducer, type Screen, showsTabs, tabStep } from './lib/screen-state'
 
 const { BTN } = gamepad
-const REPEAT_MS = 220
 const ANIM_MS = { entering: 420, leaving: 620 }
 // Tudo o que dá para focar na tela; o controle anda até o mais próximo na direção
 const FOCUSABLE = '.ps4-screen button:not(:disabled), .ps4-screen input'
@@ -46,7 +46,8 @@ export default function Page() {
   const stateRef = useRef(state)
   stateRef.current = state
   const sounds = useSounds()
-  const lastMove = useRef(0)
+  // Direção segurada: o 1º passo é na hora; depois espera e acelera (lib/nav-repeat)
+  const held = useRef({ dir: '', steps: 0, at: 0 })
   const [pinned, setPinned] = useState<string[]>(DEFAULT_PINNED)
   // Teclado na tela: aberto para um campo de texto (X do controle num campo)
   const [oskTarget, setOskTarget] = useState<HTMLInputElement | null>(null)
@@ -169,11 +170,17 @@ export default function Page() {
     // Janelinhas dentro das telas (ex.: escolher perfil do jogo) marcadas com data-modal
     const inner = !!document.querySelector('[data-modal]')
     const now = performance.now()
-    if ((dx || dy) && now - lastMove.current > REPEAT_MS) {
-      focusMove(navSelector(osk, modal, inner), dx, dx ? 0 : dy)
-      lastMove.current = now
-    }
-    if (!dx && !dy) lastMove.current = 0
+    if (dx || dy) {
+      const h = held.current
+      const dir = `${dx},${dy}`
+      if (h.dir !== dir) held.current = { dir, steps: 0, at: 0 } // mudou de direção: anda na hora
+      const cur = held.current
+      if (cur.steps === 0 || now - cur.at >= repeatDelay(cur.steps)) {
+        focusMove(navSelector(osk, modal, inner), dx, dx ? 0 : dy)
+        cur.at = now
+        cur.steps++
+      }
+    } else held.current = { dir: '', steps: 0, at: 0 }
     if (osk) {
       if (fired(BTN.X)) padClick()
       for (const key of oskPad.current({ fired, down }, now)) oskPress.current?.(key) // □ △ L1 R1 R2
