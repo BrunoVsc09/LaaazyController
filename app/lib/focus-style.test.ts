@@ -152,3 +152,12 @@ describe('foto do perfil no topo sem moldura', () => {
     expect(css).toMatch(/@media \(max-width: 1400px\) and \(min-width: 761px\) \{ \.crash-avatar:has\(img\) \{ width: 54px; height: 54px; \} \}/)
   })
 })
+
+// "Tem como ser redondo o perfil?" (Bruno, 2026-10-09): o avatar do topo é um círculo, como nas
+// boas-vindas e nas Configurações (com foto ou com a letra)
+describe('avatar do topo redondo', () => {
+  it('círculo, e a foto acompanha (border-radius: inherit)', () => {
+    expect(css).toMatch(/\.crash-avatar \{ border-radius: 50%; \}/)
+    expect(css).toMatch(/\.crash-avatar img \{[^}]*border-radius: inherit;/)
+  })
+})

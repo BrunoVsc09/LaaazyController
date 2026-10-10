@@ -3,8 +3,9 @@
 ## Próxima versão (ainda não lançada)
 
 ### Mudou
-- **Foto do perfil maior no topo (pedido do Bruno):** 64 px em telas grandes e 54 px nas médias
-  (era 42 e 35). Sem foto, a letra do nome continua do mesmo tamanho.
+- **Foto do perfil maior e redonda no topo (pedido do Bruno):** 64 px em telas grandes e 54 px nas
+  médias (era 42 e 35), em círculo como nas boas-vindas. Sem foto, a letra do nome continua do mesmo
+  tamanho, também em círculo.
 
 ## 3.6.1 — 2026-10-09
 
