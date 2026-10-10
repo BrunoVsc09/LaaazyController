@@ -387,3 +387,6 @@ html.lz-pad, html.lz-pad * { cursor: none !important; }
 .lz-strip-arrow.prev { left: 0; border-radius: 14px 0 0 14px; background: linear-gradient(90deg, rgba(0, 0, 0, .7), transparent); }
 .lz-strip-arrow.next { right: 0; border-radius: 0 14px 14px 0; background: linear-gradient(270deg, rgba(0, 0, 0, .7), transparent); }
 html.lz-pad .lz-strip-arrow { display: none; }
+
+/* Foto do perfil no topo: sem a moldura laranja da letra (pedido do Bruno) */
+.crash-avatar:has(img) { border: 0; background: none; }

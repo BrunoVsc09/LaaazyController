@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import streaming from '../../shared/streaming'
 import ApiKeySection from '../components/ApiKeySection'
+import ProfileSettings from '../components/ProfileSettings'
 import { nextMinutes } from '../lib/screensaver'
 import { getLazy, type DrmStatus, type StreamMode } from '../lib/lazy-api'
 import { DEFAULT_THEME, applyTheme, nextTheme, themeLabel, themeOf } from '../lib/theme'
@@ -111,6 +112,7 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
       <button className="library-back" onClick={onBack} onMouseEnter={sounds.hover}>‹ Configurações</button>
       <h1>Configurações</h1>
       {msg && <p className="ds4-help" style={{ color: '#ffd23f' }}>{msg}</p>}
+      <ProfileSettings sounds={sounds} onMsg={setMsg} />
       <button className="ds4-row" onClick={tap(() => choose('edge', 'Edge'))} onMouseEnter={sounds.hover}><span>Pasta do Edge</span><b>{paths.edge || 'não encontrado, toque para escolher'}</b></button>
       <button className="ds4-row" onClick={tap(() => choose('laaazypad', 'Laaazy-pad'))} onMouseEnter={sounds.hover}><span>Pasta do Laaazy-pad (perfis do controle)</span><b>{paths.laaazypad || 'não encontrado, toque para escolher'}</b></button>
       <button className="ds4-row" onClick={tap(cycleTheme)} onMouseEnter={sounds.hover}><span>Cor do Laaazy</span><b>{themeLabel(theme)}</b></button>

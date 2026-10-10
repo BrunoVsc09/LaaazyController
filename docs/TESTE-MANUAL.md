@@ -62,6 +62,8 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Abrir um card aplica o perfil configurado; voltar ao menu aplica o do Menu
 
 ## Configurações
+- [ ] No topo, "Seu perfil": escolher outra foto muda na hora (e no topo); + escolhe uma do PC; "Salvar nome" troca o nome do topo (igual ao atual avisa "Esse já é o seu nome.")
+- [ ] A foto no topo aparece sem a moldura laranja
 - [ ] Cor do Laaazy: ✕ passa por Azul com efeito → Preto com efeito → Preto e vermelho com efeito → Preto moderno com azul; muda na hora e continua depois de reabrir o app
 - [ ] Pasta do Edge: escolher pasta sem msedge.exe mostra erro; pasta certa salva
 - [ ] Pasta do Laaazy-pad: idem com LaaazyPad.exe

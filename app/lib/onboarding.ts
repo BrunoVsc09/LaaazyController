@@ -21,6 +21,10 @@ export function nameError(name: string): string {
   return n.length > 20 ? 'Use até 20 letras.' : ''
 }
 
+// Configurações → Seu perfil: "Salvar nome" ('' = pode salvar)
+export const nameSaveError = (current: string, typed: string) =>
+  typed.trim() === current ? 'Esse já é o seu nome.' : nameError(typed)
+
 export const CREATOR = {
   name: 'Bruno',
   handle: 'BrunoVsc09',

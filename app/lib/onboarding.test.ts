@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { WELCOME_STEPS, stepAfter, stepBefore, CREATOR, HARDWARE, APIS, nameError } from './onboarding'
+import { WELCOME_STEPS, stepAfter, stepBefore, CREATOR, HARDWARE, APIS, nameError, nameSaveError } from './onboarding'
 
 // Boas-vindas (pedido do Bruno, 2026-10-09)
 describe('passos das boas-vindas', () => {
@@ -35,5 +35,17 @@ describe('APIs explicadas', () => {
   it('TMDB recomendada; Gemini, YouTube e SteamGridDB opcionais, cada uma com onde pegar a chave', () => {
     expect(APIS.map((a) => [a.id, a.required])).toEqual([['tmdb', true], ['gemini', false], ['youtube', false], ['steamgrid', false]])
     expect(APIS.every((a) => a.what && a.where)).toBe(true)
+  })
+})
+
+// Trocar nome e foto nas Configurações (pedido do Bruno, 2026-10-09)
+describe('nameSaveError', () => {
+  it('nome novo e válido: pode salvar', () => {
+    expect(nameSaveError('Bruno', 'Bruninho')).toBe('')
+  })
+  it('igual ao atual (com espaços a mais), vazio ou grande demais: diz o porquê', () => {
+    expect(nameSaveError('Bruno', ' Bruno ')).toBe('Esse já é o seu nome.')
+    expect(nameSaveError('Bruno', '  ')).toBe('Escolha um nome.')
+    expect(nameSaveError('Bruno', 'x'.repeat(21))).toBe('Use até 20 letras.')
   })
 })

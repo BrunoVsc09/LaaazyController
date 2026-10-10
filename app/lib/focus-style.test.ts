@@ -140,3 +140,10 @@ describe('cursor do mouse', () => {
     expect(css).toMatch(/html\.lz-pad \.lz-strip-arrow \{ display: none; \}/)
   })
 })
+
+// Pedido do Bruno (2026-10-09): a foto no topo sem a moldura laranja (fundo e borda da letra)
+describe('foto do perfil no topo sem moldura', () => {
+  it('com foto: sem borda e sem o fundo laranja; sem foto, a letra continua igual', () => {
+    expect(css).toMatch(/\.crash-avatar:has\(img\) \{ border: 0; background: none; \}/)
+  })
+})

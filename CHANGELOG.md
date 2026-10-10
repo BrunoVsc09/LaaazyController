@@ -1,5 +1,16 @@
 # Novidades do Laaazy
 
+## Próxima versão (ainda não lançada)
+
+### Novo
+- **Trocar nome e foto do perfil (pedido do Bruno):** no topo das Configurações, "Seu perfil" com o
+  nome e as fotos (as autorais ou uma do seu PC, pelo +), como nas boas-vindas. A foto muda na hora,
+  o nome no "Salvar nome", e o topo do Laaazy atualiza junto.
+
+### Mudou
+- **Foto do topo sem moldura (pedido do Bruno):** com foto, sai a borda e o fundo laranja em volta;
+  sem foto, a letra do nome continua como era.
+
 ## 3.6.0 — 2026-10-09
 
 ### Novo
