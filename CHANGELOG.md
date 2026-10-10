@@ -1,6 +1,6 @@
 # Novidades do Laaazy
 
-## Próxima versão (ainda não lançada)
+## 3.6.2 — 2026-10-09
 
 ### Mudou
 - **Foto do perfil maior e redonda no topo (pedido do Bruno):** 50 px em telas grandes e 38 px nas
