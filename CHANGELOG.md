@@ -1,6 +1,6 @@
 # Novidades do Laaazy
 
-## Próxima versão (ainda não lançada)
+## 3.6.1 — 2026-10-09
 
 ### Novo
 - **Trocar nome e foto do perfil (pedido do Bruno):** no topo das Configurações, "Seu perfil" com o
