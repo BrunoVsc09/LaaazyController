@@ -1,6 +1,6 @@
 # Novidades do Laaazy
 
-## Próxima versão (ainda não lançada)
+## 3.6.3 — 2026-10-09
 
 ### Mudou
 - **O Laaazy-pad vem junto no instalador (pedido do Bruno):** quem instala o Laaazy num PC novo já
