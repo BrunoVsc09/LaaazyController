@@ -1,6 +1,6 @@
 # Novidades do Laaazy
 
-## Próxima versão (ainda não lançada)
+## 3.6.0 — 2026-10-09
 
 ### Novo
 - **Editor de perfis do controle (pedido do Bruno):** a tela Perfis do controle virou um editor
