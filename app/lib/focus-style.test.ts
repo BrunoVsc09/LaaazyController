@@ -144,6 +144,11 @@ describe('cursor do mouse', () => {
 // Pedido do Bruno (2026-10-09): a foto no topo sem a moldura laranja (fundo e borda da letra)
 describe('foto do perfil no topo sem moldura', () => {
   it('com foto: sem borda e sem o fundo laranja; sem foto, a letra continua igual', () => {
-    expect(css).toMatch(/\.crash-avatar:has\(img\) \{ border: 0; background: none; \}/)
+    expect(css).toMatch(/\.crash-avatar:has\(img\) \{ border: 0; background: none;/)
+  })
+  // "Achei o ícone muito pequeno" (Bruno, 2026-10-09): a foto cresce; a letra sem foto fica como era
+  it('com foto: 64 px em tela grande e 54 px em tela média (era 42 e 35)', () => {
+    expect(css).toMatch(/\.crash-avatar:has\(img\) \{ border: 0; background: none; width: 64px; height: 64px; \}/)
+    expect(css).toMatch(/@media \(max-width: 1400px\) and \(min-width: 761px\) \{ \.crash-avatar:has\(img\) \{ width: 54px; height: 54px; \} \}/)
   })
 })

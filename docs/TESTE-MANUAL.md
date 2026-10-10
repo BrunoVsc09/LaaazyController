@@ -63,7 +63,7 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 
 ## Configurações
 - [ ] No topo, "Seu perfil": escolher outra foto muda na hora (e no topo); + escolhe uma do PC; "Salvar nome" troca o nome do topo (igual ao atual avisa "Esse já é o seu nome.")
-- [ ] A foto no topo aparece sem a moldura laranja
+- [ ] A foto no topo aparece sem a moldura laranja, maior que a letra (64 px em 1920×1080)
 - [ ] Cor do Laaazy: ✕ passa por Azul com efeito → Preto com efeito → Preto e vermelho com efeito → Preto moderno com azul; muda na hora e continua depois de reabrir o app
 - [ ] Pasta do Edge: escolher pasta sem msedge.exe mostra erro; pasta certa salva
 - [ ] Pasta do Laaazy-pad: idem com LaaazyPad.exe
@@ -221,6 +221,8 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Abrir `dist/Laaazy 3.2.0.exe`: Início, Biblioteca, trailer, teclado por cima (Ctrl+Alt+K) e PS funcionam.
 
 ## Atualização pelo GitHub
+> ✅ 2026-10-09 (Bruno): 3.6.0 instalada pelo Setup → aviso "Nova versão 3.6.1" → Atualizar agora → baixou, instalou sem janelas e reabriu na 3.6.1.
+
 - [ ] `pnpm release` cria `dist/release-vX.Y.Z` com o instalador, o `.sha256`, o `.sig` e o `RELEASE-NOTES.md`
 - [ ] Release sem o `.sig` (ou com `.sig` de outra chave): o Laaazy instalado não oferece / não instala
 - [ ] Instalar uma versão pelo `Laaazy-Setup-...exe` (uma vez); publicar no GitHub uma versão mais nova (tag `vX.Y.Z`, com o instalador e o `.sha256`)

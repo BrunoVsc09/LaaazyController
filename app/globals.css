@@ -389,4 +389,5 @@ html.lz-pad, html.lz-pad * { cursor: none !important; }
 html.lz-pad .lz-strip-arrow { display: none; }
 
 /* Foto do perfil no topo: sem a moldura laranja da letra (pedido do Bruno) */
-.crash-avatar:has(img) { border: 0; background: none; }
+.crash-avatar:has(img) { border: 0; background: none; width: 64px; height: 64px; }
+@media (max-width: 1400px) and (min-width: 761px) { .crash-avatar:has(img) { width: 54px; height: 54px; } }
