@@ -1,6 +1,6 @@
 # Novidades do Laaazy
 
-## Próxima versão (ainda não lançada)
+## 3.6.4 — 2026-10-10
 
 ### Novo
 - **Botão de voltar gravado no controle (pedido do Bruno):** para controle em que o PS (Home) não
@@ -16,10 +16,6 @@
   quase no rodapé). O analógico segue só a direção mais forte (meio na diagonal não pula de fileira),
   responde mais rápido e tudo rola suave. Andando para os lados, a borda para no último card da
   fileira, em vez de pular para outra.
-
-## 3.6.3 — 2026-10-09
-
-### Mudou
 - **O Laaazy-pad vem junto no instalador (pedido do Bruno):** quem instala o Laaazy num PC novo já
   ganha os perfis do controle e o botão PS, com qualquer controle (DualShock, 8BitDo, Xbox…), sem
   instalar nada à parte; as atualizações trazem o Laaazy-pad junto. Os perfis continuam em
