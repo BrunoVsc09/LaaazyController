@@ -9,11 +9,13 @@
   o PS (que continua valendo). Gravar de novo troca o botão. Nos jogos, ele também volta ao Laaazy.
 
 ### Mudou
-- **Analógico mais fluido no Início (pedido do Bruno):** um toque anda um card; segurando, o 2º passo
-  espera um pouco e depois acelera (até um card a cada 0,11 s), em vez de 0,22 s fixo. O analógico
-  segue só a direção mais forte (meio na diagonal não pula de fileira), responde mais rápido e as
-  fileiras rolam suave. Andando para os lados, a borda fica na fileira e para no último card, em vez
-  de pular para outra fileira.
+- **Analógico mais fluido no Início (pedido do Bruno; "lento" e "subir e descer é ruim"):** um toque
+  anda um card; segurando, o 2º passo espera um pouco e depois acelera (até um card a cada 0,085 s),
+  em vez de 0,22 s fixo. Subindo e descendo, a fileira escolhida para sempre logo abaixo do destaque,
+  com o título à vista e a próxima aparecendo embaixo (antes parava cada hora num lugar, às vezes
+  quase no rodapé). O analógico segue só a direção mais forte (meio na diagonal não pula de fileira),
+  responde mais rápido e tudo rola suave. Andando para os lados, a borda para no último card da
+  fileira, em vez de pular para outra.
 
 ## 3.6.3 — 2026-10-09
 

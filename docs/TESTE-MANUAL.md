@@ -151,6 +151,7 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 
 ## Início: filmes no topo e prévia
 - [ ] Analógico: um toque anda um card; segurando, anda e acelera; diagonal não troca de fileira; no fim da fileira a borda para (não pula para outra)
+- [ ] Subindo/descendo: cada fileira para logo abaixo do destaque, com o título à vista (não fica no rodapé)
 - [ ] Ao abrir, o foco já está no primeiro filme/série; as fileiras de títulos vêm logo abaixo do destaque
 - [ ] A prévia ocupa quase metade da largura (em 1080p, ~833×469) e a primeira fileira aparece inteira
 - [ ] Parado num título ~1s, o trailer toca sem som no quadro do destaque; passar para o próximo troca a prévia

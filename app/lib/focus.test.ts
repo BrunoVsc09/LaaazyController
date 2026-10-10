@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { hoverTarget, isMouseBack, keepsFocusOnPress, needsKeyFocus, rowScope, stripEnds, stripTarget } from './focus'
+import { hoverTarget, isMouseBack, keepsFocusOnPress, needsKeyFocus, rowScope, rowAnchor, stripEnds, stripTarget } from './focus'
 
 // Elemento falso: closest devolve o que estiver no mapa para o seletor pedido
 type Fake = { tagName: string; closest: (sel: string) => Fake | null }
@@ -94,5 +94,20 @@ describe('rowScope: andando para os lados, a borda fica na fileira', () => {
     expect(rowScope(card, 0)).toBeNull()
     expect(rowScope(hero, 1)).toBeNull()
     expect(rowScope(null, 1)).toBeNull()
+  })
+})
+
+// "Subir e descer é ruim" (Bruno, 2026-10-10): a tela rolava o mínimo e a fileira parava cada hora
+// num lugar (descendo, quase no rodapé). Agora a fileira escolhida para logo abaixo do destaque
+describe('rowAnchor: subindo/descendo no Início, a fileira inteira para no mesmo lugar', () => {
+  const row = el('DIV')
+  const card = el('BUTTON', { '.lz-home .lz-row': row })
+  it('card de fileira do Início, para cima ou para baixo: a fileira', () => {
+    expect(rowAnchor(card, 1)).toBe(row)
+    expect(rowAnchor(card, -1)).toBe(row)
+  })
+  it('para os lados, ou fora das fileiras do Início: nada (rola só o necessário)', () => {
+    expect(rowAnchor(card, 0)).toBeNull()
+    expect(rowAnchor(el('BUTTON'), 1)).toBeNull()
   })
 })
