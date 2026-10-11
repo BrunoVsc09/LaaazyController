@@ -235,7 +235,7 @@ export default function Page() {
       {state.screen === 'library' && <LibraryScreen onBack={back} sounds={sounds} />}
       {state.screen === 'apps' && <AppsScreen pinned={pinned} sounds={sounds} onActivate={activate} onTogglePin={onTogglePin} />}
       {state.screen === 'ds4' && <Ds4Screen onBack={back} sounds={sounds} />}
-      {state.screen === 'settings' && <SettingsScreen onBack={back} sounds={sounds} />}
+      {state.screen === 'settings' && <SettingsScreen onBack={back} onController={() => go('ds4')} sounds={sounds} />}
       {state.screen === 'search' && <SearchScreen sounds={sounds} onActivate={activate} onBack={back} />}
       {state.screen === 'welcome' && <WelcomeScreen sounds={sounds} onDone={() => dispatch({ type: 'goHome' })} />}
       {state.screen !== 'welcome' && <UpdatePrompt sounds={sounds} />}

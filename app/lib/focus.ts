@@ -8,13 +8,23 @@ export function focusMove(selector: string, dx: number, dy: number) {
     return r.width > 0 && r.height > 0 && (!strip || strip.contains(el))
   })
   const i = gamepad.pickNext(els.map((e) => e.getBoundingClientRect()), els.indexOf(document.activeElement as HTMLElement), dx, dy)
-  const next = els[i]
+  const next = els[i] && (groupEntry(els[i], document.activeElement) as HTMLElement)
   if (!next || next === document.activeElement) return
   next.focus()
   // Subindo/descendo no Início, a fileira para sempre logo abaixo do destaque (scroll-padding-top)
   const row = rowAnchor(next, dy) as HTMLElement | null
   if (row) row.scrollIntoView({ block: 'start' })
   else next.scrollIntoView({ block: 'nearest' })
+}
+
+// Grupo com item de entrada (data-focus-group + data-entry, ex.: o menu de categorias das
+// Configurações): chegando nele de fora, a borda vai para o item de entrada (a categoria aberta)
+type GroupLike = { querySelector: (sel: string) => unknown }
+type Focusable = { closest: (sel: string) => unknown }
+export function groupEntry<T extends Focusable>(next: T, active: Focusable | null): T {
+  const group = next.closest('[data-focus-group]') as GroupLike | null
+  if (!group || active?.closest('[data-focus-group]') === group) return next
+  return (group.querySelector('[data-entry]') as T | null) ?? next
 }
 
 // Cursor do analógico (perfil PC do Laaazy-pad): o foco acompanha o cursor, senão a borda

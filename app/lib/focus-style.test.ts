@@ -194,3 +194,14 @@ describe('rodapé não cobre o conteúdo', () => {
     expect(themes).toMatch(/\.ps4-footer \{ background: linear-gradient\(180deg, transparent, rgba\(0, 0, 0, \.88\) 55%\); \}/)
   })
 })
+
+// Configurações por categoria (2026-10-10): menu à esquerda, a categoria escolhida à direita
+describe('Configurações em duas colunas', () => {
+  it('menu de categorias à esquerda e o painel à direita, usando a largura da tela', () => {
+    expect(css).toMatch(/\.settings-view \{ max-width: 1280px; \}/)
+    expect(css).toMatch(/\.settings-layout \{ display: grid; grid-template-columns: 260px minmax\(0, 1fr\);/)
+  })
+  it('a categoria aberta fica marcada no menu', () => {
+    expect(css).toMatch(/\.settings-cat\.on \{[^}]*\}/)
+  })
+})

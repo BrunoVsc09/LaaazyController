@@ -65,6 +65,9 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Abrir um card aplica o perfil configurado; voltar ao menu aplica o do Menu
 
 ## Configurações
+- [ ] Abre em "Perfil", com as categorias à esquerda; L1/R1 trocam a categoria (não trocam com o teclado na tela aberto)
+- [ ] → entra na categoria; ← volta para a categoria aberta (não para a vizinha)
+- [ ] Avançado: Edge e Laaazy-pad como "✓ Encontrado" com o caminho pequeno embaixo; modelo do Gemini e aceleração de vídeo
 - [ ] Descendo até o fim com o controle, a opção escolhida fica sempre acima do rodapé ("Confirmar/Voltar" não cobre texto)
 - [ ] No topo, "Seu perfil": escolher outra foto muda na hora (e no topo); + escolhe uma do PC; "Salvar nome" troca o nome do topo (igual ao atual avisa "Esse já é o seu nome.")
 - [ ] A foto no topo aparece redonda, sem a moldura laranja, maior que a letra (50 px em 1920×1080)

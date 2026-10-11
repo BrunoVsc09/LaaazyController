@@ -2,6 +2,13 @@
 
 ## Próxima versão (ainda não lançada)
 
+### Mudou
+- **Configurações mais limpas (pedido de um usuário):** em vez de uma lista longa, categorias à
+  esquerda (Perfil, Aparência, Controle e mouse, Streaming, Contas e chaves, Sistema e Avançado) e
+  uma por vez à direita, com uma linha dizendo o que tem dentro. L1/R1 trocam a categoria; ← volta
+  para a categoria aberta. As pastas do Edge e do Laaazy-pad aparecem como "✓ Encontrado" e, com o
+  modelo do Gemini e a aceleração de vídeo, ficam no Avançado.
+
 ### Corrigido
 - **Trailer de outro filme (achado pelo Bruno):** em Naruto Shippuden aparecia o trailer do filme
   "Road to Ninja", e no Homem-Aranha o de outro filme. A busca no YouTube aceitava qualquer vídeo

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { hoverTarget, isMouseBack, keepsFocusOnPress, needsKeyFocus, rowScope, rowAnchor, stripEnds, stripTarget } from './focus'
+import { hoverTarget, isMouseBack, keepsFocusOnPress, needsKeyFocus, rowScope, rowAnchor, groupEntry, stripEnds, stripTarget } from './focus'
 
 // Elemento falso: closest devolve o que estiver no mapa para o seletor pedido
 type Fake = { tagName: string; closest: (sel: string) => Fake | null }
@@ -109,5 +109,20 @@ describe('rowAnchor: subindo/descendo no Início, a fileira inteira para no mesm
   it('para os lados, ou fora das fileiras do Início: nada (rola só o necessário)', () => {
     expect(rowAnchor(card, 0)).toBeNull()
     expect(rowAnchor(el('BUTTON'), 1)).toBeNull()
+  })
+})
+
+// Configurações (2026-10-10): do painel, ← caía na categoria mais próxima na tela, não na aberta
+describe('groupEntry: entrando num grupo (menu de categorias), a borda vai para o item de entrada', () => {
+  const entry = { tagName: 'BUTTON' }
+  const group = { querySelector: (sel: string) => (sel === '[data-entry]' ? entry : null) }
+  const inGroup = { closest: (sel: string) => (sel === '[data-focus-group]' ? group : null) }
+  const outside = { closest: () => null }
+  it('vindo de fora do grupo: o item de entrada (a categoria aberta)', () => {
+    expect(groupEntry(inGroup, outside)).toBe(entry)
+  })
+  it('já dentro do grupo, ou fora de qualquer grupo: o próprio alvo', () => {
+    expect(groupEntry(inGroup, inGroup)).toBe(inGroup)
+    expect(groupEntry(outside, inGroup)).toBe(outside)
   })
 })

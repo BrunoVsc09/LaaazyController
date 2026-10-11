@@ -402,3 +402,17 @@ html.lz-pad .lz-strip-arrow { display: none; }
 /* Andar com o controle rola suave (fileiras e a página do Início) */
 .lz-strip { scroll-behavior: smooth; }
 html:has(.lz-home) { scroll-behavior: smooth; }
+
+/* Configurações por categoria: menu à esquerda (L1/R1 trocam), a categoria aberta à direita */
+.settings-view { max-width: 1280px; }
+.settings-layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 36px; align-items: start; margin-top: 18px; }
+.settings-nav { position: sticky; top: 24px; display: flex; flex-direction: column; gap: 6px; }
+.settings-cat { padding: 13px 18px; border: 1px solid transparent; border-radius: 12px; background: transparent; color: rgba(219, 231, 255, .78); font-size: 18px; text-align: left; cursor: pointer; }
+.settings-cat:hover { background: rgba(255, 255, 255, .06); color: #fff; }
+.settings-cat.on { background: rgba(255, 255, 255, .12); border-color: rgba(255, 255, 255, .22); color: #fff; font-weight: 600; }
+.settings-l1r1 { margin: 10px 0 0 18px; color: rgba(219, 231, 255, .5); font-size: 13px; }
+.settings-panel h2 { margin: 0; font-size: 28px; font-weight: 500; color: #fff; }
+.settings-hint { margin: 4px 0 18px; color: rgba(219, 231, 255, .65); font-size: 15px; }
+.settings-msg { color: #ffd23f; }
+.settings-sub { margin: 26px 0 6px; font-size: 18px; font-weight: 500; color: #fff; }
+.settings-path { margin: -4px 4px 12px; color: rgba(219, 231, 255, .5); font-size: 13px; word-break: break-all; }

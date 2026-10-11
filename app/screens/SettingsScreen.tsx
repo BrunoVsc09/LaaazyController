@@ -1,19 +1,30 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
+import gamepad from '../../shared/gamepad'
 import streaming from '../../shared/streaming'
 import ApiKeySection from '../components/ApiKeySection'
 import ProfileSettings from '../components/ProfileSettings'
 import { nextMinutes } from '../lib/screensaver'
+import { SETTINGS_SECTIONS, nextSection, pathStatus, type SectionId } from '../lib/settings-menu'
+import { useGamepad } from '../hooks/useGamepad'
 import { getLazy, type DrmStatus, type StreamMode } from '../lib/lazy-api'
 import { DEFAULT_THEME, applyTheme, nextTheme, themeLabel, themeOf } from '../lib/theme'
 import type { Sounds } from '../hooks/useSounds'
 
-type Props = { onBack: () => void; sounds: Sounds }
+type Props = { onBack: () => void; onController: () => void; sounds: Sounds }
 const MODE_LABEL: Record<StreamMode, string> = { app: 'No app', edge: 'No Edge (tela cheia)' }
 
-export default function SettingsScreen({ onBack, sounds }: Props) {
+export default function SettingsScreen({ onBack, onController, sounds }: Props) {
   const lazy = getLazy()
+  // Uma categoria por vez (menu à esquerda); L1/R1 trocam, menos com o teclado na tela ou uma janelinha aberta
+  const [section, setSection] = useState<SectionId>('perfil')
+  const goSection = (id: SectionId) => { setSection(id); setMsg('') }
+  useGamepad(({ fired }) => {
+    if (document.querySelector('.osk, [data-modal], [data-pad-capture]')) return
+    const step = fired(gamepad.BTN.R1) ? 1 : fired(gamepad.BTN.L1) ? -1 : 0
+    if (step) { sounds.click(); goSection(nextSection(section, step)) }
+  })
   const [msg, setMsg] = useState('')
   const [paths, setPaths] = useState({ edge: '', laaazypad: '' })
   const [modes, setModes] = useState<Record<string, StreamMode>>({})
@@ -107,21 +118,11 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
   }
   const tap = (fn: () => void) => () => { sounds.click(); fn() }
 
-  return (
-    <section className="ds4-view settings-view" aria-label="Configurações">
-      <button className="library-back" onClick={onBack} onMouseEnter={sounds.hover}>‹ Configurações</button>
-      <h1>Configurações</h1>
-      {msg && <p className="ds4-help" style={{ color: '#ffd23f' }}>{msg}</p>}
-      <ProfileSettings sounds={sounds} onMsg={setMsg} />
-      <button className="ds4-row" onClick={tap(() => choose('edge', 'Edge'))} onMouseEnter={sounds.hover}><span>Pasta do Edge</span><b>{paths.edge || 'não encontrado, toque para escolher'}</b></button>
-      <button className="ds4-row" onClick={tap(() => choose('laaazypad', 'Laaazy-pad'))} onMouseEnter={sounds.hover}><span>Pasta do Laaazy-pad (perfis do controle)</span><b>{paths.laaazypad || 'não encontrado, toque para escolher'}</b></button>
-      <button className="ds4-row" onClick={tap(cycleTheme)} onMouseEnter={sounds.hover}><span>Cor do Laaazy</span><b>{themeLabel(theme)}</b></button>
-      <button className="ds4-row" onClick={tap(() => window.dispatchEvent(new Event('lz:welcome')))} onMouseEnter={sounds.hover}><span>Ver as boas-vindas de novo</span><b>▶</b></button>
-      <button className="ds4-row" onClick={tap(toggleLock)} onMouseEnter={sounds.hover}><span>Prender o mouse na tela do Laaazy</span><b>{lockOn ? 'Sim' : 'Não'}</b></button>
-      <button className="ds4-row" onClick={tap(toggleTrailer)} onMouseEnter={sounds.hover}><span>Prévia do trailer no Início</span><b>{trailerOn ? 'Ligada' : 'Desligada'}</b></button>
-      <button className="ds4-row" onClick={tap(togglePs)} onMouseEnter={sounds.hover}><span>Botão PS fecha o jogo</span><b>{psCloses ? 'Sim (fecha à força)' : 'Não (como console)'}</b></button>
-      <button className="ds4-row" onClick={tap(cycleSaver)} onMouseEnter={sounds.hover}><span>Proteção de tela</span><b>{saverMin ? `${saverMin} min` : 'Desligada'}</b></button>
-      <button className="ds4-row" onClick={tap(toggleLogin)} onMouseEnter={sounds.hover}><span>Abrir junto com o Windows</span><b>{atLogin ? 'Sim' : 'Não'}</b></button>
+  const row = (label: string, value: ReactNode, onClick: () => void) => (
+    <button className="ds4-row" onClick={tap(onClick)} onMouseEnter={sounds.hover}><span>{label}</span><b>{value}</b></button>
+  )
+  const keys = (
+    <>
       <ApiKeySection
         title="Filmes e séries (TMDB)" configured={tmdbOn} sounds={sounds}
         help='Para o Início mostrar filmes e séries. Crie uma chave grátis em themoviedb.org → Configurações → API e cole a "Chave da API" ou o "Token de Leitura da API" (X no campo abre o teclado).'
@@ -130,21 +131,8 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
         onResult={(m, on) => { setMsg(m); setTmdbOn(on) }}
       />
       <ApiKeySection
-        title="Parecido com este (Gemini)" configured={aiOn} sounds={sounds}
-        help={`Com △ num título do Início, a IA diz o clima dele e sugere outros com o mesmo clima. Chave grátis em aistudio.google.com → Get API key. ${aiOn ? `Restam ${aiLeft} de 50 pedidos hoje.` : ''}`}
-        note="A IA só sugere nomes; cada título é conferido no TMDB."
-        onSave={(k) => lazy!.ai.setKey(k)} onClear={() => lazy!.ai.clearKey()}
-        onResult={(m, on) => { setMsg(m); setAiOn(on) }}
-      />
-      <label className="ds4-row" style={{ cursor: 'text' }}>
-        <span>Modelo do Gemini</span>
-        <input value={aiModel} onChange={(e) => setAiModel(e.target.value)} spellCheck={false} aria-label="Modelo do Gemini"
-          style={{ flex: 1, marginLeft: 24, background: 'transparent', border: 0, color: 'inherit', font: 'inherit', textAlign: 'right' }} />
-      </label>
-      <button className="ds4-row" onClick={tap(saveModel)} onMouseEnter={sounds.hover}><span>Salvar modelo</span><b>▶</b></button>
-      <ApiKeySection
         title="Trailers dublados e legendados (YouTube)" configured={ytOn} sounds={sounds}
-        help={`Para o Início achar o trailer dublado ou legendado. No console.cloud.google.com (pode ser o mesmo projeto do Gemini): Biblioteca → "YouTube Data API v3" → Ativar; depois Credenciais → Criar chave de API. Se a chave do Gemini estiver no mesmo projeto e sem restrição, ela também serve. ${ytOn ? `Restam ${ytLeft} de 90 buscas hoje.` : ''}`}
+        help={`Para o Início achar o trailer dublado ou legendado. No console.cloud.google.com (pode ser o mesmo projeto do Gemini): Biblioteca → "YouTube Data API v3" → Ativar; depois Credenciais → Criar chave de API. ${ytOn ? `Restam ${ytLeft} de 90 buscas hoje.` : ''}`}
         note="Cada título é buscado uma vez e fica guardado por 30 dias."
         onSave={(k) => lazy!.yt.setKey(k)} onClear={() => lazy!.yt.clearKey()}
         onResult={(m, on) => { setMsg(m); setYtOn(on) }}
@@ -155,23 +143,76 @@ export default function SettingsScreen({ onBack, sounds }: Props) {
         onSave={(k) => lazy!.covers.setKey(k)} onClear={() => lazy!.covers.clearKey()}
         onResult={(m, on) => { setMsg(m); setGridOn(on) }}
       />
-      <h2 className="ds4-help">Onde abrir cada serviço</h2>
+      <ApiKeySection
+        title="Parecido com este (Gemini)" configured={aiOn} sounds={sounds}
+        help={`Com △ num título do Início, a IA diz o clima dele e sugere outros com o mesmo clima. Chave grátis em aistudio.google.com → Get API key. ${aiOn ? `Restam ${aiLeft} de 50 pedidos hoje.` : ''}`}
+        note="A IA só sugere nomes; cada título é conferido no TMDB."
+        onSave={(k) => lazy!.ai.setKey(k)} onClear={() => lazy!.ai.clearKey()}
+        onResult={(m, on) => { setMsg(m); setAiOn(on) }}
+      />
+    </>
+  )
+  const content: Record<SectionId, ReactNode> = {
+    perfil: <ProfileSettings sounds={sounds} onMsg={setMsg} />,
+    aparencia: <>
+      {row('Cor do Laaazy', themeLabel(theme), cycleTheme)}
+      {row('Prévia do trailer no Início', trailerOn ? 'Ligada' : 'Desligada', toggleTrailer)}
+      {row('Proteção de tela', saverMin ? `${saverMin} min` : 'Desligada', cycleSaver)}
+    </>,
+    controle: <>
+      {row('Botão PS fecha o jogo', psCloses ? 'Sim (fecha à força)' : 'Não (como console)', togglePs)}
+      {row('Prender o mouse na tela do Laaazy', lockOn ? 'Sim' : 'Não', toggleLock)}
+      {row('Perfis do controle (botões, botão de voltar)', '▶', onController)}
+    </>,
+    streaming: <>
       <p className="ds4-help">{drm ? drm.msg : 'Verificando o Widevine (DRM)...'} Se um vídeo não tocar dentro do app, troque o serviço para o Edge.</p>
       {streaming.map((s) => {
         const mode = modes[s.label] ?? (s.mode as StreamMode)
-        return (
-          <button key={s.label} className="ds4-row" onClick={tap(() => toggleMode(s.label, mode))} onMouseEnter={sounds.hover}>
-            <span>{s.label}</span><b>{MODE_LABEL[mode]}</b>
-          </button>
-        )
+        return <span key={s.label} style={{ display: 'contents' }}>{row(s.label, MODE_LABEL[mode], () => toggleMode(s.label, mode))}</span>
       })}
-      <h2 className="ds4-help">Aceleração de vídeo no Edge</h2>
+    </>,
+    chaves: keys,
+    sistema: <>
+      {row('Abrir junto com o Windows', atLogin ? 'Sim' : 'Não', toggleLogin)}
+      {row('Ver as boas-vindas de novo', '▶', () => window.dispatchEvent(new Event('lz:welcome')))}
+    </>,
+    avancado: <>
+      {row('Pasta do Edge', pathStatus(paths.edge), () => choose('edge', 'Edge'))}
+      {paths.edge && <p className="settings-path">{paths.edge}</p>}
+      {row('Pasta do Laaazy-pad', pathStatus(paths.laaazypad), () => choose('laaazypad', 'Laaazy-pad'))}
+      {paths.laaazypad && <p className="settings-path">{paths.laaazypad}</p>}
+      <label className="ds4-row" style={{ cursor: 'text' }}>
+        <span>Modelo do Gemini</span>
+        <input value={aiModel} onChange={(e) => setAiModel(e.target.value)} spellCheck={false} aria-label="Modelo do Gemini"
+          style={{ flex: 1, marginLeft: 24, background: 'transparent', border: 0, color: 'inherit', font: 'inherit', textAlign: 'right' }} />
+      </label>
+      {row('Salvar modelo', '▶', saveModel)}
+      <h3 className="settings-sub">Aceleração de vídeo no Edge</h3>
       <p className="ds4-help">Se um serviço abrir com tela preta no Edge, desligue a aceleração dele. Ele passa a abrir num perfil separado do Edge (entre na conta uma vez).</p>
-      {streaming.map((s) => (
-        <button key={`gpu-${s.label}`} className="ds4-row" onClick={tap(() => toggleGpu(s.label))} onMouseEnter={sounds.hover}>
-          <span>{s.label}</span><b>{noGpu.includes(s.label) ? 'Desligada' : 'Ligada'}</b>
-        </button>
-      ))}
+      {streaming.map((s) => <span key={`gpu-${s.label}`} style={{ display: 'contents' }}>{row(s.label, noGpu.includes(s.label) ? 'Desligada' : 'Ligada', () => toggleGpu(s.label))}</span>)}
+    </>,
+  }
+  const current = SETTINGS_SECTIONS.find((s) => s.id === section)!
+
+  return (
+    <section className="ds4-view settings-view" aria-label="Configurações">
+      <button className="library-back" onClick={onBack} onMouseEnter={sounds.hover}>‹ Configurações</button>
+      <h1>Configurações</h1>
+      <div className="settings-layout">
+        <nav className="settings-nav" aria-label="Categorias" data-focus-group>
+          {SETTINGS_SECTIONS.map((s) => (
+            <button key={s.id} type="button" className={`settings-cat ${section === s.id ? 'on' : ''}`} aria-current={section === s.id ? 'page' : undefined} data-entry={section === s.id || undefined}
+              onClick={tap(() => goSection(s.id))} onMouseEnter={sounds.hover}>{s.label}</button>
+          ))}
+          <p className="settings-l1r1">L1/R1 trocam a categoria</p>
+        </nav>
+        <div className="settings-panel">
+          <h2>{current.label}</h2>
+          <p className="settings-hint">{current.hint}</p>
+          {msg && <p className="ds4-help settings-msg" role="status">{msg}</p>}
+          {content[section]}
+        </div>
+      </div>
     </section>
   )
 }
