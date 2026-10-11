@@ -239,6 +239,7 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Sem internet: o Laaazy abre normal, sem aviso
 
 ## Trailers dublados e legendados (YouTube)
+- [ ] Naruto Shippuden e Homem-Aranha: a prévia é do próprio título (não de outro filme da franquia)
 - [ ] Configurações → Trailers (YouTube): colar a chave e salvar → "Chave do YouTube salva".
 - [ ] Início: em filmes populares aparece o selo "🇧🇷 Trailer dublado" ou "legendado" na prévia.
 - [ ] Voltar ao mesmo título: mesma prévia, e o "Restam N de 90" não cai de novo.

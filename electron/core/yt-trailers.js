@@ -6,6 +6,13 @@ const VIDEO_ID = /^[A-Za-z0-9_-]{1,20}$/
 // Reações, análises, resumos e vídeos de fã não são o trailer
 const NOT_TRAILER = /\b(reag\w*|react\w*|reacao|analise|explicad\w*|resumo|review|fan ?made|comentando|teoria\w*)\b/
 
+// Palavras que podem sobrar no nome do vídeo além do nome do título. Qualquer outra (ex.: "road to
+// ninja", "sem volta para casa") indica outro filme da mesma franquia: o vídeo fica de fora
+const EXTRA_OK = new Set(('trailer teaser oficial official dublado dublada legendado legendada temporada season '
+  + 'parte final novo nova br brasil pt ptbr portugues hd fullhd 4k em do da de o a e filme serie anime '
+  + 'netflix prime video amazon disney max hbo crunchyroll apple tv globoplay paramount star').split(' '))
+const YEAR = /^(19|20)\d\d$/
+
 const ENTITIES = { '&quot;': '"', '&#39;': "'", '&amp;': '&', '&lt;': '<', '&gt;': '>' }
 const decode = (s) => String(s || '').replace(/&(quot|#39|amp|lt|gt);/g, (m) => ENTITIES[m])
 const norm = (s) => decode(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
@@ -17,6 +24,12 @@ function searchQuery({ title, year }) {
   return [t, String(year || '').trim(), 'trailer dublado legendado'].filter(Boolean).join(' ')
 }
 
+// Tirando o nome do título, só sobram palavras de trailer (temporada, número, ano do título...)
+function onlyThisTitle(videoTitle, want, year) {
+  const rest = videoTitle.replace(want, ' ').trim().split(' ').filter(Boolean)
+  return rest.every((w) => (YEAR.test(w) ? !year || w === String(year) : /^\d{1,2}$/.test(w) || EXTRA_OK.has(w)))
+}
+
 // Resultados do search.list → [{ key, lang: 'pt', label: 'dublado' | 'legendado' }], melhor primeiro
 function rankYoutube(results, item) {
   const want = ` ${norm(item.title)} `
@@ -26,6 +39,7 @@ function rankYoutube(results, item) {
     if (!key || !VIDEO_ID.test(key)) continue
     const title = ` ${norm(r.snippet && r.snippet.title)} `
     if (!title.includes(want) || !/ (trailer|teaser) /.test(title) || NOT_TRAILER.test(title)) continue
+    if (!onlyThisTitle(title, want, item.year)) continue
     const label = / dublad[oa] /.test(title) ? 'dublado' : / legendad[oa] /.test(title) ? 'legendado' : null
     if (!label) continue
     const official = / brasil | br /.test(` ${norm(r.snippet.channelTitle)} `) ? 1 : 0
@@ -37,10 +51,15 @@ function rankYoutube(results, item) {
     .map(({ key, label }) => ({ key, lang: 'pt', label }))
 }
 
-// YouTube em português primeiro, depois os do TMDB, sem repetir
+// O oficial em português do TMDB (ligado ao título pelo cadastro) primeiro, depois o achado no
+// YouTube, depois os outros do TMDB; sem repetir
 function mergeTrailers(fromYt, fromTmdb) {
   const seen = new Set()
-  return [...(fromYt || []), ...(fromTmdb || [])].filter((t) => !seen.has(t.key) && seen.add(t.key)).slice(0, MAX_ALL)
+  const tmdb = fromTmdb || []
+  // O mesmo vídeo achado no YouTube leva o selo (dublado/legendado)
+  const labeled = new Map((fromYt || []).map((t) => [t.key, t]))
+  const ptOfficial = tmdb.filter((t) => t.lang === 'pt').map((t) => labeled.get(t.key) ?? t)
+  return [...ptOfficial, ...(fromYt || []), ...tmdb].filter((t) => !seen.has(t.key) && seen.add(t.key)).slice(0, MAX_ALL)
 }
 
 module.exports = { searchQuery, rankYoutube, mergeTrailers }

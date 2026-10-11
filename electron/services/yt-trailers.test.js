@@ -39,6 +39,16 @@ describe('ytTrailers.find', () => {
     await s.find(dark)
     expect(yt.search).toHaveBeenCalledTimes(2)
   })
+  // Trailer de outro filme (2026-10-10): o guardado com a regra antiga (sem v) não vale; busca de novo
+  it('guardado pela regra antiga: busca de novo e guarda com a versão da regra', async () => {
+    const old = { [dark.id]: { at: 10 * DAY, list: [{ key: 'errado11111', lang: 'pt', label: 'legendado' }] } }
+    const { s, yt, cache } = make({ cache: old })
+    expect(await s.find(dark)).toEqual([{ key: 'dub11111111', lang: 'pt', label: 'dublado' }])
+    expect(yt.search).toHaveBeenCalledTimes(1)
+    expect(cache()[dark.id]).toMatchObject({ v: mod.RULES_VERSION })
+    await s.find(dark)
+    expect(yt.search).toHaveBeenCalledTimes(1)
+  })
   it('sem chave, sem título ou passou de 90 buscas hoje: nem pergunta ao YouTube', async () => {
     for (const m of [make({ key: '' }), make({ usage: { day: 10, count: 90 } })]) {
       expect(await m.s.find(dark)).toEqual([])

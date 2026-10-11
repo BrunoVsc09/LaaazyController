@@ -136,10 +136,11 @@ describe('catalog.trailer', () => {
     expect(tmdb.videos).toHaveBeenCalledTimes(1)
     expect(tmdb.videos).toHaveBeenCalledWith('TOKEN', 'movie', 5)
   })
-  it('com o título: trailer dublado/legendado do YouTube vem antes dos do TMDB', async () => {
+  // Mudou em 2026-10-10 (trailer de outro filme): o oficial em português do TMDB vem primeiro
+  it('com o título: o oficial em português do TMDB, depois o dublado/legendado do YouTube', async () => {
     const { catalog, findPt } = make()
     findPt.mockResolvedValue([{ key: 'dub', lang: 'pt', label: 'dublado' }])
-    expect(await catalog.trailer('movie:5', { title: 'Duna', year: '2021' })).toEqual([{ key: 'dub', lang: 'pt', label: 'dublado' }, { key: 'yt1', lang: 'pt' }])
+    expect(await catalog.trailer('movie:5', { title: 'Duna', year: '2021' })).toEqual([{ key: 'yt1', lang: 'pt' }, { key: 'dub', lang: 'pt', label: 'dublado' }])
     expect(findPt).toHaveBeenCalledWith({ id: 'movie:5', title: 'Duna', year: '2021' })
   })
   it('sem o título (ou YouTube com erro): só os do TMDB', async () => {

@@ -1,5 +1,15 @@
 # Novidades do Laaazy
 
+## Próxima versão (ainda não lançada)
+
+### Corrigido
+- **Trailer de outro filme (achado pelo Bruno):** em Naruto Shippuden aparecia o trailer do filme
+  "Road to Ninja", e no Homem-Aranha o de outro filme. A busca no YouTube aceitava qualquer vídeo
+  com o nome do título; agora, tirando o nome, só podem sobrar palavras de trailer (temporada,
+  dublado, legendado, ano do título…), e o ano no nome do vídeo precisa ser o do título. O trailer
+  oficial em português do TMDB vem antes do achado no YouTube, e os trailers guardados pela regra
+  antiga são buscados de novo.
+
 ## 3.6.4 — 2026-10-10
 
 ### Novo

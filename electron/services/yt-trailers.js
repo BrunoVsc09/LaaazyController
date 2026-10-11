@@ -8,6 +8,9 @@ const SECRET = 'youtube'
 const LIMIT = 90
 const DAY = 24 * 3600 * 1000
 const KEEP_MS = 30 * DAY
+// Versão da regra que escolhe o trailer: o guardado com outra versão é buscado de novo
+// (2 = 2026-10-10, vídeo de outro filme da mesma franquia fica de fora)
+const RULES_VERSION = 2
 
 function createYtTrailers({ yt, secrets, readCache, writeCache, readUsage, writeUsage, now = Date.now }) {
   const today = () => Math.floor(now() / DAY)
@@ -22,7 +25,7 @@ function createYtTrailers({ yt, secrets, readCache, writeCache, readUsage, write
     if (!key || !q) return []
     const cache = { ...((await readCache()) || {}) }
     const hit = cache[item.id]
-    if (hit && now() - hit.at < KEEP_MS) return hit.list
+    if (hit && hit.v === RULES_VERSION && now() - hit.at < KEEP_MS) return hit.list
     const used = await usedToday()
     if (used >= LIMIT) return []
     let results
@@ -34,7 +37,7 @@ function createYtTrailers({ yt, secrets, readCache, writeCache, readUsage, write
     }
     await writeUsage({ day: today(), count: used + 1 })
     const list = rankYoutube(results, item)
-    cache[item.id] = { at: now(), list }
+    cache[item.id] = { v: RULES_VERSION, at: now(), list }
     await writeCache(cache)
     return list
   }
@@ -60,4 +63,4 @@ function createYtTrailers({ yt, secrets, readCache, writeCache, readUsage, write
   return { find, status, setKey, clearKey }
 }
 
-module.exports = { createYtTrailers, LIMIT }
+module.exports = { createYtTrailers, LIMIT, RULES_VERSION }
