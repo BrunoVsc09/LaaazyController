@@ -13,6 +13,9 @@
   vídeos" que o YouTube mostra nos primeiros segundos e no pausado não aparecem mais: a prévia entra
   com um fade depois de ~3 s (até lá fica a capa do título) e, pausada pelo Start, mostra a capa com
   "Pausado" no lugar do player.
+- **Rodapé por cima das Configurações (achado pelo Bruno):** descendo com o controle, a opção escolhida
+  parava atrás do rodapé e o texto aparecia através dele. Agora a tela rola até a opção ficar acima do
+  rodapé (em todas as telas), e o rodapé tem fundo firme.
 
 ## 3.6.4 — 2026-10-10
 

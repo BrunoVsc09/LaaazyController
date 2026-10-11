@@ -31,7 +31,7 @@ html[data-theme]:not([data-theme="azul"]), html[data-theme]:not([data-theme="azu
 html[data-theme]:not([data-theme="azul"]) .ps4-screen { background: var(--t-bg); }
 html[data-theme]:not([data-theme="azul"]) .ps4-screen::before { background: none; }
 html[data-theme]:not([data-theme="azul"]) .lz-hero { --hero-bg: var(--t-bg); }
-html[data-theme]:not([data-theme="azul"]) .ps4-footer { background: linear-gradient(180deg, transparent, rgba(0, 0, 0, .45)); }
+html[data-theme]:not([data-theme="azul"]) .ps4-footer { background: linear-gradient(180deg, transparent, rgba(0, 0, 0, .88) 55%); }
 html[data-theme]:not([data-theme="azul"]) .ps4-hints .triangle::after { background: var(--t-bg); }
 html[data-theme]:not([data-theme="azul"]) :is(.ds4-row, .find-games-button, .start-panel, .games .tile-image) { background: var(--t-card); border-color: var(--t-line); }
 html[data-theme]:not([data-theme="azul"]) :is(.power-menu, .lz-browser) { background: var(--t-panel); }

@@ -181,3 +181,16 @@ describe('prévia sem as coisas do YouTube por cima', () => {
     expect(css).toMatch(/\.lz-hero-media\.is-paused iframe \{ opacity: 0; visibility: hidden; \}/)
   })
 })
+
+// Rodapé por cima das Configurações (print do Bruno, 2026-10-10): a linha escolhida parava atrás do
+// rodapé (só o Início tinha folga embaixo) e o texto aparecia através dele
+describe('rodapé não cobre o conteúdo', () => {
+  const themes = fs.readFileSync(path.join(__dirname, '..', 'themes.css'), 'utf8')
+  it('em todas as telas, o item escolhido para acima do rodapé', () => {
+    expect(css).toMatch(/html \{ scroll-padding-bottom: 130px; \}/)
+  })
+  it('o rodapé tem fundo firme embaixo (o texto que passa por trás não aparece misturado)', () => {
+    expect(css).toMatch(/\.ps4-footer \{ background: linear-gradient\(180deg, transparent, rgba\(8, 20, 52, \.92\) 55%\); \}/)
+    expect(themes).toMatch(/\.ps4-footer \{ background: linear-gradient\(180deg, transparent, rgba\(0, 0, 0, \.88\) 55%\); \}/)
+  })
+})
