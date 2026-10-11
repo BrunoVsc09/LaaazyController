@@ -1,6 +1,6 @@
 # Novidades do Laaazy
 
-## Próxima versão (ainda não lançada)
+## 3.6.5 — 2026-10-10
 
 ### Mudou
 - **Configurações mais limpas (pedido de um usuário):** em vez de uma lista longa, categorias à
