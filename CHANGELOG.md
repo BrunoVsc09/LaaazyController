@@ -9,6 +9,10 @@
   dublado, legendado, ano do título…), e o ano no nome do vídeo precisa ser o do título. O trailer
   oficial em português do TMDB vem antes do achado no YouTube, e os trailers guardados pela regra
   antiga são buscados de novo.
+- **Coisas do YouTube por cima da prévia (achado pelo Bruno):** o nome do vídeo, o canal e o "Mais
+  vídeos" que o YouTube mostra nos primeiros segundos e no pausado não aparecem mais: a prévia entra
+  com um fade depois de ~3 s (até lá fica a capa do título) e, pausada pelo Start, mostra a capa com
+  "Pausado" no lugar do player.
 
 ## 3.6.4 — 2026-10-10
 

@@ -199,7 +199,7 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
             </div>
             {msg && <p className="lz-meta" role="status">{msg}</p>}
           </div>
-          <div className="lz-hero-media" style={bg(hero)} aria-hidden="true">
+          <div className={`lz-hero-media ${preview && paused ? 'is-paused' : ''}`} style={bg(hero)} aria-hidden="true">
             {preview && trailerLabel && <span className="lz-trailer-label">🇧🇷 {trailerLabel}</span>}
             {preview && paused && <span className="lz-paused">⏸ Pausado · Start continua</span>}
             {preview && <iframe key={preview} ref={frame} src={preview} title="Prévia do trailer" tabIndex={-1} allow="autoplay; encrypted-media" onLoad={() => send('listening')} />}

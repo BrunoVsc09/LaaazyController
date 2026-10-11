@@ -169,3 +169,15 @@ describe('rolagem suave no Início', () => {
     expect(css).toMatch(/html:has\(\.lz-home\) \{ scroll-behavior: smooth; \}/)
   })
 })
+
+// Coisas do YouTube por cima da prévia (Bruno, 2026-10-10): nome do vídeo, canal e "Mais vídeos"
+// aparecem nos primeiros segundos e no pausado. Sem cortar nem cobrir o player visível: ele entra
+// depois que isso some, e no pausado fica a capa do título (o fundo do quadro)
+describe('prévia sem as coisas do YouTube por cima', () => {
+  it('o vídeo aparece com fade depois de ~3 s (até lá, a capa do título)', () => {
+    expect(css).toMatch(/\.lz-hero-media iframe \{[^}]*animation: lz-saver-in \.8s ease-out 3s both;/)
+  })
+  it('pausado: o player some e fica a capa com o "Pausado"', () => {
+    expect(css).toMatch(/\.lz-hero-media\.is-paused iframe \{ opacity: 0; visibility: hidden; \}/)
+  })
+})
