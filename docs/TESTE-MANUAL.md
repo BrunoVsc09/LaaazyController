@@ -136,7 +136,7 @@ Precisa do Equalizer APO instalado, com a saída de som marcada no Configurator.
 - [ ] Volume Boost (Volume extra +6 dB): com o volume do Windows em 100%, o som fica mais alto; em +12 dB, ouvir se distorce nas partes altas e anotar
 - [ ] Equalizador desligado: o som volta ao original
 - [ ] Fechar e abrir o Laaazy: o ajuste continua (e o `laaazy.txt` é regravado)
-- [ ] Se aparecer "Sem permissão para gravar na pasta do Equalizer APO": anotar a pasta e o Windows
+- [ ] Se aparecer "Não consegui gravar na pasta do Equalizer APO: arquivo em uso ou sem permissão (CÓDIGO)": anotar o código e o que estava fazendo (o Laaazy já tenta de novo algumas vezes antes de avisar)
 
 ## Novos episódios
 - [ ] Com uma série em exibição na Minha lista, aparece a fileira "Novos episódios" com o aviso (episódio novo / data do próximo)

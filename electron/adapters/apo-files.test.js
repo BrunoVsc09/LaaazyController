@@ -57,3 +57,39 @@ describe('apo-files: ler e gravar', () => {
     expect(fs.readdirSync(dir)).toEqual([])
   })
 })
+
+// "Sem permissão para gravar" com as permissões certas (Bruno, 2026-10-14): no Windows a troca do .tmp
+// pelo arquivo falha com EPERM/EACCES/EBUSY quando outro programa (antivírus, o próprio APO relendo)
+// segura um dos arquivos naquele instante. Tenta de novo antes de desistir
+describe('apo-files: gravar com o arquivo em uso por um instante', () => {
+  const failing = (codes) => {
+    const calls = []
+    const rename = async (from, to) => {
+      calls.push(to)
+      const code = codes.shift()
+      if (code) throw Object.assign(new Error(code), { code })
+      fs.renameSync(from, to)
+    }
+    return { rename, calls }
+  }
+  it('erro passageiro (EPERM, EBUSY): tenta de novo e grava', async () => {
+    const f = path.join(dir, 'laaazy.txt')
+    const { rename, calls } = failing(['EPERM', 'EBUSY'])
+    expect(await mod.writeText(f, 'Preamp: 0.0 dB\n', { rename, waitMs: 0 })).toEqual({ ok: true })
+    expect(calls).toHaveLength(3)
+    expect(fs.readFileSync(f, 'utf8')).toBe('Preamp: 0.0 dB\n')
+  })
+  it('continua falhando: desiste depois de algumas tentativas, apaga o .tmp e devolve o código', async () => {
+    const f = path.join(dir, 'laaazy.txt')
+    const { rename, calls } = failing(Array(20).fill('EACCES'))
+    expect(await mod.writeText(f, 'x', { rename, waitMs: 0 })).toEqual({ ok: false, code: 'EACCES' })
+    expect(calls).toHaveLength(6)
+    expect(fs.readdirSync(dir)).toEqual([])
+  })
+  it('erro que não passa sozinho (pasta não existe): não fica tentando', async () => {
+    const { rename, calls } = failing(['ENOENT'])
+    const r = await mod.writeText(path.join(dir, 'laaazy.txt'), 'x', { rename, waitMs: 0 })
+    expect(r).toEqual({ ok: false, code: 'ENOENT' })
+    expect(calls).toHaveLength(1)
+  })
+})

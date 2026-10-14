@@ -4,8 +4,10 @@ const core = require('../core/equalizer')
 
 const DELAY_MS = 150
 
-const errorText = (code) => (code === 'EPERM' || code === 'EACCES'
-  ? 'Sem permissão para gravar na pasta do Equalizer APO.'
+// O adapter já tentou de novo: se ainda falhou, o arquivo ficou em uso (antivírus, o APO) ou falta
+// permissão de verdade. O código aparece para dar para achar a causa
+const errorText = (code) => (code === 'EPERM' || code === 'EACCES' || code === 'EBUSY'
+  ? `Não consegui gravar na pasta do Equalizer APO: arquivo em uso ou sem permissão (${code}). Mexa de novo em qualquer ajuste para tentar outra vez.`
   : `Não consegui gravar no Equalizer APO (${code}).`)
 
 const INSTALLED = 'Equalizer APO instalado. Na janela que abriu, marque a sua saída de som e clique em OK (com o mouse); se o Windows pedir, reinicie o PC.'

@@ -22,12 +22,28 @@ async function findConfigDir(readReg = regValue) {
 // Arquivo ausente vira texto vazio (primeiro uso)
 const readText = (file) => fsp.readFile(file, 'utf8').catch(() => '')
 
+// No Windows a troca do .tmp pelo arquivo falha por um instante quando outro programa (antivírus,
+// o próprio APO relendo) segura um dos dois: esses erros passam sozinhos, então tenta de novo
+const TRANSIENT = new Set(['EPERM', 'EACCES', 'EBUSY'])
+const TRIES = 6
+
+async function renameRetry(from, to, rename, waitMs) {
+  for (let i = 1; ; i++) {
+    try {
+      return await rename(from, to)
+    } catch (e) {
+      if (!TRANSIENT.has(e.code) || i >= TRIES) throw e
+      await new Promise((r) => setTimeout(r, waitMs * i))
+    }
+  }
+}
+
 // Gravação atômica: o APO relê o arquivo a cada mudança e nunca pode pegar um pela metade
-async function writeText(file, text) {
+async function writeText(file, text, { rename = fsp.rename, waitMs = 50 } = {}) {
   const tmp = file + '.tmp'
   try {
     await fsp.writeFile(tmp, text, 'utf8')
-    await fsp.rename(tmp, file)
+    await renameRetry(tmp, file, rename, waitMs)
     return { ok: true }
   } catch (e) {
     await fsp.unlink(tmp).catch(() => {})

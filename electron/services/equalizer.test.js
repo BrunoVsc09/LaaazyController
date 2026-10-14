@@ -100,7 +100,10 @@ describe('equalizador (serviço): mudar', () => {
     const { eq, timer } = setup({ failWith: 'EPERM' })
     await eq.set(boosted(2))
     await timer.run()
-    expect((await eq.status()).error).toMatch(/permissão/)
+    // depois das novas tentativas do adapter: pode ser arquivo em uso, não só permissão; o código ajuda a achar a causa
+    const error = (await eq.status()).error
+    expect(error).toMatch(/em uso ou sem permissão/)
+    expect(error).toMatch(/EPERM/)
   })
   it('o erro some quando a gravação seguinte dá certo', async () => {
     const { eq, timer, fail } = setup({ failWith: 'EPERM' })
