@@ -82,6 +82,7 @@
       "!shared/**/*.test.js",
       "out/**",
       "package.json",
+      "CHANGELOG.md",
       "!node_modules/**"
     ],
     "win": {

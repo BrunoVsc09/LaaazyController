@@ -62,6 +62,13 @@ describe('settings', () => {
     expect(s.set('geminiModel', '../../x')).toBe(false)
     expect(s.set('geminiModel', 'Gemini 3.8 Flash')).toBe(false)
   })
+  // Novidades da versão (pedido do Bruno 2026-10-14): a última versão cujas novidades a pessoa viu
+  it('lastSeenVersion: padrão nenhuma; só versão X.Y.Z', () => {
+    const { s } = make()
+    expect(s.get('lastSeenVersion')).toBe(null)
+    expect(s.set('lastSeenVersion', '3.6.6')).toBe(true)
+    for (const v of ['3.6', 'v3.6.6', '3.6.6; rm', 366]) expect(s.set('lastSeenVersion', v), String(v)).toBe(false)
+  })
   // Saída de som preferida (Configurações → Som, pedido do Bruno 2026-10-14)
   it('audioOutput: padrão nenhuma; só { id, name } em texto', () => {
     const { s } = make()

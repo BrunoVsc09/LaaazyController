@@ -31,6 +31,7 @@ const apoFiles = require('./adapters/apo-files')
 const { createEqualizer } = require('./services/equalizer')
 const audioDevices = require('./adapters/audio-devices')
 const { createAudioOutputs } = require('./services/audio-outputs')
+const { createReleaseNotes } = require('./services/release-notes')
 const { createKeySender } = require('./adapters/ps-keys')
 const { loginItemFor } = require('./core/power')
 const { pushRecent, recentGames } = require('./core/recent')
@@ -234,6 +235,12 @@ const equalizer = createEqualizer({
 })
 // Saída de som do Windows: lista curta e preferida (o som vai para ela ao abrir, se estiver conectada)
 const audioOutputs = createAudioOutputs({ listOutputs: audioDevices.listOutputs, setDefaultOutput: audioDevices.setDefaultOutput, settings })
+// Novidades da versão depois de atualizar (o CHANGELOG vai no pacote)
+const releaseNotes = createReleaseNotes({
+  version: () => app.getVersion(), settings,
+  readChangelog: () => fs.promises.readFile(path.join(app.getAppPath(), 'CHANGELOG.md'), 'utf8'),
+  isNewUser: async () => !(await userProfile.get()).welcomeDone,
+})
 
 const myList = createMyList({
   read: () => store.readJson(userFile('my-list.json'), []),
@@ -373,7 +380,7 @@ setInterval(() => returnWatch.tick(), 1500).unref()
 const desktop = createDesktop({ ds4: ds4ForApps, returnWatch, minimize: hideLaaazy })
 
 registerIpc(ipcMain, {
-  launcher, locator, settings, ds4, library: libraryWithCovers, catalog, myList, power, covers, volume, equalizer, audioOutputs, assistant, psButton, textEntry, goHome, desktop, ytTrailers,
+  launcher, locator, settings, ds4, library: libraryWithCovers, catalog, myList, power, covers, volume, equalizer, audioOutputs, releaseNotes, assistant, psButton, textEntry, goHome, desktop, ytTrailers,
   browse: createFileBrowser({ known: () => ({ pictures: app.getPath('pictures'), desktop: app.getPath('desktop'), downloads: app.getPath('downloads') }) }),
   // Botão Colar das chaves: texto copiado, já limpo de espaços (só quando você aperta)
   readClipboard: () => cleanKey(clipboard.readText()).slice(0, 500),

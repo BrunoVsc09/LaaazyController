@@ -26,10 +26,11 @@ const RULES = {
   geminiModel: (v) => isText(v) && /^[a-z0-9][a-z0-9.-]{0,60}$/.test(v),
   equalizer: equalizer.validState,
   audioOutput: audioOutputs.validPreferred,
+  lastSeenVersion: (v) => v === null || (isText(v) && /^\d+\.\d+\.\d+$/.test(v)),
   pinnedApps: (v) => Array.isArray(v) && v.length <= 30 && v.every((x) => isText(x) && x.length > 0 && x.length <= 40),
 }
 
-const DEFAULTS = { theme: 'azul', psClosesApp: true, trailerPreview: true, trailerSound: false, lockCursor: true, edgeNoGpu: ['Crunchyroll'], librarySort: 'asc', streamModes: {}, screensaverMinutes: 10, geminiModel: 'gemini-3.8-flash', equalizer: equalizer.FLAT, audioOutput: null }
+const DEFAULTS = { theme: 'azul', psClosesApp: true, trailerPreview: true, trailerSound: false, lockCursor: true, edgeNoGpu: ['Crunchyroll'], librarySort: 'asc', streamModes: {}, screensaverMinutes: 10, geminiModel: 'gemini-3.8-flash', equalizer: equalizer.FLAT, audioOutput: null, lastSeenVersion: null }
 
 function createSettings({ read, write }) {
   const all = () => ({ ...DEFAULTS, ...read() })

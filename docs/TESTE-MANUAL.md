@@ -142,6 +142,12 @@ Precisa do Equalizer APO instalado, com a saída de som marcada no Configurator.
 - [ ] Fechar e abrir o Laaazy: o ajuste continua (e o `laaazy.txt` é regravado)
 - [ ] Se aparecer "Não consegui gravar na pasta do Equalizer APO: arquivo em uso ou sem permissão (CÓDIGO)": anotar o código e o que estava fazendo (o Laaazy já tenta de novo algumas vezes antes de avisar)
 
+## Novidades da versão
+- [ ] Depois de atualizar (pnpm release → instalar a versão nova): ao abrir, aparece "Novidades da versão X" com a mascote e os títulos do CHANGELOG
+- [ ] A borda já está em "Entendi"; ✕ ou ○ fecham e a borda volta para onde estava
+- [ ] Abrir de novo a mesma versão: a janela não aparece
+- [ ] Instalação nova (sem perfil): não aparece; depois das boas-vindas, abrir de novo também não
+
 ## Novos episódios
 - [ ] Com uma série em exibição na Minha lista, aparece a fileira "Novos episódios" com o aviso (episódio novo / data do próximo)
 - [ ] Séries sem episódio recente ou próximo não aparecem nessa fileira

@@ -38,6 +38,7 @@ function make() {
     ytTrailers: { status: vi.fn(async () => ({ configured: false, left: 90 })), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })) },
     assistant: { status: vi.fn(async () => ({})), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })), similarMood: vi.fn(async () => ({ ok: true, items: [] })) },
     volume: { step: vi.fn(() => true) },
+    releaseNotes: { pending: vi.fn(async () => null), seen: vi.fn(async () => undefined) },
     audioOutputs: { outputs: vi.fn(async () => ({ ok: true, items: [], hidden: 0 })), choose: vi.fn(async () => ({ ok: true, msg: '' })) },
     equalizer: { status: vi.fn(async () => ({ installed: true })), set: vi.fn(async () => ({ ok: true })), install: vi.fn(async () => ({ ok: true, msg: '' })) },
     covers: { status: vi.fn(() => ({ configured: false })), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })) },
@@ -276,6 +277,13 @@ describe('registerIpc', () => {
     const sent = h.equalizer.set.mock.calls[0][0]
     expect(sent).toEqual({ on: true, preset: 'geral', bands, bass: 2, clarity: 3, volume: 4 })
     expect(sent.bands).not.toBe(bands) // cópia: a tela não mexe no que o serviço guardou
+  })
+  it('novidades: a tela só pergunta e avisa que viu (sem argumentos)', async () => {
+    const { invoke, h } = make()
+    await invoke(C.NOTES_PENDING, 'x')
+    expect(h.releaseNotes.pending).toHaveBeenCalledWith()
+    await invoke(C.NOTES_SEEN, '9.9.9')
+    expect(h.releaseNotes.seen).toHaveBeenCalledWith()
   })
   it('saídas de som: lista com "mostrar todas" só verdadeiro/falso; trocar só com id em texto', async () => {
     const { invoke, h } = make()

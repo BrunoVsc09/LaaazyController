@@ -5,7 +5,7 @@ const GOOD = [
   '/package.json',
   '/electron/main.js', '/electron/preload.js', '/electron/stream-preload.js',
   '/electron/core/security.js', '/electron/assets/icon.ico', '/shared/channels.js',
-  '/out/index.html', '/out/keyboard.html', '/out/_next/static/chunks/a.js',
+  '/out/index.html', '/out/keyboard.html', '/out/_next/static/chunks/a.js', '/CHANGELOG.md',
 ]
 
 describe('problemsIn: conferência do app.asar do .exe portátil', () => {
@@ -21,6 +21,10 @@ describe('problemsIn: conferência do app.asar do .exe portátil', () => {
     expect(check.problemsIn(list)).toEqual([
       'sobra electron/core/x.test.js', 'sobra electron/preload.src.js', 'sobra out/secrets.json', 'sobra .env',
     ])
+  })
+  // Novidades da versão (2026-10-14): o Laaazy lê o CHANGELOG depois de se atualizar
+  it('o CHANGELOG vai no pacote', () => {
+    expect(check.problemsIn(GOOD.filter((f) => f !== '/CHANGELOG.md'))).toEqual(['falta CHANGELOG.md'])
   })
   // Atualização assinada (2026-10-09): a chave privada do Bruno nunca pode ir no .exe
   it('nenhum arquivo .pem (chave) vai no pacote', () => {

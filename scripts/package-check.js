@@ -8,6 +8,7 @@ const REQUIRED = [
   'electron/main.js', 'electron/preload.js', 'electron/stream-preload.js',
   'electron/core/security.js', 'electron/assets/icon.ico', 'shared/channels.js',
   'out/index.html', 'out/keyboard.html',
+  'CHANGELOG.md', // novidades da versão, mostradas depois de atualizar
 ]
 // Testes, fontes dos preloads (o pacote leva os gerados), qualquer segredo e node_modules
 // (o Electron só usa módulos do Node; a tela já vem pronta em out/)

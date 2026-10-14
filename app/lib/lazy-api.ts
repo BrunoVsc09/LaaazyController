@@ -14,6 +14,8 @@ export type EqStatus = { installed: boolean; state: EqState; error: string }
 // Saídas de som do Windows (Configurações → Som)
 export type AudioOutput = { id: string; name: string; isDefault: boolean; preferred: boolean }
 export type AudioOutputs = { ok: boolean; items: AudioOutput[]; hidden: number; msg?: string }
+// Novidades da versão (depois de atualizar): títulos do CHANGELOG por parte (Novo, Mudou, Corrigido)
+export type ReleaseNotes = { version: string; date: string; sections: { title: string; items: string[] }[] }
 export type Settings = {
   theme?: string
   psClosesApp?: boolean
@@ -56,6 +58,7 @@ export type LazyApi = {
   volume(action: 'up' | 'down' | 'mute'): void
   eq: { status(): Promise<EqStatus>; set(state: EqState): Promise<{ ok: boolean; msg?: string }>; install(): Promise<Result> }
   audio: { outputs(opts?: { all: boolean }): Promise<AudioOutputs>; setOutput(id: string): Promise<Result> }
+  notes: { pending(): Promise<ReleaseNotes | null>; seen(): Promise<void> }
   onHome(cb: () => void): void
   ps: { startTest(): Promise<boolean>; onTested(cb: () => void): void }
   settings: { get(): Promise<Settings>; set(key: string, value: unknown): Promise<boolean> }
