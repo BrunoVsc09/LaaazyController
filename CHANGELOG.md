@@ -1,6 +1,6 @@
 # Novidades do Laaazy
 
-## Próxima versão
+## 3.6.6 — 2026-10-14
 
 ### Destaques
 - Configurações: Som
