@@ -1,10 +1,11 @@
 /* Novidades da versão (ReleaseNotesDialog): mascote à esquerda, títulos do CHANGELOG à direita */
 .lz-notes { position: fixed; z-index: 60; left: 50%; top: 50%; transform: translate(-50%, -50%); display: grid; grid-template-columns: minmax(220px, 34%) 1fr; width: min(1000px, 88vw); max-height: 82vh; overflow: hidden; border: 1px solid rgba(255, 210, 63, .55); border-radius: 18px; background: rgb(10, 24, 62); box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .55), 0 18px 50px rgba(0, 0, 0, .6); color: #fff; animation: lz-notes-in .35s ease-out both; }
 .lz-notes-art { width: 100%; height: 100%; object-fit: cover; object-position: center 30%; }
-.lz-notes-body { display: flex; flex-direction: column; gap: 10px; padding: 34px 38px 30px; min-height: 0; }
+/* Altura limitada no corpo (não só na janela): senão a lista cresce, a janela corta o topo e nada rola */
+.lz-notes-body { display: flex; flex-direction: column; gap: 10px; padding: 34px 38px 30px; min-height: 0; max-height: 82vh; box-sizing: border-box; }
 .lz-notes h2 { margin: 0; font-size: 34px; }
 .lz-notes-date { margin: 0; color: rgba(255, 255, 255, .6); font-size: 16px; }
-.lz-notes-list { overflow-y: auto; min-height: 0; padding-right: 6px; }
+.lz-notes-list { flex: 1 1 auto; overflow-y: auto; min-height: 0; padding-right: 6px; }
 .lz-notes h3 { margin: 18px 0 6px; color: #ffd23f; font-size: 22px; }
 /* O CSS geral zera os marcadores de lista: um ponto amarelo em cada item */
 .lz-notes ul { margin: 0; padding-left: 26px; list-style: none; }

@@ -37,7 +37,9 @@ export default function ReleaseNotesDialog({ sounds }: { sounds: Sounds }) {
     lazy?.notes.pending().then((n) => { if (n && n.sections.length) setNotes(n) })
     lazy?.user.get().then((u) => setAvatars(footerAvatars(u.avatars)))
     window.addEventListener('lz:close-modal', close)
-    return () => window.removeEventListener('lz:close-modal', close)
+    // Janela mudou de tamanho e agora tudo cabe: nada rola, então confere o fim aqui também
+    window.addEventListener('resize', checkEnd)
+    return () => { window.removeEventListener('lz:close-modal', close); window.removeEventListener('resize', checkEnd) }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!notes) return
@@ -51,7 +53,7 @@ export default function ReleaseNotesDialog({ sounds }: { sounds: Sounds }) {
     if (!now.current.open || !list.current) return
     const r = holdStep(hold.current, dy ? String(dy) : '', performance.now())
     hold.current = r.hold
-    if (r.step) list.current.scrollBy({ top: dy * SCROLL_STEP, behavior: 'smooth' })
+    if (r.step) { list.current.scrollBy({ top: dy * SCROLL_STEP }); checkEnd() }
   })
 
   if (!notes) return null

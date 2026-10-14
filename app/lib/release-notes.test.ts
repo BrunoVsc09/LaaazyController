@@ -1,4 +1,6 @@
 import { describe, it, expect } from 'vitest'
+import fs from 'node:fs'
+import path from 'node:path'
 import { notesHeading, notesDate, sectionIcon, reachedEnd, footerAvatars } from './release-notes'
 
 describe('novidades da versão (tela)', () => {
@@ -34,5 +36,17 @@ describe('novidades: avatares no rodapé', () => {
   it('todos os avatares que vêm com o Laaazy, menos o logo (avatar-01)', () => {
     const all = ['avatar-01', 'avatar-02', 'avatar-05'].map((id) => ({ id, src: `avatars/${id}.webp` }))
     expect(footerAvatars(all).map((a) => a.id)).toEqual(['avatar-02', 'avatar-05'])
+  })
+})
+
+// Regressão (teste ao vivo em 1280x600, 2026-10-14): a lista crescia além da janela, que cortava o topo
+// (título e 1º destaque sumiam) e não rolava; aí "chegou ao fim" valia na hora e o Entendi já liberava
+describe('novidades: janela em tela pequena', () => {
+  const css = fs.readFileSync(path.join(__dirname, '..', 'release-notes.css'), 'utf8')
+  it('o corpo da janela tem altura limitada', () => {
+    expect(css).toMatch(/\.lz-notes-body \{[^}]*max-height: 82vh;/)
+  })
+  it('a lista ocupa o que sobra e rola por dentro', () => {
+    expect(css).toMatch(/\.lz-notes-list \{[^}]*flex: 1 1 auto;[^}]*overflow-y: auto;/)
   })
 })
