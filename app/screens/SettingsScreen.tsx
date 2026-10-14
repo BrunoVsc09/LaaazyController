@@ -4,6 +4,7 @@ import { useEffect, useState, type ReactNode } from 'react'
 import gamepad from '../../shared/gamepad'
 import streaming from '../../shared/streaming'
 import ApiKeySection from '../components/ApiKeySection'
+import EqualizerPanel from '../components/EqualizerPanel'
 import ProfileSettings from '../components/ProfileSettings'
 import { nextMinutes } from '../lib/screensaver'
 import { SETTINGS_SECTIONS, nextSection, pathStatus, type SectionId } from '../lib/settings-menu'
@@ -159,6 +160,7 @@ export default function SettingsScreen({ onBack, onController, sounds }: Props) 
       {row('Prévia do trailer no Início', trailerOn ? 'Ligada' : 'Desligada', toggleTrailer)}
       {row('Proteção de tela', saverMin ? `${saverMin} min` : 'Desligada', cycleSaver)}
     </>,
+    som: <EqualizerPanel sounds={sounds} onMsg={setMsg} />,
     controle: <>
       {row('Botão PS fecha o jogo', psCloses ? 'Sim (fecha à força)' : 'Não (como console)', togglePs)}
       {row('Prender o mouse na tela do Laaazy', lockOn ? 'Sim' : 'Não', toggleLock)}

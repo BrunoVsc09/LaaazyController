@@ -4,7 +4,7 @@ import { SETTINGS_SECTIONS, nextSection, pathStatus } from './settings-menu'
 // "As configurações são muito sujas" (outro usuário, 2026-10-10): categorias à esquerda, uma por vez
 describe('categorias das Configurações', () => {
   it('na ordem: do que se mexe mais ao técnico (Avançado por último)', () => {
-    expect(SETTINGS_SECTIONS.map((s) => s.label)).toEqual(['Perfil', 'Aparência', 'Controle e mouse', 'Streaming', 'Contas e chaves', 'Sistema', 'Avançado'])
+    expect(SETTINGS_SECTIONS.map((s) => s.label)).toEqual(['Perfil', 'Aparência', 'Som', 'Controle e mouse', 'Streaming', 'Contas e chaves', 'Sistema', 'Avançado'])
   })
   it('cada uma tem uma linha curta dizendo o que tem dentro', () => {
     for (const s of SETTINGS_SECTIONS) expect(s.hint.length).toBeGreaterThan(10)

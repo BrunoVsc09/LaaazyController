@@ -1,9 +1,10 @@
 // Configurações por categoria (menu à esquerda, uma categoria por vez; L1/R1 trocam)
-export type SectionId = 'perfil' | 'aparencia' | 'controle' | 'streaming' | 'chaves' | 'sistema' | 'avancado'
+export type SectionId = 'perfil' | 'aparencia' | 'som' | 'controle' | 'streaming' | 'chaves' | 'sistema' | 'avancado'
 
 export const SETTINGS_SECTIONS: { id: SectionId; label: string; hint: string }[] = [
   { id: 'perfil', label: 'Perfil', hint: 'Seu nome e sua foto no topo do Laaazy.' },
   { id: 'aparencia', label: 'Aparência', hint: 'Cor do Laaazy, prévia do trailer e proteção de tela.' },
+  { id: 'som', label: 'Som', hint: 'Equalizador do Windows: presets, 10 bandas, Bass Boost e Clarity.' },
   { id: 'controle', label: 'Controle e mouse', hint: 'O que o PS faz, o mouse preso na tela e os perfis do controle.' },
   { id: 'streaming', label: 'Streaming', hint: 'Onde cada serviço abre: dentro do app ou no Edge.' },
   { id: 'chaves', label: 'Contas e chaves', hint: 'Chaves grátis que ligam filmes, trailers, capas e a IA.' },

@@ -1,5 +1,15 @@
 # Novidades do Laaazy
 
+## Próxima versão
+
+### Novo
+- **Equalizador do Windows (Configurações → Som, pedido do Bruno):** presets (Geral, Música,
+  Filmes, Jogos e Voz), 10 bandas de 62 Hz a 13 kHz num gráfico, Bass Boost e Clarity. X numa banda
+  entra no ajuste: ↑/↓ mudam o ganho (←/→ no Bass Boost e no Clarity), X ou O terminam. Vale para o
+  som do Windows inteiro, pelo Equalizer APO (grátis, instalado à parte): o Laaazy grava o próprio
+  arquivo e só acrescenta uma linha `Include` no `config.txt`, sem apagar o que já estava lá. Sem o
+  APO, a tela explica como instalar e o ajuste fica guardado até lá.
+
 ## 3.6.5 — 2026-10-10
 
 ### Mudou

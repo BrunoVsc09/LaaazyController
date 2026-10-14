@@ -53,6 +53,7 @@ Bug? Primeiro um **teste de regressão** que reproduz o bug; depois a correção
 | **Controle** | Perfil DS4 por app/jogo, botão PS, modo de entrada (controle × mouse), teclado na tela | `core/ds4-config`, `services/ds4`, `services/ps-button`, `shared/gamepad`, `app/lib/input-mode`, `app/lib/osk` |
 | **Sistema** | Janela, foco/volta automática, energia, Área de trabalho, cursor preso, segurança | `core/focus`, `core/power`, `core/processes`, `core/security`, `services/foreground`, `desktop`, `power`, `cursor-lock` |
 | **Streaming** | Abrir serviços no Edge, DRM, aceleração | `core/routing`, `core/drm`, `services/launcher`, `shared/streaming` |
+| **Som** | Equalizador do Windows pelo Equalizer APO: presets, 10 bandas, Bass Boost, Clarity | `core/equalizer`, `services/equalizer`, `adapters/apo-files`, `shared/equalizer`, `app/lib/equalizer` |
 
 Glossário: **prévia** = trailer no destaque · **destaque** (hero) = topo do Início ·
 **Parecidos** = △ no Início · **perfil** = perfil do Laaazy-pad (Jogos ou PC) · **modo controle/mouse** =

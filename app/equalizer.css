@@ -1,0 +1,30 @@
+/* Configurações → Som (EqualizerPanel). Amarelo = mesmo destaque dos valores das .ds4-row */
+.eq { --eq-accent: #ffd23f; --eq-line: rgba(159, 205, 255, .45); }
+.eq.off .eq-body { opacity: .4; filter: grayscale(.6); }
+.eq-note { border-left: 3px solid var(--eq-accent); padding-left: 12px; }
+.eq-body { display: grid; grid-template-columns: 260px 1fr; gap: 16px; margin: 6px 0 10px; }
+
+.eq-effects { display: flex; flex-direction: column; gap: 10px; }
+.eq-effect { display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto auto; gap: 8px 12px; padding: 14px 16px; border: 1px solid var(--eq-line); border-radius: 6px; background: linear-gradient(135deg, rgba(36,111,207,.55), rgba(9,45,137,.5)); color: #fff; font-size: 18px; text-align: left; cursor: pointer; }
+.eq-effect b { color: var(--eq-accent); }
+.eq-meter { grid-column: 1 / -1; height: 6px; border-radius: 3px; background: rgba(255,255,255,.15); overflow: hidden; }
+.eq-meter i { display: block; height: 100%; background: var(--eq-accent); transition: width .12s ease; }
+
+.eq-graph { border: 1px solid var(--eq-line); border-radius: 6px; background: rgba(5, 15, 40, .55); padding: 26px 18px 10px; }
+.eq-plot { position: relative; height: 180px; }
+.eq-plot svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.eq-zero { stroke: rgba(255,255,255,.35); stroke-dasharray: 6 6; vector-effect: non-scaling-stroke; }
+.eq-grid { stroke: rgba(255,255,255,.12); stroke-dasharray: 4 6; vector-effect: non-scaling-stroke; }
+.eq-fill { fill: rgba(255, 210, 63, .1); }
+.eq-line { fill: none; stroke: var(--eq-accent); stroke-width: 3; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.eq-dot { position: absolute; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; background: var(--eq-accent); box-shadow: 0 0 0 4px rgba(255,210,63,.25); transition: top .12s ease; }
+.eq-dot em { position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%); font-style: normal; font-size: 14px; color: #fff; white-space: nowrap; }
+.eq-dot.editing { transform: scale(1.35); box-shadow: 0 0 0 5px rgba(255,210,63,.4), 0 0 18px var(--eq-accent); }
+
+.eq-bands { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; margin-top: 14px; }
+.eq-band { padding: 8px 2px; border: 1px solid transparent; border-radius: 6px; background: rgba(255,255,255,.06); color: rgba(255,255,255,.85); font-size: 14px; cursor: pointer; }
+
+.eq-effect:focus-visible, .eq-band:focus-visible, .eq-effect:hover, .eq-band:hover { outline: none; border-color: #fff; box-shadow: 0 0 10px rgba(255,255,255,.7); }
+.eq-effect.editing, .eq-band.editing { border-color: var(--eq-accent); box-shadow: 0 0 14px var(--eq-accent); }
+
+@media (prefers-reduced-motion: reduce) { .eq-meter i, .eq-dot { transition: none; } }
