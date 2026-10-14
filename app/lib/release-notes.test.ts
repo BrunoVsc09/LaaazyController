@@ -44,7 +44,12 @@ describe('novidades: avatares no rodapé', () => {
 describe('novidades: janela em tela pequena', () => {
   const css = fs.readFileSync(path.join(__dirname, '..', 'release-notes.css'), 'utf8')
   it('o corpo da janela tem altura limitada', () => {
-    expect(css).toMatch(/\.lz-notes-body \{[^}]*max-height: 82vh;/)
+    expect(css).toMatch(/\.lz-notes-body \{[^}]*max-height: 90vh;/)
+  })
+  // "Queria que a tela fosse grande, ficou estranho rodar pra baixo" (Bruno, 2026-10-14): a janela ocupa
+  // quase a tela toda, para caber tudo sem rolar numa TV
+  it('janela grande: até 1500 px de largura e 90% da altura', () => {
+    expect(css).toMatch(/\.lz-notes \{[^}]*width: min\(1500px, 94vw\);[^}]*max-height: 90vh;/)
   })
   it('a lista ocupa o que sobra e rola por dentro', () => {
     expect(css).toMatch(/\.lz-notes-list \{[^}]*flex: 1 1 auto;[^}]*overflow-y: auto;/)

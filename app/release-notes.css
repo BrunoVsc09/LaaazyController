@@ -1,21 +1,22 @@
-/* Novidades da versão (ReleaseNotesDialog): mascote à esquerda, títulos do CHANGELOG à direita */
-.lz-notes { position: fixed; z-index: 60; left: 50%; top: 50%; transform: translate(-50%, -50%); display: grid; grid-template-columns: minmax(220px, 34%) 1fr; width: min(1000px, 88vw); max-height: 82vh; overflow: hidden; border: 1px solid rgba(255, 210, 63, .55); border-radius: 18px; background: rgb(10, 24, 62); box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .55), 0 18px 50px rgba(0, 0, 0, .6); color: #fff; animation: lz-notes-in .35s ease-out both; }
+/* Novidades da versão (ReleaseNotesDialog): mascote à esquerda, títulos do CHANGELOG à direita.
+   Grande, em tamanho de TV ("queria que a tela fosse grande", Bruno): numa TV cabe tudo sem rolar */
+.lz-notes { position: fixed; z-index: 60; left: 50%; top: 50%; transform: translate(-50%, -50%); display: grid; grid-template-columns: minmax(260px, 36%) 1fr; width: min(1500px, 94vw); max-height: 90vh; overflow: hidden; border: 2px solid rgba(255, 210, 63, .6); border-radius: 24px; background: rgb(10, 24, 62); box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .6), 0 24px 70px rgba(0, 0, 0, .65); color: #fff; animation: lz-notes-in .35s ease-out both; }
 .lz-notes-art { width: 100%; height: 100%; object-fit: cover; object-position: center 30%; }
 /* Altura limitada no corpo (não só na janela): senão a lista cresce, a janela corta o topo e nada rola */
-.lz-notes-body { display: flex; flex-direction: column; gap: 10px; padding: 34px 38px 30px; min-height: 0; max-height: 82vh; box-sizing: border-box; }
-.lz-notes h2 { margin: 0; font-size: 34px; }
-.lz-notes-date { margin: 0; color: rgba(255, 255, 255, .6); font-size: 16px; }
-.lz-notes-list { flex: 1 1 auto; overflow-y: auto; min-height: 0; padding-right: 6px; }
-.lz-notes h3 { margin: 18px 0 6px; color: #ffd23f; font-size: 22px; }
+.lz-notes-body { display: flex; flex-direction: column; gap: 12px; padding: 48px 54px 40px; min-height: 0; max-height: 90vh; box-sizing: border-box; }
+.lz-notes h2 { margin: 0; font-size: 44px; }
+.lz-notes-date { margin: 0; color: rgba(255, 255, 255, .6); font-size: 20px; }
+.lz-notes-list { flex: 1 1 auto; overflow-y: auto; min-height: 0; padding-right: 8px; }
+.lz-notes h3 { margin: 22px 0 8px; color: #ffd23f; font-size: 28px; }
 /* O CSS geral zera os marcadores de lista: um ponto amarelo em cada item */
-.lz-notes ul { margin: 0; padding-left: 26px; list-style: none; }
-.lz-notes li { position: relative; margin: 6px 0; font-size: 20px; line-height: 1.35; }
-.lz-notes li::before { content: ''; position: absolute; left: -18px; top: .55em; width: 7px; height: 7px; border-radius: 50%; background: #ffd23f; }
-.lz-notes .lz-btn { align-self: flex-end; margin-top: 16px; min-width: 180px; }
+.lz-notes ul { margin: 0; padding-left: 32px; list-style: none; }
+.lz-notes li { position: relative; margin: 10px 0; font-size: 26px; line-height: 1.35; }
+.lz-notes li::before { content: ''; position: absolute; left: -22px; top: .55em; width: 9px; height: 9px; border-radius: 50%; background: #ffd23f; }
+.lz-notes .lz-btn { align-self: flex-end; margin-top: 18px; min-width: 240px; padding: 16px 30px; font-size: 22px; }
 @keyframes lz-notes-in { from { opacity: 0; transform: translate(-50%, -46%) } to { opacity: 1; transform: translate(-50%, -50%) } }
 @media (prefers-reduced-motion: reduce) { .lz-notes { animation: none; } }
 /* Rodapé com os avatares (fim da rolagem: só depois dele a janela fecha) */
-.lz-notes-avatars { margin-top: 22px; padding-top: 14px; border-top: 1px solid rgba(255, 210, 63, .3); }
-.lz-notes-avatars div { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; }
-.lz-notes-avatars img { width: 88px; height: 88px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255, 210, 63, .6); }
+.lz-notes-avatars { margin-top: 26px; padding-top: 18px; border-top: 1px solid rgba(255, 210, 63, .3); }
+.lz-notes-avatars div { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 12px; }
+.lz-notes-avatars img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(255, 210, 63, .6); }
 .lz-notes .lz-notes-ok.is-waiting { opacity: .6; cursor: default; }
