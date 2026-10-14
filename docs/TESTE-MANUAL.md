@@ -131,6 +131,7 @@ Precisa do Equalizer APO instalado, com a saída de som marcada no Configurator.
 - [ ] `config.txt` mexido à mão antes: o Laaazy só acrescenta `Include: laaazy.txt` no fim (o resto igual)
 - [ ] Preset Geral: som igual ao original (comparar com o Equalizador desligado)
 - [ ] Bass Boost em 10: o grave aumenta na hora (música no YouTube, por exemplo)
+- [ ] X no Bass Boost, no Clarity e no Volume extra: aparece a borda amarela e fica nela (o mesmo X não sai do ajuste); ←/→ mudam o valor; X de novo ou O saem
 - [ ] X numa banda, segurar ↑: sobe até +12 e para; X ou O saem do ajuste; ←/→ voltam a andar entre as bandas
 - [ ] Volume Boost (Volume extra +6 dB): com o volume do Windows em 100%, o som fica mais alto; em +12 dB, ouvir se distorce nas partes altas e anotar
 - [ ] Equalizador desligado: o som volta ao original

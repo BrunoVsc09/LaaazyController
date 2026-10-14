@@ -59,3 +59,10 @@ export function statusText(status: EqStatus): string {
 
 // Enquanto instala: os dois passos que o Windows não deixa fazer pelo controle
 export const INSTALL_WAIT = 'Baixando e instalando... Quando o Windows perguntar, clique em Sim (com o mouse ou o teclado). Depois, na janela do Equalizer APO, marque a sua saída de som e clique em OK.'
+
+// Sair do ajuste: o O sai sempre; o X só depois de ter sido solto desde que entrou (o mesmo aperto
+// que entra no ajuste não pode sair dele). armed = o X já foi solto
+export function adjustExit(armed: boolean, pad: { xDown: boolean; xFired: boolean; oFired: boolean }) {
+  const ready = armed || !pad.xDown
+  return { armed: ready, exit: pad.oFired || (ready && pad.xFired) }
+}

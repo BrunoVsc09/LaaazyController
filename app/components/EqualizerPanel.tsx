@@ -5,7 +5,7 @@
 import { useEffect, useRef, useState } from 'react'
 import gamepad from '../../shared/gamepad'
 import { useGamepad } from '../hooks/useGamepad'
-import { BANDS, FLAT, INSTALL_WAIT, applyPreset, curvePoints, dbText, effectMax, nextPreset, presetLabel, statusText, stepBand, stepEffect, volumeWarning, type EffectKey } from '../lib/equalizer'
+import { BANDS, FLAT, INSTALL_WAIT, adjustExit, applyPreset, curvePoints, dbText, effectMax, nextPreset, presetLabel, statusText, stepBand, stepEffect, volumeWarning, type EffectKey } from '../lib/equalizer'
 import { holdStep, type Hold } from '../lib/nav-repeat'
 import { getLazy, type EqState, type EqStatus } from '../lib/lazy-api'
 import type { Sounds } from '../hooks/useSounds'
@@ -25,6 +25,7 @@ export default function EqualizerPanel({ sounds, onMsg }: Props) {
   const [editing, setEditing] = useState<Target | null>(null)
   const [installing, setInstalling] = useState(false)
   const hold = useRef<Hold>(NO_HOLD)
+  const armed = useRef(false) // o X que entrou no ajuste já foi solto?
 
   useEffect(() => {
     lazy?.eq.status().then((s) => { setStatus(s); setState(s.state) })
@@ -44,9 +45,11 @@ export default function EqualizerPanel({ sounds, onMsg }: Props) {
   }
   const step = (t: Target, dir: 1 | -1) => save(typeof t === 'number' ? stepBand(state, t, dir) : stepEffect(state, t, dir))
 
-  useGamepad(({ fired, dx, dy }) => {
+  useGamepad(({ fired, down, dx, dy }) => {
     if (editing === null) return
-    if (fired(gamepad.BTN.X) || fired(gamepad.BTN.O)) { sounds.click(); hold.current = NO_HOLD; setEditing(null); return }
+    const ex = adjustExit(armed.current, { xDown: down(gamepad.BTN.X), xFired: fired(gamepad.BTN.X), oFired: fired(gamepad.BTN.O) })
+    armed.current = ex.armed
+    if (ex.exit) { sounds.click(); hold.current = NO_HOLD; setEditing(null); return }
     const dir = typeof editing === 'number' ? -dy : dx // ↑ sobe o ganho; → aumenta o efeito
     const r = holdStep(hold.current, dir ? String(dir) : '', performance.now())
     hold.current = r.hold
@@ -54,7 +57,7 @@ export default function EqualizerPanel({ sounds, onMsg }: Props) {
   })
 
   const tap = (fn: () => void) => () => { sounds.click(); fn() }
-  const edit = (t: Target) => tap(() => setEditing(editing === t ? null : t))
+  const edit = (t: Target) => tap(() => { armed.current = false; setEditing(editing === t ? null : t) })
   const toggle = () => {
     save({ ...state, on: !state.on })
     onMsg(state.on ? 'Equalizador desligado: o som volta ao original.' : 'Equalizador ligado.')

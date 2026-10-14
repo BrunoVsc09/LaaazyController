@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
-  FLAT, applyPreset, stepBand, stepEffect, nextPreset, presetLabel, dbText, curvePoints, statusText, INSTALL_WAIT, volumeWarning,
+  FLAT, applyPreset, stepBand, stepEffect, nextPreset, presetLabel, dbText, curvePoints, statusText, INSTALL_WAIT, volumeWarning, adjustExit,
 } from './equalizer'
 
 describe('equalizador (tela): presets', () => {
@@ -94,5 +94,22 @@ describe('equalizador (tela): textos e gráfico', () => {
   it('erro de gravação aparece; com tudo certo, nada', () => {
     expect(statusText({ installed: true, state: FLAT, error: 'Sem permissão.' })).toBe('Sem permissão.')
     expect(statusText({ installed: true, state: FLAT, error: '' })).toBe('')
+  })
+})
+
+// Regressão (Bruno, 2026-10-14: "não consigo aumentar o Bass Boost"): o mesmo aperto do X entrava no
+// ajuste (clique pelo controle global) e saía dele (leitor do equalizador), no mesmo quadro
+describe('equalizador (tela): sair do ajuste', () => {
+  it('o X que entrou no ajuste, ainda apertado, não sai', () => {
+    expect(adjustExit(false, { xDown: true, xFired: true, oFired: false })).toEqual({ armed: false, exit: false })
+  })
+  it('soltou o X: fica pronto para sair no próximo X', () => {
+    expect(adjustExit(false, { xDown: false, xFired: false, oFired: false })).toEqual({ armed: true, exit: false })
+  })
+  it('pronto e X apertado de novo: sai', () => {
+    expect(adjustExit(true, { xDown: true, xFired: true, oFired: false })).toEqual({ armed: true, exit: true })
+  })
+  it('O sai a qualquer momento (não é ele que entra)', () => {
+    expect(adjustExit(false, { xDown: true, xFired: false, oFired: true }).exit).toBe(true)
   })
 })
