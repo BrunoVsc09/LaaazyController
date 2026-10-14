@@ -8,6 +8,9 @@ export type UserResult = { ok: boolean; msg?: string; profile?: UserProfile }
 export type FsEntry = { name: string; path: string; type: 'dir' | 'exe' | 'lnk' | 'image' | 'place' | 'drive' }
 export type FsList = { ok: boolean; path?: string; parent?: string | null; entries: FsEntry[]; msg?: string }
 export type StreamMode = 'app' | 'edge'
+// Equalizador (Configurações → Som); valores em shared/equalizer.js
+export type EqState = { on: boolean; preset: string; bands: number[]; bass: number; clarity: number }
+export type EqStatus = { installed: boolean; state: EqState; error: string }
 export type Settings = {
   theme?: string
   psClosesApp?: boolean
@@ -20,6 +23,7 @@ export type Settings = {
   pinnedApps?: string[]
   screensaverMinutes?: number
   geminiModel?: string
+  equalizer?: EqState
 }
 export type Ds4Data = { profiles: string[]; config: Record<string, string>; dir: string | null; cmd: string; current?: string }
 // Editor de perfis do Laaazy-pad
@@ -47,6 +51,7 @@ export type LazyApi = {
   // Teclado por cima em tempo real: cada mudança vai na hora para o campo do site
   oskOverlay: { edit(change: { move?: number; back?: number; text?: string; enter?: boolean }): Promise<boolean>; close(): Promise<void>; onOpened(cb: () => void): void }
   volume(action: 'up' | 'down' | 'mute'): void
+  eq: { status(): Promise<EqStatus>; set(state: EqState): Promise<{ ok: boolean; msg?: string }> }
   onHome(cb: () => void): void
   ps: { startTest(): Promise<boolean>; onTested(cb: () => void): void }
   settings: { get(): Promise<Settings>; set(key: string, value: unknown): Promise<boolean> }

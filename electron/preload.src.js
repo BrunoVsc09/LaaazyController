@@ -44,6 +44,7 @@ contextBridge.exposeInMainWorld('lazy', {
   yt: { status: invoke(C.YT_STATUS), setKey: invoke(C.YT_SET_KEY), clearKey: invoke(C.YT_CLEAR_KEY) },
   covers: { status: invoke(C.COVERS_STATUS), setKey: invoke(C.COVERS_SET_KEY), clearKey: invoke(C.COVERS_CLEAR_KEY) },
   myList: { get: invoke(C.MYLIST_GET), toggle: invoke(C.MYLIST_TOGGLE) },
+  eq: { status: invoke(C.EQ_STATUS), set: invoke(C.EQ_SET) },
   power: { run: invoke(C.POWER_RUN), openAtLogin: invoke(C.POWER_LOGIN_GET), setOpenAtLogin: invoke(C.POWER_LOGIN_SET) },
   drm: { status: invoke(C.DRM_STATUS) },
   catalog: {

@@ -20,6 +20,8 @@ function toEdit(e) {
   for (const k of EDIT_KEYS) if (e[k] !== undefined) out[k] = e[k]
   return validEdit(out) ? out : null
 }
+// Ajuste do equalizador: só os campos conhecidos, copiados (o serviço valida os valores)
+const toEq = (s) => ({ on: s.on, preset: s.preset, bands: Array.isArray(s.bands) ? [...s.bands] : s.bands, bass: s.bass, clarity: s.clarity })
 
 function registerIpc(ipcMain, h) {
   // Só a tela do app (e, para os comandos do controle, os sites de streaming) são atendidos
@@ -89,6 +91,8 @@ function registerIpc(ipcMain, h) {
   handle(C.COVERS_STATUS, () => h.covers.status())
   handle(C.COVERS_SET_KEY, (key) => (isText(key) ? h.covers.setKey(key) : { ok: false, msg: 'Chave inválida.' }))
   handle(C.COVERS_CLEAR_KEY, () => h.covers.clearKey())
+  handle(C.EQ_STATUS, () => h.equalizer.status())
+  handle(C.EQ_SET, (s) => (isPlain(s) ? h.equalizer.set(toEq(s)) : { ok: false, msg: 'Ajuste inválido.' }))
   handle(C.POWER_RUN, (action, confirmed) => (isText(action) ? h.power.run(action, confirmed === true) : { ok: false, msg: 'Ação desconhecida.' }))
   handle(C.POWER_LOGIN_GET, () => h.power.openAtLogin())
   handle(C.POWER_LOGIN_SET, (on) => h.power.setOpenAtLogin(!!on))

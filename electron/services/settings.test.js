@@ -62,6 +62,14 @@ describe('settings', () => {
     expect(s.set('geminiModel', '../../x')).toBe(false)
     expect(s.set('geminiModel', 'Gemini 3.8 Flash')).toBe(false)
   })
+  // Equalizador (Configurações → Som, pedido do Bruno 2026-10-14)
+  it('equalizer: padrão ligado e plano; só estados válidos', () => {
+    const { s } = make()
+    expect(s.get('equalizer')).toEqual({ on: true, preset: 'geral', bands: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], bass: 0, clarity: 0 })
+    expect(s.set('equalizer', { on: false, preset: 'jogos', bands: [2, 1, -1, 0, 0, 1, 3, 3, 2, 1], bass: 2, clarity: 3 })).toBe(true)
+    expect(s.set('equalizer', { on: true, preset: 'geral', bands: [99, 0, 0, 0, 0, 0, 0, 0, 0, 0], bass: 0, clarity: 0 })).toBe(false)
+    expect(s.set('equalizer', 'alto')).toBe(false)
+  })
   it('psClosesApp: padrão fechar o jogo; só sim/não', () => {
     const { s } = make()
     expect(s.get('psClosesApp')).toBe(true)

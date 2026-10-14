@@ -53,6 +53,8 @@ module.exports = {
   POWER_LOGIN_GET: 'power:loginGet',
   POWER_LOGIN_SET: 'power:loginSet',
   VOLUME: 'volume',
+  EQ_STATUS: 'eq:status', // equalizador: APO instalado? + ajuste salvo
+  EQ_SET: 'eq:set', // equalizador: ajuste novo (bandas, Bass Boost, Clarity)
   CLIPBOARD_READ: 'clipboard:read',
   AI_STATUS: 'ai:status',
   AI_SET_KEY: 'ai:setKey',
