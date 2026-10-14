@@ -123,3 +123,85 @@ describe('equalizador (serviço): ao abrir o Laaazy', () => {
     expect(writes).toEqual([])
   })
 })
+
+// Instalar o Equalizer APO pelo Laaazy (baixa na hora, confere o SHA-256, roda com /S como administrador)
+function setupInstall({ installed = false, hash = core.APO_SETUP.sha256, downloadFails, elevated = { ok: true, canceled: false, code: 0 }, appearsAfter = true } = {}) {
+  let isInstalled = installed
+  const calls = []
+  const disk = {}
+  const eq = mod.createEqualizer({
+    findConfigDir: async () => (isInstalled ? DIR : null),
+    join: (...p) => p.join('\\'),
+    readText: async (f) => disk[f] ?? '',
+    writeText: async (f, text) => { disk[f] = text; return { ok: true } },
+    settings: { get: () => undefined, set: () => true },
+    tempDir: () => 'C:\\Temp',
+    download: async (url, file) => { calls.push(['download', url, file]); if (downloadFails) throw new Error(downloadFails) },
+    hashFile: async (file) => { calls.push(['hash', file]); return hash },
+    removeFile: async (file) => { calls.push(['remove', file]) },
+    runElevated: async (file, args) => { calls.push(['run', file, args]); if (elevated.ok && appearsAfter) isInstalled = true; return elevated },
+  })
+  return { eq, calls, disk }
+}
+const SETUP_FILE = `C:\\Temp\\${core.APO_SETUP.fileName}`
+
+describe('equalizador (serviço): instalar o Equalizer APO', () => {
+  it('baixa a versão fixa, confere o SHA-256, roda com /S como administrador e apaga o instalador', async () => {
+    const { eq, calls } = setupInstall()
+    const r = await eq.install()
+    expect(r.ok).toBe(true)
+    expect(calls).toEqual([
+      ['download', core.APO_SETUP.url, SETUP_FILE],
+      ['hash', SETUP_FILE],
+      ['run', SETUP_FILE, ['/S']],
+      ['remove', SETUP_FILE],
+    ])
+  })
+  it('depois de instalar, já grava o ajuste salvo no APO (o config.txt padrão vira só o do Laaazy)', async () => {
+    const { eq, disk } = setupInstall()
+    await eq.install()
+    expect(disk[MAIN]).toBe(`${core.INCLUDE_LINE}
+`)
+    expect(disk[APP]).toBe(core.render(core.FLAT))
+  })
+  it('a mensagem lembra dos passos com o mouse (saída de som e reiniciar)', async () => {
+    expect((await setupInstall().eq.install()).msg).toMatch(/saída de som/)
+  })
+  it('já instalado: não baixa nada', async () => {
+    const { eq, calls } = setupInstall({ installed: true })
+    expect(await eq.install()).toEqual({ ok: true, msg: 'O Equalizer APO já está instalado.' })
+    expect(calls).toEqual([])
+  })
+  it('download falhou: explica e não roda nada', async () => {
+    const { eq, calls } = setupInstall({ downloadFails: 'sem internet' })
+    const r = await eq.install()
+    expect(r).toEqual({ ok: false, msg: 'Não consegui baixar o Equalizer APO: sem internet' })
+    expect(calls.some((c) => c[0] === 'run')).toBe(false)
+  })
+  it('SHA-256 diferente: apaga o arquivo e NÃO roda (pode ter sido trocado no caminho)', async () => {
+    const { eq, calls } = setupInstall({ hash: 'f'.repeat(64) })
+    const r = await eq.install()
+    expect(r.ok).toBe(false)
+    expect(r.msg).toMatch(/não confere/)
+    expect(calls.map((c) => c[0])).toEqual(['download', 'hash', 'remove'])
+  })
+  it('"Não" no aviso do Windows: avisa que nada foi instalado', async () => {
+    const r = await setupInstall({ elevated: { ok: false, canceled: true, code: 1223 } }).eq.install()
+    expect(r).toEqual({ ok: false, msg: 'Instalação cancelada no aviso do Windows. Nada foi instalado.' })
+  })
+  it('instalador terminou com erro: mostra o código', async () => {
+    const r = await setupInstall({ elevated: { ok: false, canceled: false, code: 2 } }).eq.install()
+    expect(r).toEqual({ ok: false, msg: 'O instalador do Equalizer APO terminou com erro (código 2).' })
+  })
+  it('instalador terminou, mas o APO não apareceu no registro: avisa', async () => {
+    const r = await setupInstall({ appearsAfter: false }).eq.install()
+    expect(r.ok).toBe(false)
+    expect(r.msg).toMatch(/não apareceu/)
+  })
+  it('dois cliques em "Instalar" esperam a mesma instalação', async () => {
+    const { eq, calls } = setupInstall()
+    const [a, b] = await Promise.all([eq.install(), eq.install()])
+    expect(a).toEqual(b)
+    expect(calls.filter((c) => c[0] === 'download')).toHaveLength(1)
+  })
+})

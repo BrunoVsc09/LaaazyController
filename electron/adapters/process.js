@@ -30,4 +30,22 @@ function processTable() {
     { windowsHide: true, timeout: 20000, maxBuffer: 4 * 1024 * 1024 }, (e, out) => res(e ? '' : String(out))))
 }
 
-module.exports = { spawnDetached, killTree, processTable }
+// Roda um programa como administrador (o Windows mostra o aviso "Sim/Não") e espera terminar.
+// Texto em aspas simples do PowerShell: ' vira ''. "Não" no aviso = código 1223 (ERROR_CANCELLED)
+const psQuote = (s) => `'${String(s).replaceAll("'", "''")}'`
+function elevatedCommand(exe, args) {
+  const argList = args.length ? ` -ArgumentList ${psQuote(args.join(' '))}` : ''
+  return [
+    `try { $p = Start-Process -FilePath ${psQuote(exe)}${argList} -Verb RunAs -Wait -PassThru; exit $p.ExitCode }`,
+    'catch { $e = $_.Exception; while ($e) { if ($e.NativeErrorCode -eq 1223) { exit 1223 }; $e = $e.InnerException }; exit 1 }',
+  ].join(' ')
+}
+const elevatedResult = (code) => ({ ok: code === 0, canceled: code === 1223, code })
+
+// Sem tempo limite: espera a pessoa responder o aviso e o instalador terminar
+function runElevated(exe, args = []) {
+  return new Promise((res) => execFile('powershell.exe', ['-NoLogo', '-NoProfile', '-NonInteractive', '-Command', elevatedCommand(exe, args)],
+    { windowsHide: true }, (e) => res(elevatedResult(e ? (typeof e.code === 'number' ? e.code : -1) : 0))))
+}
+
+module.exports = { spawnDetached, killTree, processTable, runElevated, elevatedCommand, elevatedResult }

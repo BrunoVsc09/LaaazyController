@@ -51,7 +51,7 @@ export type LazyApi = {
   // Teclado por cima em tempo real: cada mudança vai na hora para o campo do site
   oskOverlay: { edit(change: { move?: number; back?: number; text?: string; enter?: boolean }): Promise<boolean>; close(): Promise<void>; onOpened(cb: () => void): void }
   volume(action: 'up' | 'down' | 'mute'): void
-  eq: { status(): Promise<EqStatus>; set(state: EqState): Promise<{ ok: boolean; msg?: string }> }
+  eq: { status(): Promise<EqStatus>; set(state: EqState): Promise<{ ok: boolean; msg?: string }>; install(): Promise<Result> }
   onHome(cb: () => void): void
   ps: { startTest(): Promise<boolean>; onTested(cb: () => void): void }
   settings: { get(): Promise<Settings>; set(key: string, value: unknown): Promise<boolean> }

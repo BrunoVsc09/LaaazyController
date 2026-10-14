@@ -5,7 +5,7 @@
 import { useEffect, useRef, useState } from 'react'
 import gamepad from '../../shared/gamepad'
 import { useGamepad } from '../hooks/useGamepad'
-import { BANDS, FLAT, applyPreset, curvePoints, dbText, nextPreset, presetLabel, statusText, stepBand, stepEffect } from '../lib/equalizer'
+import { BANDS, FLAT, INSTALL_WAIT, applyPreset, curvePoints, dbText, nextPreset, presetLabel, statusText, stepBand, stepEffect } from '../lib/equalizer'
 import { holdStep, type Hold } from '../lib/nav-repeat'
 import { getLazy, type EqState, type EqStatus } from '../lib/lazy-api'
 import type { Sounds } from '../hooks/useSounds'
@@ -23,6 +23,7 @@ export default function EqualizerPanel({ sounds, onMsg }: Props) {
   const [status, setStatus] = useState<EqStatus | null>(null)
   const [state, setState] = useState<EqState>(FLAT)
   const [editing, setEditing] = useState<Target | null>(null)
+  const [installing, setInstalling] = useState(false)
   const hold = useRef<Hold>(NO_HOLD)
 
   useEffect(() => {
@@ -64,6 +65,17 @@ export default function EqualizerPanel({ sounds, onMsg }: Props) {
     onMsg(`Preset: ${presetLabel(next.preset)}.`)
   }
 
+  // Baixa e instala o APO; o "Sim" do Windows e a escolha da saída de som ficam com o mouse
+  const install = async () => {
+    if (!lazy || installing) return
+    setInstalling(true)
+    onMsg(INSTALL_WAIT)
+    const r = await lazy.eq.install()
+    setInstalling(false)
+    onMsg(r.msg)
+    setStatus(await lazy.eq.status())
+  }
+
   const note = status ? statusText(status) : 'Procurando o Equalizer APO...'
   const pts = curvePoints(state.bands, W, H)
   const line = pts.map((p) => `${p.x},${p.y}`).join(' ')
@@ -73,6 +85,11 @@ export default function EqualizerPanel({ sounds, onMsg }: Props) {
   return (
     <div className={`eq ${state.on ? '' : 'off'}`}>
       {note && <p className="ds4-help eq-note" role="status">{note}</p>}
+      {status && !status.installed && (
+        <button className="ds4-row" onClick={tap(install)} onMouseEnter={sounds.hover} aria-busy={installing}>
+          <span>Instalar o Equalizer APO</span><b>{installing ? 'Instalando...' : '▶'}</b>
+        </button>
+      )}
       <button className="ds4-row" onClick={tap(toggle)} onMouseEnter={sounds.hover}><span>Equalizador</span><b>{state.on ? 'Ligado' : 'Desligado'}</b></button>
       <button className="ds4-row" onClick={tap(cyclePreset)} onMouseEnter={sounds.hover}><span>Preset</span><b>{presetLabel(state.preset)}</b></button>
       <div className="eq-body">

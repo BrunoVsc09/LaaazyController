@@ -47,7 +47,10 @@ export function curvePoints(bands: number[], width: number, height: number) {
 
 export function statusText(status: EqStatus): string {
   if (!status.installed) {
-    return 'Equalizer APO não encontrado. Instale o Equalizer APO (grátis), marque a sua saída de som no Configurator e abra o Laaazy de novo. Os ajustes ficam guardados até lá.'
+    return 'Equalizer APO não encontrado. Ele é grátis e faz o equalizador valer para o Windows inteiro: toque em "Instalar o Equalizer APO". Os ajustes ficam guardados até lá.'
   }
   return status.error
 }
+
+// Enquanto instala: os dois passos que o Windows não deixa fazer pelo controle
+export const INSTALL_WAIT = 'Baixando e instalando... Quando o Windows perguntar, clique em Sim (com o mouse ou o teclado). Depois, na janela do Equalizer APO, marque a sua saída de som e clique em OK.'

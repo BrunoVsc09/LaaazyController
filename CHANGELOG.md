@@ -9,8 +9,12 @@
   som do Windows inteiro, pelo Equalizer APO (grátis, instalado à parte): o Laaazy grava o próprio
   arquivo e só acrescenta uma linha `Include` no `config.txt`, sem apagar o que já estava lá. Se o
   `config.txt` ainda for o que o instalador do APO cria (−6 dB e um reforço de grave de exemplo), ele
-  fica só com a linha do Laaazy, para o "Geral" ser o som original. Sem o APO, a tela explica como
-  instalar e o ajuste fica guardado até lá.
+  fica só com a linha do Laaazy, para o "Geral" ser o som original. Sem o APO, o ajuste fica
+  guardado até lá.
+- **Instalar o Equalizer APO pelo Laaazy:** sem o APO, a categoria Som mostra "Instalar o Equalizer
+  APO". O Laaazy baixa a versão 1.4.2 do SourceForge oficial, confere a impressão digital (SHA-256)
+  e só então instala sem janelas. Dois passos o Windows não deixa fazer pelo controle: o **Sim** do
+  aviso de administrador e marcar a saída de som na janela do Equalizer APO (mouse ou teclado).
 
 ## 3.6.5 — 2026-10-10
 

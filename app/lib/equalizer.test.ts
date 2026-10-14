@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
-  FLAT, applyPreset, stepBand, stepEffect, nextPreset, presetLabel, dbText, curvePoints, statusText,
+  FLAT, applyPreset, stepBand, stepEffect, nextPreset, presetLabel, dbText, curvePoints, statusText, INSTALL_WAIT,
 } from './equalizer'
 
 describe('equalizador (tela): presets', () => {
@@ -59,8 +59,14 @@ describe('equalizador (tela): textos e gráfico', () => {
     expect(pts[1]).toEqual({ x: 135, y: 120 })
     expect(pts[9]).toEqual({ x: 855, y: 240 })
   })
-  it('aviso quando o Equalizer APO não está instalado', () => {
-    expect(statusText({ installed: false, state: FLAT, error: '' })).toMatch(/Equalizer APO não encontrado/)
+  it('aviso quando o Equalizer APO não está instalado aponta para o botão de instalar', () => {
+    const t = statusText({ installed: false, state: FLAT, error: '' })
+    expect(t).toMatch(/Equalizer APO não encontrado/)
+    expect(t).toMatch(/Instalar o Equalizer APO/)
+  })
+  it('instalando: avisa que o "Sim" do Windows precisa do mouse', () => {
+    expect(INSTALL_WAIT).toMatch(/Sim/)
+    expect(INSTALL_WAIT).toMatch(/mouse/)
   })
   it('erro de gravação aparece; com tudo certo, nada', () => {
     expect(statusText({ installed: true, state: FLAT, error: 'Sem permissão.' })).toBe('Sem permissão.')

@@ -38,7 +38,7 @@ function make() {
     ytTrailers: { status: vi.fn(async () => ({ configured: false, left: 90 })), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })) },
     assistant: { status: vi.fn(async () => ({})), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })), similarMood: vi.fn(async () => ({ ok: true, items: [] })) },
     volume: { step: vi.fn(() => true) },
-    equalizer: { status: vi.fn(async () => ({ installed: true })), set: vi.fn(async () => ({ ok: true })) },
+    equalizer: { status: vi.fn(async () => ({ installed: true })), set: vi.fn(async () => ({ ok: true })), install: vi.fn(async () => ({ ok: true, msg: '' })) },
     covers: { status: vi.fn(() => ({ configured: false })), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })) },
     power: { run: vi.fn(async () => ({ ok: true })), openAtLogin: vi.fn(() => false), setOpenAtLogin: vi.fn() },
   }
@@ -275,5 +275,10 @@ describe('registerIpc', () => {
     const sent = h.equalizer.set.mock.calls[0][0]
     expect(sent).toEqual({ on: true, preset: 'geral', bands, bass: 2, clarity: 3 })
     expect(sent.bands).not.toBe(bands) // cópia: a tela não mexe no que o serviço guardou
+  })
+  it('instalar o Equalizer APO: a tela não escolhe nada (versão, endereço e hash ficam no core)', async () => {
+    const { invoke, h } = make()
+    await invoke(C.EQ_INSTALL, 'https://outro-site/virus.exe')
+    expect(h.equalizer.install).toHaveBeenCalledWith()
   })
 })

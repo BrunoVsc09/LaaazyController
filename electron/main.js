@@ -7,7 +7,7 @@ const path = require('path')
 
 const store = require('./adapters/json-store')
 const { regAppPath, regValue } = require('./adapters/registry')
-const { spawnDetached, killTree, processTable } = require('./adapters/process')
+const { spawnDetached, killTree, processTable, runElevated } = require('./adapters/process')
 const { ancestorsOf, parseProcessTable } = require('./core/processes')
 const { MASK_MENU } = require('./core/focus')
 const { createForegroundProbe } = require('./adapters/ps-foreground')
@@ -224,7 +224,12 @@ const keySender = createKeySender()
 const volume = createVolume({ send: keySender.send })
 
 // Equalizador do Windows pelo Equalizer APO (Configurações → Som)
-const equalizer = createEqualizer({ findConfigDir: apoFiles.findConfigDir, readText: apoFiles.readText, writeText: apoFiles.writeText, join: path.join, settings })
+// Instalar o APO pelo Laaazy: baixa com o mesmo código da atualização (confere o SHA-256) e roda como administrador
+const { download, hashFile, removeFile } = createGithubReleases({ fetch: net.fetch })
+const equalizer = createEqualizer({
+  findConfigDir: apoFiles.findConfigDir, readText: apoFiles.readText, writeText: apoFiles.writeText, join: path.join, settings,
+  tempDir: () => app.getPath('temp'), download, hashFile, removeFile, runElevated,
+})
 
 const myList = createMyList({
   read: () => store.readJson(userFile('my-list.json'), []),

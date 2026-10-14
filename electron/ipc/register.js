@@ -92,6 +92,7 @@ function registerIpc(ipcMain, h) {
   handle(C.COVERS_SET_KEY, (key) => (isText(key) ? h.covers.setKey(key) : { ok: false, msg: 'Chave inválida.' }))
   handle(C.COVERS_CLEAR_KEY, () => h.covers.clearKey())
   handle(C.EQ_STATUS, () => h.equalizer.status())
+  handle(C.EQ_INSTALL, () => h.equalizer.install())
   handle(C.EQ_SET, (s) => (isPlain(s) ? h.equalizer.set(toEq(s)) : { ok: false, msg: 'Ajuste inválido.' }))
   handle(C.POWER_RUN, (action, confirmed) => (isText(action) ? h.power.run(action, confirmed === true) : { ok: false, msg: 'Ação desconhecida.' }))
   handle(C.POWER_LOGIN_GET, () => h.power.openAtLogin())

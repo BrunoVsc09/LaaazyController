@@ -78,4 +78,15 @@ function withInclude(text) {
   return body + INCLUDE_LINE + eol
 }
 
-module.exports = { APP_FILE, INCLUDE_LINE, FLAT, validState, preampDb, render, withInclude }
+// Instalador do Equalizer APO, baixado na hora (Configurações → Som). Versão fixa: o SHA-256 foi
+// conferido no instalador do SourceForge e no pacote do Chocolatey (2026-10-14). Atualizar = trocar os três
+const APO_VERSION = '1.4.2'
+const APO_SETUP = Object.freeze({
+  version: APO_VERSION,
+  fileName: `EqualizerAPO-x64-${APO_VERSION}.exe`,
+  url: `https://downloads.sourceforge.net/project/equalizerapo/${APO_VERSION}/EqualizerAPO-x64-${APO_VERSION}.exe`,
+  sha256: '7403be7427bbe1936a40dded082829b6e217fc4f5990fee5cba501f0ae055afa',
+  args: Object.freeze(['/S']),
+})
+
+module.exports = { APP_FILE, INCLUDE_LINE, FLAT, APO_SETUP, validState, preampDb, render, withInclude }

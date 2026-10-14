@@ -120,3 +120,18 @@ describe('equalizador: Include no config.txt do usuário', () => {
     expect(mod.withInclude(out)).toBe(out)
   })
 })
+
+describe('equalizador: instalador do Equalizer APO (baixado na hora)', () => {
+  const s = mod.APO_SETUP
+  it('versão fixa, baixada do SourceForge oficial por https', () => {
+    expect(s.version).toBe('1.4.2')
+    expect(s.url).toBe('https://downloads.sourceforge.net/project/equalizerapo/1.4.2/EqualizerAPO-x64-1.4.2.exe')
+    expect(s.fileName).toBe('EqualizerAPO-x64-1.4.2.exe')
+  })
+  it('SHA-256 conferido em duas fontes (instalador do SourceForge e pacote do Chocolatey)', () => {
+    expect(s.sha256).toBe('7403be7427bbe1936a40dded082829b6e217fc4f5990fee5cba501f0ae055afa')
+  })
+  it('instala sem janelas (/S)', () => {
+    expect(s.args).toEqual(['/S'])
+  })
+})
