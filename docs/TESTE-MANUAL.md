@@ -122,6 +122,10 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 
 ## Som (equalizador)
 Precisa do Equalizer APO instalado, com a saída de som marcada no Configurator.
+- [ ] "Saída de som ▾" mostra a saída em uso; X abre a lista curta (sem Hands-Free, Steam e Voicemeeter) com a borda na saída em uso; ○ fecha
+- [ ] Escolher outra saída: o som muda na hora e ela ganha "★ preferida"; "Mostrar todas" mostra as escondidas
+- [ ] Com a preferida (ex.: caixinha Bluetooth) ligada e o Windows em outra saída: abrir o Laaazy volta o som para a preferida
+- [ ] Com a preferida desligada: abrir o Laaazy não mexe na saída
 - [ ] Sem o APO: Configurações → Som mostra o aviso e o botão "Instalar o Equalizer APO"; mexer não dá erro
 - [ ] Instalar pelo botão: baixa (~12 MB), o Windows pede o Sim; depois abre a janela do APO para marcar a saída de som; no fim o botão some e o Som funciona (talvez depois de reiniciar)
 - [ ] Instalar e dizer **Não** no aviso do Windows: "Instalação cancelada... Nada foi instalado."

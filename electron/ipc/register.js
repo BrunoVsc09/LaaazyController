@@ -93,6 +93,8 @@ function registerIpc(ipcMain, h) {
   handle(C.COVERS_CLEAR_KEY, () => h.covers.clearKey())
   handle(C.EQ_STATUS, () => h.equalizer.status())
   handle(C.EQ_INSTALL, () => h.equalizer.install())
+  handle(C.AUDIO_OUTPUTS, (opts) => h.audioOutputs.outputs({ all: !!(opts && opts.all) }))
+  handle(C.AUDIO_SET_OUTPUT, (id) => (isText(id) ? h.audioOutputs.choose(id) : { ok: false, msg: 'Saída inválida.' }))
   handle(C.EQ_SET, (s) => (isPlain(s) ? h.equalizer.set(toEq(s)) : { ok: false, msg: 'Ajuste inválido.' }))
   handle(C.POWER_RUN, (action, confirmed) => (isText(action) ? h.power.run(action, confirmed === true) : { ok: false, msg: 'Ação desconhecida.' }))
   handle(C.POWER_LOGIN_GET, () => h.power.openAtLogin())

@@ -11,6 +11,9 @@ export type StreamMode = 'app' | 'edge'
 // Equalizador (Configurações → Som); valores em shared/equalizer.js
 export type EqState = { on: boolean; preset: string; bands: number[]; bass: number; clarity: number; volume: number }
 export type EqStatus = { installed: boolean; state: EqState; error: string }
+// Saídas de som do Windows (Configurações → Som)
+export type AudioOutput = { id: string; name: string; isDefault: boolean; preferred: boolean }
+export type AudioOutputs = { ok: boolean; items: AudioOutput[]; hidden: number; msg?: string }
 export type Settings = {
   theme?: string
   psClosesApp?: boolean
@@ -52,6 +55,7 @@ export type LazyApi = {
   oskOverlay: { edit(change: { move?: number; back?: number; text?: string; enter?: boolean }): Promise<boolean>; close(): Promise<void>; onOpened(cb: () => void): void }
   volume(action: 'up' | 'down' | 'mute'): void
   eq: { status(): Promise<EqStatus>; set(state: EqState): Promise<{ ok: boolean; msg?: string }>; install(): Promise<Result> }
+  audio: { outputs(opts?: { all: boolean }): Promise<AudioOutputs>; setOutput(id: string): Promise<Result> }
   onHome(cb: () => void): void
   ps: { startTest(): Promise<boolean>; onTested(cb: () => void): void }
   settings: { get(): Promise<Settings>; set(key: string, value: unknown): Promise<boolean> }

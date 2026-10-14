@@ -15,6 +15,12 @@
   baixo. Vai de 0 a +12 dB (←/→, como o Bass Boost); o preset Volume Boost usa +6 dB. Acima de
   +6 dB a tela avisa que as partes mais altas podem distorcer (um limitador VST fica para outra
   versão). Ajustes salvos antes continuam valendo, com volume extra 0.
+- **Saída de som preferida (pedido do Bruno):** em Configurações → Som, "Saída de som ▾" abre uma lista
+  curta (sem o modo telefone do Bluetooth, a Steam e as saídas virtuais; "Mostrar todas" no fim).
+  Escolher uma saída manda o som do Windows para ela e a guarda como preferida: ao abrir, se ela
+  estiver conectada (a caixinha Bluetooth, por exemplo), o Laaazy volta o som para ela. Cada pessoa
+  escolhe a sua. O Windows não tem forma oficial de trocar a saída padrão; o Laaazy usa a mesma
+  interface interna que o SoundSwitch e o EarTrumpet.
 - **Instalar o Equalizer APO pelo Laaazy:** sem o APO, a categoria Som mostra "Instalar o Equalizer
   APO". O Laaazy baixa a versão 1.4.2 do SourceForge oficial, confere a impressão digital (SHA-256)
   e só então instala sem janelas. Dois passos o Windows não deixa fazer pelo controle: o **Sim** do

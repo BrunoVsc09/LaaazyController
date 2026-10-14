@@ -56,6 +56,8 @@ module.exports = {
   EQ_STATUS: 'eq:status', // equalizador: APO instalado? + ajuste salvo
   EQ_SET: 'eq:set', // equalizador: ajuste novo (bandas, Bass Boost, Clarity)
   EQ_INSTALL: 'eq:install', // baixa e instala o Equalizer APO (versão e hash fixos no core)
+  AUDIO_OUTPUTS: 'audio:outputs', // saídas de som do Windows (lista curta ou todas)
+  AUDIO_SET_OUTPUT: 'audio:setOutput', // troca a saída e guarda como preferida
   CLIPBOARD_READ: 'clipboard:read',
   AI_STATUS: 'ai:status',
   AI_SET_KEY: 'ai:setKey',

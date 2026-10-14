@@ -62,6 +62,15 @@ describe('settings', () => {
     expect(s.set('geminiModel', '../../x')).toBe(false)
     expect(s.set('geminiModel', 'Gemini 3.8 Flash')).toBe(false)
   })
+  // Saída de som preferida (Configurações → Som, pedido do Bruno 2026-10-14)
+  it('audioOutput: padrão nenhuma; só { id, name } em texto', () => {
+    const { s } = make()
+    expect(s.get('audioOutput')).toBe(null)
+    expect(s.set('audioOutput', { id: '{0.0.0.00000000}.{aaa}', name: 'Fones de ouvido (XDG-342)' })).toBe(true)
+    expect(s.set('audioOutput', null)).toBe(true)
+    expect(s.set('audioOutput', 'XDG')).toBe(false)
+    expect(s.set('audioOutput', { id: 'x', name: 'y', cmd: 'z' })).toBe(false)
+  })
   // Equalizador (Configurações → Som, pedido do Bruno 2026-10-14)
   it('equalizer: padrão ligado e plano; só estados válidos', () => {
     const { s } = make()
