@@ -56,10 +56,24 @@ function render(s) {
   return lines.join('\n') + '\n'
 }
 
-// config.txt do usuário com a linha Include (uma vez só), no mesmo final de linha do arquivo
+// config.txt que o instalador do APO cria (Preamp -6 dB + example.txt com reforço de grave)
+const APO_DEFAULT = [
+  'Preamp: -6 dB',
+  'Include: example.txt',
+  'GraphicEQ: 25 0; 40 0; 63 0; 100 0; 160 0; 250 0; 400 0; 630 0; 1000 0; 1600 0; 2500 0; 4000 0; 6300 0; 10000 0; 16000 0',
+]
+const isApoDefault = (lines) => {
+  const own = lines.map((l) => l.trim()).filter((l) => l && l !== INCLUDE_LINE)
+  return own.length === APO_DEFAULT.length && own.every((l, i) => l === APO_DEFAULT[i])
+}
+
+// config.txt do usuário com a linha Include (uma vez só), no mesmo final de linha do arquivo.
+// O padrão do instalador não é escolha do usuário: ali fica só o Laaazy (senão o "Geral" não é neutro)
 function withInclude(text) {
-  if (text.split(/\r?\n/).includes(INCLUDE_LINE)) return text
+  const lines = text.split(/\r?\n/)
   const eol = text.includes('\r\n') ? '\r\n' : '\n'
+  if (isApoDefault(lines)) return INCLUDE_LINE + eol
+  if (lines.includes(INCLUDE_LINE)) return text
   const body = text && !text.endsWith('\n') ? text + eol : text
   return body + INCLUDE_LINE + eol
 }

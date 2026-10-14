@@ -97,6 +97,22 @@ describe('equalizador: Include no config.txt do usuário', () => {
   it('arquivo sem quebra de linha no fim', () => {
     expect(mod.withInclude('Preamp: -2 dB')).toBe(`Preamp: -2 dB\n${INC}\n`)
   })
+  // Regressão (achado no PC do Bruno, 2026-10-14): o config.txt que o instalador do APO cria tem
+  // Preamp -6 dB e inclui o example.txt (reforço de grave); somado ao Laaazy, o "Geral" não era neutro
+  const APO_DEFAULT = 'Preamp: -6 dB\r\nInclude: example.txt\r\nGraphicEQ: 25 0; 40 0; 63 0; 100 0; 160 0; 250 0; 400 0; 630 0; 1000 0; 1600 0; 2500 0; 4000 0; 6300 0; 10000 0; 16000 0'
+  it('config.txt padrão do instalador (o usuário nunca mexeu): fica só a linha do Laaazy', () => {
+    expect(mod.withInclude(APO_DEFAULT)).toBe(`${INC}\r\n`)
+  })
+  it('o padrão é reconhecido também com LF e quebra de linha no fim', () => {
+    expect(mod.withInclude(APO_DEFAULT.replaceAll('\r\n', '\n') + '\n')).toBe(`${INC}\n`)
+  })
+  it('padrão que já ganhou o Include do Laaazy (versão anterior) também é limpo', () => {
+    expect(mod.withInclude(`${APO_DEFAULT}\r\n${INC}\r\n`)).toBe(`${INC}\r\n`)
+  })
+  it('o usuário mexeu em qualquer coisa: nada é apagado, só acrescenta o Include', () => {
+    const mexido = APO_DEFAULT.replace('Preamp: -6 dB', 'Preamp: -3 dB')
+    expect(mod.withInclude(mexido)).toBe(`${mexido}\r\n${INC}\r\n`)
+  })
   it('config do Windows com CRLF: mantém o CRLF e reconhece o Include que já existe', () => {
     const crlf = 'Preamp: -2 dB\r\n'
     const out = mod.withInclude(crlf)

@@ -123,7 +123,9 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 ## Som (equalizador)
 Precisa do Equalizer APO instalado, com a saída de som marcada no Configurator.
 - [ ] Sem o APO: Configurações → Som mostra o aviso de instalar; mexer não dá erro
-- [ ] Com o APO: aparece `laaazy.txt` na pasta config do APO e uma linha `Include: laaazy.txt` no fim do `config.txt` (o resto do arquivo igual)
+- [ ] Com o APO recém-instalado: o `config.txt` fica só com `Include: laaazy.txt` (o padrão do APO tinha −6 dB e o example.txt), e aparece `laaazy.txt` na pasta config
+- [ ] `config.txt` mexido à mão antes: o Laaazy só acrescenta `Include: laaazy.txt` no fim (o resto igual)
+- [ ] Preset Geral: som igual ao original (comparar com o Equalizador desligado)
 - [ ] Bass Boost em 10: o grave aumenta na hora (música no YouTube, por exemplo)
 - [ ] X numa banda, segurar ↑: sobe até +12 e para; X ou O saem do ajuste; ←/→ voltam a andar entre as bandas
 - [ ] Equalizador desligado: o som volta ao original

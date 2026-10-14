@@ -7,8 +7,10 @@
   Filmes, Jogos e Voz), 10 bandas de 62 Hz a 13 kHz num gráfico, Bass Boost e Clarity. X numa banda
   entra no ajuste: ↑/↓ mudam o ganho (←/→ no Bass Boost e no Clarity), X ou O terminam. Vale para o
   som do Windows inteiro, pelo Equalizer APO (grátis, instalado à parte): o Laaazy grava o próprio
-  arquivo e só acrescenta uma linha `Include` no `config.txt`, sem apagar o que já estava lá. Sem o
-  APO, a tela explica como instalar e o ajuste fica guardado até lá.
+  arquivo e só acrescenta uma linha `Include` no `config.txt`, sem apagar o que já estava lá. Se o
+  `config.txt` ainda for o que o instalador do APO cria (−6 dB e um reforço de grave de exemplo), ele
+  fica só com a linha do Laaazy, para o "Geral" ser o som original. Sem o APO, a tela explica como
+  instalar e o ajuste fica guardado até lá.
 
 ## 3.6.5 — 2026-10-10
 
