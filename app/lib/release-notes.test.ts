@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import fs from 'node:fs'
 import path from 'node:path'
-import { notesHeading, notesDate, sectionIcon, reachedEnd, footerAvatars } from './release-notes'
+import { notesHeading, notesDate, sectionIcon, footerAvatars, NOTES_WAIT_S, continueLabel } from './release-notes'
 
 describe('novidades da versão (tela)', () => {
   it('título com a versão', () => {
@@ -16,18 +16,15 @@ describe('novidades da versão (tela)', () => {
   })
 })
 
-// "Só depois de chegar no final a tela pode fechar" (Bruno, 2026-10-14)
-describe('novidades: chegou ao fim?', () => {
-  it('rolou até o fundo (com folga de alguns pixels): sim', () => {
-    expect(reachedEnd({ scrollTop: 600, clientHeight: 400, scrollHeight: 1000 })).toBe(true)
-    expect(reachedEnd({ scrollTop: 597, clientHeight: 400, scrollHeight: 1000 })).toBe(true)
+// "É mais fácil um timer de 6 segundos para apertar continuar" (Bruno, 2026-10-14; antes era rolar até o fim)
+describe('novidades: espera antes de continuar', () => {
+  it('6 segundos', () => {
+    expect(NOTES_WAIT_S).toBe(6)
   })
-  it('ainda tem conteúdo embaixo: não', () => {
-    expect(reachedEnd({ scrollTop: 0, clientHeight: 400, scrollHeight: 1000 })).toBe(false)
-    expect(reachedEnd({ scrollTop: 590, clientHeight: 400, scrollHeight: 1000 })).toBe(false)
-  })
-  it('tudo coube sem rolar: já está no fim', () => {
-    expect(reachedEnd({ scrollTop: 0, clientHeight: 400, scrollHeight: 400 })).toBe(true)
+  it('o botão mostra quanto falta e depois só "Continuar"', () => {
+    expect(continueLabel(6)).toBe('Continuar (6)')
+    expect(continueLabel(1)).toBe('Continuar (1)')
+    expect(continueLabel(0)).toBe('Continuar')
   })
 })
 

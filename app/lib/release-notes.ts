@@ -1,4 +1,4 @@
-// Novidades da versão (depois de atualizar): textos da janelinha, fim da rolagem e avatares do rodapé.
+// Novidades da versão (depois de atualizar): textos da janelinha, espera do Continuar e avatares do rodapé.
 export const notesHeading = (version: string) => `Novidades da versão ${version}`
 
 export function notesDate(iso: string): string {
@@ -9,11 +9,9 @@ export function notesDate(iso: string): string {
 const ICONS: Record<string, string> = { Destaques: '⭐', Novo: '✨', Mudou: '🔧', Corrigido: '🩹' }
 export const sectionIcon = (title: string) => ICONS[title] ?? '•'
 
-// Só fecha depois de chegar ao fim (com folga: a rolagem às vezes para a uns pixels do fundo).
-// Se tudo coube sem rolar, já está no fim
-const SLACK = 4
-export const reachedEnd = ({ scrollTop, clientHeight, scrollHeight }: { scrollTop: number; clientHeight: number; scrollHeight: number }) =>
-  scrollTop + clientHeight >= scrollHeight - SLACK
+// "Continuar" só depois de alguns segundos (dá tempo de ver as novidades); o botão mostra quanto falta
+export const NOTES_WAIT_S = 6
+export const continueLabel = (secondsLeft: number) => (secondsLeft > 0 ? `Continuar (${secondsLeft})` : 'Continuar')
 
 // Rodapé: todos os avatares que vêm com o Laaazy, menos o logo (a foto padrão, não é avatar novo)
 const LOGO = 'avatar-01'

@@ -144,7 +144,8 @@ Precisa do Equalizer APO instalado, com a saída de som marcada no Configurator.
 
 ## Novidades da versão
 - [ ] Depois de atualizar (pnpm release → instalar a versão nova): ao abrir, aparece "Novidades da versão X" com a mascote e os títulos do CHANGELOG
-- [ ] A borda já está em "Entendi"; ✕ ou ○ fecham e a borda volta para onde estava
+- [ ] A borda já está em "Continuar (6)", que conta até 0; antes disso ✕ e ○ não fecham; depois fecham e a borda volta para onde estava
+- [ ] Destaques e avatares (no rodapé) cabem sem rolar numa TV 1080p
 - [ ] Abrir de novo a mesma versão: a janela não aparece
 - [ ] Instalação nova (sem perfil): não aparece; depois das boas-vindas, abrir de novo também não
 
