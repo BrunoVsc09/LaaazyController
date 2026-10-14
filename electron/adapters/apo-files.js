@@ -6,14 +6,17 @@ const { regValue } = require('./registry')
 const APO_KEY = 'HKLM\\SOFTWARE\\EqualizerAPO'
 
 const isDir = (p) => fsp.stat(p).then((s) => s.isDirectory(), () => false)
+const isFile = (p) => fsp.stat(p).then((s) => s.isFile(), () => false)
 
-// Pasta config do APO (onde fica o config.txt), ou null se não estiver instalado
+// Pasta config do APO (onde fica o config.txt), ou null se não estiver instalado.
+// O desinstalador deixa a chave do registro, a pasta config e DLLs em uso; o Uninstall.exe some
 async function findConfigDir(readReg = regValue) {
+  const installPath = await readReg(APO_KEY, 'InstallPath')
+  if (!installPath || !(await isFile(path.join(installPath, 'Uninstall.exe')))) return null
   const configPath = await readReg(APO_KEY, 'ConfigPath')
   if (configPath && (await isDir(configPath))) return configPath
-  const installPath = await readReg(APO_KEY, 'InstallPath')
-  const fallback = installPath && path.join(installPath, 'config')
-  return fallback && (await isDir(fallback)) ? fallback : null
+  const fallback = path.join(installPath, 'config')
+  return (await isDir(fallback)) ? fallback : null
 }
 
 // Arquivo ausente vira texto vazio (primeiro uso)

@@ -126,6 +126,7 @@ Precisa do Equalizer APO instalado, com a saída de som marcada no Configurator.
 - [ ] Instalar pelo botão: baixa (~12 MB), o Windows pede o Sim; depois abre a janela do APO para marcar a saída de som; no fim o botão some e o Som funciona (talvez depois de reiniciar)
 - [ ] Instalar e dizer **Não** no aviso do Windows: "Instalação cancelada... Nada foi instalado."
 - [ ] Instalar sem internet: "Não consegui baixar o Equalizer APO: ..."
+- [ ] Depois de desinstalar o APO (o desinstalador deixa restos no registro e na pasta config): o botão "Instalar o Equalizer APO" volta a aparecer
 - [ ] Com o APO recém-instalado: o `config.txt` fica só com `Include: laaazy.txt` (o padrão do APO tinha −6 dB e o example.txt), e aparece `laaazy.txt` na pasta config
 - [ ] `config.txt` mexido à mão antes: o Laaazy só acrescenta `Include: laaazy.txt` no fim (o resto igual)
 - [ ] Preset Geral: som igual ao original (comparar com o Equalizador desligado)

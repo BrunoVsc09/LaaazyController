@@ -10,19 +10,33 @@ beforeEach(() => { dir = fs.mkdtempSync(path.join(os.tmpdir(), 'lazy-apo-')) })
 // Registro falso: { ConfigPath, InstallPath } da chave do Equalizer APO
 const fakeReg = (values) => async (key, name) => (key === mod.APO_KEY ? values[name] ?? null : null)
 
+// Instalação de verdade: pasta config + Uninstall.exe (o desinstalador apaga o .exe)
+function installed() {
+  fs.mkdirSync(path.join(dir, 'config'))
+  fs.writeFileSync(path.join(dir, 'Uninstall.exe'), '')
+  return { InstallPath: dir, ConfigPath: path.join(dir, 'config') }
+}
+
 describe('apo-files: achar a pasta do Equalizer APO', () => {
   it('usa o ConfigPath do registro', async () => {
-    expect(await mod.findConfigDir(fakeReg({ ConfigPath: dir }))).toBe(dir)
+    expect(await mod.findConfigDir(fakeReg(installed()))).toBe(path.join(dir, 'config'))
   })
   it('sem ConfigPath, tenta a pasta config dentro da instalação', async () => {
-    fs.mkdirSync(path.join(dir, 'config'))
-    expect(await mod.findConfigDir(fakeReg({ InstallPath: dir }))).toBe(path.join(dir, 'config'))
+    const { InstallPath } = installed()
+    expect(await mod.findConfigDir(fakeReg({ InstallPath }))).toBe(path.join(dir, 'config'))
   })
   it('APO não instalado: null', async () => {
     expect(await mod.findConfigDir(fakeReg({}))).toBe(null)
   })
-  it('registro aponta para pasta apagada: null', async () => {
-    expect(await mod.findConfigDir(fakeReg({ ConfigPath: path.join(dir, 'apagada') }))).toBe(null)
+  it('registro aponta para pastas apagadas: null', async () => {
+    expect(await mod.findConfigDir(fakeReg({ InstallPath: path.join(dir, 'apagada'), ConfigPath: path.join(dir, 'apagada', 'config') }))).toBe(null)
+  })
+  // Regressão (PC do Bruno, 2026-10-14): o desinstalador do APO deixa a chave do registro, a pasta
+  // config e DLLs em uso; só os .exe somem. O Laaazy achava que ainda estava instalado e escondia o "Instalar"
+  it('desinstalado com restos (registro e pasta config ficaram, Uninstall.exe sumiu): null', async () => {
+    const reg = installed()
+    fs.rmSync(path.join(dir, 'Uninstall.exe'))
+    expect(await mod.findConfigDir(fakeReg(reg))).toBe(null)
   })
 })
 
