@@ -13,3 +13,8 @@
 .lz-notes .lz-btn { align-self: flex-end; margin-top: 16px; min-width: 180px; }
 @keyframes lz-notes-in { from { opacity: 0; transform: translate(-50%, -46%) } to { opacity: 1; transform: translate(-50%, -50%) } }
 @media (prefers-reduced-motion: reduce) { .lz-notes { animation: none; } }
+/* Rodapé com os avatares (fim da rolagem: só depois dele a janela fecha) */
+.lz-notes-avatars { margin-top: 22px; padding-top: 14px; border-top: 1px solid rgba(255, 210, 63, .3); }
+.lz-notes-avatars div { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; }
+.lz-notes-avatars img { width: 88px; height: 88px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255, 210, 63, .6); }
+.lz-notes .lz-notes-ok.is-waiting { opacity: .6; cursor: default; }

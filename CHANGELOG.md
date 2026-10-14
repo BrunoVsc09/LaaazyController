@@ -2,7 +2,15 @@
 
 ## Próxima versão
 
+### Destaques
+- Configurações: Som
+- Ajustes no player do YouTube
+- Correções de bugs
+- Novos avatares :D
+
 ### Novo
+- **Novos avatares (do Bruno):** cinco fotos de perfil novas com a turma do Laaazy, para escolher nas
+  boas-vindas ou em Configurações → Perfil.
 - **Equalizador do Windows (Configurações → Som, pedido do Bruno):** presets (Geral, Música,
   Filmes, Jogos, Voz, Bass Boost e Volume Boost), 10 bandas de 62 Hz a 13 kHz num gráfico, Bass Boost e Clarity. X numa banda
   entra no ajuste: ↑/↓ mudam o ganho (←/→ no Bass Boost e no Clarity), X ou O terminam. Vale para o
@@ -16,9 +24,9 @@
   +6 dB a tela avisa que as partes mais altas podem distorcer (um limitador VST fica para outra
   versão). Ajustes salvos antes continuam valendo, com volume extra 0.
 - **Novidades da versão (pedido do Bruno):** depois que o Laaazy se atualiza, ao abrir aparece uma
-  janelinha com a mascote e o que mudou (Novo, Mudou e Corrigido, só os títulos deste CHANGELOG).
-  "Entendi" (✕) ou ○ fecham, e ela só volta na próxima atualização. Na primeira instalação não
-  aparece (são as boas-vindas).
+  janelinha com a mascote, os destaques da versão (a parte "Destaques" deste CHANGELOG) e os avatares
+  no rodapé. ↓ rola; só depois de chegar ao fim ✕ em "Entendi" ou ○ fecham, e ela só volta na
+  próxima atualização. Na primeira instalação não aparece (são as boas-vindas).
 - **Saída de som preferida (pedido do Bruno):** em Configurações → Som, "Saída de som ▾" abre uma lista
   curta (sem o modo telefone do Bluetooth, a Steam e as saídas virtuais; "Mostrar todas" no fim).
   Escolher uma saída manda o som do Windows para ela e a guarda como preferida: ao abrir, se ela

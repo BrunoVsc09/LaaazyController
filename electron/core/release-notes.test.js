@@ -60,6 +60,28 @@ describe('novidades: ler a seção da versão no CHANGELOG', () => {
   })
 })
 
+// "Changelog: Configurações: Som / Ajustes no player do YouTube / Correções de bugs / Novos avatares :D"
+// (Bruno, 2026-10-14): a janela mostra um resumo; o CHANGELOG detalhado continua indo para o GitHub
+describe('novidades: destaques', () => {
+  const C = [
+    '## 3.6.6 — 2026-10-14',
+    '',
+    '### Destaques',
+    '- Configurações: Som',
+    '- Ajustes no player do YouTube',
+    '- Correções de bugs',
+    '- Novos avatares :D',
+    '',
+    '### Novo',
+    '- **Equalizador do Windows (pedido do Bruno):** detalhe que vai só para o GitHub.',
+  ].join('\n')
+  it('com "### Destaques": a janela mostra só eles, escritos como estão', () => {
+    expect(mod.notesFor(C, '3.6.6').sections).toEqual([
+      { title: 'Destaques', items: ['Configurações: Som', 'Ajustes no player do YouTube', 'Correções de bugs', 'Novos avatares :D'] },
+    ])
+  })
+})
+
 describe('novidades: quando mostrar', () => {
   it('a versão mudou desde a última vez: mostra', () => {
     expect(mod.shouldShow({ lastSeen: '3.6.5', current: '3.6.6', newUser: false })).toBe(true)

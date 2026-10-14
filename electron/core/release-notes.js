@@ -1,6 +1,7 @@
 // Novidades da versão: depois que o Laaazy se atualiza, mostra o que mudou. Os textos vêm da seção
 // "## X.Y.Z — data" do CHANGELOG (a mesma que o pnpm release usa). Só o título de cada item. Sem I/O.
 const MAX = 80
+const HIGHLIGHTS = 'Destaques'
 
 const plain = (s) => s.replace(/\*\*/g, '').replace(/`/g, '')
 const short = (s) => (s.length <= MAX ? s : s.slice(0, s.lastIndexOf(' ', MAX)).replace(/[,;:.]$/, '') + '…')
@@ -30,7 +31,10 @@ function notesFor(changelog, version) {
     if (line.startsWith('### ')) sections.push({ title: line.slice(4).trim(), items: [] })
     else if (line.startsWith('- ') && sections.length) sections[sections.length - 1].items.push(itemTitle(line.slice(2)))
   }
-  return { version, date: found.date, sections: sections.filter((s) => s.items.length) }
+  // "### Destaques": resumo escrito para a janela; o resto do CHANGELOG fica para o GitHub
+  const filled = sections.filter((s) => s.items.length)
+  const highlights = filled.find((s) => s.title === HIGHLIGHTS)
+  return { version, date: found.date, sections: highlights ? [highlights] : filled }
 }
 
 // Mostra quando a versão mudou desde a última vez. Primeira instalação não (aparecem as boas-vindas);
