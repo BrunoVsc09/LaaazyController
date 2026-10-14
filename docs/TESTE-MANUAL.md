@@ -176,7 +176,8 @@ Precisa do Equalizer APO instalado, com a saída de som marcada no Configurator.
 - [ ] Ao abrir, o foco já está no primeiro filme/série; as fileiras de títulos vêm logo abaixo do destaque
 - [ ] A prévia ocupa quase metade da largura (em 1080p, ~833×469) e a primeira fileira aparece inteira
 - [ ] Parado num título ~1s, o trailer toca sem som no quadro do destaque; passar para o próximo troca a prévia
-- [ ] Se aparecer erro do YouTube no quadro (ex.: 153), me avise e desligue em Configurações → Prévia do trailer
+- [ ] A tela de erro do YouTube ("Vídeo indisponível", erro 153) nunca aparece no quadro: o player só surge quando o vídeo toca
+- [ ] Trailer que o YouTube recusa: em ~10 s passa para o próximo; sem nenhum que toque, fica a capa e "O YouTube não liberou o trailer agora"
 - [ ] "Trailer com som" abre o trailer completo no Edge
 - [ ] X três ou mais vezes num título: abre uma janela só do streaming; o PS fecha ela e volta ao Início
 - [ ] △ num título: aparece no destaque "Procurando títulos parecidos..."; em poucos segundos a fileira "Parecido com" surge e o foco vai para ela

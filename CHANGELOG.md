@@ -20,6 +20,13 @@
   e só então instala sem janelas. Dois passos o Windows não deixa fazer pelo controle: o **Sim** do
   aviso de administrador e marcar a saída de som na janela do Equalizer APO (mouse ou teclado).
 
+### Corrigido
+- **"Vídeo indisponível" na prévia do Início (achado pelo Bruno):** quando o YouTube recusa o
+  vídeo ele nem sempre avisa o Laaazy, e a prévia aparecia depois de 3 s de qualquer jeito, mostrando a
+  tela de erro do YouTube. Agora o player só aparece quando o vídeo começa a tocar; se não começar em
+  10 s, o Laaazy tenta o próximo trailer e, sem mais nenhum, fica a capa do título com "O YouTube não
+  liberou o trailer agora. Aperte de novo para assistir."
+
 ## 3.6.5 — 2026-10-10
 
 ### Mudou
