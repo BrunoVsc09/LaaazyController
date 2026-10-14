@@ -11,6 +11,7 @@ const PRESETS = [
   { id: 'filmes', label: 'Filmes', bands: [2, 2, 0, 0, 1, 2, 2, 1, 0, 0], bass: 4, clarity: 1 },
   { id: 'jogos', label: 'Jogos', bands: [2, 1, -1, 0, 0, 1, 3, 3, 2, 1], bass: 2, clarity: 3 },
   { id: 'voz', label: 'Voz', bands: [-3, -2, -1, 1, 2, 3, 3, 1, 0, -1], bass: 0, clarity: 4 },
+  { id: 'bass-boost', label: 'Bass Boost', bands: [3, 3, 2, 0, 0, 0, 0, 0, 0, 0], bass: 5, clarity: 0 },
 ]
 // Nome do estado quando o usuário mexe numa banda depois de escolher um preset
 const CUSTOM = { id: 'personalizado', label: 'Personalizado' }

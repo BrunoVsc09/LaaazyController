@@ -10,8 +10,17 @@ describe('equalizador (tela): presets', () => {
   })
   it('X no preset anda pela lista e volta ao começo; "Personalizado" volta para o primeiro', () => {
     expect(nextPreset('geral')).toBe('musica')
-    expect(nextPreset('voz')).toBe('geral')
+    expect(nextPreset('voz')).toBe('bass-boost')
+    expect(nextPreset('bass-boost')).toBe('geral')
     expect(nextPreset('personalizado')).toBe('geral')
+  })
+  // Pedido do Bruno (2026-10-14): preset só de grave forte
+  it('Bass Boost: graves das bandas e o efeito Bass Boost, sem mexer no resto', () => {
+    const s = applyPreset(FLAT, 'bass-boost')
+    expect(s.bands).toEqual([3, 3, 2, 0, 0, 0, 0, 0, 0, 0])
+    expect(s.bass).toBe(5)
+    expect(s.clarity).toBe(0)
+    expect(presetLabel('bass-boost')).toBe('Bass Boost')
   })
   it('nome de cada preset', () => {
     expect(presetLabel('musica')).toBe('Música')
