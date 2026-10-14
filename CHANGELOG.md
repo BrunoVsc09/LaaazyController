@@ -4,13 +4,17 @@
 
 ### Novo
 - **Equalizador do Windows (Configurações → Som, pedido do Bruno):** presets (Geral, Música,
-  Filmes, Jogos, Voz e Bass Boost), 10 bandas de 62 Hz a 13 kHz num gráfico, Bass Boost e Clarity. X numa banda
+  Filmes, Jogos, Voz, Bass Boost e Volume Boost), 10 bandas de 62 Hz a 13 kHz num gráfico, Bass Boost e Clarity. X numa banda
   entra no ajuste: ↑/↓ mudam o ganho (←/→ no Bass Boost e no Clarity), X ou O terminam. Vale para o
   som do Windows inteiro, pelo Equalizer APO (grátis, instalado à parte): o Laaazy grava o próprio
   arquivo e só acrescenta uma linha `Include` no `config.txt`, sem apagar o que já estava lá. Se o
   `config.txt` ainda for o que o instalador do APO cria (−6 dB e um reforço de grave de exemplo), ele
   fica só com a linha do Laaazy, para o "Geral" ser o som original. Sem o APO, o ajuste fica
   guardado até lá.
+- **Volume extra (pedido do Bruno):** para quando o volume do Windows já está em 100% e ainda está
+  baixo. Vai de 0 a +12 dB (←/→, como o Bass Boost); o preset Volume Boost usa +6 dB. Acima de
+  +6 dB a tela avisa que as partes mais altas podem distorcer (um limitador VST fica para outra
+  versão). Ajustes salvos antes continuam valendo, com volume extra 0.
 - **Instalar o Equalizer APO pelo Laaazy:** sem o APO, a categoria Som mostra "Instalar o Equalizer
   APO". O Laaazy baixa a versão 1.4.2 do SourceForge oficial, confere a impressão digital (SHA-256)
   e só então instala sem janelas. Dois passos o Windows não deixa fazer pelo controle: o **Sim** do

@@ -5,17 +5,17 @@
 import { useEffect, useRef, useState } from 'react'
 import gamepad from '../../shared/gamepad'
 import { useGamepad } from '../hooks/useGamepad'
-import { BANDS, FLAT, INSTALL_WAIT, applyPreset, curvePoints, dbText, nextPreset, presetLabel, statusText, stepBand, stepEffect } from '../lib/equalizer'
+import { BANDS, FLAT, INSTALL_WAIT, applyPreset, curvePoints, dbText, effectMax, nextPreset, presetLabel, statusText, stepBand, stepEffect, volumeWarning, type EffectKey } from '../lib/equalizer'
 import { holdStep, type Hold } from '../lib/nav-repeat'
 import { getLazy, type EqState, type EqStatus } from '../lib/lazy-api'
 import type { Sounds } from '../hooks/useSounds'
 
 type Props = { sounds: Sounds; onMsg: (msg: string) => void }
-type Target = number | 'bass' | 'clarity' // número = banda
+type Target = number | EffectKey // número = banda
 const W = 900
 const H = 180
 const NO_HOLD: Hold = { dir: '', steps: 0, at: 0 }
-const EFFECTS = [{ key: 'bass', label: 'Bass Boost' }, { key: 'clarity', label: 'Clarity' }] as const
+const EFFECTS = [{ key: 'bass', label: 'Bass Boost' }, { key: 'clarity', label: 'Clarity' }, { key: 'volume', label: 'Volume extra' }] as const
 const hz = (fc: number) => (fc >= 1000 ? `${fc / 1000} kHz` : `${fc} Hz`)
 
 export default function EqualizerPanel({ sounds, onMsg }: Props) {
@@ -79,7 +79,7 @@ export default function EqualizerPanel({ sounds, onMsg }: Props) {
   const note = status ? statusText(status) : 'Procurando o Equalizer APO...'
   const pts = curvePoints(state.bands, W, H)
   const line = pts.map((p) => `${p.x},${p.y}`).join(' ')
-  const help = editing === null ? 'X numa banda, no Bass Boost ou no Clarity para ajustar.'
+  const help = editing === null ? 'X numa banda ou num controle à esquerda (Bass Boost, Clarity, Volume extra) para ajustar.'
     : typeof editing === 'number' ? '↑/↓ mudam o ganho · X ou O terminam' : '←/→ mudam a força · X ou O terminam'
 
   return (
@@ -98,10 +98,11 @@ export default function EqualizerPanel({ sounds, onMsg }: Props) {
             <button key={key} type="button" className={`eq-effect ${editing === key ? 'editing' : ''}`} onClick={edit(key)} onMouseEnter={sounds.hover}
               onWheel={(e) => step(key, e.deltaY < 0 ? 1 : -1)}>
               <span>{label}</span>
-              <span className="eq-meter"><i style={{ width: `${state[key] * 10}%` }} /></span>
-              <b>{state[key]}</b>
+              <span className="eq-meter"><i style={{ width: `${(state[key] / effectMax(key)) * 100}%` }} /></span>
+              <b>{key === 'volume' ? `${dbText(state.volume)} dB` : state[key]}</b>
             </button>
           ))}
+          {volumeWarning(state.volume) && <p className="eq-warn" role="note">{volumeWarning(state.volume)}</p>}
         </div>
         <div className="eq-graph">
           <div className="eq-plot">

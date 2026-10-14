@@ -1,5 +1,5 @@
 // Equalizador: estado da tela → texto do Equalizer APO. Sem I/O.
-const { BANDS, BAND_LIMIT, EFFECT_MAX, PRESETS, CUSTOM } = require('../../shared/equalizer')
+const { BANDS, BAND_LIMIT, EFFECT_MAX, VOLUME_MAX, PRESETS, CUSTOM } = require('../../shared/equalizer')
 
 const PRESET_IDS = new Set([...PRESETS.map((p) => p.id), CUSTOM.id])
 
@@ -14,7 +14,7 @@ const LOW_LIMIT = 300 // bandas abaixo disso somam com o Bass Boost no preamp
 const HIGH_LIMIT = 2700 // bandas a partir disso somam com o Clarity
 
 // Estado inicial: ligado, tudo no zero (som igual ao original)
-const FLAT = Object.freeze({ on: true, preset: 'geral', bands: Object.freeze(BANDS.map(() => 0)), bass: 0, clarity: 0 })
+const FLAT = Object.freeze({ on: true, preset: 'geral', bands: Object.freeze(BANDS.map(() => 0)), bass: 0, clarity: 0, volume: 0 })
 
 const isInt = (v, min, max) => Number.isInteger(v) && v >= min && v <= max
 
@@ -24,19 +24,24 @@ function validState(s) {
     PRESET_IDS.has(s.preset) &&
     Array.isArray(s.bands) && s.bands.length === BANDS.length &&
     s.bands.every((db) => isInt(db, -BAND_LIMIT, BAND_LIMIT)) &&
-    isInt(s.bass, 0, EFFECT_MAX) && isInt(s.clarity, 0, EFFECT_MAX)
+    isInt(s.bass, 0, EFFECT_MAX) && isInt(s.clarity, 0, EFFECT_MAX) &&
+    isInt(s.volume, 0, VOLUME_MAX)
 }
+
+// Ajuste salvo antes do volume extra existir: continua valendo, com volume 0
+const upgrade = (s) => (s && typeof s === 'object' && !Array.isArray(s) && s.volume === undefined ? { ...s, volume: 0 } : s)
 
 const bassDb = (s) => s.bass * BASS.dbPerStep
 const clarityDb = (s) => s.clarity * CLARITY.dbPerStep
 
-// Reforço máximo de cada região; o preamp desconta o pior para o som não estourar
+// Reforço máximo de cada região; o preamp desconta o pior para o som não estourar.
+// O volume extra soma depois (é a única parte que deixa o som mais alto que o original)
 function preampDb(s) {
   const boost = (keep) => Math.max(0, ...s.bands.filter((_, i) => keep(BANDS[i])))
   const low = boost((fc) => fc < LOW_LIMIT) + bassDb(s)
   const high = boost((fc) => fc >= HIGH_LIMIT) + clarityDb(s)
   const mid = boost((fc) => fc >= LOW_LIMIT && fc < HIGH_LIMIT)
-  return 0 - Math.max(low, high, mid)
+  return 0 - Math.max(low, high, mid) + s.volume
 }
 
 const gain = (db) => `Gain ${db.toFixed(1)} dB`
@@ -89,4 +94,4 @@ const APO_SETUP = Object.freeze({
   args: Object.freeze(['/S']),
 })
 
-module.exports = { APP_FILE, INCLUDE_LINE, FLAT, APO_SETUP, validState, preampDb, render, withInclude }
+module.exports = { APP_FILE, INCLUDE_LINE, FLAT, APO_SETUP, validState, upgrade, preampDb, render, withInclude }

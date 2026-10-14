@@ -9,7 +9,7 @@ export type FsEntry = { name: string; path: string; type: 'dir' | 'exe' | 'lnk' 
 export type FsList = { ok: boolean; path?: string; parent?: string | null; entries: FsEntry[]; msg?: string }
 export type StreamMode = 'app' | 'edge'
 // Equalizador (Configurações → Som); valores em shared/equalizer.js
-export type EqState = { on: boolean; preset: string; bands: number[]; bass: number; clarity: number }
+export type EqState = { on: boolean; preset: string; bands: number[]; bass: number; clarity: number; volume: number }
 export type EqStatus = { installed: boolean; state: EqState; error: string }
 export type Settings = {
   theme?: string

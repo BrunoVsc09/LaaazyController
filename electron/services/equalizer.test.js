@@ -50,6 +50,10 @@ describe('equalizador (serviço): status', () => {
     const { eq } = setup({ saved: boosted(3) })
     expect(await eq.status()).toEqual({ installed: true, state: boosted(3), error: '' })
   })
+  it('ajuste salvo antes do volume extra existir continua valendo (volume 0)', async () => {
+    const antigo = { on: true, preset: 'jogos', bands: [2, 1, -1, 0, 0, 1, 3, 3, 2, 1], bass: 2, clarity: 3 }
+    expect((await setup({ saved: antigo }).eq.status()).state).toEqual({ ...antigo, volume: 0 })
+  })
   it('estado salvo estragado no settings.json volta para o plano', async () => {
     const { eq } = setup({ saved: { bands: 'x' } })
     expect((await eq.status()).state).toEqual(core.FLAT)

@@ -20,7 +20,7 @@ function createEqualizer({ findConfigDir, join, readText, writeText, settings, l
   let installing = null
 
   const saved = () => {
-    const s = settings.get('equalizer')
+    const s = core.upgrade(settings.get('equalizer'))
     return core.validState(s) ? s : core.FLAT
   }
 

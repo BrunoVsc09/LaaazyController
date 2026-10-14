@@ -271,9 +271,9 @@ describe('registerIpc', () => {
     for (const bad of ['alto', null, [1, 2]]) expect(await invoke(C.EQ_SET, bad)).toEqual({ ok: false, msg: 'Ajuste inválido.' })
     expect(h.equalizer.set).not.toHaveBeenCalled()
     const bands = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    await invoke(C.EQ_SET, { on: true, preset: 'geral', bands, bass: 2, clarity: 3, extra: 'x' })
+    await invoke(C.EQ_SET, { on: true, preset: 'geral', bands, bass: 2, clarity: 3, volume: 4, extra: 'x' })
     const sent = h.equalizer.set.mock.calls[0][0]
-    expect(sent).toEqual({ on: true, preset: 'geral', bands, bass: 2, clarity: 3 })
+    expect(sent).toEqual({ on: true, preset: 'geral', bands, bass: 2, clarity: 3, volume: 4 })
     expect(sent.bands).not.toBe(bands) // cópia: a tela não mexe no que o serviço guardou
   })
   it('instalar o Equalizer APO: a tela não escolhe nada (versão, endereço e hash ficam no core)', async () => {

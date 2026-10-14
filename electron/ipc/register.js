@@ -21,7 +21,7 @@ function toEdit(e) {
   return validEdit(out) ? out : null
 }
 // Ajuste do equalizador: só os campos conhecidos, copiados (o serviço valida os valores)
-const toEq = (s) => ({ on: s.on, preset: s.preset, bands: Array.isArray(s.bands) ? [...s.bands] : s.bands, bass: s.bass, clarity: s.clarity })
+const toEq = (s) => ({ on: s.on, preset: s.preset, bands: Array.isArray(s.bands) ? [...s.bands] : s.bands, bass: s.bass, clarity: s.clarity, volume: s.volume })
 
 function registerIpc(ipcMain, h) {
   // Só a tela do app (e, para os comandos do controle, os sites de streaming) são atendidos

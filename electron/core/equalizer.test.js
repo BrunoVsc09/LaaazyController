@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import mod from './equalizer.js'
 import { PRESETS } from '../../shared/equalizer.js'
 
-const flat = () => ({ on: true, preset: 'geral', bands: Array(10).fill(0), bass: 0, clarity: 0 })
+const flat = () => ({ on: true, preset: 'geral', bands: Array(10).fill(0), bass: 0, clarity: 0, volume: 0 })
 const withBands = (pairs) => {
   const s = flat()
   for (const [i, db] of pairs) s.bands[i] = db
@@ -68,6 +68,9 @@ describe('equalizador: validação do que chega da tela', () => {
     ['bass acima de 10', { bass: 11 }],
     ['clarity negativo', { clarity: -1 }],
     ['on que não é booleano', { on: 'sim' }],
+    ['volume acima de +12', { volume: 13 }],
+    ['volume negativo (para abaixar existe o volume do Windows)', { volume: -1 }],
+    ['sem volume', { volume: undefined }],
     ['preset desconhecido', { preset: 'hacker' }],
   ])('recusa %s', (_nome, troca) => {
     expect(mod.validState({ ...flat(), ...troca })).toBe(false)
@@ -77,7 +80,7 @@ describe('equalizador: validação do que chega da tela', () => {
   })
   it('todo preset do Laaazy é um estado válido (ninguém digita valor fora do limite)', () => {
     for (const p of PRESETS) {
-      expect(mod.validState({ on: true, preset: p.id, bands: p.bands, bass: p.bass, clarity: p.clarity }), p.id).toBe(true)
+      expect(mod.validState({ on: true, preset: p.id, bands: p.bands, bass: p.bass, clarity: p.clarity, volume: p.volume }), p.id).toBe(true)
     }
   })
   it('recusa o que não é objeto', () => {
@@ -133,5 +136,29 @@ describe('equalizador: instalador do Equalizer APO (baixado na hora)', () => {
   })
   it('instala sem janelas (/S)', () => {
     expect(s.args).toEqual(['/S'])
+  })
+})
+
+// Volume extra (pedido do Bruno, 2026-10-14): volume do Windows em 100% e ainda baixo
+describe('equalizador: volume extra', () => {
+  it('soma no preamp: tudo plano com +6 dB sai 6 dB mais alto', () => {
+    expect(mod.preampDb({ ...flat(), volume: 6 })).toBe(6)
+    expect(lines({ ...flat(), volume: 6 })).toEqual(['Preamp: 6.0 dB'])
+  })
+  it('soma depois do desconto dos reforços (Bass Boost -8 dB + volume 6 = -2 dB)', () => {
+    expect(mod.preampDb({ ...flat(), bands: [3, 3, 2, 0, 0, 0, 0, 0, 0, 0], bass: 5, volume: 6 })).toBe(-2)
+  })
+  it('desligado: volume extra também some (som original)', () => {
+    expect(lines({ ...flat(), volume: 12, on: false })).toEqual(['Preamp: 0.0 dB'])
+  })
+  it('ajuste salvo antes do volume extra continua valendo, com volume 0', () => {
+    const antigo = { on: true, preset: 'jogos', bands: [2, 1, -1, 0, 0, 1, 3, 3, 2, 1], bass: 2, clarity: 3 }
+    expect(mod.upgrade(antigo)).toEqual({ ...antigo, volume: 0 })
+    expect(mod.validState(mod.upgrade(antigo))).toBe(true)
+  })
+  it('upgrade não inventa nada para o que não é ajuste', () => {
+    for (const v of [null, undefined, 'x', []]) expect(mod.upgrade(v)).toBe(v)
+    const novo = { ...flat(), volume: 4 }
+    expect(mod.upgrade(novo)).toBe(novo)
   })
 })

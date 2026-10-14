@@ -1,17 +1,18 @@
 import { describe, it, expect } from 'vitest'
 import {
-  FLAT, applyPreset, stepBand, stepEffect, nextPreset, presetLabel, dbText, curvePoints, statusText, INSTALL_WAIT,
+  FLAT, applyPreset, stepBand, stepEffect, nextPreset, presetLabel, dbText, curvePoints, statusText, INSTALL_WAIT, volumeWarning,
 } from './equalizer'
 
 describe('equalizador (tela): presets', () => {
   it('aplicar um preset copia as bandas e os efeitos, sem desligar nada', () => {
     const s = applyPreset({ ...FLAT, on: false }, 'jogos')
-    expect(s).toEqual({ on: false, preset: 'jogos', bands: [2, 1, -1, 0, 0, 1, 3, 3, 2, 1], bass: 2, clarity: 3 })
+    expect(s).toEqual({ on: false, preset: 'jogos', bands: [2, 1, -1, 0, 0, 1, 3, 3, 2, 1], bass: 2, clarity: 3, volume: 0 })
   })
   it('X no preset anda pela lista e volta ao começo; "Personalizado" volta para o primeiro', () => {
     expect(nextPreset('geral')).toBe('musica')
     expect(nextPreset('voz')).toBe('bass-boost')
-    expect(nextPreset('bass-boost')).toBe('geral')
+    expect(nextPreset('bass-boost')).toBe('volume-boost')
+    expect(nextPreset('volume-boost')).toBe('geral')
     expect(nextPreset('personalizado')).toBe('geral')
   })
   // Pedido do Bruno (2026-10-14): preset só de grave forte
@@ -21,6 +22,10 @@ describe('equalizador (tela): presets', () => {
     expect(s.bass).toBe(5)
     expect(s.clarity).toBe(0)
     expect(presetLabel('bass-boost')).toBe('Bass Boost')
+  })
+  // Pedido do Bruno (2026-10-14): volume do Windows em 100% e ainda baixo
+  it('Volume Boost: tudo plano e +6 dB de volume extra', () => {
+    expect(applyPreset(FLAT, 'volume-boost')).toMatchObject({ preset: 'volume-boost', bands: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], bass: 0, clarity: 0, volume: 6 })
   })
   it('nome de cada preset', () => {
     expect(presetLabel('musica')).toBe('Música')
@@ -49,6 +54,15 @@ describe('equalizador (tela): ajustar', () => {
     expect(stepEffect(FLAT, 'bass', 1)).toMatchObject({ bass: 1, preset: 'personalizado' })
     expect(stepEffect(FLAT, 'clarity', -1)).toBe(FLAT)
     expect(stepEffect({ ...FLAT, clarity: 10 }, 'clarity', 1).clarity).toBe(10)
+  })
+  it('volume extra vai de 0 a +12 dB', () => {
+    expect(stepEffect(FLAT, 'volume', 1)).toMatchObject({ volume: 1, preset: 'personalizado' })
+    expect(stepEffect(FLAT, 'volume', -1)).toBe(FLAT)
+    expect(stepEffect({ ...FLAT, volume: 12 }, 'volume', 1).volume).toBe(12)
+  })
+  it('acima de +6 dB avisa que pode distorcer; até +6, nada', () => {
+    expect(volumeWarning(6)).toBe('')
+    expect(volumeWarning(7)).toMatch(/distorcer/)
   })
   it('não mexe no estado anterior (a tela compara antes e depois)', () => {
     const before = { ...FLAT, bands: [...FLAT.bands] }
