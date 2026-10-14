@@ -179,8 +179,10 @@ describe('prévia sem as coisas do YouTube por cima', () => {
     expect(css).toMatch(/\.lz-hero-media iframe \{[^}]*opacity: 0;/)
     expect(css).not.toMatch(/\.lz-hero-media iframe \{[^}]*animation:/)
   })
-  it('começou a tocar: aparece com fade depois de ~3 s', () => {
-    expect(css).toMatch(/\.lz-hero-media\.is-started iframe \{ animation: lz-saver-in \.8s ease-out 3s both; \}/)
+  // "Demora um pouquinho" (Bruno, 2026-10-14): a espera passou a contar do vídeo tocando, então 3 s
+  // somavam ao carregamento do YouTube; 1,5 s basta
+  it('começou a tocar: aparece com fade depois de ~1,5 s', () => {
+    expect(css).toMatch(/\.lz-hero-media\.is-started iframe \{ animation: lz-saver-in \.8s ease-out 1\.5s both; \}/)
   })
   it('pausado: o player some e fica a capa com o "Pausado"', () => {
     expect(css).toMatch(/\.lz-hero-media\.is-paused iframe \{ opacity: 0; visibility: hidden; \}/)
