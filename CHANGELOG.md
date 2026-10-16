@@ -1,6 +1,12 @@
 # Novidades do Laaazy
 
-## Próxima versão (ainda não lançada)
+## 3.6.7 — 2026-10-16
+
+### Destaques
+- Bateria do controle no topo, com aviso quando estiver acabando
+- Controle parado desliga sozinho
+- PC sem uso desliga sozinho (e o Windows não suspende antes)
+- Correções de bugs
 
 ### Novo
 - **Bateria do controle no topo (pedido do Bruno):** ao lado do relógio aparece a bateria do
