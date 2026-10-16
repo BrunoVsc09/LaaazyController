@@ -8,7 +8,7 @@ const PROGRAMS = ['hydra'] // abrem pelo Windows
 function createLauncher({
   services, locator, ds4, spawnDetached, openPath, openExternal, openStream, setExternalActive, edgeProfileDir,
   streamModes = () => ({}), widevine = () => ({ installed: true }), edgeNoGpu = () => [], now = Date.now,
-  tvExtension = async () => null, // pasta da extensão da legenda grande (null = sem)
+  edgeTv = null, // canal privado com o Edge: legenda grande e YouTube de TV (services/edge-tv)
   siteScale = () => 100, // tamanho dos sites no Edge (%)
 }) {
   // O Edge leva alguns segundos para aparecer; um X a mais nesse meio-tempo abria outra janela do
@@ -30,11 +30,11 @@ function createLauncher({
     const edge = await locator.findOrChoose('edge')
     if (!edge) return openExternal(url)
     const noGpu = edgeNoGpu().includes(label)
-    const profile = ['--user-data-dir=' + edgeProfileDir + (noGpu ? '-sem-aceleracao' : '')]
-    // Legenda grande: extensão do Laaazy só de CSS (se não ficou pronta, abre sem)
-    const ext = await tvExtension().catch(() => null)
-    const extension = ext ? ['--load-extension=' + ext] : []
-    return spawnDetached(edge, [...profile, ...(noGpu ? ['--disable-gpu'] : []), ...extension, ...siteScaleArgs(siteScale()), '--no-first-run', '--start-fullscreen', '--app=' + url])
+    const profile = edgeProfileDir + (noGpu ? '-sem-aceleracao' : '')
+    const args = ['--user-data-dir=' + profile, ...(noGpu ? ['--disable-gpu'] : []), ...siteScaleArgs(siteScale()), '--no-first-run', '--start-fullscreen']
+    // Legenda grande e YouTube de TV: pelo canal privado com o Edge daquele perfil
+    if (edgeTv) return edgeTv.open({ exe: edge, profile, args, url })
+    return spawnDetached(edge, [...args, '--app=' + url])
   }
 
   // Devolve '' quando abriu, ou a mensagem para mostrar na tela (e aí pode tentar de novo na hora)

@@ -133,33 +133,39 @@ describe('launcher', () => {
     await l.open('https://www.netflix.com', 'Netflix') // os outros continuam com aceleração
     expect(deps.spawnDetached.mock.calls[1][1][0]).toBe('--user-data-dir=C:\\data\\edge-tv')
   })
-  // Legenda grande (pedido do Bruno, 2026-10-16): extensão do Laaazy só de CSS, carregada ao abrir
-  it('com a legenda grande ligada, o Edge abre com a extensão do Laaazy', async () => {
+  // Legenda grande e YouTube de TV (pedido do Bruno, 2026-10-16): pelo canal privado com o Edge
+  // (services/edge-tv). A extensão saiu: o Edge 155 a desativava depois da 1ª abertura de cada perfil.
+  it('com o canal com o Edge, o launcher entrega o perfil, os argumentos e o endereço para ele', async () => {
     const { deps } = make({ found: { edge: 'C:\\E\\msedge.exe' } })
-    deps.tvExtension = async () => 'C:\\data\\edge-ext'
+    deps.edgeTv = { open: vi.fn(async () => '') }
+    deps.siteScale = () => 175
     const l = launcherMod.createLauncher(deps)
-    await l.open('https://www.netflix.com', 'Netflix')
-    expect(deps.spawnDetached.mock.calls[0][1]).toEqual([
-      '--user-data-dir=C:\\data\\edge-tv', '--load-extension=C:\\data\\edge-ext', '--no-first-run', '--start-fullscreen', '--app=https://www.netflix.com',
-    ])
+    expect(await l.open('https://www.netflix.com', 'Netflix')).toBe('')
+    expect(deps.spawnDetached).not.toHaveBeenCalled()
+    expect(deps.edgeTv.open).toHaveBeenCalledWith({
+      exe: 'C:\\E\\msedge.exe', profile: 'C:\\data\\edge-tv', url: 'https://www.netflix.com',
+      args: ['--user-data-dir=C:\\data\\edge-tv', '--force-device-scale-factor=1.75', '--no-first-run', '--start-fullscreen'],
+    })
   })
-  it('sites maiores: o Edge abre com a escala escolhida (e a extensão da legenda junto)', async () => {
+  it('perfil sem aceleração: outro perfil, outro canal', async () => {
     const { deps } = make({ found: { edge: 'C:\\E\\msedge.exe' } })
-    deps.tvExtension = async () => 'C:\\data\\edge-ext'
+    deps.edgeTv = { open: vi.fn(async () => '') }
+    deps.edgeNoGpu = () => ['Crunchyroll']
+    const l = launcherMod.createLauncher(deps)
+    await l.open('https://www.crunchyroll.com', 'Crunchyroll')
+    expect(deps.edgeTv.open.mock.calls[0][0]).toMatchObject({
+      profile: 'C:\\data\\edge-tv-sem-aceleracao',
+      args: ['--user-data-dir=C:\\data\\edge-tv-sem-aceleracao', '--disable-gpu', '--no-first-run', '--start-fullscreen'],
+    })
+  })
+  it('sites maiores sem o canal: o Edge abre com a escala escolhida', async () => {
+    const { deps } = make({ found: { edge: 'C:\\E\\msedge.exe' } })
     deps.siteScale = () => 175
     const l = launcherMod.createLauncher(deps)
     await l.open('https://www.netflix.com', 'Netflix')
     expect(deps.spawnDetached.mock.calls[0][1]).toEqual([
-      '--user-data-dir=C:\\data\\edge-tv', '--load-extension=C:\\data\\edge-ext', '--force-device-scale-factor=1.75',
-      '--no-first-run', '--start-fullscreen', '--app=https://www.netflix.com',
+      '--user-data-dir=C:\\data\\edge-tv', '--force-device-scale-factor=1.75', '--no-first-run', '--start-fullscreen', '--app=https://www.netflix.com',
     ])
-  })
-  it('extensão não ficou pronta (ou "Do site"): o Edge abre normalmente, sem ela', async () => {
-    const { deps } = make({ found: { edge: 'C:\\E\\msedge.exe' } })
-    deps.tvExtension = async () => { throw new Error('falhou') }
-    const l = launcherMod.createLauncher(deps)
-    expect(await l.open('https://www.netflix.com', 'Netflix')).toBe('')
-    expect(deps.spawnDetached.mock.calls[0][1].join(' ')).not.toMatch(/load-extension/)
   })
   it('sem Edge, abre no navegador padrão', async () => {
     const { l, deps } = make()

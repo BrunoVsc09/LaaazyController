@@ -106,12 +106,15 @@ describe('novidades: imagem por versão', () => {
   })
 })
 
-// Legenda grande no Edge (pedido do Bruno, 2026-10-16): extensão do Laaazy só de CSS
-describe('legenda grande no Edge', () => {
-  it('a extensão fica nos dados do Laaazy, no tamanho das Configurações, e o launcher abre o Edge com ela', () => {
-    expect(main).toMatch(/createTvStyle\(\{ size: \(\) => settings\.get\('subtitleSize'\), youtubeTv: \(\) => settings\.get\('youtubeTv'\), dir: userFile\('edge-ext'\), writeFiles \}\)/)
-    expect(main).toMatch(/tvExtension: \(\) => tvStyle\.prepare\(\),/)
-    expect(main).toMatch(/siteScale: \(\) => settings\.get\('siteScale'\),/)
+// Legenda grande e YouTube de TV no Edge (pedido do Bruno, 2026-10-16): pelo canal privado com o Edge.
+// A extensão saiu: o Edge 155 a desativava depois da 1ª abertura de cada perfil.
+describe('legenda grande e YouTube de TV no Edge', () => {
+  it('o canal lê as Configurações na hora e o launcher abre o Edge por ele', () => {
+    expect(main).toMatch(/createEdgeTv\(\{ openPiped, openPlain: spawnDetached, subtitleSize: \(\) => settings\.get\('subtitleSize'\), youtubeTv: \(\) => settings\.get\('youtubeTv'\) \}\)/)
+    expect(main).toMatch(/  edgeTv,\r?\n  siteScale: \(\) => settings\.get\('siteScale'\),/)
+  })
+  it('sem a extensão antiga', () => {
+    expect(main).not.toMatch(/load-extension|edge-ext|createTvStyle/)
   })
 })
 

@@ -51,8 +51,10 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Com o controle no perfil PC (mouse), dá para clicar nos vídeos e no menu; um vídeo toca
 - [ ] Com Não, o YouTube volta ao site comum (da próxima vez que o Edge abrir)
 - [ ] Netflix, Prime e HBO Max continuam iguais (a troca de "cara" é só no YouTube)
-- [ ] O Edge abre sem pedir para instalar nada e sem aviso de extensão (se aparecer aviso, anotar qual)
-- [ ] Existe `%APPDATA%\Laaazy\edge-ext` com `manifest.json` e `tv.css`
+- [ ] O Edge abre como janela de app em tela cheia (sem abas nem barra de endereço), sem pedir para instalar nada
+- [ ] Fechar e abrir o serviço 3 vezes: a legenda grande e o YouTube de TV continuam (era aí que a extensão antiga falhava)
+- [ ] Com o Edge já aberto, abrir outro serviço: a nova janela também vem com a legenda grande
+- [ ] Fechar o Laaazy fecha o Edge dos serviços junto
 
 ## Biblioteca
 - [ ] Jogos da Steam e da Epic aparecem (com capa na Steam)

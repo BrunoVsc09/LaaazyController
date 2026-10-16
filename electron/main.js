@@ -49,8 +49,8 @@ const { createGithubReleases, INSTALLER_ARGS } = require('./adapters/github-rele
 const { RELEASE_PUBLIC_KEY } = require('./core/release-key')
 const { createAvatarImage } = require('./adapters/avatar-image')
 const { createLauncher } = require('./services/launcher')
-const { createTvStyle } = require('./services/tv-style')
-const { writeFiles } = require('./adapters/folder-files')
+const { createEdgeTv } = require('./services/edge-tv')
+const { openPiped } = require('./adapters/edge-pipe')
 const { createForeground } = require('./services/foreground')
 const { createReturnWatch } = require('./services/return-watch')
 const { createPsButton } = require('./services/ps-button')
@@ -280,8 +280,8 @@ const myList = createMyList({
 let appProfileKey = 'menu'
 const ds4ForApps = { ...ds4, applyFor: (key) => { appProfileKey = key; return ds4.applyFor(key) } }
 
-// Serviços do Edge com cara de TV: extensão do Laaazy (legenda grande e YouTube com a tela de TV), gravada antes de abrir o Edge
-const tvStyle = createTvStyle({ size: () => settings.get('subtitleSize'), youtubeTv: () => settings.get('youtubeTv'), dir: userFile('edge-ext'), writeFiles })
+// Serviços do Edge com cara de TV (legenda grande e YouTube com a tela de TV), pelo canal privado com o Edge
+const edgeTv = createEdgeTv({ openPiped, openPlain: spawnDetached, subtitleSize: () => settings.get('subtitleSize'), youtubeTv: () => settings.get('youtubeTv') })
 const launcher = createLauncher({
   services: streaming, locator, ds4: ds4ForApps, spawnDetached,
   openPath: (p) => shell.openPath(p),
@@ -292,7 +292,7 @@ const launcher = createLauncher({
   streamModes: () => settings.get('streamModes'),
   edgeNoGpu: () => settings.get('edgeNoGpu') || [],
   widevine: () => widevineStatus(components.status()),
-  tvExtension: () => tvStyle.prepare(),
+  edgeTv,
   siteScale: () => settings.get('siteScale'),
 })
 

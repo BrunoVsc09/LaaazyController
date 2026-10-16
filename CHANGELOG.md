@@ -14,7 +14,7 @@
 ### Novo
 - **Legenda grande nos serviços (pedido do Bruno):** em Configurações → Streaming, "Tamanho da
   legenda (Edge)": Do site, Normal, Grande (padrão), Enorme ou Gigante. Para ler de longe, até
-  deitado. O Laaazy abre o Edge com uma extensão própria, só de CSS e sem nenhuma permissão: ninguém
+  deitado. O Laaazy põe a legenda pelo canal privado com o Edge dele (sem porta aberta): ninguém
   precisa instalar nada. Vale na Netflix, Prime Video, HBO Max e YouTube; trocar o tamanho vale da
   próxima vez que o serviço abrir.
 - **Sites maiores no Edge (pedido do Bruno):** "Tamanho dos sites (Edge)", também em Streaming: Do
@@ -40,6 +40,10 @@
   jogo só com o controle. Um minuto antes avisa, e qualquer toque cancela. Desliga sem forçar: se
   algum programa tiver coisa sem salvar, o Windows pergunta. Com a opção ligada, o Windows não
   suspende antes do tempo do Laaazy.
+
+### Mudou
+- **Fechar o Laaazy fecha também o Edge que ele abriu** (os serviços de streaming): é o mesmo canal
+  que deixa a legenda grande e o YouTube de TV funcionarem sempre.
 
 ### Corrigido
 - **"min 10" nas Configurações:** o valor das linhas era desenhado de trás para frente, e "10 min"
