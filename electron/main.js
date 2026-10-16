@@ -279,8 +279,8 @@ const myList = createMyList({
 let appProfileKey = 'menu'
 const ds4ForApps = { ...ds4, applyFor: (key) => { appProfileKey = key; return ds4.applyFor(key) } }
 
-// Legenda grande nos serviços do Edge: extensão do Laaazy só de CSS, gravada antes de abrir o Edge
-const tvStyle = createTvStyle({ size: () => settings.get('subtitleSize'), dir: userFile('edge-ext'), writeFiles })
+// Serviços do Edge com cara de TV: extensão do Laaazy (legenda grande e YouTube com a tela de TV), gravada antes de abrir o Edge
+const tvStyle = createTvStyle({ size: () => settings.get('subtitleSize'), youtubeTv: () => settings.get('youtubeTv'), dir: userFile('edge-ext'), writeFiles })
 const launcher = createLauncher({
   services: streaming, locator, ds4: ds4ForApps, spawnDetached,
   openPath: (p) => shell.openPath(p),

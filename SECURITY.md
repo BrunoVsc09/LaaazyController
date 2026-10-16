@@ -15,6 +15,10 @@ O Laaazy usa chaves opcionais (TMDB, Gemini, YouTube, SteamGridDB). Elas:
 - Política de conteúdo (CSP) nas páginas do app; a janela não navega para fora nem abre janelas.
 - Câmera, microfone, localização e afins ficam negados.
 - O `.exe` é conferido para não levar testes, segredos nem `node_modules`.
+- O Edge do Laaazy (perfil próprio) abre com uma extensão gerada pelo próprio Laaazy em
+  `%APPDATA%\Laaazy\edge-ext`: CSS da legenda grande (sem permissão) e, com "YouTube com tela de TV",
+  a troca do cabeçalho `User-Agent` **só em youtube.com** (permissão `declarativeNetRequest`). Não lê
+  páginas, não guarda nem envia nada.
 
 ## Encontrou uma falha?
 

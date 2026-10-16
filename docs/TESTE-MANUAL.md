@@ -44,6 +44,13 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Com Do site: a legenda volta ao tamanho de cada site
 - [ ] Ícone "Aa" no topo (ao lado do controle) abre "Tamanho no Edge" com a borda na 1ª linha; ✕ muda o tamanho e a telinha de exemplo muda na hora (175% = 3 títulos por fileira, Do site = 6); ○ fecha e a borda volta ao "Aa"
 - [ ] A janelinha fica por cima do destaque do Início (não atrás da imagem)
+
+## YouTube com tela de TV
+- [ ] Com "YouTube com tela de TV" = Sim (padrão), o card do YouTube abre a tela de TV (menu à esquerda, cards grandes), já na 1ª abertura do Edge
+- [ ] Login: "Fazer login com o smartphone" mostra um código; em youtube.com/activate no celular, a conta entra
+- [ ] Com o controle no perfil PC (mouse), dá para clicar nos vídeos e no menu; um vídeo toca
+- [ ] Com Não, o YouTube volta ao site comum (da próxima vez que o Edge abrir)
+- [ ] Netflix, Prime e HBO Max continuam iguais (a troca de "cara" é só no YouTube)
 - [ ] O Edge abre sem pedir para instalar nada e sem aviso de extensão (se aparecer aviso, anotar qual)
 - [ ] Existe `%APPDATA%\Laaazy\edge-ext` com `manifest.json` e `tv.css`
 

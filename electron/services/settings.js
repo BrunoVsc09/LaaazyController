@@ -30,6 +30,7 @@ const RULES = {
   idleShutdownHours: (v) => IDLE_HOURS.includes(v),
   subtitleSize: (v) => SUBTITLE_SIZES.some((s) => s.id === v),
   siteScale: (v) => SITE_SCALES.includes(v),
+  youtubeTv: isBool,
   geminiModel: (v) => isText(v) && /^[a-z0-9][a-z0-9.-]{0,60}$/.test(v),
   equalizer: equalizer.validState,
   audioOutput: audioOutputs.validPreferred,
@@ -37,7 +38,7 @@ const RULES = {
   pinnedApps: (v) => Array.isArray(v) && v.length <= 30 && v.every((x) => isText(x) && x.length > 0 && x.length <= 40),
 }
 
-const DEFAULTS = { theme: 'azul', psClosesApp: true, trailerPreview: true, trailerSound: false, lockCursor: true, edgeNoGpu: ['Crunchyroll'], librarySort: 'asc', streamModes: {}, screensaverMinutes: 10, padIdleMinutes: 10, idleShutdownHours: 0, subtitleSize: DEFAULT_SUBTITLE_SIZE, siteScale: DEFAULT_SITE_SCALE, geminiModel: 'gemini-3.8-flash', equalizer: equalizer.FLAT, audioOutput: null, lastSeenVersion: null }
+const DEFAULTS = { theme: 'azul', psClosesApp: true, trailerPreview: true, trailerSound: false, lockCursor: true, edgeNoGpu: ['Crunchyroll'], librarySort: 'asc', streamModes: {}, screensaverMinutes: 10, padIdleMinutes: 10, idleShutdownHours: 0, subtitleSize: DEFAULT_SUBTITLE_SIZE, siteScale: DEFAULT_SITE_SCALE, youtubeTv: true, geminiModel: 'gemini-3.8-flash', equalizer: equalizer.FLAT, audioOutput: null, lastSeenVersion: null }
 
 function createSettings({ read, write }) {
   const all = () => ({ ...DEFAULTS, ...read() })

@@ -7,6 +7,7 @@
 - Controle parado desliga sozinho
 - PC sem uso desliga sozinho (e o Windows não suspende antes)
 - Legenda e sites maiores nos serviços, para ler de longe
+- YouTube com a tela de TV
 - Correções de bugs
 - Imagem nova de perfil
 
@@ -19,6 +20,10 @@
 - **Sites maiores no Edge (pedido do Bruno):** "Tamanho dos sites (Edge)", também em Streaming: Do
   site (padrão), 125%, 150%, 175% ou 200%. Títulos, capas, menus e o player crescem juntos, como
   numa TV, e o site se arruma sozinho (cabem menos títulos por fileira). Só no Edge do Laaazy.
+- **YouTube com a tela de TV (pedido do Bruno):** o YouTube abre com a mesma tela da TV (cards grandes,
+  menu ao lado, busca). Na 1ª vez, entre pelo celular com o código que aparece. Dá para voltar ao site
+  comum em Configurações → Streaming → "YouTube com tela de TV". O controle continua como mouse; um
+  perfil com as setas fica para depois.
 - **Atalho "Aa" no topo (pedido do Bruno):** ao lado do ícone do controle, abre o tamanho dos sites e
   da legenda sem entrar nas Configurações, com uma telinha de exemplo que mostra na hora como fica.
 - **Imagem nova de perfil (do Bruno):** um avatar novo para escolher nas boas-vindas ou em

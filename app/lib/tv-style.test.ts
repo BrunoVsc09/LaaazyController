@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { nextSiteScale, nextSubtitleSize, siteScaleLabel, siteScaleMsg, sizeMenuItems, sizePreview, subtitleLabel, subtitleMsg } from './tv-style'
+import { youtubeTvMsg, nextSiteScale, nextSubtitleSize, siteScaleLabel, siteScaleMsg, sizeMenuItems, sizePreview, subtitleLabel, subtitleMsg } from './tv-style'
 
 describe('tamanho da legenda no Edge (Configurações → Streaming)', () => {
   it('Do site → Normal → Grande → Enorme → Gigante, em volta', () => {
@@ -59,5 +59,12 @@ describe('exemplo na janelinha: medidas em % da altura da telinha', () => {
     expect(sizePreview({ siteScale: 175, subtitleSize: 'grande' }).title).toBeCloseTo(3.15)
     expect(sizePreview({ siteScale: 200, subtitleSize: 'grande' }).cards).toBe(3) // cabem menos títulos por fileira
     expect(sizePreview({ siteScale: 100, subtitleSize: 'grande' }).cards).toBe(6)
+  })
+})
+
+describe('YouTube com tela de TV (Configurações → Streaming)', () => {
+  it('aviso de cada escolha', () => {
+    expect(youtubeTvMsg(true)).toBe('O YouTube abre com a tela de TV (setas, OK e Voltar). Na 1ª vez, entre pelo celular com o código que aparece. Vale da próxima vez que o Edge abrir.')
+    expect(youtubeTvMsg(false)).toBe('O YouTube abre o site comum. Vale da próxima vez que o Edge abrir.')
   })
 })

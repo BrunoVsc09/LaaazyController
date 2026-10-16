@@ -54,3 +54,52 @@ describe('tv-style: tamanho dos sites no Edge', () => {
     expect(mod.siteScaleArgs('175')).toEqual([])
   })
 })
+
+// YouTube com a tela de TV de verdade (pedido do Bruno, 2026-10-16: "o máximo possível igual o da TV").
+// O Edge ignora --user-agent; só a troca completa (cabeçalho + navigator, sem as client hints) faz o
+// youtube.com/tv abrir a tela de TV (conferido no Edge 155)
+describe('tv-style: YouTube com tela de TV', () => {
+  const files = mod.extensionFiles('grande', { youtubeTv: true })
+  const manifest = JSON.parse(files['manifest.json'])
+  it('pede só o que precisa, e só no YouTube', () => {
+    expect(manifest.permissions).toEqual(['declarativeNetRequest'])
+    expect(manifest.host_permissions).toEqual(['https://*.youtube.com/*'])
+    expect(manifest.declarative_net_request).toEqual({ rule_resources: [{ id: 'youtube_tv', enabled: true, path: 'youtube-tv.json' }] })
+  })
+  it('troca o cabeçalho só para youtube.com: User-Agent de TV e sem as client hints do Windows', () => {
+    const [rule] = JSON.parse(files['youtube-tv.json'])
+    expect(rule.condition.requestDomains).toEqual(['youtube.com'])
+    expect(rule.action.type).toBe('modifyHeaders')
+    expect(rule.action.requestHeaders[0]).toEqual({ header: 'User-Agent', operation: 'set', value: mod.TV_USER_AGENT })
+    const removed = rule.action.requestHeaders.filter((h) => h.operation === 'remove').map((h) => h.header)
+    expect(removed).toEqual(expect.arrayContaining(['sec-ch-ua', 'sec-ch-ua-platform', 'sec-ch-ua-mobile']))
+  })
+  it('e o navigator da página do YouTube (antes do site rodar)', () => {
+    const tv = manifest.content_scripts.find((c) => c.js)
+    expect(tv).toEqual({ matches: ['https://www.youtube.com/*'], js: ['youtube-tv.js'], run_at: 'document_start', world: 'MAIN' })
+    expect(files['youtube-tv.js']).toContain(JSON.stringify(mod.TV_USER_AGENT))
+    expect(files['youtube-tv.js']).toMatch(/userAgentData/)
+  })
+  // Achado no teste ao vivo: o Edge abre a 1ª página antes de a regra da extensão ficar pronta, e o
+  // YouTube manda para o site comum (?app=desktop&sbb=1). A página volta para o /tv (no máximo 2 vezes)
+  it('se o YouTube mandar para o site comum logo na abertura, volta para o /tv (sem loop)', () => {
+    const js = files['youtube-tv.js']
+    expect(js).toMatch(/app=desktop/)
+    expect(js).toMatch(/sbb=1/)
+    expect(js).toMatch(/location\.replace\('https:\/\/www\.youtube\.com\/tv'\)/)
+    expect(js).toMatch(/sessionStorage/)
+  })
+  it('a "cara" de TV é de uma TV Samsung (Tizen)', () => {
+    expect(mod.TV_USER_AGENT).toMatch(/SMART-TV.*Tizen/)
+  })
+  it('legenda "Do site" com YouTube de TV: a extensão vai só com a parte do YouTube', () => {
+    const f = mod.extensionFiles('site', { youtubeTv: true })
+    expect(Object.keys(f).sort()).toEqual(['manifest.json', 'youtube-tv.js', 'youtube-tv.json'])
+    expect(JSON.parse(f['manifest.json']).content_scripts.some((c) => c.css)).toBe(false)
+  })
+  it('sem YouTube de TV: continua só CSS e sem permissão nenhuma', () => {
+    const m = JSON.parse(mod.extensionFiles('grande', { youtubeTv: false })['manifest.json'])
+    expect(m.permissions).toBeUndefined()
+    expect(m.host_permissions).toBeUndefined()
+  })
+})

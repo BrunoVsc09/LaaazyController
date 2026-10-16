@@ -69,6 +69,12 @@ describe('settings', () => {
     expect(s.set('subtitleSize', 'gigante')).toBe(true)
     expect(s.set('subtitleSize', 'colossal')).toBe(false)
   })
+  it('YouTube com tela de TV: ligado no padrão (o card já abria o youtube.com/tv); só sim ou não', () => {
+    const { s } = make()
+    expect(s.get('youtubeTv')).toBe(true)
+    expect(s.set('youtubeTv', false)).toBe(true)
+    expect(s.set('youtubeTv', 'sim')).toBe(false)
+  })
   it('tamanho dos sites no Edge: padrão 100 (Do site); só 100, 125, 150, 175 ou 200', () => {
     const { s } = make()
     expect(s.get('siteScale')).toBe(100)

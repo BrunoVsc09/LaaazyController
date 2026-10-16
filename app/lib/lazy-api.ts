@@ -31,6 +31,7 @@ export type Settings = {
   idleShutdownHours?: number // PC sem uso desliga (0 = nunca)
   subtitleSize?: string // legenda nos serviços do Edge: site | normal | grande | enorme | gigante
   siteScale?: number // tamanho dos sites no Edge (%): 100 | 125 | 150 | 175 | 200
+  youtubeTv?: boolean // YouTube com a tela de TV (youtube.com/tv)
   geminiModel?: string
   equalizer?: EqState
 }

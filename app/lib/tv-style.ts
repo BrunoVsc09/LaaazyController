@@ -15,6 +15,10 @@ export const siteScaleMsg = (s: number) => (s === 100
   ? 'Sites do Edge no tamanho normal. Vale da próxima vez que o Edge abrir.'
   : `Sites do Edge em ${s}%: títulos e menus maiores. Vale da próxima vez que o Edge abrir (feche o serviço e abra de novo).`)
 
+export const youtubeTvMsg = (on: boolean) => (on
+  ? 'O YouTube abre com a tela de TV (setas, OK e Voltar). Na 1ª vez, entre pelo celular com o código que aparece. Vale da próxima vez que o Edge abrir.'
+  : 'O YouTube abre o site comum. Vale da próxima vez que o Edge abrir.')
+
 export const subtitleMsg = (id: string) => (id === 'site'
   ? 'A legenda fica no tamanho de cada site. Vale da próxima vez que o Edge abrir.'
   : `Legenda ${subtitleLabel(id)} nos serviços do Edge. Vale da próxima vez que o Edge abrir (feche o serviço e abra de novo).`)
