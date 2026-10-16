@@ -22,8 +22,10 @@
   numa TV, e o site se arruma sozinho (cabem menos títulos por fileira). Só no Edge do Laaazy.
 - **YouTube com a tela de TV (pedido do Bruno):** o YouTube abre com a mesma tela da TV (cards grandes,
   menu ao lado, busca). Na 1ª vez, entre pelo celular com o código que aparece. Dá para voltar ao site
-  comum em Configurações → Streaming → "YouTube com tela de TV". O controle continua como mouse; um
-  perfil com as setas fica para depois.
+  comum em Configurações → Streaming → "YouTube com tela de TV".
+- **Perfil TV no controle (pedido do Bruno):** no YouTube com a tela de TV, o controle navega como um
+  controle remoto: direcional = setas, ✕ = OK, ○ = Voltar, □ = tocar/pausar (o analógico e o touchpad
+  continuam como mouse). Chega sozinho a quem já tem o Laaazy-pad, sem mexer nos outros perfis.
 - **Atalho "Aa" no topo (pedido do Bruno):** ao lado do ícone do controle, abre o tamanho dos sites e
   da legenda sem entrar nas Configurações, com uma telinha de exemplo que mostra na hora como fica.
 - **Imagem nova de perfil (do Bruno):** um avatar novo para escolher nas boas-vindas ou em

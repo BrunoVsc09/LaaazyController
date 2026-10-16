@@ -51,6 +51,9 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Com o controle no perfil PC (mouse), dá para clicar nos vídeos e no menu; um vídeo toca
 - [ ] Com Não, o YouTube volta ao site comum (da próxima vez que o Edge abrir)
 - [ ] Netflix, Prime e HBO Max continuam iguais (a troca de "cara" é só no YouTube)
+- [ ] Perfil TV: no YouTube de TV, direcional anda entre os vídeos, ✕ abre, ○ volta, □ pausa/toca; o PS volta ao Início
+- [ ] A pasta de perfis do Laaazy-pad ganhou `TV.json` sem mexer nos outros perfis (e tem `perfis-oferecidos.txt`)
+- [ ] Apagar o `TV.json` e reabrir o Laaazy-pad: ele não volta
 - [ ] O Edge abre como janela de app em tela cheia (sem abas nem barra de endereço), sem pedir para instalar nada
 - [ ] Fechar e abrir o serviço 3 vezes: a legenda grande e o YouTube de TV continuam (era aí que a extensão antiga falhava)
 - [ ] Com o Edge já aberto, abrir outro serviço: a nova janela também vem com a legenda grande
