@@ -37,8 +37,26 @@ function notesFor(changelog, version) {
   return { version, date: found.date, sections: highlights ? [highlights] : filled }
 }
 
+// Imagem grande da janela: public/novidades/<versão>.webp (ou .png/.jpg). Versão sem imagem usa a da
+// versão anterior mais recente; nenhuma igual ou anterior = '' (a janela abre sem imagem)
+const ART = /^(\d+)\.(\d+)\.(\d+)\.(webp|png|jpe?g)$/i
+const parts = (v) => v.split('.').map(Number)
+const older = (a, b) => { for (let i = 0; i < 3; i++) if (a[i] !== b[i]) return a[i] < b[i]; return false }
+function artFor(version, files) {
+  const want = parts(version)
+  let best = null
+  for (const f of files) {
+    const m = ART.exec(f)
+    if (!m) continue
+    const v = [m[1], m[2], m[3]].map(Number)
+    if (older(want, v) || (best && older(v, best.v))) continue
+    best = { v, f }
+  }
+  return best ? 'novidades/' + best.f : ''
+}
+
 // Mostra quando a versão mudou desde a última vez. Primeira instalação não (aparecem as boas-vindas);
 // quem já usava e nunca viu a janela (lastSeen vazio) vê
 const shouldShow = ({ lastSeen, current, newUser }) => !newUser && lastSeen !== current
 
-module.exports = { notesFor, shouldShow }
+module.exports = { notesFor, shouldShow, artFor }

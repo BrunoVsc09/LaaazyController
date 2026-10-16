@@ -110,6 +110,8 @@ Regras:
 - O PS fecha o programa da frente com `taskkill /T`: nunca fechar ancestrais do Laaazy.
 - Depois de abrir o app para diagnóstico, **soltar o cursor** (`[FG]::Unclip()`) e fechar o app.
 - Imagens do README ficam em cache no GitHub: troque o **nome do arquivo** para atualizar.
+- Versão nova: a imagem grande da janela de Novidades é `public/novidades/<versão>.webp` (sem ela,
+  vale a da versão anterior). Os destaques da janela são o `### Destaques` do CHANGELOG.
 
 ## 8. Segurança, privacidade e git
 

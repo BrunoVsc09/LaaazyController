@@ -60,7 +60,7 @@ export default function ReleaseNotesDialog({ sounds }: { sounds: Sounds }) {
   if (!notes) return null
   return (
     <div className="lz-notes" data-modal role="dialog" aria-label={notesHeading(notes.version)}>
-      <img className="lz-notes-art" src="novidades.webp" alt="" />
+      {notes.art && <img className="lz-notes-art" src={notes.art} alt="" />}
       <div className="lz-notes-body">
         <h2>{notesHeading(notes.version)}</h2>
         {notesDate(notes.date) && <p className="lz-notes-date">{notesDate(notes.date)}</p>}

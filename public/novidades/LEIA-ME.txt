@@ -1,0 +1,6 @@
+Imagem grande da janela "Novidades da versão" (aparece à esquerda, depois de atualizar).
+
+- Nome: a versão, como no package.json: 3.6.7.webp (também .png ou .jpg)
+- Versão sem imagem usa a da versão anterior mais recente (nunca fica sem)
+- Tamanho: quadrada, como 1254 x 1254 px, até ~250 KB
+- Aparece recortada em pé (corta dos lados, centro a 30% do topo): deixe o rosto no meio

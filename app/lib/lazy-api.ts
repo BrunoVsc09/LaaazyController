@@ -15,7 +15,7 @@ export type EqStatus = { installed: boolean; state: EqState; error: string }
 export type AudioOutput = { id: string; name: string; isDefault: boolean; preferred: boolean }
 export type AudioOutputs = { ok: boolean; items: AudioOutput[]; hidden: number; msg?: string }
 // Novidades da versão (depois de atualizar): títulos do CHANGELOG por parte (Novo, Mudou, Corrigido)
-export type ReleaseNotes = { version: string; date: string; sections: { title: string; items: string[] }[] }
+export type ReleaseNotes = { version: string; date: string; sections: { title: string; items: string[] }[]; art: string } // art: imagem da versão ('' = sem imagem)
 export type Settings = {
   theme?: string
   psClosesApp?: boolean

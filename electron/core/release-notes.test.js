@@ -82,6 +82,27 @@ describe('novidades: destaques', () => {
   })
 })
 
+// Imagem grande da janela por versão (pedido do Bruno, 2026-10-16): public/novidades/<versão>.webp
+describe('novidades: imagem da versão', () => {
+  const files = ['3.6.6.webp', '3.6.7.webp', 'LEIA-ME.txt']
+  it('a da própria versão', () => {
+    expect(mod.artFor('3.6.7', files)).toBe('novidades/3.6.7.webp')
+    expect(mod.artFor('3.6.6', files)).toBe('novidades/3.6.6.webp')
+  })
+  it('versão sem imagem: a da versão anterior mais recente', () => {
+    expect(mod.artFor('3.6.8', files)).toBe('novidades/3.6.7.webp')
+    expect(mod.artFor('3.7.0', files)).toBe('novidades/3.6.7.webp')
+  })
+  it('compara como número (3.6.10 vem depois de 3.6.9)', () => {
+    expect(mod.artFor('3.6.10', ['3.6.9.webp', '3.6.10.png'])).toBe('novidades/3.6.10.png')
+    expect(mod.artFor('3.6.11', ['3.6.9.webp', '3.6.10.jpg'])).toBe('novidades/3.6.10.jpg')
+  })
+  it('nenhuma imagem igual ou anterior: sem imagem', () => {
+    expect(mod.artFor('3.6.5', files)).toBe('')
+    expect(mod.artFor('3.6.7', [])).toBe('')
+  })
+})
+
 describe('novidades: quando mostrar', () => {
   it('a versão mudou desde a última vez: mostra', () => {
     expect(mod.shouldShow({ lastSeen: '3.6.5', current: '3.6.6', newUser: false })).toBe(true)

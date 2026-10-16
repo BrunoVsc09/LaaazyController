@@ -263,6 +263,7 @@ const audioOutputs = createAudioOutputs({ listOutputs: audioDevices.listOutputs,
 const releaseNotes = createReleaseNotes({
   version: () => app.getVersion(), settings,
   readChangelog: () => fs.promises.readFile(path.join(app.getAppPath(), 'CHANGELOG.md'), 'utf8'),
+  artFiles: () => fs.promises.readdir(path.join(OUT, 'novidades')), // imagem grande de cada versão
   isNewUser: async () => !(await userProfile.get()).welcomeDone,
 })
 

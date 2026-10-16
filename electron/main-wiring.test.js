@@ -98,3 +98,10 @@ describe('bateria do controle e desligamentos por falta de uso', () => {
     expect(main).toMatch(/new Notification\(\{ title: 'Laaazy', body/)
   })
 })
+
+// Imagem da janela de Novidades por versão (pedido do Bruno, 2026-10-16)
+describe('novidades: imagem por versão', () => {
+  it('lê a pasta out/novidades (vem de public/novidades)', () => {
+    expect(main).toMatch(/artFiles: \(\) => fs\.promises\.readdir\(path\.join\(OUT, 'novidades'\)\)/)
+  })
+})
