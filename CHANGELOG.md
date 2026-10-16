@@ -16,6 +16,10 @@
   algum programa tiver coisa sem salvar, o Windows pergunta. Com a opção ligada, o Windows não
   suspende antes do tempo do Laaazy.
 
+### Corrigido
+- **"min 10" nas Configurações:** o valor das linhas era desenhado de trás para frente, e "10 min"
+  aparecia como "min 10". Agora aparece na ordem certa.
+
 ## 3.6.5 — 2026-10-10
 
 ### Mudou

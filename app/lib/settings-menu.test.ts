@@ -17,8 +17,10 @@ describe('categorias das Configurações', () => {
 })
 
 describe('pathStatus: caminho do programa sem poluir a tela', () => {
-  it('achou: só "Encontrado ✓" (o caminho completo fica no Avançado)', () => {
-    expect(pathStatus('C:\Program Files\Edge\msedge.exe')).toBe('Encontrado ✓')
+  // Na tela sempre apareceu "✓ Encontrado" (o valor era desenhado da direita para a esquerda); agora
+  // o texto é esse mesmo, na ordem certa
+  it('achou: só "✓ Encontrado" (o caminho completo fica no Avançado)', () => {
+    expect(pathStatus('C:\Program Files\Edge\msedge.exe')).toBe('✓ Encontrado')
   })
   it('não achou: diz o que fazer', () => {
     expect(pathStatus('')).toBe('Não encontrado: toque para escolher')

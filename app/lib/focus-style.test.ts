@@ -205,3 +205,12 @@ describe('Configurações em duas colunas', () => {
     expect(css).toMatch(/\.settings-cat\.on \{[^}]*\}/)
   })
 })
+
+// Regressão (2026-10-16): o valor das linhas era desenhado da direita para a esquerda (sobra de quando
+// mostrava caminhos de pasta) e "15 min" aparecia como "min 15", "2 h" como "h 2"
+describe('valor das linhas das Configurações', () => {
+  it('na ordem em que foi escrito', () => {
+    expect(css).toMatch(/\.ds4-row b \{[^}]*text-overflow: ellipsis/)
+    expect(css).not.toMatch(/\.ds4-row b \{[^}]*direction: rtl/)
+  })
+})

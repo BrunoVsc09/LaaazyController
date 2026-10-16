@@ -85,7 +85,7 @@ button { font: inherit; }
 .library-view :focus, .library-view button:focus-visible { outline: 3px solid #ffd23f !important; outline-offset: 3px; }
 .library-card:focus { outline: none !important; }
 .library-card:focus .library-cover { border-color: #ffd23f; box-shadow: 0 0 0 3px #ffd23f, 0 0 26px rgba(255,210,63,.6); }
-.ds4-row b { max-width: 55%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; direction: rtl; text-align: right; }
+.ds4-row b { max-width: 55%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: right; }
 
 /* ===== Fundo animado do PS4 ===== */
 @theme {

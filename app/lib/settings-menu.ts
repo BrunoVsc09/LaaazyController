@@ -16,5 +16,5 @@ export function nextSection(id: SectionId, step: 1 | -1): SectionId {
   return SETTINGS_SECTIONS[(i + step + SETTINGS_SECTIONS.length) % SETTINGS_SECTIONS.length].id
 }
 
-// Caminho achado vira "Encontrado ✓"; o caminho completo só no Avançado
-export const pathStatus = (path: string) => (path ? 'Encontrado ✓' : 'Não encontrado: toque para escolher')
+// Caminho achado vira "✓ Encontrado"; o caminho completo só no Avançado
+export const pathStatus = (path: string) => (path ? '✓ Encontrado' : 'Não encontrado: toque para escolher')
