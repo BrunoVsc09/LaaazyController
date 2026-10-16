@@ -53,8 +53,9 @@ function createStreamView({ getWin, preload }) {
   }
 
   const forget = () => { view = null }
+  const isOpen = () => !!view // streaming dentro do app, por cima da tela do menu
 
-  return { open, close, back, sendKey, fit, forget }
+  return { open, close, back, sendKey, fit, forget, isOpen }
 }
 
 module.exports = { createStreamView }

@@ -55,7 +55,15 @@ describe('main.js (fumaça)', () => {
   })
 
   it('registra um handler para cada canal do contrato', () => {
-    for (const ch of Object.values(C)) if (![C.GO_HOME, C.PS_TESTED, C.OSK_OPENED].includes(ch)) expect(handlers.has(ch), ch).toBe(true)
+    const toScreen = [C.GO_HOME, C.PS_TESTED, C.OSK_OPENED, C.PAD_BATTERY, C.IDLE_WARNING] // principal → tela
+    for (const ch of Object.values(C)) if (!toScreen.includes(ch)) expect(handlers.has(ch), ch).toBe(true)
+  })
+
+  it('as opções novas passam pelas Configurações (o tempo do controle vai junto para o Laaazy-pad)', async () => {
+    const call = (ch, ...a) => handlers.get(ch)({ senderFrame: { url: 'app://local/' } }, ...a)
+    expect(await call(C.SETTINGS_SET, 'padIdleMinutes', 15)).toBe(true)
+    expect(await call(C.SETTINGS_SET, 'idleShutdownHours', 4)).toBe(true)
+    expect(await call(C.SETTINGS_GET)).toMatchObject({ padIdleMinutes: 15, idleShutdownHours: 4 })
   })
 
   it('os canais de leitura respondem (todos os serviços foram ligados)', async () => {

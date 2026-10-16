@@ -1,5 +1,21 @@
 # Novidades do Laaazy
 
+## Próxima versão (ainda não lançada)
+
+### Novo
+- **Bateria do controle no topo (pedido do Bruno):** ao lado do relógio aparece a bateria do
+  controle (com um raio quando está carregando). Aos 20% e de novo aos 10% o Laaazy avisa: numa
+  faixa na tela, ou numa notificação do Windows quando um jogo ou o Edge está na frente.
+- **Controle parado desliga sozinho (pedido do Bruno):** em Configurações → Controle e mouse,
+  "Desligar o controle parado" (Nunca, 5, 10, 15 ou 30 min; padrão 10). O controle no Bluetooth
+  apaga; o PS liga de novo. Quem desliga é o Laaazy-pad, que vê o controle até com um jogo na
+  frente. No cabo, ele não desliga.
+- **Desligar o PC sem uso (pedido do Bruno):** em Configurações → Sistema (Nunca, 2, 3, 4 ou 6 h;
+  padrão Nunca). Conta o controle, o mouse e o teclado juntos, então não desliga no meio de um
+  jogo só com o controle. Um minuto antes avisa, e qualquer toque cancela. Desliga sem forçar: se
+  algum programa tiver coisa sem salvar, o Windows pergunta. Com a opção ligada, o Windows não
+  suspende antes do tempo do Laaazy.
+
 ## 3.6.5 — 2026-10-10
 
 ### Mudou

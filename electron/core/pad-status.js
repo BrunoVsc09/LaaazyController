@@ -1,9 +1,10 @@
 // Bateria do controle (lida pelo Laaazy-pad) e quando avisar que está baixa. Sem I/O.
 // Contrato: Query.1.Battery → "<porcentagem> <estado>" ou "nenhum" (docs/CONTRATO.md do Laaazy-pad).
 
+const { PAD_IDLE_MINUTES } = require('../../shared/idle-options')
+
 const STATES = ['descarregando', 'carregando', 'carregado', 'cabo', 'desconhecido']
 const LEVELS = [20, 10] // avisa uma vez em cada nível
-const PAD_IDLE_MINUTES = [0, 5, 10, 15, 30] // desligar o controle parado (0 = nunca)
 
 // { percent, state } (percent -1 = o controle não informa) ou null
 function parseBattery(text) {

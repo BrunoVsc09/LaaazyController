@@ -70,3 +70,31 @@ describe('Laaazy-pad que vem junto', () => {
     expect(main).toMatch(/beforeInstall: \(\) => Promise\.race\(\[ds4\.shutdown\(\), sleep\(4000\)\]\)/)
   })
 })
+
+// Bateria, controle parado e PC sem uso (pedido do Bruno, 2026-10-15)
+describe('bateria do controle e desligamentos por falta de uso', () => {
+  it('o mesmo Laaazy-pad para os perfis e para a bateria', () => {
+    expect(main).toMatch(/const padCli = createLaaazyPadCli\(/)
+    expect(main).toMatch(/createDs4\(\{\s*cli: padCli,/)
+    expect(main).toMatch(/createPadStatus\(\{\s*cli: padCli,/)
+  })
+  it('a bateria vai para a tela; o tempo do controle vem das Configurações e muda na hora', () => {
+    expect(main).toMatch(/send: \(status\) => windows\.send\(C\.PAD_BATTERY, status\)/)
+    expect(main).toMatch(/minutes: \(\) => settings\.get\('padIdleMinutes'\)/)
+    expect(main).toMatch(/if \(ok && key === 'padIdleMinutes'\) padStatus\.setMinutes\(value\)/)
+  })
+  it('sem uso = teclado/mouse do Windows e o controle do Laaazy-pad; desliga pelo Energia (sem forçar)', () => {
+    expect(main).toMatch(/systemIdle: \(\) => powerMonitor\.getSystemIdleTime\(\)/)
+    expect(main).toMatch(/padIdle: \(\) => padStatus\.idleNow\(\)/)
+    expect(main).toMatch(/shutdown: \(\) => power\.run\('shutdown', true\)/)
+    expect(main).toMatch(/hours: \(\) => settings\.get\('idleShutdownHours'\)/)
+  })
+  it('com a opção ligada, o Windows não suspende antes (só a suspensão; a tela ainda apaga)', () => {
+    expect(main).toMatch(/powerSaveBlocker\.start\('prevent-app-suspension'\)/)
+    expect(main).not.toMatch(/prevent-display-sleep/)
+  })
+  it('aviso na tela só com o Laaazy na frente e sem streaming por cima; senão notificação do Windows', () => {
+    expect(main).toMatch(/const laaazyVisible = \(\) => !!windows\.get\(\)\?\.isFocused\(\) && !stream\.isOpen\(\)/)
+    expect(main).toMatch(/new Notification\(\{ title: 'Laaazy', body/)
+  })
+})

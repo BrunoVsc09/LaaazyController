@@ -9,6 +9,7 @@ import Footer from './components/Footer'
 import OnScreenKeyboard from './components/OnScreenKeyboard'
 import PowerMenu from './components/PowerMenu'
 import Screensaver from './components/Screensaver'
+import SystemNotice from './components/SystemNotice'
 import UpdatePrompt from './components/UpdatePrompt'
 import HomeScreen from './screens/HomeScreen'
 import LibraryScreen from './screens/LibraryScreen'
@@ -18,6 +19,7 @@ import SettingsScreen from './screens/SettingsScreen'
 import WelcomeScreen from './screens/WelcomeScreen'
 import SearchScreen from './screens/SearchScreen'
 import { useGamepad } from './hooks/useGamepad'
+import { usePadStatus } from './hooks/usePadStatus'
 import { useSounds } from './hooks/useSounds'
 import type { Card } from './lib/catalog'
 import { focusMove, isMouseBack } from './lib/focus'
@@ -46,6 +48,8 @@ export default function Page() {
   const stateRef = useRef(state)
   stateRef.current = state
   const sounds = useSounds()
+  // Bateria do controle (topo), bateria baixa e o aviso de desligar o PC sem uso
+  const pad = usePadStatus()
   // Direção segurada: o 1º passo é na hora; depois espera e acelera (lib/nav-repeat)
   const held = useRef({ dir: '', steps: 0, at: 0 })
   const [pinned, setPinned] = useState<string[]>(DEFAULT_PINNED)
@@ -229,7 +233,7 @@ export default function Page() {
     <main className={`ps4-screen ${state.anim === 'entering' ? 'library-entering' : ''} ${state.anim === 'leaving' ? 'library-leaving' : ''}`}>
       <PS4Background />
       <div className="pad-badge">{padOn ? 'Controle conectado' : 'Controle não detectado. Aperte um botão.'}</div>
-      {state.screen !== 'welcome' && <Header sounds={sounds} onController={() => go('ds4')} onSettings={() => go('settings')} onPower={() => setPowerOpen(true)} />}
+      {state.screen !== 'welcome' && <Header sounds={sounds} battery={pad.battery} onController={() => go('ds4')} onSettings={() => go('settings')} onPower={() => setPowerOpen(true)} />}
       {showsTabs(state.screen) && <Tabs current={state.screen} onGo={go} sounds={sounds} />}
       {state.screen === 'home' && <HomeScreen pinned={pinned} sounds={sounds} onActivate={activate} onOpenSettings={() => go('settings')} />}
       {state.screen === 'library' && <LibraryScreen onBack={back} sounds={sounds} />}
@@ -240,6 +244,7 @@ export default function Page() {
       {state.screen === 'welcome' && <WelcomeScreen sounds={sounds} onDone={() => dispatch({ type: 'goHome' })} />}
       {state.screen !== 'welcome' && <UpdatePrompt sounds={sounds} />}
       {saver && <Screensaver />}
+      <SystemNotice alert={pad.alert} idleSeconds={pad.idleSeconds} />
       {powerOpen && <PowerMenu onClose={closePower} sounds={sounds} />}
       {oskTarget && <OnScreenKeyboard target={oskTarget} onClose={closeOsk} sounds={sounds} pressRef={oskPress} />}
       <Footer screen={state.screen} hints={oskTarget ? OSK_HINTS : undefined} />

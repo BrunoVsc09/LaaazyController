@@ -416,3 +416,11 @@ html:has(.lz-home) { scroll-behavior: smooth; }
 .settings-msg { color: #ffd23f; }
 .settings-sub { margin: 26px 0 6px; font-size: 18px; font-weight: 500; color: #fff; }
 .settings-path { margin: -4px 4px 12px; color: rgba(219, 231, 255, .5); font-size: 13px; word-break: break-all; }
+/* Bateria do controle no topo (ao lado do relógio) e avisos por cima da tela (bateria baixa, PC sem uso) */
+.ps4-status { justify-self: end; display: flex; align-items: center; gap: 22px; }
+.ps4-battery { display: inline-flex; align-items: center; gap: 8px; font-size: .8em; color: rgba(255,255,255,.84); }.ps4-header .ps4-status { font-size: 31px; }
+.ps4-battery svg { width: 1.5em; height: 1.5em; stroke-width: 1.8; }.ps4-battery.low { color: #ff8a7a; }.ps4-battery.charging { color: #9fe3a3; }
+@media (min-width: 1401px) { .ps4-header .ps4-status { font-size: 22px; } }
+@media (max-width: 1400px) and (min-width: 761px) { .ps4-header .ps4-status { font-size: 17px; } }
+.lz-notice { position: fixed; top: 24px; left: 50%; transform: translateX(-50%); z-index: 120; max-width: min(900px, 90vw); padding: 16px 26px; border-radius: 14px; background: rgba(8, 24, 60, .96); color: #fff; font-size: 20px; box-shadow: 0 16px 50px rgba(0,0,0,.5); }
+.lz-notice.urgent { background: rgba(120, 24, 24, .96); }

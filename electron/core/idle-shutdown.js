@@ -4,7 +4,8 @@
 // Passou do tempo → aviso de 60 s; qualquer uso cancela; senão desliga (sem forçar: o Windows
 // pergunta se algum programa tiver coisa sem salvar).
 
-const IDLE_HOURS = [0, 2, 3, 4, 6] // 0 = nunca (padrão)
+const { IDLE_HOURS } = require('../../shared/idle-options')
+
 const WARNING_SECONDS = 60
 
 const idleSeconds = (systemIdle, padIdle) => (padIdle === null || padIdle === undefined ? systemIdle : Math.min(systemIdle, padIdle))

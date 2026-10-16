@@ -6,6 +6,8 @@ import streaming from '../../shared/streaming'
 import ApiKeySection from '../components/ApiKeySection'
 import ProfileSettings from '../components/ProfileSettings'
 import { nextMinutes } from '../lib/screensaver'
+import { nextPadIdle, padIdleLabel, padIdleMsg } from '../lib/pad-battery'
+import { idleHoursLabel, idleHoursMsg, nextIdleHours } from '../lib/idle-shutdown'
 import { SETTINGS_SECTIONS, nextSection, pathStatus, type SectionId } from '../lib/settings-menu'
 import { useGamepad } from '../hooks/useGamepad'
 import { getLazy, type DrmStatus, type StreamMode } from '../lib/lazy-api'
@@ -36,6 +38,8 @@ export default function SettingsScreen({ onBack, onController, sounds }: Props) 
   const [lockOn, setLockOn] = useState(true)
   const [noGpu, setNoGpu] = useState<string[]>([])
   const [saverMin, setSaverMin] = useState(10)
+  const [padIdle, setPadIdle] = useState(10)
+  const [idleHours, setIdleHours] = useState(0)
   const [gridOn, setGridOn] = useState(false)
   const [ytOn, setYtOn] = useState(false)
   const [ytLeft, setYtLeft] = useState(90)
@@ -45,7 +49,7 @@ export default function SettingsScreen({ onBack, onController, sounds }: Props) 
 
   useEffect(() => {
     if (!lazy) return
-    lazy.settings.get().then((s) => { setTheme(themeOf(s.theme)); setModes(s.streamModes); setSaverMin(s.screensaverMinutes ?? 10); setPsCloses(s.psClosesApp !== false); setTrailerOn(s.trailerPreview !== false); setLockOn(s.lockCursor !== false); setNoGpu(s.edgeNoGpu ?? []) })
+    lazy.settings.get().then((s) => { setTheme(themeOf(s.theme)); setModes(s.streamModes); setSaverMin(s.screensaverMinutes ?? 10); setPsCloses(s.psClosesApp !== false); setTrailerOn(s.trailerPreview !== false); setLockOn(s.lockCursor !== false); setNoGpu(s.edgeNoGpu ?? []); setPadIdle(s.padIdleMinutes ?? 10); setIdleHours(s.idleShutdownHours ?? 0) })
     Promise.all([lazy.exe.get('edge'), lazy.exe.get('laaazypad')]).then(([edge, laaazypad]) => setPaths({ edge, laaazypad }))
     lazy.drm.status().then(setDrm)
     lazy.catalog.status().then((s) => setTmdbOn(s.configured))
@@ -102,6 +106,18 @@ export default function SettingsScreen({ onBack, onController, sounds }: Props) 
     setSaverMin(m)
     lazy?.settings.set('screensaverMinutes', m)
     setMsg(m ? `Proteção de tela depois de ${m} minutos parado.` : 'Proteção de tela desligada.')
+  }
+  const cyclePadIdle = () => {
+    const m = nextPadIdle(padIdle)
+    setPadIdle(m)
+    lazy?.settings.set('padIdleMinutes', m)
+    setMsg(padIdleMsg(m))
+  }
+  const cycleIdleHours = () => {
+    const h = nextIdleHours(idleHours)
+    setIdleHours(h)
+    lazy?.settings.set('idleShutdownHours', h)
+    setMsg(idleHoursMsg(h))
   }
   const toggleLogin = () => {
     const v = !atLogin
@@ -162,6 +178,7 @@ export default function SettingsScreen({ onBack, onController, sounds }: Props) 
     controle: <>
       {row('Botão PS fecha o jogo', psCloses ? 'Sim (fecha à força)' : 'Não (como console)', togglePs)}
       {row('Prender o mouse na tela do Laaazy', lockOn ? 'Sim' : 'Não', toggleLock)}
+      {row('Desligar o controle parado', padIdleLabel(padIdle), cyclePadIdle)}
       {row('Perfis do controle (botões, botão de voltar)', '▶', onController)}
     </>,
     streaming: <>
@@ -174,6 +191,7 @@ export default function SettingsScreen({ onBack, onController, sounds }: Props) 
     chaves: keys,
     sistema: <>
       {row('Abrir junto com o Windows', atLogin ? 'Sim' : 'Não', toggleLogin)}
+      {row('Desligar o PC sem uso', idleHoursLabel(idleHours), cycleIdleHours)}
       {row('Ver as boas-vindas de novo', '▶', () => window.dispatchEvent(new Event('lz:welcome')))}
     </>,
     avancado: <>

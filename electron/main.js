@@ -1,5 +1,5 @@
 // Raiz de composição: cria adapters → serviços → IPC → janela. Sem regra de negócio aqui.
-const { app, ipcMain, components, dialog, shell, globalShortcut, safeStorage, clipboard, Menu, session, screen, net } = require('electron')
+const { app, ipcMain, components, dialog, shell, globalShortcut, safeStorage, clipboard, Menu, session, screen, net, powerMonitor, powerSaveBlocker, Notification } = require('electron')
 const fs = require('fs')
 const os = require('os')
 const { execFile } = require('child_process')
@@ -33,6 +33,8 @@ const { pushRecent, recentGames } = require('./core/recent')
 const { createSettings } = require('./services/settings')
 const { createExeLocator } = require('./services/exe-locator')
 const { createDs4 } = require('./services/ds4')
+const { createPadStatus } = require('./services/pad-status')
+const { createIdleShutdown } = require('./services/idle-shutdown')
 const { createDesktop } = require('./services/desktop')
 const { createCursorLock } = require('./services/cursor-lock')
 const { createLibrary } = require('./services/library')
@@ -141,8 +143,9 @@ const settings = createSettings({
 const dialogs = createDialogs({ dialog, getWin: () => windows.get() })
 // O Laaazy-pad vem junto no instalador (resources\laaazy-pad); no pnpm app, só o avulso
 const locator = createExeLocator({ settings, exists, regAppPath, chooseDir: dialogs.chooseDir, showError: dialogs.showError, bundledDir: app.isPackaged ? process.resourcesPath : null })
+const padCli = createLaaazyPadCli({ openPath: (p) => shell.openPath(p) })
 const ds4 = createDs4({
-  cli: createLaaazyPadCli({ openPath: (p) => shell.openPath(p) }),
+  cli: padCli,
   getExe: () => locator.find('laaazypad'),
   readCfg: () => store.readJson(userFile('ds4-profiles.json'), {}),
   writeCfg: (cfg) => store.writeJson(userFile('ds4-profiles.json'), cfg),
@@ -216,6 +219,27 @@ const power = createPower({
   getLogin: () => app.getLoginItemSettings(loginItem()).openAtLogin,
   setLogin: (openAtLogin) => { app.setLoginItemSettings({ openAtLogin, ...loginItem() }); return true },
 })
+
+// Bateria do controle, controle parado e PC sem uso. Aviso na tela com o Laaazy na frente (e sem
+// streaming por cima); senão, notificação do Windows
+const laaazyVisible = () => !!windows.get()?.isFocused() && !stream.isOpen()
+const notify = (body) => new Notification({ title: 'Laaazy', body, icon: ICON }).show()
+const padStatus = createPadStatus({
+  cli: padCli, getExe: () => locator.find('laaazypad'), notify, focused: laaazyVisible,
+  minutes: () => settings.get('padIdleMinutes'),
+  send: (status) => windows.send(C.PAD_BATTERY, status),
+})
+let suspendBlock = null
+const idleShutdown = createIdleShutdown({
+  hours: () => settings.get('idleShutdownHours'),
+  systemIdle: () => powerMonitor.getSystemIdleTime(),
+  padIdle: () => padStatus.idleNow(),
+  shutdown: () => power.run('shutdown', true),
+  send: (warning) => windows.send(C.IDLE_WARNING, warning), notify, focused: laaazyVisible,
+  blocker: { start: () => { suspendBlock = powerSaveBlocker.start('prevent-app-suspension') }, stop: () => powerSaveBlocker.stop(suspendBlock) },
+})
+// Mudou o tempo do controle nas Configurações: o Laaazy-pad recebe na hora
+const settingsForScreen = { ...settings, set: (key, value) => { const ok = settings.set(key, value); if (ok && key === 'padIdleMinutes') padStatus.setMinutes(value); return ok } }
 
 // Volume do Windows (PowerShell em segundo plano apertando as teclas de volume)
 const keySender = createKeySender()
@@ -359,7 +383,7 @@ setInterval(() => returnWatch.tick(), 1500).unref()
 const desktop = createDesktop({ ds4: ds4ForApps, returnWatch, minimize: hideLaaazy })
 
 registerIpc(ipcMain, {
-  launcher, locator, settings, ds4, library: libraryWithCovers, catalog, myList, power, covers, volume, assistant, psButton, textEntry, goHome, desktop, ytTrailers,
+  launcher, locator, settings: settingsForScreen, ds4, library: libraryWithCovers, catalog, myList, power, covers, volume, assistant, psButton, textEntry, goHome, desktop, ytTrailers,
   browse: createFileBrowser({ known: () => ({ pictures: app.getPath('pictures'), desktop: app.getPath('desktop'), downloads: app.getPath('downloads') }) }),
   // Botão Colar das chaves: texto copiado, já limpo de espaços (só quando você aperta)
   readClipboard: () => cleanKey(clipboard.readText()).slice(0, 500),
@@ -393,6 +417,9 @@ app.whenReady().then(async () => {
   // leitura do controle no menu, e o PS (Ctrl+Alt+Home) funciona sempre
   ds4.ensureRunning()  // abre o Laaazy-pad em segundo plano
   ds4.applyFor('menu') // e carrega o perfil do Menu
+  // Bateria e controle parado a cada 5 s; PC sem uso a cada 1 s (powerMonitor só depois do ready)
+  setInterval(() => padStatus.tick(), 5000).unref()
+  setInterval(() => idleShutdown.tick(), 1000).unref()
 
   // O Laaazy-pad manda o PS como Ctrl+Alt+Home e o Share (perfil PC) como Ctrl+Alt+K;
   // Ctrl+Alt+End (fechar o que está na frente) fica para o teclado

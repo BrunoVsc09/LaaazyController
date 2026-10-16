@@ -54,7 +54,8 @@ describe('registerIpc', () => {
     const { on, handle } = make()
     const registered = new Set([...on.keys(), ...handle.keys()])
     for (const ch of Object.values(C)) {
-      if (![C.GO_HOME, C.PS_TESTED, C.OSK_OPENED].includes(ch)) expect(registered.has(ch), ch).toBe(true)
+      // principal → tela: não são registrados aqui
+      if (![C.GO_HOME, C.PS_TESTED, C.OSK_OPENED, C.PAD_BATTERY, C.IDLE_WARNING].includes(ch)) expect(registered.has(ch), ch).toBe(true)
     }
   })
   it('open só aceita http(s) e devolve o aviso do launcher', async () => {

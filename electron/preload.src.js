@@ -23,6 +23,8 @@ contextBridge.exposeInMainWorld('lazy', {
     onTested: (cb) => { ipcRenderer.removeAllListeners(C.PS_TESTED); ipcRenderer.on(C.PS_TESTED, () => cb()) },
   },
   onHome: (cb) => { ipcRenderer.removeAllListeners(C.GO_HOME); ipcRenderer.on(C.GO_HOME, () => cb()) },
+  onPadStatus: (cb) => { ipcRenderer.removeAllListeners(C.PAD_BATTERY); ipcRenderer.on(C.PAD_BATTERY, (_e, s) => cb(s)) },
+  onIdleWarning: (cb) => { ipcRenderer.removeAllListeners(C.IDLE_WARNING); ipcRenderer.on(C.IDLE_WARNING, (_e, w) => cb(w)) },
   settings: { get: invoke(C.SETTINGS_GET), set: invoke(C.SETTINGS_SET) },
   exe: { get: invoke(C.EXE_GET), choose: invoke(C.EXE_CHOOSE) },
   ds4: { get: invoke(C.DS4_GET), set: invoke(C.DS4_SET), profile: invoke(C.DS4_PROFILE), setButton: invoke(C.DS4_SET_BUTTON) },

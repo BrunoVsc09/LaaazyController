@@ -67,6 +67,8 @@ numa tela só, com cara de console e controlada inteira pelo **DualShock 4**.
 - **Energia**: desligar daqui a 2 ou 3 horas, suspender, cancelar
 - **Área de trabalho** com um botão: o controle vira mouse
 - Proteção de tela, volume no L2/R2, mouse preso na tela
+- **Bateria do controle** no topo, com aviso de bateria baixa
+- Controle parado desliga sozinho; PC sem uso desliga (com aviso)
 
 </td>
 </tr>
@@ -77,7 +79,7 @@ numa tela só, com cara de console e controlada inteira pelo **DualShock 4**.
 <table>
 <tr>
 <td width="50%"><img src="docs/assets/screenshots/02-parecidos.jpg" alt="Parecido com Bones: investigação forense leve com química de parceiros"><br><sub><b>△ Parecido com este</b> — o Gemini resume o clima ("investigação forense leve com química de parceiros") e o TMDB confere cada título.</sub></td>
-<td width="50%"><img src="docs/assets/screenshots/03-biblioteca.jpg" alt="Biblioteca de jogos com capas e perfil do controle por jogo"><br><sub><b>Biblioteca</b> — Steam, Epic e PC juntos, com o perfil do DS4Windows de cada jogo.</sub></td>
+<td width="50%"><img src="docs/assets/screenshots/03-biblioteca.jpg" alt="Biblioteca de jogos com capas e perfil do controle por jogo"><br><sub><b>Biblioteca</b> — Steam, Epic e PC juntos, com o perfil do controle (Laaazy-pad) de cada jogo.</sub></td>
 </tr>
 <tr>
 <td><img src="docs/assets/screenshots/04-busca.jpg" alt="Explorar sem digitar"><br><sub><b>Explorar sem digitar</b> — categoria, duração e ordem só com o D-pad.</sub></td>

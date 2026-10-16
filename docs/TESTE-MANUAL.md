@@ -64,6 +64,23 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] X numa linha troca o perfil e mostra a confirmação
 - [ ] Abrir um card aplica o perfil configurado; voltar ao menu aplica o do Menu
 
+## Bateria e controle parado
+- [ ] Com o DS4 no Bluetooth, o topo mostra a bateria ao lado do relógio (ex.: 75%); no carregador, com um raio
+- [ ] Sem controle (ou com o Laaazy-pad fechado), o topo mostra só o relógio
+- [ ] Bateria chegando a 20% e depois a 10%: uma faixa na tela em cada nível (some sozinha); com um jogo na frente, notificação do Windows
+- [ ] Configurações → Controle e mouse → "Desligar o controle parado" cicla Nunca / 5 / 10 / 15 / 30 min; o `laaazy-pad.log` mostra `SetIdle.1.<minutos>` na hora
+- [ ] Com 5 min: largar o controle parado → a luz apaga sozinha em ~5 min; o PS liga de novo
+- [ ] Controle no cabo USB não apaga
+- [ ] Fechar e abrir o Laaazy: o tempo escolhido continua valendo (o Laaazy manda de novo ao Laaazy-pad)
+
+## Desligar o PC sem uso
+- [ ] Configurações → Sistema → "Desligar o PC sem uso" cicla Nunca / 2 / 3 / 4 / 6 h (padrão Nunca)
+- [ ] Jogando só com o controle por mais tempo que o escolhido: o PC não desliga
+- [ ] Parado (controle, mouse e teclado) pelo tempo escolhido: faixa vermelha com os segundos; mexer em qualquer coisa tira a faixa e não desliga
+- [ ] Deixar os 60 s acabarem: o PC desliga; com um Bloco de Notas sem salvar, o Windows pergunta antes
+- [ ] Com o Laaazy escondido (filme no Edge), o aviso vem como notificação do Windows (em tela cheia o Windows pode esconder; mexer ainda cancela)
+- [ ] Com o Windows configurado para suspender em pouco tempo e a opção ligada: o PC não suspende antes do tempo do Laaazy
+
 ## Configurações
 - [ ] Abre em "Perfil", com as categorias à esquerda; L1/R1 trocam a categoria (não trocam com o teclado na tela aberto)
 - [ ] → entra na categoria; ← volta para a categoria aberta (não para a vizinha)

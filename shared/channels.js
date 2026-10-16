@@ -52,6 +52,8 @@ module.exports = {
   POWER_RUN: 'power:run',
   POWER_LOGIN_GET: 'power:loginGet',
   POWER_LOGIN_SET: 'power:loginSet',
+  PAD_BATTERY: 'pad:battery', // principal → tela: { battery, alert } do controle
+  IDLE_WARNING: 'idle:warning', // principal → tela: { seconds } até desligar o PC sem uso (0 = sem aviso)
   VOLUME: 'volume',
   CLIPBOARD_READ: 'clipboard:read',
   AI_STATUS: 'ai:status',

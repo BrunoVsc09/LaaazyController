@@ -19,8 +19,13 @@ export type Settings = {
   streamModes: Record<string, StreamMode>
   pinnedApps?: string[]
   screensaverMinutes?: number
+  padIdleMinutes?: number // controle parado desliga (0 = nunca)
+  idleShutdownHours?: number // PC sem uso desliga (0 = nunca)
   geminiModel?: string
 }
+// Bateria do controle (Laaazy-pad): percent -1 = o controle não informa; null = sem controle
+export type PadBattery = { percent: number; state: 'descarregando' | 'carregando' | 'carregado' | 'cabo' | 'desconhecido' } | null
+export type PadStatus = { battery: PadBattery; alert: string }
 export type Ds4Data = { profiles: string[]; config: Record<string, string>; dir: string | null; cmd: string; current?: string }
 // Editor de perfis do Laaazy-pad
 export type PadAction = { tecla: string } | { clique: string } | null
@@ -48,7 +53,10 @@ export type LazyApi = {
   oskOverlay: { edit(change: { move?: number; back?: number; text?: string; enter?: boolean }): Promise<boolean>; close(): Promise<void>; onOpened(cb: () => void): void }
   volume(action: 'up' | 'down' | 'mute'): void
   onHome(cb: () => void): void
-  ps: { startTest(): Promise<boolean>; onTested(cb: () => void): void }
+  // principal → tela: bateria do controle a cada 5 s; segundos até desligar o PC sem uso (0 = sem aviso)
+  onPadStatus(cb: (status: PadStatus) => void): void
+  onIdleWarning(cb: (warning: { seconds: number }) => void): void
+  ps:{ startTest(): Promise<boolean>; onTested(cb: () => void): void }
   settings: { get(): Promise<Settings>; set(key: string, value: unknown): Promise<boolean> }
   exe: { get(key: string): Promise<string>; choose(key: string): Promise<string> }
   ds4: { get(): Promise<Ds4Data>; set(key: string, value: string): Promise<Result>; profile(name: string): Promise<PadResult>; setButton(name: string, id: string, action: PadAction): Promise<PadResult> }

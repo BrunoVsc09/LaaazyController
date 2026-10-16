@@ -50,8 +50,8 @@ Bug? Primeiro um **teste de regressão** que reproduz o bug; depois a correção
 |---|---|---|
 | **Mídia** | Título (filme/série/anime), catálogo, prévia do trailer, Parecidos, Minha lista, novos episódios | `core/catalog`, `core/ai-mood`, `core/yt-trailers`, `services/catalog`, `services/assistant`, `services/yt-trailers`, `app/lib/trailer`, `home-model` |
 | **Jogos** | Jogo, biblioteca, fontes (Steam/Epic/PC), capas, recentes | `core/games/*`, `core/covers`, `core/fs-browse`, `services/library`, `services/covers` |
-| **Controle** | Perfil DS4 por app/jogo, botão PS, modo de entrada (controle × mouse), teclado na tela | `core/ds4-config`, `services/ds4`, `services/ps-button`, `shared/gamepad`, `app/lib/input-mode`, `app/lib/osk` |
-| **Sistema** | Janela, foco/volta automática, energia, Área de trabalho, cursor preso, segurança | `core/focus`, `core/power`, `core/processes`, `core/security`, `services/foreground`, `desktop`, `power`, `cursor-lock` |
+| **Controle** | Perfil DS4 por app/jogo, botão PS, modo de entrada (controle × mouse), teclado na tela, bateria, controle parado | `core/ds4-config`, `core/pad-status`, `services/ds4`, `services/pad-status`, `services/ps-button`, `shared/gamepad`, `app/lib/input-mode`, `app/lib/osk`, `app/lib/pad-battery` |
+| **Sistema** | Janela, foco/volta automática, energia, PC sem uso, Área de trabalho, cursor preso, segurança | `core/focus`, `core/power`, `core/idle-shutdown`, `core/processes`, `core/security`, `services/foreground`, `services/idle-shutdown`, `shared/idle-options`, `app/lib/idle-shutdown`, `desktop`, `power`, `cursor-lock` |
 | **Streaming** | Abrir serviços no Edge, DRM, aceleração | `core/routing`, `core/drm`, `services/launcher`, `shared/streaming` |
 
 Glossário: **prévia** = trailer no destaque · **destaque** (hero) = topo do Início ·
