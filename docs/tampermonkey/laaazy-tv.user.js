@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Laaazy TV: legendas grandes
 // @namespace    laaazy
-// @version      1.0.0
+// @version      1.1.0
 // @description  Só visual: legenda maior e com contorno nos serviços do Laaazy, para ler do sofá. Não clica, não lê e não manda nada.
 // @match        https://www.netflix.com/*
 // @match        https://www.primevideo.com/*
@@ -13,9 +13,10 @@
 // @run-at       document-start
 // ==/UserScript==
 
-// Só CSS. Tamanho em vh (porcentagem da altura da tela): 5vh ≈ 54 px numa TV 1080p.
+// Só CSS. Tamanho em vh (porcentagem da altura da tela): 7vh ≈ 75 px em 1080p, letra de ~1,5 cm num
+// monitor de 24" (dá para ler deitado, a ~2 m). Para 24" a 1 m, 5vh basta.
 // Mude aqui e salve (no Tampermonkey: Painel → Laaazy TV → editar).
-const LEGENDA = '5vh'
+const LEGENDA = '7vh'
 const CONTORNO = '0 0 3px #000, 0 0 6px #000, 2px 2px 4px #000' // borda escura: lê em cena clara
 
 // Os nomes vêm de cada site e podem mudar sem aviso: se a legenda de um serviço voltar a ficar
