@@ -2,6 +2,8 @@
 const { validModes } = require('../core/routing')
 const streaming = require('../../shared/streaming')
 const THEMES = require('../../shared/themes')
+const { PAD_IDLE_MINUTES } = require('../core/pad-status')
+const { IDLE_HOURS } = require('../core/idle-shutdown')
 
 const isText = (v) => typeof v === 'string'
 const isBool = (v) => typeof v === 'boolean'
@@ -21,11 +23,13 @@ const RULES = {
   theme: (v) => THEMES.some((t) => t.id === v),
   streamModes: (v) => validModes(v, streaming),
   screensaverMinutes: (v) => [0, 5, 10, 15, 30].includes(v),
+  padIdleMinutes: (v) => PAD_IDLE_MINUTES.includes(v),
+  idleShutdownHours: (v) => IDLE_HOURS.includes(v),
   geminiModel: (v) => isText(v) && /^[a-z0-9][a-z0-9.-]{0,60}$/.test(v),
   pinnedApps: (v) => Array.isArray(v) && v.length <= 30 && v.every((x) => isText(x) && x.length > 0 && x.length <= 40),
 }
 
-const DEFAULTS = { theme: 'azul', psClosesApp: true, trailerPreview: true, trailerSound: false, lockCursor: true, edgeNoGpu: ['Crunchyroll'], librarySort: 'asc', streamModes: {}, screensaverMinutes: 10, geminiModel: 'gemini-3.8-flash' }
+const DEFAULTS = { theme: 'azul', psClosesApp: true, trailerPreview: true, trailerSound: false, lockCursor: true, edgeNoGpu: ['Crunchyroll'], librarySort: 'asc', streamModes: {}, screensaverMinutes: 10, padIdleMinutes: 10, idleShutdownHours: 0, geminiModel: 'gemini-3.8-flash' }
 
 function createSettings({ read, write }) {
   const all = () => ({ ...DEFAULTS, ...read() })

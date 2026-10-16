@@ -59,7 +59,20 @@ function createLaaazyPadCli({
     return r.code === 0 ? r.out : null
   }
 
-  const shutdown = async (exe) => (exe ? message(await run(exe, 'shutdown')) : '')
+  // Controle parado e bateria. null = fechado, sem exe ou Laaazy-pad antigo (sem o comando)
+  async function queryIdle(exe) {
+    if (!exe) return null
+    const r = await run(exe, 'Query.1.IdleSeconds')
+    return r.code === 0 && /^\d+$/.test(r.out) ? Number(r.out) : null
+  }
+  async function queryBattery(exe) {
+    if (!exe) return null
+    const r = await run(exe, 'Query.1.Battery')
+    return r.code === 0 ? r.out : null
+  }
+  const setIdle = async (exe, minutes) => message(await run(exe, 'SetIdle.1.' + minutes))
+
+  const shutdown =async (exe) => (exe ? message(await run(exe, 'shutdown')) : '')
   const kill = () => new Promise((res) => execFile('taskkill', ['/IM', PROCESS, '/T', '/F'], { windowsHide: true }, () => res()))
   const cmdName = (exe) => (exe ? CMD : '')
 
@@ -85,7 +98,7 @@ function createLaaazyPadCli({
     } catch (e) { return 'Não consegui salvar o perfil: ' + e.message }
   }
 
-  return { listProfiles, isRunning, start, loadProfile, queryProfile, shutdown, kill, cmdName, readProfile, writeProfile }
+  return { listProfiles, isRunning, start, loadProfile, queryProfile, queryIdle, queryBattery, setIdle, shutdown, kill, cmdName, readProfile, writeProfile }
 }
 
 module.exports = { createLaaazyPadCli }

@@ -55,6 +55,19 @@ describe('settings', () => {
     expect(s.set('screensaverMinutes', 7)).toBe(false)
     expect(s.set('screensaverMinutes', '5')).toBe(false)
   })
+  it('controle parado desliga: padrão 10 minutos; só 0 (nunca), 5, 10, 15 ou 30', () => {
+    const { s } = make()
+    expect(s.get('padIdleMinutes')).toBe(10)
+    expect(s.set('padIdleMinutes', 0)).toBe(true)
+    expect(s.set('padIdleMinutes', 7)).toBe(false)
+  })
+  it('PC sem uso desliga: padrão Nunca (0); só 0, 2, 3, 4 ou 6 horas', () => {
+    const { s } = make()
+    expect(s.get('idleShutdownHours')).toBe(0)
+    expect(s.set('idleShutdownHours', 4)).toBe(true)
+    expect(s.set('idleShutdownHours', 1)).toBe(false)
+    expect(s.set('idleShutdownHours', '4')).toBe(false)
+  })
   it('geminiModel: padrão gemini-3.8-flash; só nomes de modelo válidos', () => {
     const { s } = make()
     expect(s.get('geminiModel')).toBe('gemini-3.8-flash')

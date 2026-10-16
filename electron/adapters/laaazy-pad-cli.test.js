@@ -59,6 +59,30 @@ describe('Laaazy-pad (LaaazyPadCmd.exe, docs/CONTRATO.md do Laaazy-pad)', () => 
     expect(execFile.mock.calls[0][1]).toEqual(['-command', 'shutdown'])
     expect(await cli.shutdown(null)).toBe('')
   })
+  // Controle parado e bateria (contrato de 2026-10-15)
+  it('IdleSeconds: segundos sem ninguém usar o controle; fechado (código 1) = null', async () => {
+    const { cli, execFile } = make({ answers: { 'LaaazyPadCmd.exe -command Query.1.IdleSeconds': { out: '615\r\n' } } })
+    expect(await cli.queryIdle(EXE)).toBe(615)
+    expect(execFile.mock.calls[0][1]).toEqual(['-command', 'Query.1.IdleSeconds'])
+    const fechado = make({ answers: { 'LaaazyPadCmd.exe -command Query.1.IdleSeconds': { code: 1, err: 'O Laaazy-pad não está aberto.' } } })
+    expect(await fechado.cli.queryIdle(EXE)).toBeNull()
+    const estranho = make({ answers: { 'LaaazyPadCmd.exe -command Query.1.IdleSeconds': { out: 'Jogos' } } })
+    expect(await estranho.cli.queryIdle(EXE)).toBeNull() // Laaazy-pad antigo, sem o comando
+    expect(await cli.queryIdle(null)).toBeNull()
+  })
+  it('Battery: o texto do Laaazy-pad ("40 descarregando"); fechado = null', async () => {
+    const { cli } = make({ answers: { 'LaaazyPadCmd.exe -command Query.1.Battery': { out: '40 descarregando\r\n' } } })
+    expect(await cli.queryBattery(EXE)).toBe('40 descarregando')
+    const fechado = make({ answers: { 'LaaazyPadCmd.exe -command Query.1.Battery': { code: 1 } } })
+    expect(await fechado.cli.queryBattery(EXE)).toBeNull()
+  })
+  it('SetIdle: manda os minutos; "" quando deu certo', async () => {
+    const { cli, execFile } = make()
+    expect(await cli.setIdle(EXE, 10)).toBe('')
+    expect(execFile.mock.calls[0][1]).toEqual(['-command', 'SetIdle.1.10'])
+    const antigo = make({ answers: { 'LaaazyPadCmd.exe -command SetIdle.1.0': { code: 2, err: 'Comando desconhecido' } } })
+    expect(await antigo.cli.setIdle(EXE, 0)).toBe('Comando desconhecido')
+  })
   it('perfis *.json da pasta Profiles ao lado do exe (modo portátil), em ordem', async () => {
     const { cli } = make({ dirs: { [path.join(DIR, 'Profiles')]: ['PC.json', 'Jogos.json', 'leia.txt'] } })
     expect(await cli.listProfiles(EXE)).toEqual({ dir: path.join(DIR, 'Profiles'), profiles: ['Jogos', 'PC'] })
