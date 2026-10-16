@@ -1,6 +1,14 @@
 # Novidades do Laaazy
 
-## Próxima versão (ainda não lançada)
+## 3.6.7 — 2026-10-16
+
+### Destaques
+- Bateria do controle no topo, com aviso quando estiver acabando
+- Controle parado desliga sozinho
+- PC sem uso desliga sozinho (e o Windows não suspende antes)
+- Legenda grande nos serviços, para ler de longe
+- Correções de bugs
+- Imagem nova de perfil
 
 ### Novo
 - **Legenda grande nos serviços (pedido do Bruno):** em Configurações → Streaming, "Tamanho da
@@ -8,17 +16,6 @@
   Laaazy abre o Edge com uma extensão própria, só de CSS e sem nenhuma permissão: ninguém precisa
   instalar nada. Vale na Netflix, Prime Video, HBO Max e YouTube; trocar o tamanho vale da próxima
   vez que o serviço abrir.
-
-## 3.6.7 — 2026-10-16
-
-### Destaques
-- Bateria do controle no topo, com aviso quando estiver acabando
-- Controle parado desliga sozinho
-- PC sem uso desliga sozinho (e o Windows não suspende antes)
-- Correções de bugs
-- Imagem nova de perfil
-
-### Novo
 - **Imagem nova de perfil (do Bruno):** um avatar novo para escolher nas boas-vindas ou em
   Configurações → Perfil.
 - **Bateria do controle no topo (pedido do Bruno):** ao lado do relógio aparece a bateria do
