@@ -7,10 +7,11 @@ import Strip from '../components/Strip'
 import { CATALOG, type Card } from '../lib/catalog'
 import { buildRows, heroInfo, pinnedCards, shuffled, type EpisodeNews } from '../lib/home-model'
 import { getLazy, type CatalogHome, type Game, type Title } from '../lib/lazy-api'
-import { YT_ORIGIN, nextTitleId, playerCommand, playerEvent, previewStep, titleFocus, trailerEmbedUrl } from '../lib/trailer'
+import { TRAILER_GAVE_UP, YT_ORIGIN, nextTitleId, playerCommand, playerEvent, previewStep, skipTrailer, titleFocus, trailerEmbedUrl } from '../lib/trailer'
 import type { Sounds } from '../hooks/useSounds'
 import { useSimilar } from '../hooks/useSimilar'
 import { usePreviewPause } from '../hooks/usePreviewPause'
+import { usePreviewStart } from '../hooks/usePreviewStart'
 
 type Props = { pinned: string[]; sounds: Sounds; onActivate: (card: Card) => void; onOpenSettings: () => void }
 
@@ -69,6 +70,18 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
     setTrailerLabel(t?.label ? `Trailer ${t.label}` : '')
   }
   const trailerIndex = useRef(0)
+  // Trailer que não tocou (onError ou demora): o próximo; sem mais, fica a capa com o aviso
+  const skip = () => {
+    const r = skipTrailer(trailers.current.length, trailerIndex.current)
+    trailerIndex.current = r.index
+    if (!r.giveUp) return playTrailer(r.index)
+    setPreview(null)
+    setTrailerLabel('')
+    setMsg(TRAILER_GAVE_UP)
+  }
+  const [started, markStarted] = usePreviewStart(preview, skip)
+  const skipNow = useRef(skip)
+  skipNow.current = skip
   // Título cuja prévia foi pedida (1º aperto). Passar por outros títulos não cancela; só outro aperto troca.
   const [playingId, setPlayingId] = useState<string | null>(null)
   const previewRef = useRef<string | null>(null)
@@ -104,7 +117,8 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
   useEffect(() => {
     const onMessage = (e: MessageEvent) => {
       const ev = playerEvent(e.origin, e.data)
-      if (ev === 'error') { trailerIndex.current += 1; playTrailer(trailerIndex.current); return }
+      if (ev === 'error') { skipNow.current(); return }
+      if (ev === 'playing') { markStarted(); return }
       if (ev !== 'ended') return
       const nextId = nextTitleId(rowsRef.current, heroId.current)
       const next = rowsRef.current.flatMap((r) => r.items).find((t) => t.id === nextId)
@@ -199,7 +213,7 @@ export default function HomeScreen({ pinned, sounds, onActivate, onOpenSettings 
             </div>
             {msg && <p className="lz-meta" role="status">{msg}</p>}
           </div>
-          <div className={`lz-hero-media ${preview && paused ? 'is-paused' : ''}`} style={bg(hero)} aria-hidden="true">
+          <div className={`lz-hero-media ${preview && started ? 'is-started' : ''} ${preview && paused ? 'is-paused' : ''}`} style={bg(hero)} aria-hidden="true">
             {preview && trailerLabel && <span className="lz-trailer-label">🇧🇷 {trailerLabel}</span>}
             {preview && paused && <span className="lz-paused">⏸ Pausado · Start continua</span>}
             {preview && <iframe key={preview} ref={frame} src={preview} title="Prévia do trailer" tabIndex={-1} allow="autoplay; encrypted-media" onLoad={() => send('listening')} />}

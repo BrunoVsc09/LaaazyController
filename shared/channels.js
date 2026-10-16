@@ -55,6 +55,13 @@ module.exports = {
   PAD_BATTERY: 'pad:battery', // principal → tela: { battery, alert } do controle
   IDLE_WARNING: 'idle:warning', // principal → tela: { seconds } até desligar o PC sem uso (0 = sem aviso)
   VOLUME: 'volume',
+  EQ_STATUS: 'eq:status', // equalizador: APO instalado? + ajuste salvo
+  EQ_SET: 'eq:set', // equalizador: ajuste novo (bandas, Bass Boost, Clarity)
+  EQ_INSTALL: 'eq:install', // baixa e instala o Equalizer APO (versão e hash fixos no core)
+  AUDIO_OUTPUTS: 'audio:outputs', // saídas de som do Windows (lista curta ou todas)
+  AUDIO_SET_OUTPUT: 'audio:setOutput', // troca a saída e guarda como preferida
+  NOTES_PENDING: 'notes:pending', // novidades da versão (depois de atualizar), ou null
+  NOTES_SEEN: 'notes:seen', // a pessoa viu as novidades desta versão
   CLIPBOARD_READ: 'clipboard:read',
   AI_STATUS: 'ai:status',
   AI_SET_KEY: 'ai:setKey',

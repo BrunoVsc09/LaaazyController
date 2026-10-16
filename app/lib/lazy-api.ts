@@ -8,6 +8,14 @@ export type UserResult = { ok: boolean; msg?: string; profile?: UserProfile }
 export type FsEntry = { name: string; path: string; type: 'dir' | 'exe' | 'lnk' | 'image' | 'place' | 'drive' }
 export type FsList = { ok: boolean; path?: string; parent?: string | null; entries: FsEntry[]; msg?: string }
 export type StreamMode = 'app' | 'edge'
+// Equalizador (Configurações → Som); valores em shared/equalizer.js
+export type EqState = { on: boolean; preset: string; bands: number[]; bass: number; clarity: number; volume: number }
+export type EqStatus = { installed: boolean; state: EqState; error: string }
+// Saídas de som do Windows (Configurações → Som)
+export type AudioOutput = { id: string; name: string; isDefault: boolean; preferred: boolean }
+export type AudioOutputs = { ok: boolean; items: AudioOutput[]; hidden: number; msg?: string }
+// Novidades da versão (depois de atualizar): títulos do CHANGELOG por parte (Novo, Mudou, Corrigido)
+export type ReleaseNotes = { version: string; date: string; sections: { title: string; items: string[] }[] }
 export type Settings = {
   theme?: string
   psClosesApp?: boolean
@@ -22,6 +30,7 @@ export type Settings = {
   padIdleMinutes?: number // controle parado desliga (0 = nunca)
   idleShutdownHours?: number // PC sem uso desliga (0 = nunca)
   geminiModel?: string
+  equalizer?: EqState
 }
 // Bateria do controle (Laaazy-pad): percent -1 = o controle não informa; null = sem controle
 export type PadBattery = { percent: number; state: 'descarregando' | 'carregando' | 'carregado' | 'cabo' | 'desconhecido' } | null
@@ -52,6 +61,9 @@ export type LazyApi = {
   // Teclado por cima em tempo real: cada mudança vai na hora para o campo do site
   oskOverlay: { edit(change: { move?: number; back?: number; text?: string; enter?: boolean }): Promise<boolean>; close(): Promise<void>; onOpened(cb: () => void): void }
   volume(action: 'up' | 'down' | 'mute'): void
+  eq: { status(): Promise<EqStatus>; set(state: EqState): Promise<{ ok: boolean; msg?: string }>; install(): Promise<Result> }
+  audio: { outputs(opts?: { all: boolean }): Promise<AudioOutputs>; setOutput(id: string): Promise<Result> }
+  notes: { pending(): Promise<ReleaseNotes | null>; seen(): Promise<void> }
   onHome(cb: () => void): void
   // principal → tela: bateria do controle a cada 5 s; segundos até desligar o PC sem uso (0 = sem aviso)
   onPadStatus(cb: (status: PadStatus) => void): void

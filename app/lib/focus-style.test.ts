@@ -174,8 +174,15 @@ describe('rolagem suave no Início', () => {
 // aparecem nos primeiros segundos e no pausado. Sem cortar nem cobrir o player visível: ele entra
 // depois que isso some, e no pausado fica a capa do título (o fundo do quadro)
 describe('prévia sem as coisas do YouTube por cima', () => {
-  it('o vídeo aparece com fade depois de ~3 s (até lá, a capa do título)', () => {
-    expect(css).toMatch(/\.lz-hero-media iframe \{[^}]*animation: lz-saver-in \.8s ease-out 3s both;/)
+  // "Vídeo indisponível" na prévia (2026-10-14): o fade era por tempo e mostrava a tela de erro do YouTube
+  it('o player fica escondido até o vídeo começar a tocar (até lá, a capa do título)', () => {
+    expect(css).toMatch(/\.lz-hero-media iframe \{[^}]*opacity: 0;/)
+    expect(css).not.toMatch(/\.lz-hero-media iframe \{[^}]*animation:/)
+  })
+  // "Demora um pouquinho" (Bruno, 2026-10-14): a espera passou a contar do vídeo tocando, então 3 s
+  // somavam ao carregamento do YouTube; depois "deixe mais rápido, 0,5" (Bruno, mesmo dia)
+  it('começou a tocar: aparece com fade depois de ~0,5 s', () => {
+    expect(css).toMatch(/\.lz-hero-media\.is-started iframe \{ animation: lz-saver-in \.8s ease-out \.5s both; \}/)
   })
   it('pausado: o player some e fica a capa com o "Pausado"', () => {
     expect(css).toMatch(/\.lz-hero-media\.is-paused iframe \{ opacity: 0; visibility: hidden; \}/)

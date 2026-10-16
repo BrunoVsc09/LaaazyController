@@ -137,6 +137,35 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Ctrl+Alt+↑/↓/M funcionam mesmo com o Edge na frente
 - [ ] No perfil PC (Edge), L2/R2 mudam o volume (Ctrl+Alt+↓/↑)
 
+## Som (equalizador)
+Precisa do Equalizer APO instalado, com a saída de som marcada no Configurator.
+- [ ] "Saída de som ▾" mostra a saída em uso; X abre a lista curta (sem Hands-Free, Steam e Voicemeeter) com a borda na saída em uso; ○ fecha
+- [ ] Escolher outra saída: o som muda na hora e ela ganha "★ preferida"; "Mostrar todas" mostra as escondidas
+- [ ] Com a preferida (ex.: caixinha Bluetooth) ligada e o Windows em outra saída: abrir o Laaazy volta o som para a preferida
+- [ ] Com a preferida desligada: abrir o Laaazy não mexe na saída
+- [ ] Sem o APO: Configurações → Som mostra o aviso e o botão "Instalar o Equalizer APO"; mexer não dá erro
+- [ ] Instalar pelo botão: baixa (~12 MB), o Windows pede o Sim; depois abre a janela do APO para marcar a saída de som; no fim o botão some e o Som funciona (talvez depois de reiniciar)
+- [ ] Instalar e dizer **Não** no aviso do Windows: "Instalação cancelada... Nada foi instalado."
+- [ ] Instalar sem internet: "Não consegui baixar o Equalizer APO: ..."
+- [ ] Depois de desinstalar o APO (o desinstalador deixa restos no registro e na pasta config): o botão "Instalar o Equalizer APO" volta a aparecer
+- [ ] Com o APO recém-instalado: o `config.txt` fica só com `Include: laaazy.txt` (o padrão do APO tinha −6 dB e o example.txt), e aparece `laaazy.txt` na pasta config
+- [ ] `config.txt` mexido à mão antes: o Laaazy só acrescenta `Include: laaazy.txt` no fim (o resto igual)
+- [ ] Preset Geral: som igual ao original (comparar com o Equalizador desligado)
+- [ ] Bass Boost em 10: o grave aumenta na hora (música no YouTube, por exemplo)
+- [ ] X no Bass Boost, no Clarity e no Volume extra: aparece a borda amarela e fica nela (o mesmo X não sai do ajuste); ←/→ mudam o valor; X de novo ou O saem
+- [ ] X numa banda, segurar ↑: sobe até +12 e para; X ou O saem do ajuste; ←/→ voltam a andar entre as bandas
+- [ ] Volume Boost (Volume extra +6 dB): com o volume do Windows em 100%, o som fica mais alto; em +12 dB, ouvir se distorce nas partes altas e anotar
+- [ ] Equalizador desligado: o som volta ao original
+- [ ] Fechar e abrir o Laaazy: o ajuste continua (e o `laaazy.txt` é regravado)
+- [ ] Se aparecer "Não consegui gravar na pasta do Equalizer APO: arquivo em uso ou sem permissão (CÓDIGO)": anotar o código e o que estava fazendo (o Laaazy já tenta de novo algumas vezes antes de avisar)
+
+## Novidades da versão
+- [ ] Depois de atualizar (pnpm release → instalar a versão nova): ao abrir, aparece "Novidades da versão X" com a mascote e os títulos do CHANGELOG
+- [ ] A borda já está em "Continuar (6)", que conta até 0; antes disso ✕ e ○ não fecham; depois fecham e a borda volta para onde estava
+- [ ] Destaques e avatares (no rodapé) cabem sem rolar numa TV 1080p
+- [ ] Abrir de novo a mesma versão: a janela não aparece
+- [ ] Instalação nova (sem perfil): não aparece; depois das boas-vindas, abrir de novo também não
+
 ## Novos episódios
 - [ ] Com uma série em exibição na Minha lista, aparece a fileira "Novos episódios" com o aviso (episódio novo / data do próximo)
 - [ ] Séries sem episódio recente ou próximo não aparecem nessa fileira
@@ -176,7 +205,8 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Ao abrir, o foco já está no primeiro filme/série; as fileiras de títulos vêm logo abaixo do destaque
 - [ ] A prévia ocupa quase metade da largura (em 1080p, ~833×469) e a primeira fileira aparece inteira
 - [ ] Parado num título ~1s, o trailer toca sem som no quadro do destaque; passar para o próximo troca a prévia
-- [ ] Se aparecer erro do YouTube no quadro (ex.: 153), me avise e desligue em Configurações → Prévia do trailer
+- [ ] A tela de erro do YouTube ("Vídeo indisponível", erro 153) nunca aparece no quadro: o player só surge quando o vídeo toca
+- [ ] Trailer que o YouTube recusa: em ~10 s passa para o próximo; sem nenhum que toque, fica a capa e "O YouTube não liberou o trailer agora"
 - [ ] "Trailer com som" abre o trailer completo no Edge
 - [ ] X três ou mais vezes num título: abre uma janela só do streaming; o PS fecha ela e volta ao Início
 - [ ] △ num título: aparece no destaque "Procurando títulos parecidos..."; em poucos segundos a fileira "Parecido com" surge e o foco vai para ela

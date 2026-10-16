@@ -75,6 +75,30 @@ describe('settings', () => {
     expect(s.set('geminiModel', '../../x')).toBe(false)
     expect(s.set('geminiModel', 'Gemini 3.8 Flash')).toBe(false)
   })
+  // Novidades da versão (pedido do Bruno 2026-10-14): a última versão cujas novidades a pessoa viu
+  it('lastSeenVersion: padrão nenhuma; só versão X.Y.Z', () => {
+    const { s } = make()
+    expect(s.get('lastSeenVersion')).toBe(null)
+    expect(s.set('lastSeenVersion', '3.6.6')).toBe(true)
+    for (const v of ['3.6', 'v3.6.6', '3.6.6; rm', 366]) expect(s.set('lastSeenVersion', v), String(v)).toBe(false)
+  })
+  // Saída de som preferida (Configurações → Som, pedido do Bruno 2026-10-14)
+  it('audioOutput: padrão nenhuma; só { id, name } em texto', () => {
+    const { s } = make()
+    expect(s.get('audioOutput')).toBe(null)
+    expect(s.set('audioOutput', { id: '{0.0.0.00000000}.{aaa}', name: 'Fones de ouvido (XDG-342)' })).toBe(true)
+    expect(s.set('audioOutput', null)).toBe(true)
+    expect(s.set('audioOutput', 'XDG')).toBe(false)
+    expect(s.set('audioOutput', { id: 'x', name: 'y', cmd: 'z' })).toBe(false)
+  })
+  // Equalizador (Configurações → Som, pedido do Bruno 2026-10-14)
+  it('equalizer: padrão ligado e plano; só estados válidos', () => {
+    const { s } = make()
+    expect(s.get('equalizer')).toEqual({ on: true, preset: 'geral', bands: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], bass: 0, clarity: 0, volume: 0 })
+    expect(s.set('equalizer', { on: false, preset: 'jogos', bands: [2, 1, -1, 0, 0, 1, 3, 3, 2, 1], bass: 2, clarity: 3, volume: 0 })).toBe(true)
+    expect(s.set('equalizer', { on: true, preset: 'geral', bands: [99, 0, 0, 0, 0, 0, 0, 0, 0, 0], bass: 0, clarity: 0 })).toBe(false)
+    expect(s.set('equalizer', 'alto')).toBe(false)
+  })
   it('psClosesApp: padrão fechar o jogo; só sim/não', () => {
     const { s } = make()
     expect(s.get('psClosesApp')).toBe(true)

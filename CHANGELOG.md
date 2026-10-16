@@ -20,6 +20,51 @@
 - **"min 10" nas Configurações:** o valor das linhas era desenhado de trás para frente, e "10 min"
   aparecia como "min 10". Agora aparece na ordem certa.
 
+## 3.6.6 — 2026-10-14
+
+### Destaques
+- Configurações: Som
+- Ajustes no player do YouTube
+- Correções de bugs
+- Novos avatares :D
+
+### Novo
+- **Novos avatares (do Bruno):** cinco fotos de perfil novas com a turma do Laaazy, para escolher nas
+  boas-vindas ou em Configurações → Perfil.
+- **Equalizador do Windows (Configurações → Som, pedido do Bruno):** presets (Geral, Música,
+  Filmes, Jogos, Voz, Bass Boost e Volume Boost), 10 bandas de 62 Hz a 13 kHz num gráfico, Bass Boost e Clarity. X numa banda
+  entra no ajuste: ↑/↓ mudam o ganho (←/→ no Bass Boost e no Clarity), X ou O terminam. Vale para o
+  som do Windows inteiro, pelo Equalizer APO (grátis, instalado à parte): o Laaazy grava o próprio
+  arquivo e só acrescenta uma linha `Include` no `config.txt`, sem apagar o que já estava lá. Se o
+  `config.txt` ainda for o que o instalador do APO cria (−6 dB e um reforço de grave de exemplo), ele
+  fica só com a linha do Laaazy, para o "Geral" ser o som original. Sem o APO, o ajuste fica
+  guardado até lá.
+- **Volume extra (pedido do Bruno):** para quando o volume do Windows já está em 100% e ainda está
+  baixo. Vai de 0 a +12 dB (←/→, como o Bass Boost); o preset Volume Boost usa +6 dB. Acima de
+  +6 dB a tela avisa que as partes mais altas podem distorcer (um limitador VST fica para outra
+  versão). Ajustes salvos antes continuam valendo, com volume extra 0.
+- **Novidades da versão (pedido do Bruno):** depois que o Laaazy se atualiza, ao abrir aparece uma
+  janela grande com a mascote, os destaques da versão (a parte "Destaques" deste CHANGELOG) e os
+  avatares no rodapé. "Continuar" libera depois de 6 segundos (o botão conta); aí ✕ ou ○ fecham, e ela
+  só volta na próxima atualização. Na primeira instalação não aparece (são as boas-vindas).
+- **Saída de som preferida (pedido do Bruno):** em Configurações → Som, "Saída de som ▾" abre uma lista
+  curta (sem o modo telefone do Bluetooth, a Steam e as saídas virtuais; "Mostrar todas" no fim).
+  Escolher uma saída manda o som do Windows para ela e a guarda como preferida: ao abrir, se ela
+  estiver conectada (a caixinha Bluetooth, por exemplo), o Laaazy volta o som para ela. Cada pessoa
+  escolhe a sua. O Windows não tem forma oficial de trocar a saída padrão; o Laaazy usa a mesma
+  interface interna que o SoundSwitch e o EarTrumpet.
+- **Instalar o Equalizer APO pelo Laaazy:** sem o APO, a categoria Som mostra "Instalar o Equalizer
+  APO". O Laaazy baixa a versão 1.4.2 do SourceForge oficial, confere a impressão digital (SHA-256)
+  e só então instala sem janelas. Dois passos o Windows não deixa fazer pelo controle: o **Sim** do
+  aviso de administrador e marcar a saída de som na janela do Equalizer APO (mouse ou teclado).
+
+### Corrigido
+- **"Vídeo indisponível" na prévia do Início (achado pelo Bruno):** quando o YouTube recusa o
+  vídeo ele nem sempre avisa o Laaazy, e a prévia aparecia depois de 3 s de qualquer jeito, mostrando a
+  tela de erro do YouTube. Agora o player só aparece quando o vídeo começa a tocar; se não começar em
+  10 s, o Laaazy tenta o próximo trailer e, sem mais nenhum, fica a capa do título com "O YouTube não
+  liberou o trailer agora. Aperte de novo para assistir."
+
 ## 3.6.5 — 2026-10-10
 
 ### Mudou

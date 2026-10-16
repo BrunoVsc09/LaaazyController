@@ -38,6 +38,9 @@ function make() {
     ytTrailers: { status: vi.fn(async () => ({ configured: false, left: 90 })), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })) },
     assistant: { status: vi.fn(async () => ({})), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })), similarMood: vi.fn(async () => ({ ok: true, items: [] })) },
     volume: { step: vi.fn(() => true) },
+    releaseNotes: { pending: vi.fn(async () => null), seen: vi.fn(async () => undefined) },
+    audioOutputs: { outputs: vi.fn(async () => ({ ok: true, items: [], hidden: 0 })), choose: vi.fn(async () => ({ ok: true, msg: '' })) },
+    equalizer: { status: vi.fn(async () => ({ installed: true })), set: vi.fn(async () => ({ ok: true })), install: vi.fn(async () => ({ ok: true, msg: '' })) },
     covers: { status: vi.fn(() => ({ configured: false })), setKey: vi.fn(async () => ({ ok: true })), clearKey: vi.fn(async () => ({ ok: true })) },
     power: { run: vi.fn(async () => ({ ok: true })), openAtLogin: vi.fn(() => false), setOpenAtLogin: vi.fn() },
   }
@@ -262,5 +265,41 @@ describe('registerIpc', () => {
     const { invoke, h } = make()
     await invoke(C.GAMES_LIST, { fresh: 1, outra: 'x' })
     expect(h.library.list).toHaveBeenCalledWith({ fresh: true })
+  })
+  // Equalizador (Configurações → Som)
+  it('equalizador: status sem argumentos; ajuste só objeto simples, com os campos conhecidos copiados', async () => {
+    const { invoke, h } = make()
+    expect(await invoke(C.EQ_STATUS, 'qualquer')).toEqual({ installed: true })
+    expect(h.equalizer.status).toHaveBeenCalledWith()
+    for (const bad of ['alto', null, [1, 2]]) expect(await invoke(C.EQ_SET, bad)).toEqual({ ok: false, msg: 'Ajuste inválido.' })
+    expect(h.equalizer.set).not.toHaveBeenCalled()
+    const bands = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    await invoke(C.EQ_SET, { on: true, preset: 'geral', bands, bass: 2, clarity: 3, volume: 4, extra: 'x' })
+    const sent = h.equalizer.set.mock.calls[0][0]
+    expect(sent).toEqual({ on: true, preset: 'geral', bands, bass: 2, clarity: 3, volume: 4 })
+    expect(sent.bands).not.toBe(bands) // cópia: a tela não mexe no que o serviço guardou
+  })
+  it('novidades: a tela só pergunta e avisa que viu (sem argumentos)', async () => {
+    const { invoke, h } = make()
+    await invoke(C.NOTES_PENDING, 'x')
+    expect(h.releaseNotes.pending).toHaveBeenCalledWith()
+    await invoke(C.NOTES_SEEN, '9.9.9')
+    expect(h.releaseNotes.seen).toHaveBeenCalledWith()
+  })
+  it('saídas de som: lista com "mostrar todas" só verdadeiro/falso; trocar só com id em texto', async () => {
+    const { invoke, h } = make()
+    await invoke(C.AUDIO_OUTPUTS, { all: 1, outra: 'x' })
+    expect(h.audioOutputs.outputs).toHaveBeenLastCalledWith({ all: true })
+    await invoke(C.AUDIO_OUTPUTS)
+    expect(h.audioOutputs.outputs).toHaveBeenLastCalledWith({ all: false })
+    for (const bad of [null, 42, { id: 'x' }]) expect(await invoke(C.AUDIO_SET_OUTPUT, bad)).toEqual({ ok: false, msg: 'Saída inválida.' })
+    expect(h.audioOutputs.choose).not.toHaveBeenCalled()
+    await invoke(C.AUDIO_SET_OUTPUT, '{0.0.0.00000000}.{aaa}')
+    expect(h.audioOutputs.choose).toHaveBeenCalledWith('{0.0.0.00000000}.{aaa}')
+  })
+  it('instalar o Equalizer APO: a tela não escolhe nada (versão, endereço e hash ficam no core)', async () => {
+    const { invoke, h } = make()
+    await invoke(C.EQ_INSTALL, 'https://outro-site/virus.exe')
+    expect(h.equalizer.install).toHaveBeenCalledWith()
   })
 })

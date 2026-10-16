@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import './themes.css'
 import './welcome.css'
+import './equalizer.css'
+import './release-notes.css'
 
 export const metadata: Metadata = {
   title: 'Laaazy',

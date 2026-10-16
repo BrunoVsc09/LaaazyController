@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { trailerEmbedUrl, homeSections, playerEvent, playerCommand, nextTitleId, YT_ORIGIN, titlePress, titleFocus, previewStep, startPress } from './trailer'
+import { trailerEmbedUrl, homeSections, playerEvent, playerCommand, nextTitleId, YT_ORIGIN, titlePress, titleFocus, previewStep, startPress, skipTrailer, TRAILER_START_MS, TRAILER_GAVE_UP } from './trailer'
 
 describe('trailerEmbedUrl', () => {
   it('player do YouTube sem controles, aceitando comandos e avisando quando acaba (sem repetir)', () => {
@@ -27,7 +27,17 @@ describe('conversa com o player do YouTube', () => {
   it('reconhece o fim do vídeo (dos dois jeitos que o player avisa)', () => {
     expect(playerEvent(YT_ORIGIN, JSON.stringify({ event: 'onStateChange', info: 0 }))).toBe('ended')
     expect(playerEvent(YT_ORIGIN, JSON.stringify({ event: 'infoDelivery', info: { playerState: 0 } }))).toBe('ended')
-    expect(playerEvent(YT_ORIGIN, JSON.stringify({ event: 'onStateChange', info: 1 }))).toBeNull()
+  })
+  // "Vídeo indisponível" na prévia (achado pelo Bruno, 2026-10-14): o YouTube recusou o vídeo sem mandar
+  // onError (o player fica em -1/3 e nunca toca) e a prévia aparecia por tempo, mostrando a tela de erro.
+  // Agora a prévia só aparece quando o vídeo começa a tocar
+  it('começou a tocar (estado 1): "playing"', () => {
+    expect(playerEvent(YT_ORIGIN, JSON.stringify({ event: 'onStateChange', info: 1 }))).toBe('playing')
+    expect(playerEvent(YT_ORIGIN, JSON.stringify({ event: 'infoDelivery', info: { playerState: 1 } }))).toBe('playing')
+  })
+  it('carregando ou não iniciado (estados 3 e -1) não conta como tocando', () => {
+    for (const st of [-1, 3, 5]) expect(playerEvent(YT_ORIGIN, JSON.stringify({ event: 'infoDelivery', info: { playerState: st } }))).toBeNull()
+    expect(playerEvent(YT_ORIGIN, JSON.stringify({ event: 'onStateChange', info: 3 }))).toBeNull()
   })
   it('vídeo que não pode tocar (removido, bloqueado fora do YouTube): erro, para tentar o próximo', () => {
     for (const code of [2, 5, 100, 101, 150]) expect(playerEvent(YT_ORIGIN, JSON.stringify({ event: 'onError', info: code }))).toBe('error')
@@ -112,5 +122,23 @@ describe('startPress: Start pausa e continua a prévia', () => {
   })
   it('sem prévia tocando: nada', () => {
     expect(startPress({ playing: false, paused: false })).toEqual({ paused: false, command: null })
+  })
+})
+
+describe('skipTrailer: trailer que não tocou (erro ou demora)', () => {
+  it('espera até 10 s o vídeo começar; depois desiste dele (o YouTube nem sempre avisa o erro)', () => {
+    expect(TRAILER_START_MS).toBe(10000)
+  })
+  it('tenta o próximo trailer da lista', () => {
+    expect(skipTrailer(3, 0)).toEqual({ index: 1, giveUp: false })
+    expect(skipTrailer(3, 1)).toEqual({ index: 2, giveUp: false })
+  })
+  it('acabaram os trailers: desiste, a prévia volta para a capa', () => {
+    expect(skipTrailer(3, 2)).toEqual({ index: 3, giveUp: true })
+    expect(skipTrailer(0, 0)).toEqual({ index: 1, giveUp: true })
+  })
+  it('aviso quando desiste: diz o que fazer, sem culpar o usuário', () => {
+    expect(TRAILER_GAVE_UP).toMatch(/YouTube/)
+    expect(TRAILER_GAVE_UP).toMatch(/[Aa]perte de novo para assistir/)
   })
 })

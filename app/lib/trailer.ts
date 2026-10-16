@@ -16,18 +16,31 @@ export function trailerEmbedUrl(key: string | null | undefined, { sound = false,
   return `${YT_ORIGIN}/embed/${key}?${q}`
 }
 
-// Mensagem do player → 'ended' quando o vídeo acabou (estado 0); 'error' quando o vídeo não
-// pode tocar (removido, privado, bloqueado fora do YouTube); o resto não interessa
-export function playerEvent(origin: string, data: unknown): 'ended' | 'error' | null {
+// Mensagem do player → 'playing' quando o vídeo começou a tocar (estado 1: só aí a prévia aparece);
+// 'ended' quando acabou (estado 0); 'error' quando não pode tocar (removido, privado, bloqueado
+// fora do YouTube); o resto (carregando, não iniciado) não interessa
+export function playerEvent(origin: string, data: unknown): 'playing' | 'ended' | 'error' | null {
   if (origin !== YT_ORIGIN) return null
   let msg: { event?: string; info?: unknown } | null = null
   try { msg = typeof data === 'string' ? JSON.parse(data) : (data as typeof msg) } catch { return null }
   if (!msg || typeof msg !== 'object') return null
   if (msg.event === 'onError') return 'error'
-  if (msg.event === 'onStateChange' && msg.info === 0) return 'ended'
-  const info = msg.info as { playerState?: number } | undefined
-  if (msg.event === 'infoDelivery' && info && info.playerState === 0) return 'ended'
+  const state = msg.event === 'onStateChange' ? msg.info
+    : msg.event === 'infoDelivery' ? (msg.info as { playerState?: number } | undefined)?.playerState : undefined
+  if (state === 1) return 'playing'
+  if (state === 0) return 'ended'
   return null
+}
+
+// O YouTube às vezes recusa o vídeo sem mandar onError (fica em "não iniciado" e mostra "Vídeo
+// indisponível"): sem começar a tocar nesse tempo, conta como erro
+export const TRAILER_START_MS = 10000
+export const TRAILER_GAVE_UP = 'O YouTube não liberou o trailer agora. Aperte de novo para assistir.'
+
+// Trailer que não tocou (erro ou demora): o próximo da lista; sem mais, desiste e fica a capa
+export function skipTrailer(count: number, index: number): { index: number; giveUp: boolean } {
+  const next = index + 1
+  return { index: next, giveUp: next >= count }
 }
 
 // 'listening' faz o player começar a mandar eventos; o resto são comandos (mute, unMute...)
