@@ -7,8 +7,11 @@
 - Controle parado desliga sozinho
 - PC sem uso desliga sozinho (e o Windows não suspende antes)
 - Correções de bugs
+- Imagem nova de perfil
 
 ### Novo
+- **Imagem nova de perfil (do Bruno):** um avatar novo para escolher nas boas-vindas ou em
+  Configurações → Perfil.
 - **Bateria do controle no topo (pedido do Bruno):** ao lado do relógio aparece a bateria do
   controle (com um raio quando está carregando). Aos 20% e de novo aos 10% o Laaazy avisa: numa
   faixa na tela, ou numa notificação do Windows quando um jogo ou o Edge está na frente.
