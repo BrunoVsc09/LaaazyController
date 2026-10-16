@@ -29,7 +29,8 @@ export type Settings = {
   screensaverMinutes?: number
   padIdleMinutes?: number // controle parado desliga (0 = nunca)
   idleShutdownHours?: number // PC sem uso desliga (0 = nunca)
-  subtitleSize?: string // legenda nos serviços do Edge: site | normal | grande | enorme
+  subtitleSize?: string // legenda nos serviços do Edge: site | normal | grande | enorme | gigante
+  siteScale?: number // tamanho dos sites no Edge (%): 100 | 125 | 150 | 175 | 200
   geminiModel?: string
   equalizer?: EqState
 }

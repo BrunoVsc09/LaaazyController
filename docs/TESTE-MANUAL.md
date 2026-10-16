@@ -38,7 +38,8 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Trocar o modo de um serviço para "Edge" abre no Edge em tela cheia (Alt+F4 fecha)
 
 ## Legenda grande no Edge
-- [ ] Configurações → Streaming → "Tamanho da legenda (Edge)" cicla Do site / Normal / Grande / Enorme (padrão Grande)
+- [ ] Configurações → Streaming → "Tamanho da legenda (Edge)" cicla Do site / Normal / Grande / Enorme / Gigante (padrão Grande)
+- [ ] "Tamanho dos sites (Edge)" cicla Do site / 125% / 150% / 175% / 200% (padrão Do site); com 175%, títulos e menus do serviço bem maiores e o site sem quebrar
 - [ ] Com Grande: legenda bem maior e com contorno na Netflix, Prime Video, HBO Max e YouTube (fechar o serviço antes, para o Edge abrir de novo)
 - [ ] Com Do site: a legenda volta ao tamanho de cada site
 - [ ] O Edge abre sem pedir para instalar nada e sem aviso de extensão (se aparecer aviso, anotar qual)

@@ -4,7 +4,7 @@ const streaming = require('../../shared/streaming')
 const THEMES = require('../../shared/themes')
 const { PAD_IDLE_MINUTES } = require('../core/pad-status')
 const { IDLE_HOURS } = require('../core/idle-shutdown')
-const { SUBTITLE_SIZES, DEFAULT_SUBTITLE_SIZE } = require('../../shared/tv-style')
+const { SUBTITLE_SIZES, DEFAULT_SUBTITLE_SIZE, SITE_SCALES, DEFAULT_SITE_SCALE } = require('../../shared/tv-style')
 const equalizer = require('../core/equalizer')
 const audioOutputs = require('../core/audio-outputs')
 
@@ -29,6 +29,7 @@ const RULES = {
   padIdleMinutes: (v) => PAD_IDLE_MINUTES.includes(v),
   idleShutdownHours: (v) => IDLE_HOURS.includes(v),
   subtitleSize: (v) => SUBTITLE_SIZES.some((s) => s.id === v),
+  siteScale: (v) => SITE_SCALES.includes(v),
   geminiModel: (v) => isText(v) && /^[a-z0-9][a-z0-9.-]{0,60}$/.test(v),
   equalizer: equalizer.validState,
   audioOutput: audioOutputs.validPreferred,
@@ -36,7 +37,7 @@ const RULES = {
   pinnedApps: (v) => Array.isArray(v) && v.length <= 30 && v.every((x) => isText(x) && x.length > 0 && x.length <= 40),
 }
 
-const DEFAULTS = { theme: 'azul', psClosesApp: true, trailerPreview: true, trailerSound: false, lockCursor: true, edgeNoGpu: ['Crunchyroll'], librarySort: 'asc', streamModes: {}, screensaverMinutes: 10, padIdleMinutes: 10, idleShutdownHours: 0, subtitleSize: DEFAULT_SUBTITLE_SIZE, geminiModel: 'gemini-3.8-flash', equalizer: equalizer.FLAT, audioOutput: null, lastSeenVersion: null }
+const DEFAULTS = { theme: 'azul', psClosesApp: true, trailerPreview: true, trailerSound: false, lockCursor: true, edgeNoGpu: ['Crunchyroll'], librarySort: 'asc', streamModes: {}, screensaverMinutes: 10, padIdleMinutes: 10, idleShutdownHours: 0, subtitleSize: DEFAULT_SUBTITLE_SIZE, siteScale: DEFAULT_SITE_SCALE, geminiModel: 'gemini-3.8-flash', equalizer: equalizer.FLAT, audioOutput: null, lastSeenVersion: null }
 
 function createSettings({ read, write }) {
   const all = () => ({ ...DEFAULTS, ...read() })

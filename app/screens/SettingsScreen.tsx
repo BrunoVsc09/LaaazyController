@@ -10,7 +10,7 @@ import ProfileSettings from '../components/ProfileSettings'
 import { nextMinutes } from '../lib/screensaver'
 import { nextPadIdle, padIdleLabel, padIdleMsg } from '../lib/pad-battery'
 import { idleHoursLabel, idleHoursMsg, nextIdleHours } from '../lib/idle-shutdown'
-import { nextSubtitleSize, subtitleLabel, subtitleMsg } from '../lib/tv-style'
+import { nextSiteScale, nextSubtitleSize, siteScaleLabel, siteScaleMsg, subtitleLabel, subtitleMsg } from '../lib/tv-style'
 import { SETTINGS_SECTIONS, nextSection, pathStatus, type SectionId } from '../lib/settings-menu'
 import { useGamepad } from '../hooks/useGamepad'
 import { getLazy, type DrmStatus, type StreamMode } from '../lib/lazy-api'
@@ -44,6 +44,7 @@ export default function SettingsScreen({ onBack, onController, sounds }: Props) 
   const [padIdle, setPadIdle] = useState(10)
   const [idleHours, setIdleHours] = useState(0)
   const [subSize, setSubSize] = useState('grande')
+  const [siteScale, setSiteScale] = useState(100)
   const [gridOn, setGridOn] = useState(false)
   const [ytOn, setYtOn] = useState(false)
   const [ytLeft, setYtLeft] = useState(90)
@@ -53,7 +54,7 @@ export default function SettingsScreen({ onBack, onController, sounds }: Props) 
 
   useEffect(() => {
     if (!lazy) return
-    lazy.settings.get().then((s) => { setTheme(themeOf(s.theme)); setModes(s.streamModes); setSaverMin(s.screensaverMinutes ?? 10); setPsCloses(s.psClosesApp !== false); setTrailerOn(s.trailerPreview !== false); setLockOn(s.lockCursor !== false); setNoGpu(s.edgeNoGpu ?? []); setPadIdle(s.padIdleMinutes ?? 10); setIdleHours(s.idleShutdownHours ?? 0); setSubSize(s.subtitleSize ?? 'grande') })
+    lazy.settings.get().then((s) => { setTheme(themeOf(s.theme)); setModes(s.streamModes); setSaverMin(s.screensaverMinutes ?? 10); setPsCloses(s.psClosesApp !== false); setTrailerOn(s.trailerPreview !== false); setLockOn(s.lockCursor !== false); setNoGpu(s.edgeNoGpu ?? []); setPadIdle(s.padIdleMinutes ?? 10); setIdleHours(s.idleShutdownHours ?? 0); setSubSize(s.subtitleSize ?? 'grande'); setSiteScale(s.siteScale ?? 100) })
     Promise.all([lazy.exe.get('edge'), lazy.exe.get('laaazypad')]).then(([edge, laaazypad]) => setPaths({ edge, laaazypad }))
     lazy.drm.status().then(setDrm)
     lazy.catalog.status().then((s) => setTmdbOn(s.configured))
@@ -110,6 +111,12 @@ export default function SettingsScreen({ onBack, onController, sounds }: Props) 
     setSubSize(id)
     lazy?.settings.set('subtitleSize', id)
     setMsg(subtitleMsg(id))
+  }
+  const cycleSiteScale = () => {
+    const v = nextSiteScale(siteScale)
+    setSiteScale(v)
+    lazy?.settings.set('siteScale', v)
+    setMsg(siteScaleMsg(v))
   }
   const cycleSaver = () => {
     const m = nextMinutes(saverMin)
@@ -194,6 +201,7 @@ export default function SettingsScreen({ onBack, onController, sounds }: Props) 
     </>,
     streaming: <>
       {row('Tamanho da legenda (Edge)', subtitleLabel(subSize), cycleSubtitle)}
+      {row('Tamanho dos sites (Edge)', siteScaleLabel(siteScale), cycleSiteScale)}
       <p className="ds4-help">{drm ? drm.msg : 'Verificando o Widevine (DRM)...'} Se um vídeo não tocar dentro do app, troque o serviço para o Edge.</p>
       {streaming.map((s) => {
         const mode = modes[s.label] ?? (s.mode as StreamMode)

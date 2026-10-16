@@ -66,7 +66,15 @@ describe('settings', () => {
     expect(s.get('subtitleSize')).toBe('grande')
     expect(s.set('subtitleSize', 'enorme')).toBe(true)
     expect(s.set('subtitleSize', 'site')).toBe(true)
-    expect(s.set('subtitleSize', 'gigante')).toBe(false)
+    expect(s.set('subtitleSize', 'gigante')).toBe(true)
+    expect(s.set('subtitleSize', 'colossal')).toBe(false)
+  })
+  it('tamanho dos sites no Edge: padrão 100 (Do site); só 100, 125, 150, 175 ou 200', () => {
+    const { s } = make()
+    expect(s.get('siteScale')).toBe(100)
+    expect(s.set('siteScale', 175)).toBe(true)
+    expect(s.set('siteScale', 180)).toBe(false)
+    expect(s.set('siteScale', '175')).toBe(false)
   })
   it('PC sem uso desliga: padrão Nunca (0); só 0, 2, 3, 4 ou 6 horas', () => {
     const { s } = make()

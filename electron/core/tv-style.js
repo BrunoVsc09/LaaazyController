@@ -2,7 +2,7 @@
 // (Manifest V3, sem permissão nenhuma), que o Edge carrega com --load-extension. Sem I/O.
 // Os nomes das classes vêm de cada site e podem mudar sem aviso (o mesmo CSS do
 // docs/tampermonkey/laaazy-tv.user.js, o plano B se um Edge futuro tirar o --load-extension).
-const { SUBTITLE_SIZES } = require('../../shared/tv-style')
+const { SUBTITLE_SIZES, SITE_SCALES } = require('../../shared/tv-style')
 
 const MATCHES = [
   'https://www.netflix.com/*', 'https://www.primevideo.com/*', 'https://*.hbomax.com/*', 'https://play.max.com/*',
@@ -38,4 +38,8 @@ function extensionFiles(sizeId) {
   return { 'manifest.json': JSON.stringify(manifest, null, 2) + '\n', 'tv.css': css(size.vh) }
 }
 
-module.exports = { extensionFiles, MATCHES }
+// Sites maiores: o Edge abre como se a tela fosse maior (títulos, capas e menus crescem juntos e o
+// site se arruma para a "tela menor"). A legenda continua do tamanho escolhido (vh). 100 = nada.
+const siteScaleArgs = (scale) => (SITE_SCALES.includes(scale) && scale !== 100 ? ['--force-device-scale-factor=' + scale / 100] : [])
+
+module.exports = { extensionFiles, siteScaleArgs, MATCHES }

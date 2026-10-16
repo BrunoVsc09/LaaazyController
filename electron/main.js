@@ -292,6 +292,7 @@ const launcher = createLauncher({
   edgeNoGpu: () => settings.get('edgeNoGpu') || [],
   widevine: () => widevineStatus(components.status()),
   tvExtension: () => tvStyle.prepare(),
+  siteScale: () => settings.get('siteScale'),
 })
 
 // Capas do SteamGridDB para jogos da Epic e do PC (chave em secrets.json, cache em covers.json)

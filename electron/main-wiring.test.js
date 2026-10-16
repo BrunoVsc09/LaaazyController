@@ -111,5 +111,6 @@ describe('legenda grande no Edge', () => {
   it('a extensão fica nos dados do Laaazy, no tamanho das Configurações, e o launcher abre o Edge com ela', () => {
     expect(main).toMatch(/createTvStyle\(\{ size: \(\) => settings\.get\('subtitleSize'\), dir: userFile\('edge-ext'\), writeFiles \}\)/)
     expect(main).toMatch(/tvExtension: \(\) => tvStyle\.prepare\(\),/)
+    expect(main).toMatch(/siteScale: \(\) => settings\.get\('siteScale'\),/)
   })
 })

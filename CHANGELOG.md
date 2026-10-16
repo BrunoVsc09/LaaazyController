@@ -6,16 +6,19 @@
 - Bateria do controle no topo, com aviso quando estiver acabando
 - Controle parado desliga sozinho
 - PC sem uso desliga sozinho (e o Windows não suspende antes)
-- Legenda grande nos serviços, para ler de longe
+- Legenda e sites maiores nos serviços, para ler de longe
 - Correções de bugs
 - Imagem nova de perfil
 
 ### Novo
 - **Legenda grande nos serviços (pedido do Bruno):** em Configurações → Streaming, "Tamanho da
-  legenda (Edge)": Do site, Normal, Grande (padrão) ou Enorme. Para ler de longe, até deitado. O
-  Laaazy abre o Edge com uma extensão própria, só de CSS e sem nenhuma permissão: ninguém precisa
-  instalar nada. Vale na Netflix, Prime Video, HBO Max e YouTube; trocar o tamanho vale da próxima
-  vez que o serviço abrir.
+  legenda (Edge)": Do site, Normal, Grande (padrão), Enorme ou Gigante. Para ler de longe, até
+  deitado. O Laaazy abre o Edge com uma extensão própria, só de CSS e sem nenhuma permissão: ninguém
+  precisa instalar nada. Vale na Netflix, Prime Video, HBO Max e YouTube; trocar o tamanho vale da
+  próxima vez que o serviço abrir.
+- **Sites maiores no Edge (pedido do Bruno):** "Tamanho dos sites (Edge)", também em Streaming: Do
+  site (padrão), 125%, 150%, 175% ou 200%. Títulos, capas, menus e o player crescem juntos, como
+  numa TV, e o site se arruma sozinho (cabem menos títulos por fileira). Só no Edge do Laaazy.
 - **Imagem nova de perfil (do Bruno):** um avatar novo para escolher nas boas-vindas ou em
   Configurações → Perfil.
 - **Bateria do controle no topo (pedido do Bruno):** ao lado do relógio aparece a bateria do

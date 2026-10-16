@@ -1,5 +1,6 @@
 // Abre o que os cards pedem: sites (no app ou no Edge), navegadores e programas.
 const { openMode, serviceForUrl } = require('../core/routing')
+const { siteScaleArgs } = require('../core/tv-style')
 
 const BROWSERS = ['chrome', 'firefox']
 const PROGRAMS = ['hydra'] // abrem pelo Windows
@@ -8,6 +9,7 @@ function createLauncher({
   services, locator, ds4, spawnDetached, openPath, openExternal, openStream, setExternalActive, edgeProfileDir,
   streamModes = () => ({}), widevine = () => ({ installed: true }), edgeNoGpu = () => [], now = Date.now,
   tvExtension = async () => null, // pasta da extensão da legenda grande (null = sem)
+  siteScale = () => 100, // tamanho dos sites no Edge (%)
 }) {
   // O Edge leva alguns segundos para aparecer; um X a mais nesse meio-tempo abria outra janela do
   // mesmo serviço. O mesmo endereço pedido de novo dentro desse tempo é ignorado.
@@ -32,7 +34,7 @@ function createLauncher({
     // Legenda grande: extensão do Laaazy só de CSS (se não ficou pronta, abre sem)
     const ext = await tvExtension().catch(() => null)
     const extension = ext ? ['--load-extension=' + ext] : []
-    return spawnDetached(edge, [...profile, ...(noGpu ? ['--disable-gpu'] : []), ...extension, '--no-first-run', '--start-fullscreen', '--app=' + url])
+    return spawnDetached(edge, [...profile, ...(noGpu ? ['--disable-gpu'] : []), ...extension, ...siteScaleArgs(siteScale()), '--no-first-run', '--start-fullscreen', '--app=' + url])
   }
 
   // Devolve '' quando abriu, ou a mensagem para mostrar na tela (e aí pode tentar de novo na hora)

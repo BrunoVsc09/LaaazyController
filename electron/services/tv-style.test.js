@@ -12,7 +12,7 @@ describe('tv-style: extensão da legenda grande (serviço)', () => {
     expect(await s.prepare()).toBe('C:\\data\\edge-ext')
     const [dir, files] = writeFiles.mock.calls[0]
     expect(dir).toBe('C:\\data\\edge-ext')
-    expect(files['tv.css']).toMatch(/7vh/)
+    expect(files['tv.css']).toMatch(/8vh/)
   })
   it('"Do site": não grava nada e o Edge abre sem extensão', async () => {
     const { s, writeFiles } = make('site')

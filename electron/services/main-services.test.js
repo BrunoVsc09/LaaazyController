@@ -143,6 +143,17 @@ describe('launcher', () => {
       '--user-data-dir=C:\\data\\edge-tv', '--load-extension=C:\\data\\edge-ext', '--no-first-run', '--start-fullscreen', '--app=https://www.netflix.com',
     ])
   })
+  it('sites maiores: o Edge abre com a escala escolhida (e a extensão da legenda junto)', async () => {
+    const { deps } = make({ found: { edge: 'C:\\E\\msedge.exe' } })
+    deps.tvExtension = async () => 'C:\\data\\edge-ext'
+    deps.siteScale = () => 175
+    const l = launcherMod.createLauncher(deps)
+    await l.open('https://www.netflix.com', 'Netflix')
+    expect(deps.spawnDetached.mock.calls[0][1]).toEqual([
+      '--user-data-dir=C:\\data\\edge-tv', '--load-extension=C:\\data\\edge-ext', '--force-device-scale-factor=1.75',
+      '--no-first-run', '--start-fullscreen', '--app=https://www.netflix.com',
+    ])
+  })
   it('extensão não ficou pronta (ou "Do site"): o Edge abre normalmente, sem ela', async () => {
     const { deps } = make({ found: { edge: 'C:\\E\\msedge.exe' } })
     deps.tvExtension = async () => { throw new Error('falhou') }
