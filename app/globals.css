@@ -427,3 +427,10 @@ html:has(.lz-home) { scroll-behavior: smooth; }
 @media (max-width: 1400px) and (min-width: 761px) { .ps4-header .ps4-status { font-size: 17px; } }
 .lz-notice { position: fixed; top: 24px; left: 50%; transform: translateX(-50%); z-index: 120; max-width: min(900px, 90vw); padding: 16px 26px; border-radius: 14px; background: rgba(8, 24, 60, .96); color: #fff; font-size: 20px; box-shadow: 0 16px 50px rgba(0,0,0,.5); }
 .lz-notice.urgent { background: rgba(120, 24, 24, .96); }
+/* Janelinha "Aa" do topo: tamanho no Edge, com uma telinha de exemplo em 16:9 (medidas em % da altura dela) */
+.tv-size-menu { left: 50%; right: auto; transform: translateX(-50%); width: min(620px, 92vw); }
+.tv-preview { container-type: size; position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; background: #000 center / cover no-repeat; }
+.tv-preview-row { display: flex; gap: 1.6cqh; padding: 5cqh 4cqh; }
+.tv-preview-card { flex: 1; aspect-ratio: 16 / 9; display: flex; align-items: flex-end; padding: 1cqh; border-radius: 1.2cqh; background: linear-gradient(160deg, #3a6fd8, #1b2a55); }
+.tv-preview-card span { font-size: calc(var(--t) * 1cqh); color: #fff; white-space: nowrap; overflow: hidden; }
+.tv-preview-sub { position: absolute; left: 0; right: 0; bottom: 8cqh; margin: 0; text-align: center; color: #fff; font-size: calc(var(--s) * 1cqh); line-height: 1.2; text-shadow: 0 0 3px #000, 0 0 6px #000, 2px 2px 4px #000; }

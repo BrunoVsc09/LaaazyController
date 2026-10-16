@@ -19,6 +19,8 @@
 - **Sites maiores no Edge (pedido do Bruno):** "Tamanho dos sites (Edge)", também em Streaming: Do
   site (padrão), 125%, 150%, 175% ou 200%. Títulos, capas, menus e o player crescem juntos, como
   numa TV, e o site se arruma sozinho (cabem menos títulos por fileira). Só no Edge do Laaazy.
+- **Atalho "Aa" no topo (pedido do Bruno):** ao lado do ícone do controle, abre o tamanho dos sites e
+  da legenda sem entrar nas Configurações, com uma telinha de exemplo que mostra na hora como fica.
 - **Imagem nova de perfil (do Bruno):** um avatar novo para escolher nas boas-vindas ou em
   Configurações → Perfil.
 - **Bateria do controle no topo (pedido do Bruno):** ao lado do relógio aparece a bateria do

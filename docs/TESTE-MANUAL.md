@@ -42,6 +42,8 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] "Tamanho dos sites (Edge)" cicla Do site / 125% / 150% / 175% / 200% (padrão Do site); com 175%, títulos e menus do serviço bem maiores e o site sem quebrar
 - [ ] Com Grande: legenda bem maior e com contorno na Netflix, Prime Video, HBO Max e YouTube (fechar o serviço antes, para o Edge abrir de novo)
 - [ ] Com Do site: a legenda volta ao tamanho de cada site
+- [ ] Ícone "Aa" no topo (ao lado do controle) abre "Tamanho no Edge" com a borda na 1ª linha; ✕ muda o tamanho e a telinha de exemplo muda na hora (175% = 3 títulos por fileira, Do site = 6); ○ fecha e a borda volta ao "Aa"
+- [ ] A janelinha fica por cima do destaque do Início (não atrás da imagem)
 - [ ] O Edge abre sem pedir para instalar nada e sem aviso de extensão (se aparecer aviso, anotar qual)
 - [ ] Existe `%APPDATA%\Laaazy\edge-ext` com `manifest.json` e `tv.css`
 
