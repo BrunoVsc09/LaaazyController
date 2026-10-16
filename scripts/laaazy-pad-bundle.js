@@ -6,7 +6,7 @@ const path = require('path')
 const { execFileSync } = require('child_process')
 
 const ROOT = path.join(__dirname, '..')
-const REQUIRED = ['LaaazyPad.exe', 'LaaazyPadCmd.exe', 'SDL3.dll', 'SDL3-LICENSE.txt', 'PerfisPadrao/Jogos.json', 'PerfisPadrao/PC.json']
+const REQUIRED = ['LaaazyPad.exe', 'LaaazyPadCmd.exe', 'SDL3.dll', 'SDL3-LICENSE.txt', 'PerfisPadrao/Jogos.json', 'PerfisPadrao/PC.json', 'PerfisPadrao/TV.json']
 // Profiles ao lado do exe = modo portátil: os perfis ficariam na pasta do Laaazy e a atualização apagaria
 const FORBIDDEN = [/^Profiles\//i, /\.pem$/i, /\.pdb$/i]
 

@@ -28,4 +28,14 @@ function validateChange(key, value, profiles) {
 // O perfil do jogo; sem um próprio, o padrão dos jogos; sem padrão, nenhum
 const gameProfileFor = (cfg, gameId) => cfg[`game:${gameId}`] || cfg.games || ''
 
-module.exports = { KEYS, DEFAULTS, mergeConfig, validateChange, gameProfileFor, profileMissing }
+// YouTube com a tela de TV: navega com setas, OK e Voltar, então o perfil TV no lugar do PC (o padrão
+// antigo). Quem escolheu outro perfil para o YouTube continua com ele
+function cardProfile(cfg, key, { youtubeTv = false } = {}) {
+  const name = cfg[key]
+  return key === 'YouTube' && youtubeTv && name === 'PC' ? 'TV' : name
+}
+
+// Laaazy-pad antigo, sem o perfil TV: usa o PC (o controle continua funcionando, como mouse)
+const availableProfile = (name, profiles) => (name === 'TV' && !profiles.includes('TV') ? 'PC' : name)
+
+module.exports = { KEYS, DEFAULTS, mergeConfig, validateChange, gameProfileFor, profileMissing, cardProfile, availableProfile }

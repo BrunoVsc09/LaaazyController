@@ -114,3 +114,10 @@ describe('legenda grande no Edge', () => {
     expect(main).toMatch(/siteScale: \(\) => settings\.get\('siteScale'\),/)
   })
 })
+
+// Perfil TV (pedido do Bruno, 2026-10-16): com a tela de TV, o YouTube usa o perfil TV do Laaazy-pad
+describe('YouTube com a tela de TV usa o perfil TV', () => {
+  it('os perfis do controle sabem se a tela de TV está ligada', () => {
+    expect(main).toMatch(/youtubeTv: \(\) => settings\.get\('youtubeTv'\), \/\/ YouTube com a tela de TV usa o perfil TV/)
+  })
+})

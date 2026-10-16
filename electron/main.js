@@ -158,6 +158,7 @@ const ds4 = createDs4({
   writeCfg: (cfg) => store.writeJson(userFile('ds4-profiles.json'), cfg),
   sleep,
   readyDelayMs: 300, // o Laaazy-pad aceita comandos ~300 ms depois de abrir (medido)
+  youtubeTv: () => settings.get('youtubeTv'), // YouTube com a tela de TV usa o perfil TV
 })
 
 // Perfil de quem usa o Laaazy (boas-vindas): nome, foto (autoral em out/avatars ou a do PC) e boas-vindas

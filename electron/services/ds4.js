@@ -2,14 +2,15 @@
 // Tudo passa por uma fila: duas trocas nunca rodam ao mesmo tempo.
 // (O nome "ds4" ficou do tempo do DS4Windows; renomear é outra refatoração.)
 const { createQueue } = require('../core/queue')
-const { mergeConfig, validateChange, gameProfileFor, profileMissing } = require('../core/ds4-config')
+const { mergeConfig, validateChange, gameProfileFor, profileMissing, cardProfile, availableProfile } = require('../core/ds4-config')
 const pad = require('../core/pad-profile')
 
 const NOT_FOUND = 'Não achei o Laaazy-pad. Escolha a pasta dele em Configurações.'
 const HINT = 'Se nada mudou, veja se o controle está conectado e se o Laaazy-pad está aberto.'
 
 // readyDelayMs: quanto esperar depois de abrir até o programa aceitar comandos
-function createDs4({ cli, getExe, readCfg, writeCfg, sleep, readyDelayMs = 300 }) {
+// youtubeTv(): o YouTube abre com a tela de TV (aí ele usa o perfil TV)
+function createDs4({ cli, getExe, readCfg, writeCfg, sleep, readyDelayMs = 300, youtubeTv = () => false }) {
   const queue = createQueue({ timeoutMs: 20000, onTimeout: () => ({ ok: false, msg: 'A troca demorou demais e foi cancelada.' }) })
   const config = async () => mergeConfig(await readCfg())
 
@@ -20,11 +21,12 @@ function createDs4({ cli, getExe, readCfg, writeCfg, sleep, readyDelayMs = 300 }
     return err
   }
 
-  async function load(name) {
-    if (!name) return { ok: true, msg: 'Sem troca de perfil.' }
+  async function load(wanted) {
+    if (!wanted) return { ok: true, msg: 'Sem troca de perfil.' }
     const exe = await getExe()
     if (!exe) return { ok: false, msg: NOT_FOUND }
     const { profiles } = await cli.listProfiles(exe)
+    const name = availableProfile(wanted, profiles)
     if (!profiles.includes(name)) return { ok: false, msg: profileMissing(name) }
     const startErr = await startIfNeeded(exe)
     if (startErr) return { ok: false, msg: 'Não consegui abrir o Laaazy-pad: ' + startErr }
@@ -37,7 +39,7 @@ function createDs4({ cli, getExe, readCfg, writeCfg, sleep, readyDelayMs = 300 }
   }
 
   const apply = (name) => queue.run(() => load(name))
-  const applyFor = async (key) => apply((await config())[key])
+  const applyFor = async (key) => apply(cardProfile(await config(), key, { youtubeTv: youtubeTv() === true }))
   const applyForGame = async (gameId) => apply(gameProfileFor(await config(), gameId))
 
   async function get() {

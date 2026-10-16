@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import mod from './ds4-config.js'
 
-const { mergeConfig, validateChange, DEFAULTS } = mod
+const { mergeConfig, validateChange, DEFAULTS, cardProfile, availableProfile } = mod
 
 describe('ds4-config', () => {
   // Os perfis agora são os do Laaazy-pad: só Jogos e PC (o "Brunera" do DS4Windows virou Jogos)
@@ -46,5 +46,28 @@ describe('ds4-config', () => {
   // B6: um perfil que não existe era salvo mesmo devolvendo erro
   it('B6: recusa perfil que não existe na pasta', () => {
     expect(validateChange('Netflix', 'Fantasma', ['TV'])).toEqual({ ok: false, msg: 'Perfil "Fantasma" não encontrado na pasta de perfis.' })
+  })
+})
+
+// Perfil TV (pedido do Bruno, 2026-10-16): o YouTube com a tela de TV navega com setas, OK e Voltar
+describe('ds4-config: YouTube com a tela de TV usa o perfil TV', () => {
+  const cfg = mergeConfig({})
+  it('tela de TV ligada: o YouTube no PC (o padrão antigo) vai para o TV', () => {
+    expect(cardProfile(cfg, 'YouTube', { youtubeTv: true })).toBe('TV')
+  })
+  it('tela de TV desligada: continua o PC', () => {
+    expect(cardProfile(cfg, 'YouTube', { youtubeTv: false })).toBe('PC')
+  })
+  it('quem escolheu outro perfil para o YouTube continua com ele', () => {
+    expect(cardProfile(mergeConfig({ YouTube: 'Brunera' }), 'YouTube', { youtubeTv: true })).toBe('Brunera')
+  })
+  it('os outros cards não mudam', () => {
+    expect(cardProfile(cfg, 'Netflix', { youtubeTv: true })).toBe('PC')
+    expect(cardProfile(cfg, 'menu', { youtubeTv: true })).toBe('Jogos')
+  })
+  it('Laaazy-pad antigo, sem o perfil TV: usa o PC', () => {
+    expect(availableProfile('TV', ['Jogos', 'PC'])).toBe('PC')
+    expect(availableProfile('TV', ['Jogos', 'PC', 'TV'])).toBe('TV')
+    expect(availableProfile('Brunera', ['Jogos'])).toBe('Brunera') // os outros seguem como antes (dá o aviso de perfil que falta)
   })
 })

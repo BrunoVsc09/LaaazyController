@@ -3,13 +3,17 @@ import fs from 'node:fs'
 import path from 'node:path'
 import mod from './laaazy-pad-bundle.js'
 
-const GOOD = ['LaaazyPad.exe', 'LaaazyPadCmd.exe', 'SDL3.dll', 'SDL3-LICENSE.txt', 'PerfisPadrao/Jogos.json', 'PerfisPadrao/PC.json', 'LaaazyPad.dll']
+const GOOD = ['LaaazyPad.exe', 'LaaazyPadCmd.exe', 'SDL3.dll', 'SDL3-LICENSE.txt', 'PerfisPadrao/Jogos.json', 'PerfisPadrao/PC.json', 'PerfisPadrao/TV.json', 'LaaazyPad.dll']
 
 // Laaazy-pad junto no instalador (pedido do Bruno, 2026-10-09)
 describe('padProblems: o Laaazy-pad que vai no instalador', () => {
   it('completo: os dois exes, o SDL3 (com a licença) e os perfis padrão', () => {
     expect(mod.padProblems(GOOD)).toEqual([])
     expect(mod.padProblems(GOOD.filter((f) => f !== 'SDL3.dll' && f !== 'PerfisPadrao/PC.json'))).toEqual(['falta SDL3.dll', 'falta PerfisPadrao/PC.json'])
+  })
+  // Perfil TV (2026-10-16): o YouTube com a tela de TV usa ele
+  it('o perfil TV também vai junto', () => {
+    expect(mod.padProblems(GOOD.filter((f) => f !== 'PerfisPadrao/TV.json'))).toEqual(['falta PerfisPadrao/TV.json'])
   })
   it('sem pasta Profiles: com ela o Laaazy-pad guardaria os perfis dentro da pasta do Laaazy e a atualização apagaria', () => {
     expect(mod.padProblems([...GOOD, 'Profiles/Jogos.json'])).toEqual(['sobra Profiles/Jogos.json'])

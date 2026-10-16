@@ -3,7 +3,7 @@ import mod from './ds4.js'
 
 const { createDs4 } = mod
 
-function make({ exe = 'C:/P/LaaazyPad.exe', running = true, profiles = ['Jogos', 'PC', 'TV'], query = (n) => n, saved = {}, readyDelayMs, dir = 'C:/P/Profiles', disk = {} } = {}) {
+function make({ exe = 'C:/P/LaaazyPad.exe', running = true, profiles = ['Jogos', 'PC', 'TV'], query = (n) => n, saved = {}, readyDelayMs, dir = 'C:/P/Profiles', disk = {}, youtubeTv = false } = {}) {
   let cfg = { ...saved }
   const state = { running, current: '' }
   const cli = {
@@ -22,6 +22,7 @@ function make({ exe = 'C:/P/LaaazyPad.exe', running = true, profiles = ['Jogos',
   const ds4 = createDs4({
     cli, getExe: async () => exe, sleep, readyDelayMs,
     readCfg: async () => cfg, writeCfg: vi.fn(async (c) => { cfg = c; return true }),
+    youtubeTv: () => youtubeTv,
   })
   return { ds4, cli, state, sleep, disk, cfg: () => cfg }
 }
@@ -178,5 +179,18 @@ describe('ds4: editor de perfis', () => {
     cli.writeProfile.mockResolvedValueOnce('Não consegui salvar o perfil: disco cheio')
     expect(await ds4.setButton('PC', 'R1', null)).toEqual({ ok: false, msg: 'Não consegui salvar o perfil: disco cheio' })
     expect(disk.PC).toBe(PC)
+  })
+})
+
+describe('ds4: YouTube com a tela de TV', () => {
+  it('abre o YouTube com o perfil TV', async () => {
+    const { ds4, cli } = make({ youtubeTv: true })
+    await ds4.applyFor('YouTube')
+    expect(cli.loadProfile).toHaveBeenLastCalledWith('C:/P/LaaazyPad.exe', 'TV')
+  })
+  it('Laaazy-pad antigo, sem o perfil TV: carrega o PC', async () => {
+    const { ds4, cli } = make({ youtubeTv: true, profiles: ['Jogos', 'PC'] })
+    expect((await ds4.applyFor('YouTube')).ok).toBe(true)
+    expect(cli.loadProfile).toHaveBeenLastCalledWith('C:/P/LaaazyPad.exe', 'PC')
   })
 })
