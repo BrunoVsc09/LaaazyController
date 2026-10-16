@@ -1,5 +1,14 @@
 # Novidades do Laaazy
 
+## Próxima versão (ainda não lançada)
+
+### Novo
+- **Legenda grande nos serviços (pedido do Bruno):** em Configurações → Streaming, "Tamanho da
+  legenda (Edge)": Do site, Normal, Grande (padrão) ou Enorme. Para ler de longe, até deitado. O
+  Laaazy abre o Edge com uma extensão própria, só de CSS e sem nenhuma permissão: ninguém precisa
+  instalar nada. Vale na Netflix, Prime Video, HBO Max e YouTube; trocar o tamanho vale da próxima
+  vez que o serviço abrir.
+
 ## 3.6.7 — 2026-10-16
 
 ### Destaques

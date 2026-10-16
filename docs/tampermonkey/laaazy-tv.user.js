@@ -13,6 +13,8 @@
 // @run-at       document-start
 // ==/UserScript==
 
+// Plano B: o Laaazy já abre o Edge com essa legenda grande sozinho (Configurações → Streaming).
+// Este script só serve se um Edge futuro deixar de aceitar a extensão do Laaazy.
 // Só CSS. Tamanho em vh (porcentagem da altura da tela): 7vh ≈ 75 px em 1080p, letra de ~1,5 cm num
 // monitor de 24" (dá para ler deitado, a ~2 m). Para 24" a 1 m, 5vh basta.
 // Mude aqui e salve (no Tampermonkey: Painel → Laaazy TV → editar).

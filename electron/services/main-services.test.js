@@ -133,6 +133,23 @@ describe('launcher', () => {
     await l.open('https://www.netflix.com', 'Netflix') // os outros continuam com aceleração
     expect(deps.spawnDetached.mock.calls[1][1][0]).toBe('--user-data-dir=C:\\data\\edge-tv')
   })
+  // Legenda grande (pedido do Bruno, 2026-10-16): extensão do Laaazy só de CSS, carregada ao abrir
+  it('com a legenda grande ligada, o Edge abre com a extensão do Laaazy', async () => {
+    const { deps } = make({ found: { edge: 'C:\\E\\msedge.exe' } })
+    deps.tvExtension = async () => 'C:\\data\\edge-ext'
+    const l = launcherMod.createLauncher(deps)
+    await l.open('https://www.netflix.com', 'Netflix')
+    expect(deps.spawnDetached.mock.calls[0][1]).toEqual([
+      '--user-data-dir=C:\\data\\edge-tv', '--load-extension=C:\\data\\edge-ext', '--no-first-run', '--start-fullscreen', '--app=https://www.netflix.com',
+    ])
+  })
+  it('extensão não ficou pronta (ou "Do site"): o Edge abre normalmente, sem ela', async () => {
+    const { deps } = make({ found: { edge: 'C:\\E\\msedge.exe' } })
+    deps.tvExtension = async () => { throw new Error('falhou') }
+    const l = launcherMod.createLauncher(deps)
+    expect(await l.open('https://www.netflix.com', 'Netflix')).toBe('')
+    expect(deps.spawnDetached.mock.calls[0][1].join(' ')).not.toMatch(/load-extension/)
+  })
   it('sem Edge, abre no navegador padrão', async () => {
     const { l, deps } = make()
     await l.open('https://www.crunchyroll.com', 'Crunchyroll')

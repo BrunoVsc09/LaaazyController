@@ -105,3 +105,11 @@ describe('novidades: imagem por versão', () => {
     expect(main).toMatch(/artFiles: \(\) => fs\.promises\.readdir\(path\.join\(OUT, 'novidades'\)\)/)
   })
 })
+
+// Legenda grande no Edge (pedido do Bruno, 2026-10-16): extensão do Laaazy só de CSS
+describe('legenda grande no Edge', () => {
+  it('a extensão fica nos dados do Laaazy, no tamanho das Configurações, e o launcher abre o Edge com ela', () => {
+    expect(main).toMatch(/createTvStyle\(\{ size: \(\) => settings\.get\('subtitleSize'\), dir: userFile\('edge-ext'\), writeFiles \}\)/)
+    expect(main).toMatch(/tvExtension: \(\) => tvStyle\.prepare\(\),/)
+  })
+})

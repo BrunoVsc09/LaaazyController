@@ -49,6 +49,8 @@ const { createGithubReleases, INSTALLER_ARGS } = require('./adapters/github-rele
 const { RELEASE_PUBLIC_KEY } = require('./core/release-key')
 const { createAvatarImage } = require('./adapters/avatar-image')
 const { createLauncher } = require('./services/launcher')
+const { createTvStyle } = require('./services/tv-style')
+const { writeFiles } = require('./adapters/folder-files')
 const { createForeground } = require('./services/foreground')
 const { createReturnWatch } = require('./services/return-watch')
 const { createPsButton } = require('./services/ps-button')
@@ -277,6 +279,8 @@ const myList = createMyList({
 let appProfileKey = 'menu'
 const ds4ForApps = { ...ds4, applyFor: (key) => { appProfileKey = key; return ds4.applyFor(key) } }
 
+// Legenda grande nos serviços do Edge: extensão do Laaazy só de CSS, gravada antes de abrir o Edge
+const tvStyle = createTvStyle({ size: () => settings.get('subtitleSize'), dir: userFile('edge-ext'), writeFiles })
 const launcher = createLauncher({
   services: streaming, locator, ds4: ds4ForApps, spawnDetached,
   openPath: (p) => shell.openPath(p),
@@ -287,6 +291,7 @@ const launcher = createLauncher({
   streamModes: () => settings.get('streamModes'),
   edgeNoGpu: () => settings.get('edgeNoGpu') || [],
   widevine: () => widevineStatus(components.status()),
+  tvExtension: () => tvStyle.prepare(),
 })
 
 // Capas do SteamGridDB para jogos da Epic e do PC (chave em secrets.json, cache em covers.json)

@@ -61,6 +61,13 @@ describe('settings', () => {
     expect(s.set('padIdleMinutes', 0)).toBe(true)
     expect(s.set('padIdleMinutes', 7)).toBe(false)
   })
+  it('tamanho da legenda no Edge: padrão Grande; só Do site, Normal, Grande ou Enorme', () => {
+    const { s } = make()
+    expect(s.get('subtitleSize')).toBe('grande')
+    expect(s.set('subtitleSize', 'enorme')).toBe(true)
+    expect(s.set('subtitleSize', 'site')).toBe(true)
+    expect(s.set('subtitleSize', 'gigante')).toBe(false)
+  })
   it('PC sem uso desliga: padrão Nunca (0); só 0, 2, 3, 4 ou 6 horas', () => {
     const { s } = make()
     expect(s.get('idleShutdownHours')).toBe(0)
