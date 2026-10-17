@@ -434,3 +434,17 @@ html:has(.lz-home) { scroll-behavior: smooth; }
 .tv-preview-card { flex: 1; aspect-ratio: 16 / 9; display: flex; align-items: flex-end; padding: 1cqh; border-radius: 1.2cqh; background: linear-gradient(160deg, #3a6fd8, #1b2a55); }
 .tv-preview-card span { font-size: calc(var(--t) * 1cqh); color: #fff; white-space: nowrap; overflow: hidden; }
 .tv-preview-sub { position: absolute; left: 0; right: 0; bottom: 8cqh; margin: 0; text-align: center; color: #fff; font-size: calc(var(--s) * 1cqh); line-height: 1.2; text-shadow: 0 0 3px #000, 0 0 6px #000, 2px 2px 4px #000; }
+/* Tamanho do Laaazy (Configurações → Aparência ou "Aa"): a página inteira cresce com o zoom (--lz-zoom).
+   As janelas que já ocupam a tela toda ficam como são: ampliadas, passariam da tela */
+:is(.lz-saver, .lz-notes, .osk, .lz-browser) { zoom: calc(1 / var(--lz-zoom, 1)); }
+/* Menus pequenos (Energia, "Aa", menu do jogo...) nunca passam da altura da tela: rolam */
+.power-menu { max-height: calc(100vh / var(--lz-zoom, 1) - 130px); overflow-y: auto; }
+/* Miniatura do Início na janelinha "Aa" (medidas em % da altura dela, como a tela de verdade) */
+.home-preview .home-preview-top { display: flex; align-items: center; gap: calc(var(--h) * .25cqh); height: calc(var(--h) * 1cqh); padding: 0 4cqh; font-size: calc(var(--h) * .22cqh); color: #fff; }
+.home-preview-avatar { width: calc(var(--h) * .5cqh); height: calc(var(--h) * .5cqh); border-radius: 50%; background: #ffd23f; }
+.home-preview-clock { margin-left: auto; }
+.home-preview-hero { display: flex; flex-direction: column; gap: 1cqh; padding: 4cqh 4cqh 0; color: #fff; }
+.home-preview-hero b { font-size: calc(var(--t) * 1cqh); line-height: 1.1; }
+.home-preview-hero span { font-size: calc(var(--x) * 1cqh); opacity: .85; }
+.home-preview-hero i { align-self: flex-start; font-style: normal; font-weight: 700; font-size: calc(var(--x) * 1cqh); padding: calc(var(--x) * .4cqh) calc(var(--x) * .9cqh); border-radius: calc(var(--x) * .4cqh); background: #ffd23f; color: #111; }
+.home-preview .tv-preview-row { position: absolute; left: 0; right: 0; bottom: 4cqh; padding: 0 4cqh; }

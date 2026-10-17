@@ -8,6 +8,8 @@ import EqualizerPanel from '../components/EqualizerPanel'
 import OutputPicker from '../components/OutputPicker'
 import ProfileSettings from '../components/ProfileSettings'
 import { nextMinutes } from '../lib/screensaver'
+import { nextScreenScale, screenScaleLabel, screenScaleMsg } from '../lib/screen-scale'
+import { setScreenScale } from '../hooks/useScreenScale'
 import { nextPadIdle, padIdleLabel, padIdleMsg } from '../lib/pad-battery'
 import { idleHoursLabel, idleHoursMsg, nextIdleHours } from '../lib/idle-shutdown'
 import { nextSiteScale, nextSubtitleSize, siteScaleLabel, siteScaleMsg, subtitleLabel, subtitleMsg, youtubeTvMsg } from '../lib/tv-style'
@@ -46,6 +48,7 @@ export default function SettingsScreen({ onBack, onController, sounds }: Props) 
   const [subSize, setSubSize] = useState('grande')
   const [siteScale, setSiteScale] = useState(100)
   const [ytTv, setYtTv] = useState(true)
+  const [scale, setScale] = useState(100)
   const [gridOn, setGridOn] = useState(false)
   const [ytOn, setYtOn] = useState(false)
   const [ytLeft, setYtLeft] = useState(90)
@@ -55,7 +58,7 @@ export default function SettingsScreen({ onBack, onController, sounds }: Props) 
 
   useEffect(() => {
     if (!lazy) return
-    lazy.settings.get().then((s) => { setTheme(themeOf(s.theme)); setModes(s.streamModes); setSaverMin(s.screensaverMinutes ?? 10); setPsCloses(s.psClosesApp !== false); setTrailerOn(s.trailerPreview !== false); setLockOn(s.lockCursor !== false); setNoGpu(s.edgeNoGpu ?? []); setPadIdle(s.padIdleMinutes ?? 10); setIdleHours(s.idleShutdownHours ?? 0); setSubSize(s.subtitleSize ?? 'grande'); setSiteScale(s.siteScale ?? 100); setYtTv(s.youtubeTv !== false) })
+    lazy.settings.get().then((s) => { setTheme(themeOf(s.theme)); setModes(s.streamModes); setSaverMin(s.screensaverMinutes ?? 10); setPsCloses(s.psClosesApp !== false); setTrailerOn(s.trailerPreview !== false); setLockOn(s.lockCursor !== false); setNoGpu(s.edgeNoGpu ?? []); setPadIdle(s.padIdleMinutes ?? 10); setIdleHours(s.idleShutdownHours ?? 0); setSubSize(s.subtitleSize ?? 'grande'); setSiteScale(s.siteScale ?? 100); setYtTv(s.youtubeTv !== false); setScale(s.screenScale ?? 100) })
     Promise.all([lazy.exe.get('edge'), lazy.exe.get('laaazypad')]).then(([edge, laaazypad]) => setPaths({ edge, laaazypad }))
     lazy.drm.status().then(setDrm)
     lazy.catalog.status().then((s) => setTmdbOn(s.configured))
@@ -124,6 +127,12 @@ export default function SettingsScreen({ onBack, onController, sounds }: Props) 
     setSiteScale(v)
     lazy?.settings.set('siteScale', v)
     setMsg(siteScaleMsg(v))
+  }
+  const cycleScale = () => {
+    const v = nextScreenScale(scale)
+    setScale(v)
+    setScreenScale(v) // muda na hora, a tela inteira
+    setMsg(screenScaleMsg(v))
   }
   const cycleSaver = () => {
     const m = nextMinutes(saverMin)
@@ -195,6 +204,7 @@ export default function SettingsScreen({ onBack, onController, sounds }: Props) 
   const content: Record<SectionId, ReactNode> = {
     perfil: <ProfileSettings sounds={sounds} onMsg={setMsg} />,
     aparencia: <>
+      {row('Tamanho do Laaazy', screenScaleLabel(scale), cycleScale)}
       {row('Cor do Laaazy', themeLabel(theme), cycleTheme)}
       {row('Prévia do trailer no Início', trailerOn ? 'Ligada' : 'Desligada', toggleTrailer)}
       {row('Proteção de tela', saverMin ? `${saverMin} min` : 'Desligada', cycleSaver)}

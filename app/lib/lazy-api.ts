@@ -32,6 +32,7 @@ export type Settings = {
   subtitleSize?: string // legenda nos serviços do Edge: site | normal | grande | enorme | gigante
   siteScale?: number // tamanho dos sites no Edge (%): 100 | 125 | 150 | 175 | 200
   youtubeTv?: boolean // YouTube com a tela de TV (youtube.com/tv)
+  screenScale?: number // tamanho do Laaazy (%): 100 | 125 | 150 | 175
   geminiModel?: string
   equalizer?: EqState
 }

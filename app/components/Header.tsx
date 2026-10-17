@@ -33,7 +33,7 @@ export default function Header({ sounds, battery, onController, onSettings, onPo
   const BatIcon = bat && BATTERY_ICON[bat.level]
   const actions = [
     { label: 'Perfis do controle', Icon: Gamepad2, run: onController },
-    { label: 'Tamanho dos sites e da legenda', Icon: ALargeSmall, run: () => setSizeOpen(true) },
+    { label: 'Tamanho do Laaazy, dos sites e da legenda', Icon: ALargeSmall, run: () => setSizeOpen(true) },
     { label: 'Configurações', Icon: Settings, run: onSettings },
     { label: 'Energia', Icon: Power, run: onPower },
   ]

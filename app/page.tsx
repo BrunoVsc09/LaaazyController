@@ -21,6 +21,7 @@ import WelcomeScreen from './screens/WelcomeScreen'
 import SearchScreen from './screens/SearchScreen'
 import { useGamepad } from './hooks/useGamepad'
 import { usePadStatus } from './hooks/usePadStatus'
+import { useScreenScale } from './hooks/useScreenScale'
 import { useSounds } from './hooks/useSounds'
 import type { Card } from './lib/catalog'
 import { focusMove, isMouseBack } from './lib/focus'
@@ -51,6 +52,8 @@ export default function Page() {
   const sounds = useSounds()
   // Bateria do controle (topo), bateria baixa e o aviso de desligar o PC sem uso
   const pad = usePadStatus()
+  // Tamanho do Laaazy (a página inteira cresce junto)
+  useScreenScale()
   // Direção segurada: o 1º passo é na hora; depois espera e acelera (lib/nav-repeat)
   const held = useRef({ dir: '', steps: 0, at: 0 })
   const [pinned, setPinned] = useState<string[]>(DEFAULT_PINNED)

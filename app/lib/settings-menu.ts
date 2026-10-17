@@ -3,7 +3,7 @@ export type SectionId = 'perfil' | 'aparencia' | 'som' | 'controle' | 'streaming
 
 export const SETTINGS_SECTIONS: { id: SectionId; label: string; hint: string }[] = [
   { id: 'perfil', label: 'Perfil', hint: 'Seu nome e sua foto no topo do Laaazy.' },
-  { id: 'aparencia', label: 'Aparência', hint: 'Cor do Laaazy, prévia do trailer e proteção de tela.' },
+  { id: 'aparencia', label: 'Aparência', hint: 'Tamanho do Laaazy, cor, prévia do trailer e proteção de tela.' },
   { id: 'som', label: 'Som', hint: 'Equalizador do Windows: presets, 10 bandas, Bass Boost, Clarity e Volume extra.' },
   { id: 'controle', label: 'Controle e mouse', hint: 'O que o PS faz, o mouse preso na tela, quando o controle desliga e os perfis.' },
   { id: 'streaming', label: 'Streaming', hint: 'Tamanho da legenda e onde cada serviço abre: dentro do app ou no Edge.' },

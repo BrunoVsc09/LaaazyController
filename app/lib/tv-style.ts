@@ -1,5 +1,6 @@
 // Streaming: tamanho da legenda nos serviços abertos no Edge (extensão do Laaazy só de CSS).
 import tvStyle from '../../shared/tv-style'
+import { screenScaleLabel } from './screen-scale'
 
 const SIZES: { id: string; label: string }[] = tvStyle.SUBTITLE_SIZES
 
@@ -23,10 +24,11 @@ export const subtitleMsg = (id: string) => (id === 'site'
   ? 'A legenda fica no tamanho de cada site. Vale da próxima vez que o Edge abrir.'
   : `Legenda ${subtitleLabel(id)} nos serviços do Edge. Vale da próxima vez que o Edge abrir (feche o serviço e abra de novo).`)
 
-// Janelinha "Aa" do topo (ao lado do controle): as duas opções com o valor de agora
-export type SizeKey = 'siteScale' | 'subtitleSize'
-export function sizeMenuItems(s: { siteScale?: number; subtitleSize?: string }): { key: SizeKey; label: string }[] {
+// Janelinha "Aa" do topo (ao lado do controle): o tamanho do Laaazy e os do Edge, com o valor de agora
+export type SizeKey = 'screenScale' | 'siteScale' | 'subtitleSize'
+export function sizeMenuItems(s: { screenScale?: number; siteScale?: number; subtitleSize?: string }): { key: SizeKey; label: string }[] {
   return [
+    { key: 'screenScale', label: `Tamanho do Laaazy: ${screenScaleLabel(s.screenScale ?? 100)}` },
     { key: 'siteScale', label: `Tamanho dos sites: ${siteScaleLabel(s.siteScale ?? tvStyle.DEFAULT_SITE_SCALE)}` },
     { key: 'subtitleSize', label: `Legenda: ${subtitleLabel(s.subtitleSize ?? tvStyle.DEFAULT_SUBTITLE_SIZE)}` },
   ]

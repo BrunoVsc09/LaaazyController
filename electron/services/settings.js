@@ -5,6 +5,7 @@ const THEMES = require('../../shared/themes')
 const { PAD_IDLE_MINUTES } = require('../core/pad-status')
 const { IDLE_HOURS } = require('../core/idle-shutdown')
 const { SUBTITLE_SIZES, DEFAULT_SUBTITLE_SIZE, SITE_SCALES, DEFAULT_SITE_SCALE } = require('../../shared/tv-style')
+const { SCREEN_SCALES, DEFAULT_SCREEN_SCALE } = require('../../shared/screen-scale')
 const equalizer = require('../core/equalizer')
 const audioOutputs = require('../core/audio-outputs')
 
@@ -29,6 +30,7 @@ const RULES = {
   padIdleMinutes: (v) => PAD_IDLE_MINUTES.includes(v),
   idleShutdownHours: (v) => IDLE_HOURS.includes(v),
   subtitleSize: (v) => SUBTITLE_SIZES.some((s) => s.id === v),
+  screenScale: (v) => SCREEN_SCALES.some((s) => s.value === v),
   siteScale: (v) => SITE_SCALES.includes(v),
   youtubeTv: isBool,
   geminiModel: (v) => isText(v) && /^[a-z0-9][a-z0-9.-]{0,60}$/.test(v),
@@ -38,7 +40,7 @@ const RULES = {
   pinnedApps: (v) => Array.isArray(v) && v.length <= 30 && v.every((x) => isText(x) && x.length > 0 && x.length <= 40),
 }
 
-const DEFAULTS = { theme: 'azul', psClosesApp: true, trailerPreview: true, trailerSound: false, lockCursor: true, edgeNoGpu: ['Crunchyroll'], librarySort: 'asc', streamModes: {}, screensaverMinutes: 10, padIdleMinutes: 10, idleShutdownHours: 0, subtitleSize: DEFAULT_SUBTITLE_SIZE, siteScale: DEFAULT_SITE_SCALE, youtubeTv: true, geminiModel: 'gemini-3.8-flash', equalizer: equalizer.FLAT, audioOutput: null, lastSeenVersion: null }
+const DEFAULTS = { theme: 'azul', psClosesApp: true, trailerPreview: true, trailerSound: false, lockCursor: true, edgeNoGpu: ['Crunchyroll'], librarySort: 'asc', streamModes: {}, screensaverMinutes: 10, padIdleMinutes: 10, idleShutdownHours: 0, subtitleSize: DEFAULT_SUBTITLE_SIZE, screenScale: DEFAULT_SCREEN_SCALE, siteScale: DEFAULT_SITE_SCALE, youtubeTv: true, geminiModel: 'gemini-3.8-flash', equalizer: equalizer.FLAT, audioOutput: null, lastSeenVersion: null }
 
 function createSettings({ read, write }) {
   const all = () => ({ ...DEFAULTS, ...read() })

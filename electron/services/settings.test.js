@@ -61,6 +61,13 @@ describe('settings', () => {
     expect(s.set('padIdleMinutes', 0)).toBe(true)
     expect(s.set('padIdleMinutes', 7)).toBe(false)
   })
+  it('tamanho do Laaazy: padrão Normal (100); só 100, 125, 150 ou 175', () => {
+    const { s } = make()
+    expect(s.get('screenScale')).toBe(100)
+    expect(s.set('screenScale', 175)).toBe(true)
+    expect(s.set('screenScale', 130)).toBe(false)
+    expect(s.set('screenScale', '150')).toBe(false)
+  })
   it('tamanho da legenda no Edge: padrão Grande; só Do site, Normal, Grande ou Enorme', () => {
     const { s } = make()
     expect(s.get('subtitleSize')).toBe('grande')

@@ -6,12 +6,16 @@
 - Bateria do controle no topo, com aviso quando estiver acabando
 - Controle parado desliga sozinho
 - PC sem uso desliga sozinho (e o Windows não suspende antes)
-- Legenda e sites maiores nos serviços, para ler de longe
+- Laaazy, sites e legenda maiores, para ler de longe
 - YouTube com a tela de TV
 - Correções de bugs
 - Imagem nova de perfil
 
 ### Novo
+- **Tamanho do Laaazy (pedido do Bruno):** em Configurações → Aparência ou no "Aa" do topo: Normal,
+  Grande (125%), Maior (150%) ou Cama (175%). O Laaazy inteiro cresce junto (letras, botões, capas),
+  na hora. No "Aa", uma miniatura do Início mostra como fica antes de escolher. As janelas que já
+  ocupam a tela toda (Novidades, teclado na tela, proteção de tela) ficam do tamanho de sempre.
 - **Legenda grande nos serviços (pedido do Bruno):** em Configurações → Streaming, "Tamanho da
   legenda (Edge)": Do site, Normal, Grande (padrão), Enorme ou Gigante. Para ler de longe, até
   deitado. O Laaazy põe a legenda pelo canal privado com o Edge dele (sem porta aberta): ninguém

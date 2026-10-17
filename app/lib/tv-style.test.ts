@@ -32,15 +32,17 @@ describe('tamanho dos sites no Edge (Configurações → Streaming)', () => {
 })
 
 // "Deixe o tamanho e texto customizáveis do lado do controle no início" (Bruno, 2026-10-16)
-describe('janelinha "Aa" do topo: tamanho dos sites e da legenda', () => {
-  it('as duas linhas com o valor de agora', () => {
-    expect(sizeMenuItems({ siteScale: 175, subtitleSize: 'grande' })).toEqual([
+describe('janelinha "Aa" do topo: tamanho do Laaazy, dos sites e da legenda', () => {
+  // "O tamanho de tudo customizável" (Bruno, 2026-10-16): o Laaazy vem primeiro
+  it('as três linhas com o valor de agora', () => {
+    expect(sizeMenuItems({ screenScale: 150, siteScale: 175, subtitleSize: 'grande' })).toEqual([
+      { key: 'screenScale', label: 'Tamanho do Laaazy: Maior (150%)' },
       { key: 'siteScale', label: 'Tamanho dos sites: 175%' },
       { key: 'subtitleSize', label: 'Legenda: Grande' },
     ])
   })
-  it('sem nada salvo: os padrões (Do site e Grande)', () => {
-    expect(sizeMenuItems({}).map((i) => i.label)).toEqual(['Tamanho dos sites: Do site', 'Legenda: Grande'])
+  it('sem nada salvo: os padrões (Normal, Do site e Grande)', () => {
+    expect(sizeMenuItems({}).map((i) => i.label)).toEqual(['Tamanho do Laaazy: Normal', 'Tamanho dos sites: Do site', 'Legenda: Grande'])
   })
 })
 

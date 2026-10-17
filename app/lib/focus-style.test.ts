@@ -221,3 +221,14 @@ describe('valor das linhas das Configurações', () => {
     expect(css).not.toMatch(/\.ds4-row b \{[^}]*direction: rtl/)
   })
 })
+
+// Tamanho do Laaazy (pedido do Bruno, 2026-10-16): a página inteira cresce com o zoom; as janelas que já
+// ocupam a tela toda ficam como são (senão passam da tela)
+describe('tamanho do Laaazy', () => {
+  it('menus pequenos nunca passam da altura da tela: rolam (o foco do controle rola junto)', () => {
+    expect(css).toMatch(/\.power-menu \{ max-height: calc\(100vh \/ var\(--lz-zoom, 1\) - 130px\); overflow-y: auto; \}/)
+  })
+  it('janelas de tela cheia desfazem o zoom', () => {
+    expect(css).toMatch(/:is\(\.lz-saver, \.lz-notes, \.osk, \.lz-browser\) \{ zoom: calc\(1 \/ var\(--lz-zoom, 1\)\); \}/)
+  })
+})

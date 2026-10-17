@@ -45,6 +45,13 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Ícone "Aa" no topo (ao lado do controle) abre "Tamanho no Edge" com a borda na 1ª linha; ✕ muda o tamanho e a telinha de exemplo muda na hora (175% = 3 títulos por fileira, Do site = 6); ○ fecha e a borda volta ao "Aa"
 - [ ] A janelinha fica por cima do destaque do Início (não atrás da imagem)
 
+## Tamanho do Laaazy
+- [ ] Configurações → Aparência → "Tamanho do Laaazy" cicla Normal / Grande / Maior / Cama: a tela inteira muda na hora, sem barra de rolagem para o lado
+- [ ] No "Aa": a 1ª linha é o tamanho do Laaazy; com ela selecionada, a telinha mostra a miniatura do Início; nas linhas do Edge, o site com a legenda
+- [ ] Em Cama (175%): Início, Biblioteca, Configurações e o menu Energia cabem (menus pequenos rolam se precisar)
+- [ ] Novidades, teclado na tela e proteção de tela ficam do tamanho de sempre
+- [ ] Fechar e abrir o Laaazy: o tamanho escolhido continua
+
 ## YouTube com tela de TV
 - [ ] Com "YouTube com tela de TV" = Sim (padrão), o card do YouTube abre a tela de TV (menu à esquerda, cards grandes), já na 1ª abertura do Edge
 - [ ] Login: "Fazer login com o smartphone" mostra um código; em youtube.com/activate no celular, a conta entra
