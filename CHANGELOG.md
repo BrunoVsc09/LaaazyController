@@ -14,7 +14,8 @@
 ### Novo
 - **Tamanho do Laaazy (pedido do Bruno):** em Configurações → Aparência ou no "Aa" do topo: Normal,
   Grande (125%), Maior (150%) ou Cama (175%). O Laaazy inteiro cresce junto (letras, botões, capas),
-  na hora. No "Aa", uma miniatura do Início mostra como fica antes de escolher. As janelas que já
+  na hora. Em Maior e Cama, o Início se reorganiza para o destaque e a primeira fileira caberem na
+  tela. No "Aa", uma miniatura do Início mostra como fica antes de escolher. As janelas que já
   ocupam a tela toda (Novidades, teclado na tela, proteção de tela) ficam do tamanho de sempre.
 - **Legenda grande nos serviços (pedido do Bruno):** em Configurações → Streaming, "Tamanho da
   legenda (Edge)": Do site, Normal, Grande (padrão), Enorme ou Gigante. Para ler de longe, até

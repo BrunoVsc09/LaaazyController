@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { homePreview, nextScreenScale, screenScaleLabel, screenScaleMsg, zoomFor } from './screen-scale'
+import { homePreview, nextScreenScale, scaleAttr, screenScaleLabel, screenScaleMsg, zoomFor } from './screen-scale'
 
 // "O tamanho de tudo ser customizável e com ilustração de como ficaria" (Bruno, 2026-10-16)
 describe('tamanho do Laaazy', () => {
@@ -21,6 +21,11 @@ describe('tamanho do Laaazy', () => {
     expect(zoomFor(150)).toBe('1.5')
     expect(zoomFor(999)).toBe('1')
   })
+  it('marca no <html> (data-lz-scale) para o Início se reorganizar em Maior e Cama', () => {
+    expect(scaleAttr(175)).toBe('175')
+    expect(scaleAttr(100)).toBe('100')
+    expect(scaleAttr(999)).toBe('100')
+  })
 })
 
 // A telinha de exemplo mostra uma miniatura do Início na mesma proporção da tela (medidas em % da altura)
@@ -32,10 +37,11 @@ describe('exemplo do tamanho do Laaazy: miniatura do Início', () => {
     expect(p.text).toBeCloseTo(1.6, 1) // texto do destaque de ~17 px
     expect(p.cards).toBe(6)
   })
-  it('maior: tudo cresce junto e cabem menos cards por fileira', () => {
+  it('maior: as letras crescem junto; os cards ficam quase do mesmo tamanho (cabem 5 na fileira)', () => {
     const p = homePreview(150)
     expect(p.title).toBeCloseTo(homePreview(100).title * 1.5, 5)
-    expect(p.cards).toBe(4)
-    expect(homePreview(175).cards).toBe(3)
+    expect(homePreview(125).cards).toBe(5)
+    expect(p.cards).toBe(5)
+    expect(homePreview(175).cards).toBe(5)
   })
 })

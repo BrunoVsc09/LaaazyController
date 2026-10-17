@@ -49,6 +49,8 @@ vídeo toca ≥ 30s, △ pausa, L1/R1 ±10s, O volta, PS/Options vai ao menu.
 - [ ] Configurações → Aparência → "Tamanho do Laaazy" cicla Normal / Grande / Maior / Cama: a tela inteira muda na hora, sem barra de rolagem para o lado
 - [ ] No "Aa": a 1ª linha é o tamanho do Laaazy; com ela selecionada, a telinha mostra a miniatura do Início; nas linhas do Edge, o site com a legenda
 - [ ] Em Cama (175%): Início, Biblioteca, Configurações e o menu Energia cabem (menus pequenos rolam se precisar)
+- [ ] Em Maior e Cama, no Início: o destaque e a 1ª fileira inteira aparecem acima do rodapé, sem rolar; em Cama os botões do destaque ficam numa linha só, embaixo do texto e da imagem
+- [ ] Em Maior e Cama, o aviso "Controle conectado" fica no canto direito do rodapé (não cobre "Parecidos")
 - [ ] Novidades, teclado na tela e proteção de tela ficam do tamanho de sempre
 - [ ] Fechar e abrir o Laaazy: o tamanho escolhido continua
 

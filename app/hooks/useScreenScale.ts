@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { getLazy } from '../lib/lazy-api'
-import { zoomFor } from '../lib/screen-scale'
+import { scaleAttr, zoomFor } from '../lib/screen-scale'
 
 // Evento que as Configurações e a janelinha "Aa" mandam quando o tamanho muda (detail = %)
 export const SCREEN_SCALE_EVENT = 'lz:screen-scale'
@@ -11,6 +11,7 @@ const apply = (v: number) => {
   const z = zoomFor(v)
   document.documentElement.style.zoom = z
   document.documentElement.style.setProperty('--lz-zoom', z) // as janelas de tela cheia desfazem o zoom
+  document.documentElement.dataset.lzScale = scaleAttr(v) // Maior e Cama reorganizam o Início
 }
 
 // Tamanho do Laaazy: o salvo ao abrir e o novo na hora em que muda

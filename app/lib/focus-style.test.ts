@@ -39,7 +39,7 @@ describe('Início: destaque com trailer sempre à vista', () => {
   })
   // Pedido do Bruno (2026-10-08): prévia maior. Cresce com a tela (46% da altura), entre 380 e 520px
   it('o destaque (e a prévia dentro dele) cresce com a altura da tela', () => {
-    expect(css).toMatch(/:root \{ --lz-hero-h: clamp\(380px, 46vh, 520px\); \}/)
+    expect(css).toMatch(/:root \{ --lz-hero-h: clamp\(380px, calc\(46 \* var\(--vh\)\), 520px\); \}/)
   })
   it('o card em foco para abaixo do destaque e acima do rodapé', () => {
     expect(css).toMatch(/html:has\(\.lz-home\) \{ scroll-padding-top: calc\(var\(--lz-hero-h\) \+ 16px\); scroll-padding-bottom: 120px; \}/)
@@ -111,7 +111,7 @@ describe('destaque sem caixa de cor diferente', () => {
     expect(css).not.toMatch(/\.lz-hero \{ position: sticky;[^}]*background:/)
   })
   it('a faixa que esconde as fileiras ocupa a tela toda e só aparece quando a página rola', () => {
-    expect(css).toMatch(/\.lz-hero::before \{[^}]*left: calc\(50% - 50vw\); right: calc\(50% - 50vw\);[^}]*background: linear-gradient\(180deg, var\(--hero-bg, #0b3f9d\) 0 90%, transparent\);[^}]*animation-timeline: scroll\(root\);/)
+    expect(css).toMatch(/\.lz-hero::before \{[^}]*left: calc\(50% - calc\(50 \* var\(--vw\)\)\); right: calc\(50% - calc\(50 \* var\(--vw\)\)\);[^}]*background: linear-gradient\(180deg, var\(--hero-bg, #0b3f9d\) 0 90%, transparent\);[^}]*animation-timeline: scroll\(root\);/)
   })
 })
 
@@ -226,9 +226,45 @@ describe('valor das linhas das Configurações', () => {
 // ocupam a tela toda ficam como são (senão passam da tela)
 describe('tamanho do Laaazy', () => {
   it('menus pequenos nunca passam da altura da tela: rolam (o foco do controle rola junto)', () => {
-    expect(css).toMatch(/\.power-menu \{ max-height: calc\(100vh \/ var\(--lz-zoom, 1\) - 130px\); overflow-y: auto; \}/)
+    expect(css).toMatch(/\.power-menu \{ max-height: calc\(calc\(100 \* var\(--vh\)\) - 130px\); overflow-y: auto; \}/)
   })
   it('janelas de tela cheia desfazem o zoom', () => {
     expect(css).toMatch(/:is\(\.lz-saver, \.lz-notes, \.osk, \.lz-browser\) \{ zoom: calc\(1 \/ var\(--lz-zoom, 1\)\); \}/)
+  })
+
+  // Regressão (Bruno, 2026-10-16: "150 e 175 ficaram exagerados"): com o zoom, 1vh também cresce, e o
+  // destaque de 46vh virava 80% da tela em 175%, empurrando as fileiras para fora dela
+  it('% da tela é sempre da tela de verdade: --vw/--vh desfazem o zoom', () => {
+    expect(css).toMatch(/:root \{ --vw: calc\(1vw \/ var\(--lz-zoom, 1\)\); --vh: calc\(1vh \/ var\(--lz-zoom, 1\)\); --vmin: calc\(1vmin \/ var\(--lz-zoom, 1\)\); \}/)
+    expect(css).toMatch(/--lz-hero-h: clamp\(380px, calc\(46 \* var\(--vh\)\), 520px\)/)
+  })
+  it('nenhum vw/vh solto nas telas que crescem (só nas janelas que desfazem o zoom e no teclado)', () => {
+    for (const file of ['globals.css', 'welcome.css', 'screen-scale.css']) {
+      const text = fs.readFileSync(path.join(__dirname, '..', file), 'utf8').replace(/:root \{ --vw:[^}]*\}/, '')
+      const loose = [...text.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
+        .filter(([, sel, body]) => !/\.osk|\.lz-saver|\.lz-browser|\.kb-overlay/.test(sel) && /(?<![\w.])\d+(\.\d+)?(svh|vh|vw|vmin)\b/.test(body))
+        .map(([, sel]) => `${file}: ${sel.trim().slice(-60)}`)
+      expect(loose).toEqual([])
+    }
+  })
+})
+
+// "Tem como corrigir a disposição?" (Bruno, 2026-10-16): em Maior e Cama o Início se reorganiza para o
+// destaque e uma fileira inteira caberem acima do rodapé, como no Normal (o <html> leva data-lz-scale)
+describe('Início em Maior e Cama', () => {
+  const css = fs.readFileSync(path.join(__dirname, '..', 'screen-scale.css'), 'utf8')
+  const big = 'html:is\\(\\[data-lz-scale="150"\\], \\[data-lz-scale="175"\\]\\)'
+  it('destaque mais baixo, resumo em 2 linhas e cards do Início com 18% da largura da tela', () => {
+    expect(css).toMatch(new RegExp(`${big} \\{ --lz-hero-h: 240px; \\}`))
+    expect(css).toMatch(new RegExp(`${big} \\.lz-overview \\{ -webkit-line-clamp: 2;`))
+    expect(css).toMatch(new RegExp(`${big} \\.lz-home \\.lz-title \\{ width: calc\\(18 \\* var\\(--vw\\)\\); \\}`))
+  })
+  it('o aviso do controle vai para o canto direito (no meio, ficava por cima das dicas do rodapé)', () => {
+    expect(css).toMatch(new RegExp(`${big} \\.pad-badge \\{ left: auto; right: calc\\(4 \\* var\\(--vw\\)\\); transform: none; \\}`))
+  })
+  it('Cama: os botões ganham a largura toda, embaixo do texto e da imagem', () => {
+    expect(css).toMatch(/html\[data-lz-scale="175"\] \{ --lz-hero-h: 220px; \}/)
+    expect(css).toMatch(/html\[data-lz-scale="175"\] \.lz-hero > div:first-child \{ display: contents; \}/)
+    expect(css).toMatch(/html\[data-lz-scale="175"\] \.lz-hero :is\(\.lz-actions, \[role=status\]\) \{ grid-column: 1 \/ -1; \}/)
   })
 })

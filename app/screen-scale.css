@@ -1,0 +1,21 @@
+/* Início em Maior e Cama (data-lz-scale no <html>, posto pelo useScreenScale): as letras crescem com o
+   zoom, mas a disposição se ajusta para o destaque e uma fileira inteira caberem acima do rodapé,
+   como no tamanho Normal. Medidas em % da tela usam --vw (globals.css), que desfaz o zoom. */
+html:is([data-lz-scale="150"], [data-lz-scale="175"]) { --lz-hero-h: 240px; }
+html:is([data-lz-scale="150"], [data-lz-scale="175"]) .lz-home { gap: 12px; }
+html:is([data-lz-scale="150"], [data-lz-scale="175"]) .lz-hero { grid-template-columns: minmax(0, 1fr) auto; }
+html:is([data-lz-scale="150"], [data-lz-scale="175"]) .lz-overview { -webkit-line-clamp: 2; margin: 8px 0; }
+html:is([data-lz-scale="150"], [data-lz-scale="175"]) .lz-hero .lz-actions { gap: 10px; margin-top: 10px; }
+html:is([data-lz-scale="150"], [data-lz-scale="175"]) .lz-hero .lz-btn { padding: 10px 16px; }
+/* Cards do Início quase do tamanho do Normal (o título deles cresce): cabem 5 por fileira */
+html:is([data-lz-scale="150"], [data-lz-scale="175"]) .lz-home .lz-title { width: calc(18 * var(--vw)); }
+/* As dicas do rodapé crescem até o meio da tela: o aviso do controle vai para o canto direito */
+html:is([data-lz-scale="150"], [data-lz-scale="175"]) .pad-badge { left: auto; right: calc(4 * var(--vw)); transform: none; }
+
+/* Cama: os botões não cabem ao lado da imagem; ganham a largura toda, embaixo do texto e da imagem */
+html[data-lz-scale="175"] { --lz-hero-h: 220px; }
+html[data-lz-scale="175"] .lz-hero { align-content: center; row-gap: 0; }
+html[data-lz-scale="175"] .lz-hero > div:first-child { display: contents; }
+html[data-lz-scale="175"] .lz-hero > div:first-child > * { grid-column: 1; }
+html[data-lz-scale="175"] .lz-hero :is(.lz-actions, [role=status]) { grid-column: 1 / -1; }
+html[data-lz-scale="175"] .lz-hero-media { grid-column: 2; grid-row: 1 / 4; width: 250px; height: auto; align-self: center; }
